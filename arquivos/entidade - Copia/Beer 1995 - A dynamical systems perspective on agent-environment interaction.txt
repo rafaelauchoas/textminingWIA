@@ -1,0 +1,8729 @@
+ELSEVIER 
+
+Artificial  Intelligence  72 (1995)  173-215 
+
+Artificial 
+Intelligence 
+
+A  dynamical  systems  perspective  on 
+
+agent-environment 
+
+interaction 
+
+Randall  D.  Beer* 
+
+Dept.  of  Computer  Engineering  and  Science  and  Dept.  of  Biology,  Case  Western  Reserve  University, 
+Cleveland,  OH  44106,  USA 
+
+Received  September  1992; revised  March  1993 
+
+Abstract 
+
+agents  is  sketched. 
+
+Using  the  language  of  dynamical  systems  theory,  a  general  theoretical 
+
+are  modeled  as  two  coupled  dynamical  systems  whose  mutual  interaction 
+
+synthesis  and  analysis  of  autonomous 
+its  environment 
+in  general 
+an  agent  and 
+constraint  on  the  trajectories  of  the  coupled  agent-environment 
+framework 
+behavior 
+
+for  the 
+In  this  framework,  an  agent  and 
+is 
+the  adaptive  fit  between 
+in  terms  of  the  satisfaction  of  a  given 
+system.  The  utility  of  this 
+it  to  first  synthesize  and  then  analyze  a  walking 
+
+is  demonstrated 
+for  a  legged  agent. 
+
+for  the  agent’s  behavior. 
+
+jointly  responsible 
+
+is  characterized 
+
+its  environment 
+
+In  addition, 
+
+framework 
+
+by  using 
+
+1.  Introduction 
+
+agent, 
+
+long-term 
+
+in  continuous 
+
+its  environment.  By  autonomous 
+
+agent  and 
+system  designed 
+
+This  paper  is concerned  with  properly  characterizing 
+
+the  interaction  between  an 
+I  mean  any 
+to  satisfy  internal  or  external  goals  by  its  own  actions 
+in  which  it  is 
+
+autonomous 
+embodied 
+while 
+situated.  The  class  of  autonomous  agents  is thus  a  fairly  broad  one,  encompassing 
+robots.  An  animal,  for  example,  may 
+at  the  very  least  all  animals  and  autonomous 
+simply  be  trying  to  survive,  while  a  robot  might  be  designed  to  carry  out  specific 
+tasks,  such  as  keeping  some  designated  area  clean  or  exploring 
+the  surface  of 
+another  planet.  The  task  is thus  to  abstract  over  particular  details  of  implementa- 
+tion  and  embodiment 
+motors) 
+
+(e.g.,  nerve  cells  vs.  finite  state  machines  or  muscles  vs. 
+the  essential  character  of  this  class  of  systems. 
+
+interaction  with  the  environment 
+
+to  understand 
+
+in  order 
+
+* E-mail:  beer@alpha.ces.cwru.edu 
+
+0004-3702/95/$09.50 
+SSDI 
+
+0004-3702(94)00005-L 
+
+0  1995  Elsevier  Science  B.V.  All  rights  reserved 
+
+short  of  this  ambitious 
+
+the  present 
+
+paper  may  fall, 
+
+the 
+
+long-term 
+
+less  than  a  general 
+
+framework 
+
+for  the  explanation 
+
+and 
+
+goal 
+theoretical 
+
+However 
+aim 
+design  of  autonomous 
+
+is  nothing 
+
+The  central  problem 
+
+agents. 
+for  any  autonomous 
+
+is  the  generation 
+
+its  internal 
+
+state  and  external 
+
+agent, 
+
+action  must  always 
+
+reasoning,  when 
+
+it  can  be  afforded 
+
+reflected 
+agent  must 
+situation. 
+
+in  improved 
+
+be  purely 
+
+Rather, 
+
+it  means 
+
+agent, 
+of  the  appropriate 
+situation 
+take  precedence 
+
+and 
+
+thus 
+behavior 
+continuously 
+
+the  primary 
+
+concern 
+at  the  appropriate 
+
+change.  For  an 
+
+activity. 
+
+at  all,  is  profitable 
+
+over  any  other 
+only 
+behavior.  This  does  not  necessarily 
+responding 
+to 
+agent  must  be  able 
+
+reflexively 
+an  autonomous 
+
+reactive, 
+
+insofar  as  it  is 
+that  an 
+imply 
+its 
+only 
+to 
+goals  so  as  to 
+
+its  long-term 
+to  both.  An  animal  moving 
+
+circumstances 
+with 
+in  ways  appropriate 
+
+combine 
+
+its  immediate 
+its  behavior 
+
+adjust 
+
+its  environment, 
+
+for  example, 
+
+needs 
+
+to  adopt  many  different  modes  of 
+
+as  it  becomes 
+
+all  the  while  adjusting 
+
+hungry  or  tired  and  encounters 
+its  posture 
+
+and  leg  movements 
+
+potential 
+
+food,  predators 
+to  the  constantly 
+
+in  this  paper, 
+time  as  both 
+embodied 
+Abstract 
+ultimately 
+embodied 
+immediate 
+flexibly 
+continuously 
+throughout 
+behavior 
+and  mates, 
+changing 
+
+terrain  which 
+
+Traditionally, 
+
+such  “low 
+
+symbolic 
+
+the  problems 
+
+skills, 
+agents,  when 
+
+in  AI  research. 
+
+role 
+intellectual 
+
+major 
+level” 
+ing.  Embodied 
+as  merely 
+Accordingly, 
+special  cases  of  the  problems 
+long  been 
+Sensors, 
+consistency 
+while  effecters 
+introduce 
+actual  motor  commands. 
+constraints 
+reasoning. 
+complicating, 
+
+on  an  agent’s 
+However, 
+rather 
+
+realized 
+for  example, 
+
+of,  internal 
+
+these 
+
+than 
+
+In  recent  years,  however, 
+
+developed 
+
+for  this  change 
+
+the  fundamental 
+
+to  be  considerably 
+
+appreciate 
+reasons 
+real  world  with 
+out 
+approaches 
+to  the  noisy,  unpredictable, 
+Furthermore, 
+have 
+turned 
+environment. 
+number 
+to  control 
+that 
+
+of  visual  problems 
+
+the  potentially 
+
+it  is  traversing. 
+level” 
+Instead,  work 
+such  as  language, 
+
+concerns 
+
+of  embodiment 
+in  AI  has  tended 
+solving 
+problem 
+
+they  have  been  considered 
+sensors 
+
+engines  with 
+
+reasoning 
+
+have  not  played 
+to  emphasize 
+and  abstract 
+
+a 
+“high 
+reason- 
+at  all,  have  been  viewed 
+attached. 
+and 
+
+effecters 
+
+of  embodied 
+
+agents  have  usually  been 
+
+formulated 
+
+that  embodiment 
+
+introduce 
+
+raises 
+the  problem 
+
+of  disembodied 
+
+systems.  Of  course, 
+
+intelligent 
+certain 
+of  constructing, 
+
+additional 
+
+technical 
+and  maintaining 
+
+representations 
+the  problem 
+Furthermore, 
+that 
+action 
+technical 
+
+of  the  environment 
+
+from  physical 
+
+representations 
+
+of  action 
+
+of  translating 
+physical 
+
+embodiment 
+
+limit 
+
+the  amount 
+
+problems 
+
+of  time 
+are  usually 
+
+introduces 
+
+real-time 
+that  can  be  spent 
+as  merely 
+
+seen 
+
+as 
+it  has 
+issues. 
+the 
+signals, 
+into 
+
+invalidating, 
+
+the  classical  picture. 
+
+a  growing  number 
+importance 
+
+in  perspective.  Designing 
+
+of  embodiment. 
+agents 
+
+of  AI  researchers 
+
+the  versatility 
+
+and  robustness 
+subtle 
+for  disembodied 
+
+of  even  simple  animals 
+than  originally 
+agents  have  not  in  general 
+
+and  difficult 
+
+more 
+
+many  problems 
+out 
+Work  on  animate 
+
+to  be  considerably 
+
+open-ended 
+
+that  seemed 
+
+and  dynamic 
+intractable 
+
+simplified 
+
+by  active 
+
+vision, 
+are  drastically 
+
+for  example, 
+simplified 
+
+if  the  agent 
+[8].  Likewise,  work  on  situated 
+
+its  own  gaze  direction 
+
+brittle 
+
+and 
+
+combinatorially 
+
+explosive 
+
+There 
+
+have  begun 
+are  a  number 
+
+to 
+of 
+that  can  interact  with  the 
+has  turned 
+and 
+translated  well 
+of  the  real  world. 
+systems 
+in  an 
+that  a 
+
+participation 
+has  demonstrated 
+
+nature 
+for  disembodied 
+
+realized, 
+
+is  given 
+the  ability 
+agents  has  shown 
+of  general 
+
+nature 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (1995)  173-215 
+
+175 
+
+[3,20].  Indeed, 
+
+planning  can  be  significantly  alleviated  by  using  the  immediate  situation 
+behavior 
+complication 
+fundamental 
+thought 
+capacity  for  language  and  abstract 
+much  more  basic  capacity  for  situated  action  that  is  universal  among  animals. 
+
+to  guide 
+that,  far  from  being  a  mere 
+intellect,  embodiment  may  in  fact  be  the  more 
+the  human 
+from  an  evolutionary 
+recent  elaboration  of  a 
+
+for  a  disembodied 
+issue.  Certainly, 
+
+there  is a growing  realization 
+
+is  a  relatively 
+
+perspective, 
+
+the 
+
+and  situated 
+
+to  point  out 
+
+agents.  Brooks,  working 
+
+emphasis  on  embodiment 
+
+This  reassessment  of  the  importance  of  embodiment  has  led  to  an  explosion  of 
+in  the  area  of  mobile 
+recent  work  on  autonomous 
+limitations  of 
+robotics,  was  one  of  the  first  AI  researchers 
+in  the  face  of  real-world  complexity  and  the  need  for  a 
+classical  AI  techniques 
+renewed 
+[18,20].  Agre  and 
+Chapman’s  work  on  routine  activity  grew  out  of  a  similar  frustration  with  the 
+to  similar 
+limitations  of  classical  planning 
+conclusions 
+[56], 
+Rosenschein 
+for  deriving  finite  state  machine 
+for  an  agent  from  a  formal  specification  of  its  knowledge  and  goals 
+controllers 
+the  significant 
+[42].  My  own  work  [ll,  141 and  that  of  Cliff  [24]  has  demonstrated 
+potential 
+agent  research  and  work  on  the 
+neural  basis  of  animal  behavior.  Biological  design  principles  have  also  been 
+stressed  by  Arbib  and  Liaw  [5].  Surveys  of  recent  work  in  autonomous  agents  can 
+be  found 
+
+[2,3,22].  Building  on  Rosenschein’s 
+and  Kaelbling  developed  methods 
+
+in  the  collections  edited  by  Maes  [45]  and  Meyer  and  Wilson  [49]. 
+
+for  interaction  between  autonomous 
+
+in  realistic  environments 
+
+situated  automata 
+
+theory 
+
+action 
+
+and 
+
+led 
+
+rather 
+
+This  body  of  work 
+
+is  loosely  characterized 
+
+agents  capable  of  carrying  out  open-ended 
+
+ideas.  It 
+by  a  number  of  shared 
+taking  action  in  the  world  over  the  abstract 
+of 
+
+tasks 
+than  isolated  cognitive  skills  in  restricted 
+
+the  primacy  of  actually 
+that  we  sometimes  make  of  it.  It  focuses  on  the  development 
+
+emphasizes 
+descriptions 
+complete 
+It 
+environments 
+situa- 
+emphasizes  behavior  and  the  fundamental 
+tion  plays 
+associated  with 
+behaviorism,  over  reasoning  and  symbolic  models  of  the  world.  Another  common 
+theme  of  this  work  has  been  that  a significant  fraction  of  behavior  must  be  seen  as 
+an 
+emerging  from  the  ongoing  interaction  between  an  agent  and  its  environment, 
+idea  often  associated  with  cybernetics.  This  work  has  also  begun  to  question 
+the 
+central 
+to  play  in  intelligent 
+behavior  by  most  work  in  cognitive  science. 
+
+in  unconstrained 
+task  domains. 
+
+in  guiding  an  agent’s  behavior, 
+
+that  the  immediate 
+
+has  been  assumed 
+
+role  that  internal 
+
+ideas  historically 
+
+representation 
+
+importance 
+
+ideas 
+
+theoretical 
+
+I  will  attempt 
+
+In  this  paper, 
+
+these  and  other 
+
+that  are 
+to  show  that 
+emerging  from  recent  work  on  autonomous  agents,  as  well  as  work  on  the  neural 
+basis  of  animal  behavior,  can  be  naturally  cast  into  the  language  of  dynamical 
+I will  argue  that  this  language  can  form  the  basis  for 
+systems  theory.  Furthermore, 
+a  powerful 
+agents 
+systems  theory 
+theoretical 
+the 
+quences.  Section  4  demonstrates 
+some  detail  its  application 
+simulated 
+
+for  the  explanation  and  design  of  autonomous 
+in  general.  Section  2  reviews  some  of  the  basic  concepts  of  dynamical 
+In  Section  3,  I  sketch 
+conse- 
+in 
+to  the  synthesis  and  analysis  of  a walking  behavior  for  a 
+the  assumptions  of  the 
+
+this  framework. 
+itself  and  draw  out  some  of  its  conceptual 
+
+legged  agent.  Finally,  Section  5  discusses 
+
+the  utility  of  this  framework  by  illustrating 
+
+that  are  required 
+framework 
+
+framework 
+
+to  present 
+
+proposed 
+directions 
+
+framework, 
+for  future  work. 
+
+considers 
+
+its  broader 
+
+implications, 
+
+and 
+
+suggests 
+
+some 
+
+2.  Dynamical 
+
+systems 
+
+This  section  will  briefly 
+
+review 
+
+theory  of  dynamical 
+to  be  presented 
+
+qualitative 
+framework 
+and 
+incomplete. 
+to  one  of  the  many 
+increasing  mathematical 
+Hale  and  KoGak  [33]  and  Wiggins 
+
+The  reader 
+
+available 
+
+the  essential 
+
+concepts 
+
+and 
+that  will  be  required 
+
+systems 
+
+in  Section  3.  The  presentation 
+thorough 
+interested 
+systems 
+
+in  a  more 
+texts  on  dynamical 
+
+terminology 
+for  the 
+is  necessarily 
+treatment 
+including, 
+
+of  the 
+
+theoretical 
+informal 
+should 
+refer 
+in  order  of 
+[l], 
+
+sophistication, 
+
+the  books 
+
+by  Abraham 
+
+and  Shaw 
+
+[66]. 
+
+Consider 
+
+the  following 
+
+three  mathematical 
+
+systems: 
+
+X  ,r+, 
+
+=PX,,(l 
+
+-“n) 
+
+2 
+
+,nl$j+~~+mfisinB=Acos(w*) 
+
+At  first  glance, 
+first  equation 
+
+The 
+second-order 
+sinusoidally-driven 
+input.  However, 
+the  underlying 
+these 
+
+these 
+
+three  systems  may  appear 
+
+is  an  example 
+
+of  an 
+
+differential 
+
+equation 
+The 
+all  of  these  systems 
+
+pendulum. 
+
+to  have  very 
+
+little 
+iterated  map.  The  second 
+of 
+
+describing 
+
+the  motion 
+is  a  finite 
+
+third 
+system 
+are  also  instances 
+
+of  dynamical 
+one  might  ask  about 
+
+state  machine  with 
+systems  and 
+each  of 
+
+similarity 
+
+of  many  of  the  questions 
+
+systems  only  becomes 
+
+in  this  formalism. 
+
+apparent 
+a  dynamical 
+
+law  5 
+
+system 
+that  governs 
+
+For  our  purposes 
+
+here, 
+
+change  with 
+
+the  system’s 
+is  continuous 
+
+variables  x  and  a  dynamical 
+variables 
+constitutes 
+state  space 
+the  concepts 
+Often 
+Sometimes, 
+cylindrical 
+variables 
+
+the  geometry 
+however, 
+and  toroidal 
+
+are  periodic 
+
+that 
+
+If  the  dynamical 
+of  some 
+
+values 
+
+time.  The  set  of  all  possible 
+state  space.  For  simplicity, 
+(i.e., 
+I  will  be  introducing 
+the 
+
+of 
+other  spaces  arise.  Perhaps 
+
+the  state  variables 
+
+space 
+
+in  some 
+is  assumed 
+
+state 
+
+hold 
+
+is  characterized 
+
+by  a  set  of  state 
+
+how 
+
+the  values  of  those 
+state 
+values  of  the  state  variables 
+I  will  assume 
+
+here 
+
+that 
+
+the 
+though  most  of 
+space. 
+
+for  any  metric 
+to  be  simply  Euclidean. 
+
+are  real-valued), 
+form 
+
+the  most  common 
+
+are 
+state  spaces,  which  occur  naturally  when  some  of  the  state 
+(e.g.,  0  in  Eq. 
+law  depends  only  upon 
+fixed  parameters 
+
+the  values  of  the  state  variables 
+
+and  the 
+to  be 
+
+examples 
+
+is  said 
+
+system 
+
+(2)). 
+
+then 
+
+the 
+
+a, 
+
+set  of 
+
+(1) 
+
+(2) 
+
+(3) 
+
+in  common. 
+system 
+a  damped, 
+
+is  a 
+
+R. D.  Beer 
+
+I  Artijicial  Intelligence  72  (1995)  173-215 
+
+177 
+
+In  a  continuous-time 
+
+dynamical  system,  the  dynamical 
+
+law  is  given 
+autonomous.’ 
+in  terms  of  a  set  of  differential  equations: 
+i  =  9(x;  u).  In  this  case,  the  dynamical 
+law  defines  a  vector  field  on  the  state  space.  In  a  discrete-time  dynamical  system, 
+to  next  state:  x,+,  = 
+the  dynamical 
+9(x,;  u).  A  dynamical  system  is  said  to  be  linear  or  nonlinear  according 
+to  the 
+linearity  or  nonlinearity  of  9 
+
+law  is  simply  a  map  from  current 
+
+in  the  state  variables. 
+
+state 
+
+As  a  concrete 
+
+example, 
+
+consider 
+
+the  behavior  of  a  fully-interconnected 
+
+the  following  system  of  equations,  which 
+network  of  two  simple  model 
+
+describe 
+neurons: 
+
+I;, = -Y  I  +  wll4Yl- 
+
+4)  + W2ldY2  -  %I 7 
+
+Y, =  -Y, 
+
++  wlP(Y, 
+
+-  4)  +  w224y2 
+
+-  4) 
+
+) 
+
+(4) 
+
+ith  neuron, 
+
+where  yi  is  the  state  of  the 
+is  the  standard 
+sigmoidal  (S-shaped)  activation  function,  0, controls  the  offset  or  threshold  of  the 
+from  the  ith  to  the  jth 
+activation 
+neuron.  This  system  is  a  simplification  of  a  common  neural  network  model  that 
+will  be  employed 
+system  due  to  the 
+in  Section  4.  Note  that  this  is  a  nonlinear 
+nonlinearity  of  the  activation 
+
+function  and  wj, is  the  weight  of  the  connection 
+
+a(t)  =  (1  +  ee5)-’ 
+
+function  (+. 
+
+to 
+
+Starting 
+
+to  individual 
+
+representative 
+
+that  point.  Some 
+
+that  its  tangent  at  each  point 
+
+from  some  initial  state  x0,  the  sequence  of  states  generated  by  the 
+law  is  called  a  trajectory  of  the  system  and  is  often 
+is 
+
+action  of  the  dynamical 
+denoted  &(x0).  A  trajectory  has  the  property 
+field  at 
+equal 
+the  vector 
+the  value  of 
+(4)  are  shown  in  Fig.  1.  The  set  of  all  such 
+trajectories  of  the  two-node  network 
+through  every  point  in  the  state  space  is  called  the  flow,  denoted  &. 
+trajectories 
+In  the  classical  theory  of  differential  equations,  one  is typically  interested  only  in 
+individual  solutions,  which  correspond 
+trajectories  of  the  dynamical 
+system.  In  contrast, 
+theory  of  dynamical  systems,  one  is usually 
+in  the  qualitative 
+interested 
+more 
+Of  particular 
+
+in  the  geometrical  or  topological  structure  of  the  entire  flow. 
+interest 
+
+is the  possible  long-term  behavior  of  a  dynamical  system. 
+The  state  of  some  systems  will  simply  diverge  to  infinity  (e.g.,  the  system  ,’ = y), 
+to  limit sets.  A  limit  set  is a  set  of  points  that 
+while  others  will  eventually  converge 
+law,  so  that  if  the  state  of  a  dynamical 
+is  invariant  with  respect 
+law  will  keep  it  there 
+system  ever  falls  on  a  limit  set,  the  action  of  the  dynamical 
+indefinitely.  The  stable 
+important.  An 
+attractor  has  the  property 
+that  the  trajectories  passing  through  all  nearby  states 
+to  the  attractor.  This  means  that  if  the  state  of  the  system  is perturbed  a 
+converge 
+law 
+sufficiently  small  distance  away  from  an  attractor, 
+will  bring 
+that 
+its  basin  of  attraction.  Those  portions  of 
+converge 
+itself  are 
+the  trajectories 
+
+the  action  of  the  dynamical 
+to  the  attractor.  The  open  set  of  initial  states 
+
+through  such  points  which  do  not  lie  on  the  attractor 
+
+the  state  back 
+to  a  given  attractor 
+
+limit  sets  or  &tractors 
+
+to  the  dynamical 
+
+are  especially 
+
+is  termed 
+
+’ This  is  a  technical 
+“autonomous 
+
+agents”. 
+
+term 
+
+in  dynamical 
+
+systems 
+
+theory  whose  meaning 
+
+is  unrelated 
+
+to  its  use  in  the  term 
+
+178 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (199.5)  173-215 
+
+-8 
+
+-6 
+
+-4 
+
+-2 
+
+0 
+
+2 
+
+4 
+
+6 
+
+Yi 
+
+c 
+
+4. 
+
+2, 
+
+0. 
+
+-2. 
+
+-4. 
+
+Y2 
+
+2 
+
+4 
+
+6 
+
+Yl 
+
+8 
+
+10 
+
+Yl 
+
+(Eq. 
+system 
+is,  the  qualitative 
+
+and 
+
+that 
+
+(0,O) 
+
+stable, 
+
+(A)  H ere 
+
+are  structurally 
+
+in  the  parameters. 
+
+for  the  two-neuron 
+
+(4,  -3)  with  basins  of  attraction 
+
+Fig.  1.  Phase  portraits 
+systems 
+small  variations 
+(-3,4) 
+near 
+the  two  basins  of  attraction. 
+Here 
+w12 =  -6,  wz2  =  w2,  =  6,  8,  =  6,  0,  =  0.  (C)  Here 
+repellor 
+increasing 
+
+The  parameter 
+a  single  equilibrium 
+
+the  single  parameter 
+
+the  system  exhibits 
+
+(open  point  near 
+
+wI1  from  2.75 
+
+is  a  repeller 
+
+and  the  inset  of  this  repellor 
+
+persist 
+
+in  gray  and  white 
+
+of  their  phase  portraits 
+two  stable  equilibrium 
+respectively. 
+
+(4))  f or  several  parameter 
+structures 
+the  system  exhibits 
+shown 
+
+settings.  All  of  these 
+for 
+points  near 
+The  open  point 
+between 
+line)  forms 
+values  are  wl,  =  IV,, =  4,  w,*  =  wzl  =  -3,  8,  =  0,  =  0.  (B) 
+values  are  wI1  =  2.75, 
+(dark  oval)  and  a 
+in  B  by 
+
+a  limit  cycle 
+from 
+
+point  attractor. 
+
+The  parameter 
+
+(dark  diagonal 
+
+the  separatrix 
+
+the  one 
+
+shown 
+
+the  system  exhibits 
+(6,O)).  This  phase  portrait  was  derived 
+
+to  6. 
+
+R.D.  Beer  I  Artificial 
+
+Intelligence  72  (1995)  173-215 
+
+179 
+
+called  transients.  The  solid  point  near  (-3,4) 
+and  its  basin  of  attraction 
+attractor, 
+
+is  shown  in  gray. 
+
+in  Fig.  l(A) 
+
+is  an  example  of  an 
+
+itself 
+
+trajectories 
+
+is  invariant, 
+
+them.  Despite 
+
+it  away.  The  open  point  near  (0,O) 
+
+from 
+if  the  state  of  the  system 
+
+Repellers  are  limit  sets  that  are  unstable.  Repellors  have  the  property 
+the  fact 
+diverge 
+
+that  at 
+that 
+the 
+least  some  nearby 
+even  an 
+repellor 
+law  will  serve 
+infinitesimal  distance  from  the  repellor, 
+to  carry 
+is  an  example  of  a 
+repellor.  Attractors  are  important  because  they  govern  the  long-term  behavior  of 
+initial  state,  a  physically  embodied 
+the 
+any  physical 
+dynamical 
+transients  have 
+after 
+repellors  can  only  be  observed  by  starting  a 
+passed.  Due 
+dynamical  system  on  a  repellor  and  then  never  perturbing 
+it.  Since  any  physical 
+system  has  some  noise,  it  could  never  stay  on  a  repellor 
+
+the  action  of  the  dynamical 
+in  Fig.  l(A) 
+
+system  will  always  be  found  near  an  attractor 
+
+system.  Regardless 
+
+is  perturbed 
+
+indefinitely. 
+
+instability, 
+
+to  their 
+
+of 
+
+Four  major  classes  of  attractors 
+
+are  usually  distinguished.  Equilibrium  point 
+are  stable  limit  sets  which  consist  of  single  points,  such  as  the  solid 
+attractors 
+in  Fig.  l(A).  An  equilibrium  point  x*  represents  a  constant 
+point  near  (4,  -3) 
+to  the  system:  4,(x*)  =x*.  Periodic  attractors  or  limit  cycles  are  stable 
+solution 
+to 
+limit  sets  which  are  closed  trajectories 
+periodic  or  oscillatory  solutions,  with  the  property 
+that  4,(x*)  =  4t+T(~*)  for  some 
+minimum  period  T  >  0  and  any  point  x*  lying  on  the  attractor.  An  example  of  a 
+limit  cycle  is  shown  in  Fig.  l(C). 
+
+in  the  state  space.  These  correspond 
+
+attractors 
+
+The  remaining 
+
+are  much  more  complicated 
+
+two  classes  of  limit  sets,  quasiperiodic 
+
+and  chaotic 
+than  either  equilibrium  points  or  limit 
+attractors, 
+cycles.  Chaotic  attractors, 
+for  example,  possess  a fractal  structure  and  they  exhibit 
+a  sensitive  dependence  on  initial  conditions.  No  matter  how  closely  two  unequal 
+initial  states  are  chosen,  their  resulting  trajectories  can  diverge  exponentially  even 
+while  remaining  bounded  on  the  attractor  until  they  become  completely  uncorre- 
+law, 
+lated.  For  this  reason,  despite 
+from  a 
+the  behavior  of  a  chaotic  attractor 
+further 
+random  process.  While  I will  not  discuss  quasiperiodic  or  chaotic  attractors 
+in  this  paper, 
+is  quite 
+that  such  complicated  behavior 
+common 
+
+to  realize 
+in  higher  dimensional  nonlinear  dynamical  systems. 
+
+the  underlying  determinism  of  its  dynamical 
+
+is  in  many  ways  indistinguishable 
+
+it  is  important 
+
+In  general, 
+
+attractors, 
+separated 
+separating 
+attractors 
+separatrices 
+each  containing 
+cellular  structure 
+
+the  state  space  of  a  dynamical 
+
+system  will  contain  multiple 
+by  its  own  basin  of  attraction.  These  basins  are 
+each  surrounded 
+by  unstable  manifolds 
+line 
+called  separatrices.  The  dark  diagonal 
+the  white  and  gray  basins  of  attraction  of  the  two  equilibrium  point 
+in  Fig.  l(A)  is  an  example  of  a  separatrix.  Thus  one  can  visualize  these 
+as  dividing  the  flow  of  a  dynamical  system  into  a  number  of  “cells” 
+of  this 
+
+type.  A  global  characterization 
+
+an  attractor  of  some 
+is  called  the  phase  portrait  of  the  system  (Fig.  1). 
+
+We  have  been  holding  the  parameters  u  of  the  dynamical 
+
+considering 
+parameters 
+determines, 
+state  space,  will  most  certainly  change  as  these  parameters 
+
+law  9  constant  and 
+the  global  structure  of  the  resulting  flow.  What  happens  when  these 
+are  changed?  Since  9 
+it 
+and  hence  the  resulting  flow  4,  that  this  vector  field  induces  on  the 
+are  varied.  Thus  a 
+
+is  a  function  of  U,  the  vector 
+
+field  that 
+
+parameterized 
+any  particular 
+
+dynamical 
+flow  corresponding 
+
+law  actually  defines  a  family  of  dynamical 
+
+systems,  with 
+
+to  a  single  setting  of  the  parameters. 
+
+Just  as  we  were  previously 
+
+interested 
+
+in  the  structure 
+
+of  any  given 
+of  a  family  of  flows 
+
+flow  in  state 
+in  parameter 
+is,  for  most  parameter 
+
+systems  are  structurally  stable,  that 
+in  the  parameter 
+
+values  will  produce 
+
+into 
+
+inquire 
+
+the  structure 
+
+space,  we  can  now 
+space.  Most  dynamical 
+settings, 
+small  changes 
+flow.  Limit  sets  and  basins  of  attraction  may  deform 
+the  new 
+homeomorphic) 
+systems 
+parameter 
+that  are  qualitatively 
+types  of  limit  sets  are  called  bifurcations. 
+
+values  can  cause  drastic  changes 
+
+flow  will  be  qualitatively 
+
+to  the  old  one.  However, 
+
+can  become 
+
+different 
+
+similar 
+
+from 
+
+(i.e., 
+
+in  the  flow,  producing 
+the  original.  These  qualitative 
+
+at  certain  parameter 
+
+structurally  unstable,  so  that  even 
+
+infinitesimal 
+
+and  move  around 
+topologically 
+
+small  changes 
+
+in  the 
+a  bit,  but 
+or 
+
+equivalent, 
+values,  dynamical 
+
+in 
+
+changes 
+phase  portraits 
+changes 
+
+in  the 
+
+For  example, 
+
+as  the  parameter 
+
+I+, ,  in  our  example 
+
+the  repelling 
+therefore 
+flows, 
+
+and 
+stable 
+bifurcations 
+
+2.75  to  6,  the  equilibrium 
+bifurcates 
+into 
+bifurcation, 
+structurally 
+complicated 
+dividing 
+different 
+structurally 
+dynamical 
+
+point  attractor 
+point  and 
+the  structurally 
+around 
+occurs 
+can  occur.  Thus, 
+
+shown 
+
+in  Fig. 
+
+limit  cycle  shown 
+
+unstable 
+a  w,~  value 
+
+just  as  we  can  visualize 
+
+system 
+l(B) 
+
+l(C) 
+in  Fig. 
+flow  that  separates 
+
+(4)  is  increased 
+loses  its  stability 
+
+from 
+and 
+(the  actual 
+two 
+of  3.25).  Much  more 
+as 
+of 
+to 
+of 
+
+separatrices 
+into  basins  of  attraction 
+points  corresponding 
+of  a  family 
+space 
+
+these 
+
+the  state  space  of  any  given  dynamical 
+attractors,  we  can  think  of  the  sets  of  bifurcation 
+the  parameter 
+stable 
+autonomous 
+
+structurally 
+Up  to  this  point,  we  have  only  considered 
+
+flows 
+into  different 
+
+as  dividing 
+
+unstable 
+
+systems 
+
+system 
+
+flows. 
+
+trajectory.  What  happens  when 
+
+the  parameters 
+
+have  been  held  fixed  for  the  duration 
+
+is  governed 
+
+state 
+
+system 
+
+as  the 
+
+in  which 
+
+trajectory 
+
+is,  systems 
+particular 
+time 
+which  one  or  more  parameters 
+think  of  such  parameters 
+the  flow  is  a  function 
+the 
+drastically 
+Nonautonomous 
+ones  unless 
+nonautonomous 
+attractors, 
+timescale 
+a  qualitative 
+together 
+from  an  understanding 
+in  which 
+
+basins  of  attraction, 
+of 
+
+if  the  parameter 
+
+its  input  varies 
+
+the  parameter 
+
+the 
+
+evolves  ?  A  nonautonomous 
+are  allowed 
+
+as  inputs 
+of  the  parameters, 
+
+to  the  system.  Because, 
+in  a  nonautonomous 
+
+these  parameters 
+
+systems, 
+
+dynamical 
+
+dynamical 
+
+are  allowed 
+system 
+
+that 
+of  any 
+in 
+in 
+to  vary  in  time:  X =  9(x;  u(t)).  We  can 
+above. 
+system 
+(perhaps 
+space). 
+
+as  described 
+dynamical 
+time 
+in 
+in  parameter 
+
+to  vary 
+is  one 
+
+is  changing 
+points 
+to  characterize 
+(e.g.,  periodic) 
+that  we  have  described 
+small 
+
+than  autonomous 
+structure. 
+
+above 
+relative 
+sometimes 
+
+In  the 
+(e.g.. 
+to  the 
+piece 
+system 
+inputs  and  the  way 
+
+etc.)  apply  only  on  timescales 
+variations. 
+
+However, 
+of  the  behavior 
+
+can 
+
+one 
+of  a  nonautonomous 
+
+dynamics 
+
+at  constant 
+
+by  a  flow  which 
+values  cross  bifurcation 
+
+systems  are  much  more  difficult 
+simple 
+input  has  a  particularly 
+case,  most  of  the  concepts 
+
+understanding 
+of  its  autonomous 
+
+in  time. 
+
+3.  A  theoretical 
+
+framework 
+
+The  qualitative 
+
+theory 
+
+of  dynamical 
+
+understanding 
+
+of  both 
+
+the  possible 
+
+systems 
+behaviors 
+
+allows  one 
+of  a  dynamical 
+
+to  build  up  a  global 
+the 
+
+system 
+
+and 
+
+R. D.  Beer  I  Artificial  Intelligence  72 (199-f)  173-215 
+
+181 
+
+the 
+
+interaction 
+
+in  terms  of  elementary  mathematical 
+
+of  those  behaviors  on  external  parameters 
+
+I  will  use  this  formalism 
+between 
+
+even  when  the  solutions 
+dependence 
+In 
+have  no  closed-form  expression 
+for 
+this  section, 
+agents  and  their  environ- 
+characterizing 
+ments.  Only  the  basic  framework  will  be  described  here.  Some  sample  applica- 
+in  Section  4,  and  Section  5  discusses  the 
+tions  of  the  framework  will  be  presented 
+assumptions 
+some  of  its  broader 
+for  future  work.  This  framework  owes  a  great  debt  to 
+implications  and  directions 
+tradition  has  long  taken  on  many  of  these  same 
+the  perspective 
+questions. 
+[6]  and 
+Maturana  and  Varela  [47,48]. 
+
+that  the  cybernetic 
+I  have  been  particularly 
+
+to  sketch  a  theoretical 
+autonomous 
+
+influenced  by  the  work  of  Ashby 
+
+of  the  proposed 
+
+and  considers 
+
+framework 
+
+framework 
+
+functions. 
+
+3.1.  Agents  and  their  environments 
+
+to  some 
+
+dynamical 
+
+its  environment 
+
+ti  and  8,  respectively. 
+
+[6],  I  will  model  an  agent  and 
+
+Following  Ashby 
+systems 
+
+I will  assume  that  both  &  and  % have  convergent  dynamics, 
+
+I  will  assume 
+systems:  X& =  L&(X,; Up)  and 
+
+as  two 
+that  &  and  g  are 
+In 
+i,  =  Z&;  Up). 
+that  is,  the 
+to  infinity,  but  instead  eventually 
+
+dynamical 
+continuous-time 
+addition, 
+values  of  their  state  variables  do  not  diverge 
+converge 
+environment 
+agent  or  part  of  the  environment?) 
+should  not  depend  overly  much  on  the  exact  nature  of  this  division.  Our  first  act 
+the  world  into  individual  components  whose 
+as  scientific  observers 
+is  to  partition 
+and  there  are  many  different  ways  to  do  this. 
+interactions  we  seek  to  understand, 
+For  example, 
+to  view  an  agent’s  body  as part  of  ti 
+and  sometimes  as  part  of  8. 
+
+that 
+the  division  between  an  agent  and  its 
+(e.g.,  is  an  artificial  limb  or  a  tool  part  of  the 
+framework 
+
+limit  set.  Note 
+is  somewhat  arbitrary 
+
+it  will sometimes  be  convenient 
+
+and  therefore 
+
+theoretical 
+
+our 
+
+are  in  constant 
+
+interaction.  Formally, 
+
+An  agent  and  its  environment 
+
+this  means 
+dynamical  systems.  In  order  to  couple 
+systems,  we  can  make  some  of  the  parameters  of  each  system 
+this  coupling 
+state  variables  to  agent  parameters 
+to  environmental  parameters. 
+
+that  ti  and  8  are  coupled  nonautonomous 
+two  dynamical 
+functions  of  some  of  the  state  variables  of  the  other.  I  will  represent 
+with  a  sensory  function  S  from  environmental 
+and  a  motor  function  M  from  agent  state  variables 
+S(X,~) corresponds 
+motor  outputs.  Thus,  we  have  the  following  (Fig.  2): 
+
+to  an  agent’s  sensory 
+
+inputs,  while  Mfx,) 
+
+corresponds 
+
+to  its 
+
+(5) 
+
+X.d =  d(x<g;  se,  1; u.$)  1 
+
+r,  =qx,;M(x,v,);u;) 
+
+> 
+
+where  ui  and  u;  represent  any  remaining  parameters  of  &  and  8  respectively 
+that  do  not  participate 
+I  will  assume  that  this  coupled  agent- 
+environment 
+
+system  also  exhibits  only  convergent  dynamics. 
+
+in  the  coupling. 
+
+Note  that  I  am  using  the  terms  “sensory 
+
+in  a  fairly 
+broad  sense  here.  S,  for  example, 
+to  represent  all  effects  that  8  has 
+is  intended 
+on  .Y&, whether  or  not  this  influence  occurs  through  what  is normally  thought  of  as 
+that  any  such  effect 
+a sensor.  This  breadth  of  usage  is justified  by  the  observation 
+
+input”  and  “motor  output” 
+
+182 
+
+R. Ll.  Beer 
+
+I  Artificial 
+
+Intelhgencr 
+
+7.2 (10X05) 173-215 
+
+Fig.  2.  An  agent  and 
+
+its  environment 
+
+as  coupled 
+
+dynamical 
+
+systems 
+
+influence 
+
+the  subsequent 
+
+can 
+to 
+represent  all  effects  that  ~4 has  on  8,  whether  or  not  they  occur  through  what  is 
+normally 
+
+thought  of  as  an  effector. 
+
+of  ~4.  Likewise,  M 
+
+is  intended 
+
+trajectory 
+
+role 
+
+that 
+
+the  feedback 
+
+its  environment 
+
+feedback  plays 
+
+the  fundamental 
+
+via  S.  Likewise, 
+
+the  environment’s 
+
+I  cannot  overemphasize 
+
+in  this 
+in  some  way 
+it  receives 
+effects  on  an  agent 
+itself.  Thus, 
+the  flow  of  the 
+if  any  coupling  parameters  cross  bifurcation  points  in 
+
+relationship.  Any  action  that  an  agent  takes  affects  its  environment 
+through  M,  which  in  turn  affects  the  agent  itself  through 
+from 
+through  S  are  fed  back  through  M  to  in  turn  affect  the  environment 
+each  of  these  two  dynamical  systems  is  continuously  deforming 
+other  (perhaps  drastically 
+its  subsequent 
+the  receiving  system’s  parameter 
+trajectory.  Note  that  one  dynamical  system  cannot  in  general  completely  specify 
+the  trajectory 
+a 
+dynamical 
+state  and 
+laws,  a  second 
+dynamical 
+dynamical  system  can  certainly  bias  the  intrinsic  “tendencies”  of  the  first  (or  even 
+in  behavior 
+cause  qualitative 
+one 
+the  trajectory  of  another  dynamical 
+dynamical  system  cannot 
+in  general  “steer” 
+to  view  an 
+system  along  any  desired  path.  It  is  therefore  perhaps  most  accurate 
+as  mutual  sources  of  perturbation,  with  each  system 
+agent  and  its  environment 
+for  subsequent 
+continuously 
+
+system 
+laws.  By  varying  some  of  the  parameters  of  these 
+
+to  which  it  is  coupled.  Rather, 
+
+of  another  dynamical  system 
+
+specified  by  its  own  current 
+
+space),  and  therefore 
+
+the  other’s  potential 
+
+follows  a  trajectory 
+
+occur).  However, 
+
+if  bifurcations 
+
+influencing 
+
+influencing 
+
+interaction. 
+
+changes 
+
+Given  this  tight  coupling  between  an  agent  and  its  environment,  we  can  equally 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (1995)  173-215 
+
+183 
+
+the 
+
+systems 
+
+two  coupled  nonautonomous 
+
+well  view 
+ti  and  8  as  a  single 
+autonomous  dynamical  system  %  whose  state  variables  are  the  union  of  the  state 
+variables  of  d  and  ‘$5’ and  whose  dynamical 
+laws  are  given  by  all  of  the  internal 
+(including  S  and  M)  among  this  larger  set  of  state  variables  and  their 
+relations 
+is intrinsically  better  than  the  other,  and 
+derivatives.  Neither  of  these  perspectives 
+that  has  been  said 
+one  could  switch  between 
+in  Section 
+the 
+between 
+nonautonomous 
+dynamical  systems  &? and  8  must  be  trajectories  of  the  larger 
+after  transients  have  died  out, 
+autonomous 
+the  observed  patterns  of  interaction  between  &  and  E  must  represent  an  attractor 
+of  %!. 
+
+them  as  necessary.  Given  everything 
+
+dynamical  system  0%. Furthermore, 
+
+trajectories 
+
+interaction 
+
+observed 
+
+2,  any 
+
+the 
+
+in 
+
+itself,  but  rather 
+
+agent  research,  namely 
+
+range  of  dynamical  behavior 
+
+We  thus  have  the  basis  for  a  dynamical  understanding 
+
+of  one  of  the  central 
+the  idea  that  an  agent’s 
+themes  of  recent  autonomous 
+behavior  arises  not  simply  from  within  the  agent 
+its 
+interaction  with  its  environment.  Due  to  the  higher  dimensionality  of  its  state 
+space,  a  dynamical  system  formed  by  coupling  two  other  systems  can  generate  a 
+and 
+richer 
+properties 
+to 
+either  subsystem  alone.  Therefore, 
+resides  only  in 
+the  dynamics  of  the  coupled  system  %  and  not  in  the  individual  dynamics  of 
+either  Op or  E  alone.  This  suggests  that  we  must  learn  to  think  of  an  agent  as 
+containing  only  a  latent  potential 
+It  is  only  when  coupled  with  a  suitable  environment 
+realized 
+
+to  engage  in  appropriate  patterns  of  interaction. 
+is  actually 
+
+of  the  coupled  system  can  therefore  not  generally  be  attributed 
+
+an  agent’s  behavior  properly 
+
+than  either  system  could 
+
+the  agent’s  behavior 
+
+in  that  environment. 
+
+that  this  potential 
+
+individually, 
+
+through 
+
+through 
+
+3.2.  Adaptive  fit 
+
+to  the  environments 
+
+What  constitutes  an  “appropriate” 
+
+pattern  of  interaction  between  an  agent  and 
+It  is  often  said  that  the  behavior  of  animals  is  amazingly  well 
+its  environment? 
+in  which  they  must  live.  While,  strictly  speaking, 
+adapted 
+success,  it  is  only  animals  whose 
+evolution  directly  selects  only  for  reproductive 
+behavior  “fits”  the  dynamical  and  statistical  structure  of  their  environments 
+that 
+survive  long  enough  to  reproduce.  We  would  like  the  behavior  of  the  autonomous 
+in  which 
+agents  that  we  design  to  be  similarly  well-adapted 
+they  must  function.  Thus,  the  notion  of  adaptive  fit  is crucial  to  understanding 
+the 
+relationship  between  an  agent  and  its  environment.  But  what  does  it  mean  for  an 
+agent  to  be  adapted 
+
+to  its  environment? 
+Let  us  focus  for  the  moment  on  animals,  whose  adaptive 
+
+to 
+the  question  What  does  it 
+their  survival.  Then  we  can  temporarily 
+to  the  question  What 
+mean  for  an  agent  to  be  adaptively 
+does  it  mean  for  an  animal  to  survive?  In  order  to  answer  this  question, 
+it  will  be 
+useful  to  begin  with  a  simple  analogy  to  autonomous  dynamical  systems.  As  we 
+have  seen  in  Section  2,  a dynamical 
+law  induces  change  on  the  state  variables  of  a 
+dynamical  system.  However,  not  all  states  are  treated  equally.  While  most  states 
+law,  some 
+will  be  changed 
+
+reformulate 
+fit  to  an  environment? 
+
+the  action  of  the  dynamical 
+
+into  other  states  through 
+
+to  the  environments 
+
+fitness  is  related 
+
+1x4 
+
+R.D.  Beer  I  Artificial  Intelligence  72 (lW5)  173-21.5 
+
+states  will  persist 
+changes  caused  by 
+system). 
+change. 
+
+Invariant 
+
+indefinitely  because 
+the  dynamical 
+states  “survive” 
+
+to  the 
+law  (i.e.,  an  equilibrium  point  attractor  of  the 
+in  the  same  way  that  rocks  do,  by  resisting 
+
+invariant  with  respect 
+
+they  are 
+
+in  order 
+that  we  design 
+
+their  environments 
+the  agents 
+
+rocks,  animals  actively  engage 
+their  existence.  Similarly,  we  expect 
+
+to  stably 
+Unlike 
+to 
+maintain 
+accomplish  particular 
+tasks  in  their  environments,  not  to  sit  immobile  and  ignore 
+the  world  around  them.  In  order  to  capture  this  more  dynamic  notion  of  survival, 
+trajectories,  which  persist  in  a  far  more 
+we  can  extend  our  analogy 
+interesting  way  than  do  equilibrium  points.  In  the  case  of  a  limit  cycle,  no  single 
+state  is invariant  with  respect  to  the  dynamical  law.  Rather,  all  of  the  states  along 
+law  carries  them 
+a  limit  cycle  have  the  property 
+is  itself 
+to  other 
+invariant.  Thus,  the  persistence  of  a  limit  cycle  is  achieved  only  by  coordinating 
+the  effects  of  the  dynamical 
+a  way  that  a  closed  trajectory 
+
+law  on  all  of  the  state  variables  of  the  system  in  such 
+
+that  the  action  of  the  dynamical 
+
+forming  a  closed  curve  which 
+
+states  along 
+
+limit  cycle, 
+
+to  periodic 
+
+is  formed. 
+
+the 
+
+any 
+
+Even  such  a  dynamically  maintained 
+
+one  which  is  constantly  perturbed  by  its  environment. 
+
+to  survive,  as  suggested  by  the  limit  cycle  metaphor.  Rather, 
+
+living  organism  must  maintain 
+processes 
+
+invariant  as  a  limit  cycle  does  not  quite 
+the  notion  of  survival  that  we  are  after.  It  falls  short  in  two  ways.  First,  as 
+in  Section  3.1,  an  animal  is  not  an  autonomous  dynamical  system,  but 
+
+in 
+to 
+integrity  of  the  network  of 
+[47,48]  have 
+it  alive.  Maturana 
+this  network  of  processes  an  autopoietic  system.*  If  an  animal’s  autopoiesis 
+
+capture 
+explained 
+rather  a  nonautonomous 
+Second,  an  animal  does  not  really  have  to  maintain  any  particular  trajectory 
+order 
+in  order 
+survive, 
+biochemical 
+termed 
+is  sufficiently  disrupted,  either  as  a  result  of  its  own  internal  dynamics  or  as  a 
+for, 
+result  of  environmental 
+then 
+serves  as  a 
+crucial  constraint  on  its  behavioral  dynamics.  We  can  visualize  this  constraint  as  a 
+(perhaps  very  complex  and  time-varying)  volume  in  an  animal’s  state  space  (Fig. 
+3;  [6]).  An  animal  is  adaptively  fit  to  an  environment  only  so  long  as  it  maintains 
+its  trajectory  within 
+it 
+receives  from  its  environment. 
+
+to  exist.  Thus,  an  animal’s  autopoiesis 
+
+that  it  cannot  properly  compensate 
+
+this  constraint  volume  despite 
+
+the  animal  will  cease 
+
+the  perturbations 
+
+perturbations 
+
+and  Varela 
+
+that  keep 
+
+that 
+
+the 
+
+In  order 
+
+to  elaborate 
+
+fit,  the  nature  of  the 
+this  basic  account  of  adaptive 
+constraint  volume  would  need  to  be  more  completely  characterized.  For  any  real 
+animal,  this  volume  must  obviously  be  very  complicated,  varying  in  time  with  its 
+internal  state.  Indeed, 
+the  animal’s  behavioral  dynamics 
+somewhat  artificial,  because  any  given 
+and  its  constraint  volume  is fundamentally 
+animal’s  behavioral  dynamics  is  clearly  related 
+to  the  particular  way  in  which  its 
+autopoiesis 
+for  our  purposes  here,  I  take  the  existence  of  an  agent  (living  or  otherwise) 
+
+is realized  and  this  itself  changes  through  evolution  [47,48].  However, 
+for 
+
+the  separation  between 
+
+’ An  autopoietic 
+property 
+interactions 
+
+that 
+
+(lit.  self-producing) 
+interactions 
+
+between 
+
+the 
+
+that  produced 
+
+them. 
+
+system 
+
+is  a  network 
+
+of  component-producing 
+
+the  components 
+
+produced 
+
+generate 
+
+processes  with 
+the  very  same  network 
+
+the 
+of 
+
+R.D.  Beer  I  Artificial Intelligence 72 (1995)  173-215 
+
+185 
+
+fit.  This  simple  example  assumes 
+
+that  both  the  agent  and  its 
+Fig.  3.  An  illustration  of  adaptive 
+environment 
+are  one-dimensional  dynamical  systems.  As  the  state  of  the  environment  xE  moves  up 
+and  down,  the  state  of  the  agent  x,  must  move  back  and  forth  accordingly  so  that  the  trajectory  of  the 
+coupled  system  always  remains  within  the  constraint  volume  C.  Here  the  two-dimensional 
+coupled 
+agent-environment 
+system  exhibits  a  limit  cycle  that  satisfies  the  given  constraint,  but  this  is  only  one 
+of  an  infinite  number  of  possible  agent-environment 
+
+that  satisfy  C. 
+
+trajectories 
+
+granted  and  focus  instead  on  the  behavioral  dynamics  required 
+existence.  This 
+of  behavioral 
+autopoietic 
+given  a  priori. 
+
+justifies 
+and  allows  me  to  assume  that  the  constraint  volume 
+
+to  maintain 
+dynamics 
+
+focus 
+constraints, 
+
+the  separation 
+
+that 
+from 
+is 
+
+process 
+
+The  adaptive 
+
+fit  of  natural  animals 
+
+from  an 
+to  their  environments 
+evolutionary 
+involving  reproduction  with  heritable  variation  and  natural 
+selection.  When  animals  reproduce,  mutations  and  sexual  recombination  of  their 
+in  their  design.  Because  the  genetic  material  of 
+genetic  material 
+those  animals  which  do  not  survive  long  enough  to  reproduce 
+is not  passed  on  to 
+descendants, 
+designs  are  pruned  away,  while  successful  designs 
+In  terms  of  our  framework,  we  can  think  of  evolution  as  trying  out 
+proliferate. 
+that,  on  average,  are 
+many  different 
+to  reproduce. 
+capable  of  satisfying  their  autopoietic  constraints 
+
+agent  dynamics  and  retaining  only  those 
+
+lead  to  variations 
+
+inappropriate 
+
+long  enough 
+
+results 
+
+How  might  this  notion  of  an  autopoietic 
+
+processes  may  be  involved  even 
+robot  may  need 
+
+constraint  apply  to  artificial  agents? 
+an 
+for  a  robot.  For  example, 
+Homeostatic 
+its  energy  and  avoid  any 
+autonomous 
+potentially  damaging  situations.  However,  since  the  agents  that  we  design  are  not 
+living  organisms, 
+their  existence  does  not  strictly  depend  upon  autopoiesis. 
+Instead, 
+
+the  success  of  an  artificial  agent 
+
+is  typically  measured 
+
+in  terms  of  its 
+
+to  regularly 
+
+replenish 
+
+ability 
+here,  however, 
+animals, 
+that 
+agent-environment 
+largely 
+agent’s 
+
+to  accomplish 
+
+some  desired 
+
+this  external 
+it  serves 
+
+is, 
+
+task  in  a  given  environment. 
+the  same 
+on 
+
+the  admissible 
+
+plays 
+
+criterion 
+
+as  a  constraint 
+
+an  intrinsic 
+effects  on  its  environment 
+
+dynamics.  The  only  real  difference 
+constraint 
+
+on  an  animal’s 
+
+own  state, 
+
+that  are  constrained 
+
+role  as  autopoiesis 
+
+For  our  purposes 
+in  living 
+of  the 
+is 
+
+trajectories 
+
+is  that,  while  autopoiesis 
+
+it  is  usually 
+by  an  external 
+
+an  artificial 
+designer. 
+
+Thus,  we  can 
+
+immediately 
+
+of 
+
+as 
+
+the 
+
+that 
+
+trajectory 
+
+is,  as  long  as  their 
+
+constraint  @  on 
+
+arbitrary 
+(Fig.  3).  I  will  say  that  an  adaptive 
+as 
+long 
+constraint. 
+of  the  task  for  which 
+might  consider 
+long  as  its  interactions 
+despite 
+rearrangement 
+
+the  complicating 
+
+a  robot  vacuum 
+
+of  furniture, 
+
+factors 
+
+generalize 
+the  dynamics 
+
+the  above  notion 
+of  a  coupled 
+
+of  adaptive 
+agent-environment 
+
+fit  to  an 
+system 
+
+fit  exists  between 
+
+an  agent  and  its  environment 
+
+the 
+
+agent-environment 
+results 
+
+interaction 
+the  agent  was  designed.  As  a  somewhat 
+
+dynamics 
+in  an  adequate 
+fanciful 
+
+this 
+
+satisfies 
+performance 
+example,  we 
+as 
+
+with  its  environment 
+
+cleaner 
+
+to  be  adaptively 
+
+are  such  that 
+in  a  typical  home 
+
+fit  to  its  environment 
+the  floor  remains 
+children, 
+
+(e.g., 
+
+clean, 
+pets, 
+
+found 
+
+and  so  on). 
+
+4.  A  concrete  example 
+
+The  basic 
+
+theoretical 
+
+framework 
+
+in  nature. 
+
+abstract 
+more  concrete, 
+the 
+two  major 
+problem 
+problem 
+while 
+does  what 
+legged 
+a  simulated 
+systems  perspective 
+the  distinct 
+
+the  analysis 
+it  does 
+
+sketched 
+the  general 
+
+in 
+
+the  previous 
+
+section 
+
+is  rather 
+that  I  have  proposed 
+
+to  make 
+
+In  order 
+
+framework 
+this  section  will  show  how  it  can  be  applied 
+research, 
+problems 
+
+in  autonomous 
+
+agents 
+speaking, 
+
+to  examples 
+namely 
+
+of  each  of 
+
+the  synthesis 
+is  the 
+
+problem 
+
+the  synthesis 
+
+and  the  unalysis  problem.  Loosely 
+of  constructing 
+
+an  agent 
+
+that  does  what  we  want 
+
+in  a  given  environment, 
+
+problem 
+
+is  the  problem 
+
+of  understanding 
+
+in  a  given  environment. 
+
+I  will  show  how  a  walking  behavior 
+
+how  a  given  agent 
+for 
+
+from 
+
+the  dynamical 
+
+I  will  point  out  some  of 
+
+can  be  synthesized 
+
+agent 
+of  this  framework. 
+
+Along 
+
+and  analyzed 
+the  way, 
+
+advantages 
+
+of  this  approach. 
+
+4.1.  Synthesis  of  a  walking  agent 
+
+A  major 
+design  agents 
+terms  of  our 
+formally 
+
+as  follows: 
+
+concern 
+
+of  much  of  the  work  on  situated 
+
+agents  has  been  how 
+
+that  engage 
+framework, 
+
+in  some  desired 
+we  can  state 
+
+interaction  with  their  environments. 
+problem 
+
+this  synthesis 
+
+to 
+In 
+somewhat  more 
+
+The  Synthesis  Problem.  Given 
+dynamics  &  and  sensory 
+on  the  coupled 
+
+agent-environment 
+
+an  environment 
+
+dynamics 
+
+8, 
+
+find 
+
+an 
+
+agent 
+
+and  motor  maps  S  and  M  such  that  a  given  constraint  @ 
+
+dynamics 
+
+is  satisfied. 
+
+In  order 
+
+to  illustrate 
+
+the  advantage 
+
+of  a  dynamical 
+
+systems  perspective 
+
+on  the 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (199-T) 173-215 
+
+187 
+
+let  us  consider 
+
+In  terms  of  our  framework, 
+
+to  body  effecters,  while  the  transformation 
+
+agents, 
+that  will  make  a  simulated 
+
+the  problem  of  designing  a 
+synthesis  of  autonomous 
+insect-like  agent  walk  (Fig. 
+dynamical  neural  network 
+the  dynamics  of  the  agent’s  body  is  ‘8 and  the 
+4;  [ll]). 
+that  controls  it  is A?. M(x,)  gives  the  transforma- 
+dynamics  of  the  neural  network 
+from  body 
+tion  from  neural  activity 
+inputs  is  given  by  S(X,).  Here  @ is  a  constraint  on  %  only, 
+sensors 
+to  neural 
+than  zero  (where  positive 
+namely  that  the  average  velocity  of  the  body  be  greater 
+velocities  correspond 
+to 
+backward  motion).  We  will  assume  that  S  and  M are  given  a priori  in  this  example 
+is to  design  a neural  network  controller  whose  dynamics  are  such 
+and  the  problem 
+that,  when  coupled 
+that  the 
+design  of  locomotion 
+is  currently  a  problem  of 
+[15,  19,261.  For  a  complete  description  of  this  work,  as 
+interest 
+some  practical 
+well  as  additional  examples,  see  [13]. 
+
+to  forward  motion  and  negative  velocities  correspond 
+
+they  cause  it  to  walk.  Note 
+
+to  the  agent’s  body, 
+
+for  hexapod 
+
+controllers 
+
+robots 
+
+The  body  operates  as  follows.  There  are  six  legs,  each  with  a  foot  that  may  be 
+either  up  or  down.  When  its  foot  is down,  a  leg  provides  support  to  the  body  and 
+to  the  body’s  translation  under  Newtonian 
+any  forces  that  it  generates  contribute 
+dynamics  (the  stance  phase).  When  its  foot  is  up,  any  forces  generated  by  the  leg 
+cause  it  to  swing  (the  swing  phase).  Each  leg  is  controlled  by  three  effecters:  one 
+governs 
+the  clockwise  and 
+the  leg’s  single  joint.  Each  leg  also  possesses  a 
+counterclockwise 
+single  sensor  that  measures  its  angle  relative  to  the  body.  The  body  can  only  move 
+when  it  is  stably  supported, 
+that  is,  when  the  polygon  formed  by  the  supporting 
+feet  contains 
+
+the  state  of  the  foot  and  the  other 
+
+the  body’s  center  of  mass. 
+
+two  determine 
+
+torques  about 
+
+The  agent  is  controlled  by  a  continuous-time 
+
+recurrent  neural  network.  Such 
+form,  an 
+network  of  N  such  neurons  is described  by  the  following  system  of 
+
+in  Section  2.  In  their  most  general 
+
+introduced 
+
+networks  were  briefly 
+interconnected 
+equations: 
+
+TJj; =  -yi  +  5  Wj,C7(Yj -  Oj) + zi(t) 
+
+i=l,2,. 
+
+.  .  ,N 
+
+(6) 
+
+j=l 
+
+Fig.  4.  The  body  model  of  the  simulated 
+body.  A  supporting 
+stable, 
+(cross)  of  the  body. 
+
+foot 
+the  polygon 
+
+i.e.,  when 
+
+is  denoted 
+
+by  a  black 
+formed  by  the  supporting 
+
+insect.  The 
+
+legs  can  swing  about 
+
+their  single 
+square.  The  body  can  only  move  when 
+
+feet  (dashed 
+
+line)  contains 
+
+the 
+
+joint  with 
+it  is  statically 
+the  center  of  mass 
+
+18X 
+
+R.D.  Beer 
+
+I  Artificial 
+
+intelligence 
+
+72  (1995)  173-215 
+
+rv,; represents 
+
+is a sigmoidai  (S-shaped) 
+
+r  is  a  time  constant  related 
+
+the  strength  of  the  connection 
+
+the  matrix  of  connection  weights 
+
+interpreted  as  the  mean  membrane  potential  of  the  neuron, 
+
+where  y  is sometimes 
+C( 5)  =  (1  +  eeC)-’ 
+function  which  can  be  interpreted  as 
+its  short-term  average  firing  frequency,  ej is  a  bias  term  associated  with  the  cell’s 
+to  the  passive  properties  of  the  cell 
+firing  threshold, 
+membrane, 
+from  the  jth  to  the  ith 
+input  to  the  network  (such  as 
+neuron,  and  Z(t) represents  a  time-varying  external 
+from  a  sensor).  By  restricting 
+to  be  zero- 
+diagonal  symmetric,  Hopfield  [38] demonstrated 
+that  such  networks  could  be  used 
+as  associative  memories,  with  each  pattern  stored  as  a  different  equilibrium  point 
+attractor  of  the  network  dynamics.  When  no  such  restriction 
+is  placed  on  the 
+connection  weights,  these  networks  are  capable  of  exhibiting  a  much  wider  range 
+of  dynamical  behavior.  This  is the  form  in  which  they  will  be  used  here.  Note  that 
+no  claim  is  being  made  about  the  general  applicability  of  this  particular  neural 
+model.  It  was  merely  selected  to  illustrate  the  framework  due  to  its  simplicity  and 
+widespread  use. 
+leg  of 
+Each 
+(Fig.  5(A)).  Three  of  these  neurons  are  motor  neurons  whose  outputs 
+network 
+drive  the  three  effecters  of  the  leg,  while  the  other  two  neurons  are  interneurons 
+input  from  the 
+whose  role  is  unspecified.  All  five  neurons 
+in  an 
+leg’s  angle  sensor.  Six  copies  of  the  single  leg  controller  were  combined 
+loosely  based  upon  the  organization  of  the  neural  circuitry  underlying 
+architecture 
+to  form  a  full  locomotion  controller  with  30  neurons  (Fig. 
+insect  locomotion 
+the  number  of  free 
+to  reduce 
+5(B)).  Symmetry 
+parameters 
+in  this  circuit  to  50  (5  thresholds,  5  time  constants,  25  leg  controller 
+weights,  5  sensor  weights,  5  crossbody  connection  weights  and  5  intersegmental 
+connection  weights).  We  wish  to  find  settings  of  these  50 parameters 
+dynamics  of  the  network  causes  the  agent  to  walk  when  coupled 
+shown  in  Fig.  4. 
+
+[ll] 
+considerations  were  used 
+
+such  that  the 
+to  the  body 
+
+the  agent  was  controlled 
+
+received  a  weighted 
+
+fully-interconnected 
+
+by  a  5-neuron 
+
+is  that 
+
+to  realize 
+
+have  begun 
+
+the  constraint 
+
+a  number  of  researchers 
+
+Regardless  of  the  particular  control  mechanism  used,  the  majority  of  current 
+to  manually  construct  a 
+work  on  situated  agents  relies  on  a  human  designer 
+that  will  cause  the  agent  to  engage  in  some  desired  interaction  with  its 
+controller 
+environment.  However, 
+that 
+manual  design  may  not  be  the  best  approach.  What  is difficult  about  the  synthesis 
+its 
+to  be  satisfied  may  be  very  complex  and 
+problem 
+specification  may  be  very  far  removed  from  the  actual  agent  dynamics  required 
+to 
+satisfy  it.  For  example, 
+that  the  average  velocity  of  the  body  be 
+than  zero  does  not  immediately  specify  what  signals  need  to  be  sent  to  the 
+greater 
+In  addition,  natural 
+to  satisfy  this  constraint. 
+body’s  eighteen  effecters 
+are  rather  complicated  and  somewhat  unpredictable.  Manual  design 
+environments 
+and 
+often  fails  because  designers, 
+into  their 
+contingencies 
+to  explore 
+designs.  For 
+automated 
+and 
+other  forms  of  learning  (e.g.,  [9,  10,  23,  41,  461) or  genetic  algorithms  (e.g.,  [17, 
+
+that  might  arise,  build  too  many  unwarranted  assumptions 
+these 
+techniques 
+
+agent  design,  such  as  reinforcement 
+
+reasons,  a  number  of  researchers 
+
+the  possible  opportunities 
+
+in  trying  to  anticipate 
+
+for  autonomous 
+
+the  constraint 
+
+have  begun 
+
+in  order 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (1995)  173-215 
+
+189 
+
+Fig.  5.  Network  architecture  of  the 
+between  adjacent 
+
+leg  controllers. 
+
+locomotion 
+
+controller. 
+
+(A)  A  leg  controller. 
+
+(B)  Coupling 
+
+(GA) 
+
+to  search 
+
+A  genetic  algorithm 
+
+40,  65,  671).  We  used  a  genetic  algorithm 
+parameters 
+
+the  space  of  network 
+for  networks  whose  dynamics  make  the  body  shown  in  Fig.  4  walk.3 
+is  loosely 
+technique  whose  operation 
+is  a  search 
+[31,37].  The  basic  cycle  of  a  genetic  algorithm 
+the  50  network 
+is  usually  encoded  as  a  binary  string.  An  initially  random  population 
+of  each 
+is  then  produced  by 
+to  selected 
+the  previous 
+for  reproduction  with  a  probability  propor- 
+
+based  on  natural  evolution 
+operates 
+parameters) 
+of  such  strings 
+individual 
+applying  a  set  of  genetic  operators 
+Individuals  are  selected 
+generation. 
+
+is  maintained.  At  each 
+is  evaluated.  A  new  generation 
+
+as  follows.  The  space 
+
+the  performance 
+
+to  be  searched 
+
+(in  our  case, 
+
+of  individuals 
+
+individuals 
+
+iteration, 
+
+from 
+
+is  available  by  anonymous 
+
+3 We  employed  a public  GA  simulator  known  as  GAucsd  (version  1.1).  At  the  time  of  this  writing,  the 
+latest  version  of  GAucsd 
+directory.  All  network  parameters  were  encoded  in  four  bits,  with  time  constants  in  the  range  [0.5,  lo] 
+and  both  thresholds  and  connection  weights  in  the  range  [ -  16,161.  The  crossover  rate  was  set  to  0.6 
+rate  was  set  to  0.0001.  Population  sizes  of  500  were  used  and  good  locomotion 
+and  the  mutation 
+controllers 
+to  evolve.  Full  details  of  these  experiments 
+can  be  found  in  [13]. 
+
+typically  took  on  the  order  of  100 generations 
+
+ftp  from  cs.ucsd.edu 
+
+in  the  pub/GAucsd 
+
+I90 
+
+K.D.  Beer 
+
+I  Art(ficiul 
+
+Intrlligertcr 
+
+72  (lW5) 
+
+17.3-21.5 
+
+to  their 
+
+tional 
+are  randomly 
+two  individuals 
+nation 
+tribution 
+search 
+
+fitness.  The  standard 
+flipped) 
+
+and  crossover 
+
+genetic  operators 
+
+are  mutation 
+
+(in  which  portions 
+
+are  exchanged). 
+
+By  iterating 
+
+the  processes 
+
+of  the  genetic 
+of  selection, 
+
+(in  which  bits 
+strings  of 
+recombi- 
+the  dis- 
+
+about 
+
+accumulates 
+
+information 
+
+traveled  by  the  agent 
+
+in  a  fixed  amount 
+
+to  be  optimized.’  Note 
+
+of  time,  we  are  not  only  demanding 
+
+as  possible.  Because 
+stable, 
+
+information 
+
+focuses 
+
+subsequent 
+
+requires 
+
+a  real-valued  measure 
+
+to  be  satisfied. 
+
+In 
+
+this  case, 
+
+the 
+
+acceptable 
+
+level  of  performance. 
+
+that,  by  optimizing 
+that 
+
+of  time 
+distance 
+insect 
+insect  can  only  make 
+a  network 
+required 
+
+find 
+signals 
+
+the 
+
+the 
+the  GA  must 
+the  three  control 
+the  independent 
+
+movements 
+to  satisfy 
+
+of 
+the 
+
+maintained 
+
+in  order 
+
+velocity  of  the  body  be  greater 
+
+think 
+
+about 
+
+than  0. 
+these 
+
+experiments. 
+
+algorithm 
+
+space.  This 
+
+the  population 
+search 
+the 
+
+and  mutation, 
+of  fitness 
+fruitful 
+to  guide 
+
+in 
+subspaces. 
+its  search, 
+
+it 
+
+that 
+
+than 
+
+each 
+
+rather 
+
+measure 
+
+a  genetic 
+
+is  statically 
+
+a  rigid  constraint 
+
+in  a  fixed  amount 
+
+it  walk  as  quickly 
+
+leg,  but  also  properly 
+
+the  total  forward  distance 
+
+progress  when 
+that  not  only  appropriately 
+
+into 
+In  order 
+of  performance 
+constraint  @ can  be  thought  of  as  some  minimum 
+We  used 
+as  the  performance 
+traveled 
+walk,  but 
+forward 
+dynamics 
+to  operate 
+the  six  legs  so  that 
+constraint 
+There 
+Abstractly, 
+basis  dynamics 
+can 
+by 
+agent 
+our  neural 
+algorithm 
+quite  useful  because 
+biology. 
+
+out  of  which 
+think  of  GAS  as  simply  a  technique 
+the  parameterized 
+to  walk  when 
+network 
+
+network 
+it  is  coupled 
+as  a  simple  model 
+as  a  simple  model  of  evolution. 
+
+we  can  think  of  continuous-time 
+
+it  allows  comparisons 
+
+two  different  ways 
+
+to  build  whatever 
+
+is  continuously 
+
+the  average 
+
+architecture 
+
+stability 
+
+that 
+
+are 
+
+that  we  can 
+
+generates 
+coordinates 
+
+for  searching 
+
+recurrent 
+
+neural  networks 
+
+agent  dynamics 
+
+as  simply  a 
+and  we 
+
+is  required 
+the  family  of  flows  defined 
+the 
+think  of 
+
+cause 
+
+we  can 
+and 
+
+the  genetic 
+
+for  one  whose  dynamics 
+
+to  the  body.  More  concretely, 
+system 
+of  a  nervous 
+This  second  perspective 
+to  be  made  between 
+
+can  actually  be 
+and 
+the  model 
+
+in 
+
+not 
+
+than 
+
+However, 
+
+perspective. 
+
+to 
+Both 
+
+fitness  measure 
+
+we  must  be  careful 
+latter 
+this 
+involved 
+considerably 
+more  complicated 
+just  one  example,  while  we  have  externally 
+GA,  no  such  external 
+exists 
+an  animal’s 
+evolving, 
+significantly 
+rather 
+extrinsic 
+in  a  fixed,  a  priori 
+that  can  possibly 
+We  evolved 
+
+than  being  externally 
+intrinsic 
+
+environment 
+the  relationship 
+
+extrinsic 
+in  a  way  that 
+
+eleven  different 
+
+includes  many  other 
+of  a  given  behavior 
+is  something 
+
+time.  Fitness 
+
+locomotion 
+
+fashion, 
+
+intrinsic 
+
+evolve 
+
+fitness 
+
+fitness 
+
+over 
+
+and 
+
+intrinsic 
+specified.  The  significance 
+is  that,  by  favoring 
+
+lose  sight  of  the  many 
+and 
+
+systems 
+
+nervous 
+
+simplifications 
+evolution 
+
+are 
+these  simple  models  would  suggest.  To  take 
+the 
+a  notion 
+because 
+evolution. 
+
+imposed 
+in  natural 
+
+of  fitness  on 
+Indeed, 
+that  are  simultaneously 
+
+animals 
+to  reproductive 
+
+success  may  change 
+
+to  natural 
+
+environments 
+
+between 
+of  this  difference 
+over  others 
+behaviors 
+the  range  of  behaviors 
+
+functions 
+
+particular 
+limit 
+fitness  does  not. 
+
+controllers 
+
+in  all.  Though 
+
+the  specific 
+
+‘Because  GAucsd 
+measure, 
+distance 
+
+the  actual  measure 
+and 
+
+the  actual  distance 
+
+is  formulated 
+
+to  minimize 
+
+an  error  measure 
+used  was  the  square  of  the  difference 
+
+rather 
+between 
+
+than  maximize 
+the  maximum 
+
+a  fitness 
+
+attainable 
+
+covered 
+
+in  a  given 
+
+length  of  time. 
+
+R. D.  Beer  I  Artificial  Intelligence  72  (1995)  173-215 
+
+191 
+
+them  have 
+
+the  property 
+
+in  these  eleven  networks, 
+parameter  values  found  by  the  GA  were  quite  different 
+the  dynamics  of  all  of 
+the 
+insect-like  body  shown  in  Fig.  4,  they  cause  it  to  walk  in  such  a  way  that  stability 
+is  continuously  maintained.  The  behavior  of  a  typical  controller 
+is  shown  in  Fig. 
+6(A).  All  of  these  controllers  generate  a  pattern  of  leg  movements  known  as  the 
+in  which  the  front  and  back  legs  on  each  side  of  the  body  swing  in 
+tripod  gait, 
+unison  with  the  middle 
+leg  on  the  opposite  side.  The  tripod  gait  is  ubiquitous 
+among  fast-walking 
+
+that,  when  coupled 
+
+insects  [32]. 
+
+to 
+
+they  passed 
+
+As  the  networks  evolved, 
+
+through  several  more  or  less  distinct 
+stages.  Very  early  on,  agents  appeared 
+that  put  down  all  six  feet  and  pushed  until 
+they  fell.  These  agents  thus  exhibit  roughly  the  proper  phasing  of  the  three  signals 
+controlling  each  leg,  but  lack  the  ability  to  recover  a  leg  after  a  stance  phase  as 
+legs.  In  the  next 
+well  as  the  ability  to  coordinate 
+stage,  agents  evolved 
+swing  their  legs  in  an  uncoordi- 
+nated 
+fashion.  Such  agents  made  forward  progress,  but  they  fell  quite  often. 
+Finally,  agents  utilizing  statically  stable  gaits  began  to  appear,  but  their  coordina- 
+slowly 
+tion  was  still  suboptimal. 
+improved. 
+
+the  efficiency  of  locomotion 
+
+the  motions  of  the  different 
+
+the  ability  to  rhythmically 
+
+Subsequently, 
+
+During  these  experiments,  we  discovered 
+
+that  the  nature  of  the  environment 
+
+in 
+
+B 
+
+R3- 
+
+R2 
+
+Rl 
+
+L3 
+
+L2 
+
+Ll 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+Fig.  6.  Behavior  of  a  typical  mixed  locomotion  controller  with  (A)  and  without  (B)  its  sensors.  Black 
+bars  represent 
+the  swing  phase  of  a  leg  and  the  space  between  bars  represents  a stance  phase.  The  legs 
+are  labeled  L  for  the  left  and  R  for  right  and  numbered  from  1 to  3 starting  at  the  front  of  the  agent. 
+is higher,  the  swings  of  the  three  legs  in  each  tripod  are  more  tightly 
+Note  that  the  stepping  frequency 
+coordinated  and  the  velocity  varies  less  when  the  sensors  are  intact  (A).  However, 
+this  controller  can 
+generate  a  reasonably  good  tripod  gait  even  in  the  complete  absence  of  any  sensory  feedback  from  the 
+body  (B). 
+
+192 
+
+R.D.  Beer 
+
+I  Artificial  intelligence  72  (1995)  173-215 
+
+controllers  were  evolved  had  a  major 
+In  particular, 
+
+impact  on  their 
+the  locomotion 
+which 
+the  relative  contributions  of  &  and  8  to  the 
+functional  organization. 
+generation  of  a  walking  pattern  varied  according 
+to  the  dependability  of  sensory 
+feedback  during  evolution.  Three  different  classes  of  locomotion  controllers  were 
+found: 
+
+(1)  If  sensors  were  enabled  during 
+
+the  GA  search, 
+
+(5  trials).  A  reflexive  controller 
+
+then  reflexive  patterns 
+generators  always  evolved 
+is  one  which 
+depends  upon  sensory  feedback 
+for  its  operation. 
+If  the  sensors  are  later 
+phasing  of  motor 
+exhibit 
+controllers 
+reflexive 
+removed, 
+outputs,  and  some  cannot  even  oscillate  in  isolation.  A  reflexive  controller 
+is  therefore  not  robust  to  sensor  loss.  Reflexive  controllers 
+take  advantage 
+of  the  fact  that  there  is  no  point  putting  into  the  agent  any  dynamics  that 
+the 
+already  appear 
+coupled  agent-environment 
+
+to  be  in  the  environment.  All  that  matters 
+system  satisfy  the  given  constraint. 
+
+inappropriate 
+
+is  that 
+
+(2)  If  the  sensors  were  disabled  during 
+
+(4  trials).  Even 
+
+the  GA  search, 
+
+then  no  access  is 
+to  8.  In  this  case,  so-called  centralpattern  generators  (CPGs;  [25]) 
+individual  neurons  are  not 
+the  rhythmic  control  signals 
+is 
+its 
+
+for  walking.  The  drawback  of  a  CPG 
+It  can  make  no  use  of  sensory 
+
+its  output 
+to  fine-tune 
+
+is  capable  of  generating 
+
+feedback 
+
+a  CPG 
+
+is  that 
+
+though 
+
+the 
+
+provided 
+always  evolved 
+oscillatory, 
+required 
+stereotyped. 
+operation. 
+
+(3)  Finally, 
+
+if  the  presence  of  sensors  was  unreliable  during 
+
+the  GA  search 
+then  mixed 
+( i.e.,  sensors  were  sometimes  available  and  sometimes  not), 
+pattern  generators  evolved  (2  trials).  A  mixed  locomotion  controller 
+is  one 
+that  works  better  with  its  sensors  intact,  but  is  quite  capable  of  generating 
+the  basic  motor  pattern  required  for  walking  even  without  its  sensors  (Fig. 
+6).  Though  mixed  controllers 
+they  are 
+are  robust 
+capable  of  using  sensory  feedback 
+their  performance  when  it  is 
+available.  Such  mixed  organizations  are  the  most  typical  among  biological 
+pattern  generators. 
+
+to  sensory  damage, 
+
+to  improve 
+
+I  formulated 
+
+In  this  section, 
+
+that  utilized  a  bifurcation 
+
+through  a  space  of  dynamical  systems  for  those  that,  when  coupled 
+
+the  problem  of  designing  a  walking  agent  as  a 
+search 
+to  a 
+given  body,  maximize  the  forward  distance  that  the  body  travels  in  a fixed  amount 
+of  time.  This  same  general  approach  has  also  been  used  to  evolve  a  variety  of 
+chemotactic  agents  that  were  capable  of  using  chemical  signals  to  find  their  way  to 
+a  patch  of  food  1131. The  most  notable  result  from  these  chemotaxis  experiments 
+were  agents 
+to  switch 
+between  distinct  strategies  depending  upon  the  intensity  of  the  chemical  signal 
+the  food  patch). 
+(which 
+Furthermore, 
+I  have  demonstrated 
+the 
+environment 
+(i.e.,  sensor  dependability) 
+puts  selective  pressure  on  the  develop- 
+functional  organizations.  This  ability  to 
+ment  of  controllers  with  very  different 
+tailor  agent  dynamics  to  fit  the  dynamical  and  statistical  structure  of 
+automatically 
+a  given  environment 
+agent  design 
+techniques. 
+
+the  agent’s  distance 
+how  manipulating 
+
+is  a  significant  advantage  of  automated 
+
+in  their  network  dynamics 
+
+turn  depended 
+
+characteristics 
+
+upon 
+
+from 
+
+in 
+
+of 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (1995)  173-215 
+
+193 
+
+4.2.  Analysis  of  a  walking  agent 
+
+Given  that  some  agent  already  exists,  we  might  like  to  explain  its  behavior 
+given  environment.  This  is  in  fact  the  major  problem  faced  by  Neuroethologists, 
+who  seek  to  explain  an  animal’s  observed  behavior 
+its  body  and  its  environment. 
+analysis  problem  somewhat  more  formally  as  follows: 
+
+in  terms  of  its  nervous  system, 
+this 
+
+In  terms  of  our  framework,  we  can  state 
+
+in  a 
+
+The  Analysis  Problem.  Given  an  environment  dynamics  8,  an  agent  dynamics  &, 
+and  sensory  and  motor  maps  S  and  M,  explain  how  the  observed  behavior  M(x&) 
+of  the  agent  is  generated. 
+
+In  order 
+
+to  illustrate 
+
+the  utility  of  a  dynamical 
+
+systems  perspective 
+
+on  the 
+the  operation  of  the 
+
+locomotion  controllers  described 
+
+analysis  of  autonomous  agents,  we  would  like  to  understand 
+evolved 
+in  the  previous  section.  Unfortunately, 
+a  dynamical  analysis  of  these  30  neuron  networks  would  be  far  too  complicated 
+in  a  set  of  closely  related  experi- 
+for  our  illustrative  purposes  here.  However, 
+insects  [13].  Note 
+ments,  we  also  evolved  five-neuron  controllers 
+for  single-legged 
+the 
+that,  for  the  purposes  of  evolving  single  leg  controllers,  we  had  to  modify 
+its  single  foot 
+insect  could  move  whenever 
+stability  criteria  so  that  a  single-legged 
+was  down.  Except  for  the  lack  of  an  interleg  coordination  problem 
+to  be  solved, 
+in  the  previous 
+these  experiments  were  in  every  way  analogous 
+to  those  described 
+section.  These  leg  controllers  passed  through  similar  evolutionary 
+stages  and  we 
+also  found  reflexive,  central  and  mixed  pattern  generators  depending  upon  the 
+conditions  under  which  they  were  evolved.  Fig.  7  shows  the  activity  of  a  mixed  leg 
+controller  with  and  without 
+these  five-neuron  networks  are 
+much  more  amenable 
+to  a  dynamical  analysis,  we  will  focus  on  them  here.  For 
+additional 
+
+information  on  this  analysis,  see  [12,29]. 
+
+its  sensors.  Because 
+
+4.2.1.  Analysis  of  a  central  pattern  generator 
+
+they  have  no  sensory  input,  central  pattern  generators  are  autonomous 
+systems.  For  this  reason,  CPGs  are  in  some  sense  the  simplest 
+to  understand. 
+
+Because 
+leg 
+dynamical 
+controllers 
+the  dynamics  of  the  neural 
+In  the  case  of  a  CPG, 
+network  simply  exhibits  a  limit  cycle  whose  motor  space  projection  M(x~)  causes 
+the  insect’s  single  leg  to  rhythmically  stance  and  swing  in  a  fashion  appropriate 
+to 
+walking.  The  three-dimensional  motor  space  projection  of  the  five-dimensional 
+limit  cycle  exhibited  by  one  CPG  is  shown  in  Fig.  8.  This  limit  cycle  repeatedly 
+takes  the  state  of  the  system  through 
+the  regions  in  motor  space  associated  with 
+stance  phase  (upper  left-hand  corner)  and  swing  phase  (lower  right-hand  corner). 
+is 
+Since  a  limit  cycle  is  a  primitive  concept 
+really  nothing  more  to  be  said  at  this  level  of  discussion  about  the  operation  of  a 
+CPG  (though 
+there  is  of  course  much  more  that  might  be  said  about  the  way  in 
+which  this  limit  cycle  is  realized 
+
+in  dynamical  systems  theory, 
+
+in  this  particular  circuit). 
+
+there 
+
+R.D.  Beer 
+
+i  Artificial 
+
+Intelligence 
+
+72  (1995)  173-215 
+
+shows 
+
+the  forward 
+
+of  a  typical  mixed 
+
+velocity  of  the  body, 
+the  output  of  the 
+
+and 
+each  stance  phase  and 
+
+Fig.  7.  Activity 
+plots 
+swing  motor  neurons 
+value  during 
+phase  and  falls.  The  top  plot  also  shows 
+leg  was  initialized 
+begin).  Note 
+without 
+However, 
+effectively  wasting 
+Interneuron 
+than  when 
+
+its  sensor, 
+a  step,  because 
+
+to  play  a  much 
+(A) 
+
+A  appears 
+it  is  present 
+
+at  95%  of  its  full  backward 
+(A), 
+this  controller 
+
+that,  with  its  sensor 
+
+larger 
+
+intact 
+
+then  drops 
+
+leg  controller  with  (A)  and  without 
+the  output 
+
+two 
+
+interneurons. 
+to  zero  when 
+
+position 
+this  controller 
+
+(i.e.,  near 
+
+inappropriately 
+
+(B) 
+
+its  sensor.  Each  group  of 
+
+lifts  its  single 
+
+of  the  foot,  backward 
+The  velocity 
+insect 
+the 
+
+In  both  groups  of  plots, 
+
+swing  and 
+forward 
+ramps  up  to  a  maximum 
+leg  each  swing 
+the 
+the  point  where  a  swing  phase  should 
+begins  a  swing  phase. 
+phase, 
+a  stance 
+that 
+(B) 
+
+also 
+is  absent 
+
+attempts 
+leg’s  angular 
+
+position.  Note 
+
+to  generate 
+
+immediately 
+
+the  sensor 
+
+almost 
+
+it  has  no  access 
+
+to 
+
+the 
+
+role  in  the  walking  pattern  when 
+
+the  output  of  the  leg  angle  sensor. 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (1995)  173-215 
+
+195 
+
+, 
+
+, 
+
+, 
+
+/’ 
+
+, 
+
+-_ 
+
+-_ 
+
+16’ 
+
+-_ 
+
+---__ 
+
+/ 
+
+, 
+
+/ 
+
+, 
+
+-a 
+,  ’ 
+
+I 
+, 
+
+I 
+I 
+I 
+
+I 
+I 
+
+I 
+I 
+I 
+
+I 
+
+I 
+I 
+
+0.5. 
+
+Foot 
+
+I 
+
+0 
+
+‘J 
+
+/ 
+
+/ 
+
+-. 
+
+-_ 
+
+/ 
+
+I 
+
+/ 
+
+/ 
+
+/ 
+
+Fig.  8.  A  motor  space  projection  of  the  five-dimensional 
+limit  cycle  generated  by  a  typical  central 
+pattern  generator.  The  output  of  the  foot,  backward  swing  (BS)  and  forward  swing  (FS)  motor 
+neurons  are  plotted.  Note  that  the  foot  is  considered 
+to  be  down  when  the  output  of  the  foot  motor 
+is  above  0.5  and  up  otherwise.  A  stance  phase  (foot  and  backward  swing  motor  neurons 
+neuron 
+to  a  region  near  the  back,  upper  left-hand 
+active,  forward  swing  motor  neuron  inactive)  corresponds 
+corner  of  the  state  space,  while  a swing  phase  (forward  swing  motor  neuron  active,  foot  and  backward 
+swing  motor  neurons  inactive)  corresponds 
+to  a  region  near  the  front,  lower  right-hand  corner  of  the 
+state  space. 
+
+4.2.2.  Analysis  of  Q reflexive  pattern  generator 
+
+dynamical  systems.  When  coupled 
+
+(Fig.  9).  However,  we  already  know 
+
+Due  to  the  presence  of  a  sensory  feedback  signal,  reflexive 
+
+leg  controllers  are 
+to  the  body,  the  motor  space 
+nonautonomous 
+limit 
+projection  of  the  dynamics  of  a  reflexive  controller  also  exhibits  a  suitable 
+do  not 
+cycle 
+produce  appropriate 
+rhythmic  output  when  their  sensory  input  is removed.  Unlike 
+a  CPG,  the  limit  cycle  of  a  reflexive  leg  controller  arises  only  when  it  is coupled  to 
+the  body.  Technically, 
+projection  of  a  higher 
+this  limit  cycle  is a three-dimensional 
+system  021. How  does  the 
+dimensional 
+interaction  between  a  reflexive  controller’s  autonomous  dynamics  and  the  sensory 
+feedback 
+
+trajectory  of  the  coupled  agent-environment 
+
+that  it  receives  from  the  body  produce 
+
+reflexive  controllers 
+
+that 
+
+limit  cycle? 
+the  observed 
+is  to  think  of  a  reflexive  controller 
+
+this  question 
+
+One  way  to  approach 
+
+from 
+the 
+is  flowing 
+
+it  receives 
+state 
+
+as  an 
+by  the  sensory  input 
+autonomous  dynamical  system  whose  flow  is  parameterized 
+the 
+that 
+network’s 
+in  whose  basin  it  finds  itself. 
+However,  because  the  angle  of  the  leg  is constantly  changing,  the  structure  of  the 
+flow  is  changing  also,  perhaps  even  undergoing  bifurcations.  We  can 
+network’s 
+the  instantaneous  phase  portrait  of  the  autonomous  network  dynamics 
+visualize 
+to  any  given  leg  angle.  We  can  also  visualize  the  network’s  state 
+corresponding 
+in  the  limit 
+and  the  trajectory 
+
+leg’s  angle  sensor.  At  any  given  point 
+toward 
+
+that  it  is  instantaneously 
+
+following  at  any  point 
+
+the  attractor 
+
+in  time, 
+
+196 
+
+K.D.  RWI. 
+
+i  Artificial 
+
+Inielligerrw 
+
+72  (lYY_5)  173-21.5 
+
+state  generally 
+
+never 
+the  phase  portrait 
+together 
+
+these 
+
+completely 
+continuously 
+
+instantaneous 
+
+in  time,  we  can  build  up  a  picture  of  the  dynamics 
+
+points 
+
+trajectories 
+
+the  system 
+
+because 
+by  piecing 
+
+cycle.  Of  course, 
+instantaneous 
+leg  moves.  However, 
+different 
+limit  cycle  observed  when  a  reflexive 
+the 
+once 
+depends 
+is  following,  will  in  general 
+an  analysis 
+
+in  stance  phase.  While 
+
+only  on  the  leg  angle), 
+
+leg  actually 
+
+through 
+
+passes 
+
+be  different. 
+reflexive 
+
+controller 
+
+is  coupled 
+
+any  given  angle 
+
+twice;  once 
+
+the  phase  portrait 
+
+is  the  same 
+the  system’s  state,  and  hence 
+
+pictures 
+
+underlying 
+to  the  body.  Note 
+
+traverses 
+changes 
+
+these 
+as  the 
+at  many 
+the 
+that 
+in  swing  phase  and 
+it 
+that  it 
+
+in  each  case  (since 
+
+the  trajectory 
+
+of 
+
+by 
+
+The 
+
+points 
+
+toward 
+
+of  one 
+
+controller 
+
+controller 
+
+controller 
+
+autonomous 
+
+the  outputs 
+
+is  presented 
+
+is  simplified 
+
+to  the  body 
+
+it  is  coupled 
+
+this  reflexive 
+
+the  dynamics 
+
+is  established, 
+
+have  passed, 
+
+cycle.  At  (l), 
+
+this  particular 
+
+point  attractor 
+
+the  equilibrium 
+
+the  limit  cycle 
+
+limit  cycle  that 
+
+the  instantaneous 
+
+three-dimensional. 
+
+the 
+become 
+
+in  the  swing/stance 
+
+of  its  two  interneurons 
+
+constant. 
+of  this  network 
+
+is  shown  at  the  center  of  Fig.  9.  Surrounding 
+
+Such 
+visualization 
+transients 
+other  words,  once 
+essentially 
+when 
+central  plot  are  smaller  plots  showing 
+at  different 
+the  network 
+been  put  down  and  a  stance  phase  begun.  At 
+flowing 
+state  space.  The  position 
+foot  and  backward 
+is  inactive 
+neuron 
+of  motor 
+pattern 
+applying 
+a  force 
+angle  and  thus  the  output  of  the  leg  angle  sensor.  As  the  leg  continues 
+(2), 
+passes 
+replaced 
+state 
+attractor 
+neurons 
+phase). 
+
+of  this  attractor 
+swing  motor  neurons 
+(i.e., 
+neuron 
+
+a  stance  phase).  Due 
+that 
+it  to  move 
+
+in  Fig.  9.  The 
+that  once 
+fact 
+In 
+are 
+exhibits 
+this 
+of 
+dynamics 
+the  foot  has  just 
+is 
+corner  of  the 
+in  which 
+the 
+swing  motor 
+this 
+is 
+the 
+leg 
+to  stance  at 
+leg 
+the 
+and  is 
+of  the 
+this 
+of 
+swing  motor 
+a  swing 
+(i.e., 
+
+the  network’s 
+left-hand 
+to  a  situation 
+the  forward 
+
+(2)  to  (3),  however, 
+equilibrium 
+
+foot  and  backward 
+is  active 
+
+point.  As 
+disappears 
+corner 
+
+to  the  dynamics 
+foot 
+the 
+
+activity  means 
+that  causes 
+
+corresponds 
+are  active  and 
+
+this  equilibrium 
+point  near 
+
+point  suddenly 
+lower 
+
+this  point, 
+in  the  upper 
+
+corresponds 
+are  inactive 
+
+the 
+the  system 
+
+swing  motor  neuron 
+
+state  has  essentially 
+
+state.  The  position 
+
+and 
+changing 
+
+that  now  begins 
+
+the  equilibrium 
+
+of  the  body, 
+
+to  the  body 
+
+the  forward 
+
+the  system 
+
+by  another 
+
+to  a  state 
+
+to  attract 
+
+right-hand 
+
+in  which 
+
+is  down 
+
+forward, 
+
+reached 
+
+space 
+
+from 
+
+state 
+
+and 
+
+the 
+
+the 
+
+leg 
+
+The  system  state  now  begins 
+
+to  flow  toward 
+the  output  of  the  foot  motor  neuron 
+the  foot 
+
+is  lifted,  actually 
+
+the  equilibrium 
+and 
+
+reappears. 
+the  output 
+
+from 
+
+(0.5)  and 
+
+(4)  to  (5), 
+
+and  (4), 
+of  the  foot 
+leg  passes 
+corner  of  the  state  space  disappears 
+the  upper 
+attractor 
+activation 
+beginning 
+the  coupled 
+attracted 
+
+corner 
+(6)  until 
+for 
+
+two  equilibrium 
+
+left-hand 
+
+through 
+
+by  the 
+We  can  now  explain 
+by  observing 
+
+generator 
+
+points. 
+
+the 
+
+threshold 
+a  new  stance  phase.  Thus  we  can  see  how 
+system 
+
+foot  at  (1)  and 
+
+network/body 
+
+arises 
+
+the 
+
+(3).  Between 
+
+(3) 
+
+this  new  attractor 
+falls  below 
+beginning 
+point  attractor 
+
+the  activation 
+
+threshold 
+
+a  swing  phase.  As  the 
+in  the  lower 
+
+right-hand 
+
+the  earlier 
+The  network 
+of  the  foot  motor  neuron 
+
+equilibrium 
+state  now  moves 
+
+point  attractor 
+
+in 
+this 
+the 
+is  once  again  put  down, 
+in 
+limit  cycle  observed 
+
+toward 
+goes  above 
+
+foot 
+
+the 
+
+as  the  network’s 
+
+state 
+
+is  alternately 
+
+reason 
+
+the 
+that,  when 
+
+that 
+
+this  controller 
+
+its  sensor 
+
+is  removed, 
+
+is  a  reflexive 
+the 
+
+autonomous 
+
+pattern 
+
+R.D.  Beer  I  Artificial  Intelligence  72 (1995)  173-215 
+
+197 
+
+1 
+
+Foot 
+
+reflexive 
+(FS)  motor 
+
+pattern 
+neurons 
+
+The  output 
+The 
+is  shown  at  the  center.  Surrounding 
+
+generator. 
+are  plotted. 
+
+of  the  network 
+
+at  different 
+
+points 
+
+point  attractor, 
+
+trajectory 
+
+that 
+
+the  gray  point  denotes 
+follow 
+
+the  system  would 
+
+three  plots 
+the  bottom 
+
+roughly 
+three  plots 
+
+correspond 
+roughly 
+
+when 
+
+limit  cycle  generated 
+
+in  the  step  cycle. 
+
+of  the  foot,  backward 
+
+swing 
+this 
+this  central  plot  are  plots  of  the 
+In  each  case, 
+system 
+to 
+(2) 
+(4), 
+(1)  and  (6),  (2)  and  (5),  and 
+
+the  instantaneous 
+if  the 
+
+leg  angle  were 
+(l),  middle 
+
+to  the  beginning 
+correspond 
+
+to  the  beginning 
+
+(5)  and  end  (6)  of  a  swing  phase.  Vertical  columns  of  plots 
+leg  angle  and 
+it  is  following  differs  between 
+
+(i.e., 
+therefore 
+
+state  and  therefore 
+
+to  approximately 
+
+the  trajectory 
+
+the  same 
+
+the  same  phase  portrait, 
+the  upper  and 
+
+lower 
+
+and 
+
+swing 
+
+autonomous 
+
+of  a  typical 
+
+to  the  body 
+
+forward 
+is  coupled 
+
+dynamics 
+an  equilibrium 
+
+Fig.  9.  Operation 
+(BS) 
+and 
+controller 
+instantaneous 
+the  solid  point  denotes 
+state, 
+remain 
+top 
+and  end  (3)  of  a  stance  phase,  while 
+middle 
+(3)  and  (4))  correspond 
+though 
+plots  of  each  column. 
+
+the  gray 
+at  its  present 
+
+angle.  The 
+
+line  shows 
+
+the  system 
+
+the 
+
+19x 
+
+R.D.  Beer  I  Artificial  Intelligence  72 (1995)  173-215 
+
+the  removal  of  a  sensor  by  setting 
+
+is governed  by  an  equilibrium  point.  By  convention,  a 
+dynamics  of  this  controller 
+to  the  long  axis  of  the  body  is  assigned  a  leg  angle  of  0. 
+leg  that  is perpendicular 
+to  0,  the 
+Since  we  modeled 
+autonomous  dynamics  exhibited  when  the  sensor  is  removed 
+to  that 
+exhibited  when  the  leg  is  fixed  in  a  horizontal  position  (i.e.,  plots  (2)  and  (5)  in 
+Fig.  9).  Thus, 
+the 
+equilibrium  point  attractor 
+in  the  upper  left-hand  corner  of  the  state  space  and 
+remain 
+
+there,  causing  the  leg  to  go  into  a  permanent 
+
+the  system  state  will  flow  toward 
+
+stance  phase. 
+
+if  the  sensor 
+
+is  removed, 
+
+is  identical 
+
+its  output 
+
+this  limit  cycle  disappears, 
+
+in  Fig.  10,  which  shows  a  sequence  of  bifurcations 
+
+The  switch  between  equilibrium  points  that  occurs  between 
+
+(2)  and  (3)  in  Fig. 
+9,  and  again  between  (4)  and  (5),  appears  to  be  essential  for  the  operation  of  this 
+reflexive  controller.  How  is  this  switch  actually  accomplished?  This  question 
+is 
+answered 
+that  occur  in  the 
+autonomous  dynamics  of  this  network  as  the  leg  moves  from  an  angle  of  about  23 
+degrees  past  horizontal 
+to  16 degrees  past  horizontal  during  swing  phase  (between 
+plots  (4)  and  (5)  in  Fig.  9).  The  sequence  begins  with  a  single  equilibrium  point 
+attractor  at  the  bottom  of  the  state  space  (1).  At  (2),  a  second  equilibrium  point 
+attractor  appears  at  the  top.  Note  that,  during  swing  phase,  the  system  state  is still 
+in  the  basin  of  attraction  of  the  lower  attractor  at  this  point.  At  (3),  the  lower 
+into  a  limit  cycle,  which  then  begins  to  expand  (4). 
+equilibrium  point  bifurcates 
+Eventually, 
+leaving  behind  only  a  single  equilibrium 
+point  at  (5).  Now  the  system  state  is  attracted  by  this  upper  equilibrium  point. 
+This  sequence  of  bifurcations 
+is  reversed  during  stance  phase.  A  complete 
+bifurcation  diagram  for  this  network  can  be  found  in  [12]. 
+take  place  in  such  a  narrow 
+
+the  system  state  never  really  “sees”  the  intermediate 
+the  limit  cycle  that  briefly  appears  plays  no  functional 
+
+Because 
+(approximately 
+attractors.  For  example, 
+role  whatsoever 
+in  the  network’s  dynamics  because  the  system  state  never  has  a 
+chance  to  get  near  it,  let  alone  go  around  it.  During  the  normal  operation  of  this 
+controller, 
+steps,  during 
+which  the  system  state  moves  only  an  average  Euclidean  distance  of  0.025  in  the 
+state  space.  However, 
+is  to 
+alternately 
+two  equilibrium 
+the  network’s  phase  portrait  between 
+points  that  are  crucial  to  its  operation.  This  particular  sequence  of  bifurcations 
+unique  to  this  controller,  and  was  not  observed 
+were  analyzed. 
+
+this  bifurcation  sequence  occurs  in  about  10  integration 
+
+the  net  effect  of  this  sequence  of  bifurcations 
+
+these  bifurcations 
+7  degrees), 
+
+in  any  of  the  other  controllers 
+
+range  of  leg  angles 
+
+is 
+that 
+
+switch 
+
+the 
+
+it,  via  a  series  of  intermediate  bifurcations, 
+
+From  this  dynamical  analysis  we  can  summarize 
+
+the  nature  of  the  interaction 
+the  operation  of  this  reflexive  controller.  The 
+between  &  and  8  that  underlies 
+by  S,  is  such  that  ‘8 can 
+autonomous  dynamics  of  &,  and  its  parameterization 
+deform 
+two  kinds  of 
+flows.  In  one  of  these  flows,  there  is  a  single  fixed-point  attractor  near  the  upper 
+left-hand  corner  of  the  state  space,  while  in  the  other  there  is a  single  fixed-point 
+the  lower  right-hand  corner.  The  nature  of  8,  and  its  parame- 
+attractor  near 
+terization  by  M,  is such  that,  when  the  network  state  is in  the  neighborhood  of  the 
+the  state  of  the  body  is  changing  in  such  a  way  that  S 
+upper 
+the 
+will  cause 
+
+the  lower  right-hand  attractor 
+
+in  J&  Likewise,  when 
+
+left-hand  attractor, 
+
+into  essentially 
+
+to  appear 
+
+R.D.  Beer 
+
+I  Artificial 
+
+Intelligence 
+
+72  (1995)  173-215 
+
+199 
+
+1 
+
+:’ 
+1  r: 
+
+:’ 
+
+;r-__ 
+: 
+
+I 
+I 
+
+---__ 
+
+--__ 
+
+,-: 
+
+/’ 
+
+; 
+
+’ 
+
+f 
+
+I’ 
+
+/’ 
+
+--J 
+
+I 
+r- 
+
+-._ 
+
+__ 
+
+--._ 
+
+--._ 
+
+0. 
+
+1 k : 
+
+I  ,' 
+I, I 
+
+I--  --.- 
+
+-, 
+I' 
+
+,' 
+
+0. 
+
+I' 
+
+0 
+
+0 
+
+. 
+
+1 
+
+0.5 
+
+4 
+
+0.5 
+
+3 
+
+2 
+
+x’ 
+
+.’ 
+
+1  -_;’ 
+
+--._ 
+
+.r-__ 
+I 
+
+.’ 
+
+I 
+
+I 
+
+I 
+
+--•-_ 
+
+--__ 
+
+-._a 
+
+r-__ 
+
+--f 
+
+,’ 
+
+,’ 
+
+,’ 
+
+--a 
+‘I 
+8’ 
+
+0. 
+
+0 
+
+0 
+
+\/_ 
+
+. 
+
+0. 
+
+-- 
+
+1 
+---I 
+I-- -- 
+
+--_J 
+
+/' 
+
+/' 
+
+I' 
+
+' 
+
+I 
+1,1' 
+
+1 
+
+: 
+
+: 
+
+: 
+
+I: 
+
+Fig.  10.  A  sequence  of  bifurcations  underlying  the  operation  of  the  reflexive  pattern  generator  shown 
+in  Fig.  9.  Only  attractors  are  shown.  During  swing  phase  (between  plots  (4)  and  (5)  in  Fig.  9) 
+the 
+autonomous  dynamics  of  the  network  undergoes 
+the  sequence  of  bifurcations  shown  here.  During 
+stance  phase  (between  plots  (2)  and  (3)  in  Fig.  9),  this  sequence  of  bifurcations 
+
+is  reversed. 
+
+200 
+
+K.D  Beer  I’  Arrijiciul 
+
+lnrelligcwce 
+
+72  (199.5)  17-J-21.5 
+
+network 
+the  body 
+to  appear 
+the  observed 
+essential 
+
+is  in  the  neighborhood 
+
+state 
+is  changing 
+in  ~2.  This  reciprocal 
+
+in  such  a  way  that  S  will  cause 
+relationship 
+
+rhythmic  walking  pattern.  Therefore, 
+
+and  deeply 
+
+intertwined 
+
+roles 
+
+in  the  operation 
+
+of  the  lower  right-hand 
+
+attractor, 
+
+the  upper 
+
+left-hand 
+
+the  state  of 
+attractor 
+
+between  &  and  8  is  what  gives  rise  to 
+
+both  &  and  8  play  absolutely 
+controller. 
+
+of  this  reflexive 
+
+that  show 
+plot  are  smaller  plots 
+limit  cycle.  As  for 
+this 
+of  the  coupled  network/body 
+
+the  instantaneous 
+
+the  reflexive 
+
+controller, 
+system  by  piecing 
+
+we  can 
+
+together 
+
+of  the  reflexive 
+
+the  analysis  of  a  mixed 
+controller. 
+five-dimensional, 
+
+However, 
+
+leg  controller 
+because 
+we  only  plot 
+The 
+
+of  this  system’s 
+
+trajectories. 
+
+limit  cycle 
+
+it  is  coupled 
+
+is  shown 
+from 
+
+to  the  body 
+different 
+is  somewhat 
+above, 
+they  both 
+the  leg  walk.  Surrounding 
+autonomous 
+
+exhibit 
+
+to  make 
+
+discussed 
+
+dynamics 
+
+in  a 
+the 
+the 
+limit 
+in  the 
+the  one 
+the 
+this 
+
+4.2.3.  Analysis  of  a  mixed  pattern  generator 
+
+As  shown 
+
+in  Fig.  11,  we  can  approach 
+
+controller 
+
+this  controller 
+
+similar 
+of 
+
+to  our  analysis 
+
+this  circuit 
+motor 
+
+along 
+points 
+the  dynamics 
+
+the  shape  of  this 
+reflexive 
+the 
+
+is  fundamentally 
+space  projection 
+exhibits  when 
+
+fashion 
+dynamics 
+three-dimensional 
+cycle 
+that 
+center.  While 
+generated 
+by 
+proper  phasing  of  motor  outputs  necessary 
+central 
+at  various 
+understand 
+these 
+autonomous 
+equilibrium 
+coupled 
+as  the 
+deforming 
+of  its  sensor 
+sensory 
+input 
+the  leg  walk. 
+this 
+
+is  because 
+is  set  to  0  (see  plots 
+In  the  absence 
+
+changes, 
+limit  cycle.  The  reason 
+
+that 
+the  autonomous 
+
+dynamics 
+points 
+
+through  most  of 
+
+limit  cycle  rather 
+
+of  this  mixed 
+
+to  the  body. 
+
+instantaneous 
+
+leg  angle 
+
+snapshots. 
+
+than 
+
+However, 
+
+unlike 
+
+the 
+controller 
+exhibits 
+the  cycle.  When 
+
+reflexive 
+limit  cycles 
+the  mixed 
+
+controller, 
+rather 
+controller 
+
+this  limit  cycle  is  continuously 
+state 
+
+the  system 
+
+and 
+
+deformed 
+is  constantly 
+
+this  mixed  controller 
+
+as  shown 
+
+attracted 
+can  tolerate 
+
+limit  cycle 
+
+that 
+
+it  generates  when 
+
+(2)  and  (5)  in  Fig.  11)  is  appropriate 
+
+the 
+than 
+is 
+in  Fig.  11 
+by 
+this 
+the  loss 
+the 
+to  make 
+follow 
+
+of  any  sensory 
+
+input, 
+
+the 
+limit  cycle  shown 
+is  capable  of  autonomously 
+feedback 
+to  explore 
+
+is  the  sensory 
+?  In  order 
+
+the  system 
+
+state  would 
+in  the  center  of  Fig.  11. 
+
+generating 
+it  receives 
+
+an  appropriate 
+from 
+
+the  body 
+
+this  question,  we  examined 
+sensory 
+
+driven  with  sinusoidal 
+
+responds  when 
+
+it  is  artificially 
+
+if  any 
+
+in  its  operation 
+
+is  higher  or  lower 
+
+than  normal.  Under 
+
+these  conditions, 
+
+the  motor  output  pattern 
+
+that 
+
+generates 
+
+speeds  up  or 
+
+(Fig.  12).  The  sensory 
+produced 
+
+by  the  controller 
+
+the  controller 
+signal 
+
+is  thus  capable  of  entraining 
+
+itself.  Despite 
+
+the  fact  that 
+
+the 
+this  range  of 
+
+of  the  interneurons 
+
+changes 
+
+considerably 
+
+throughout 
+
+the  amplitude, 
+
+for  walking.  Within 
+the  motor  pattern 
+
+shape 
+
+a  significant 
+
+and  phasing 
+
+of  the  motor 
+about 
+
+outputs 
+its  normal 
+range 
+remains  1: 1 phase-locked  with  the  sensory 
+at  higher  or  lower  driving 
+of  biological 
+locust 
+[64]. 
+
+feature 
+underlying 
+receptors 
+
+is  a  common 
+generator 
+
+of  wing  stretch 
+
+ratios  of  phase-locking 
+feedback 
+the  pattern 
+
+flight 
+
+other 
+by  sensory 
+
+For  example, 
+
+by  rhythmic 
+
+stimulation 
+
+Since  a  mixed  controller 
+
+role 
+
+frequency 
+
+playing 
+the  controller 
+
+limit  cycle,  what 
+actually 
+how 
+input  whose 
+that 
+we  found 
+slows  down  accordingly 
+the  intrinsic 
+oscillation 
+activity  pattern 
+operating 
+remains 
+operating 
+signal.  We  have  observed 
+frequencies. 
+pattern 
+can  be  entrained 
+
+appropriate 
+frequency, 
+
+frequencies, 
+
+Entrainment 
+
+generators. 
+
+This  entrainment 
+
+has  an  interesting 
+
+functional 
+
+consequence. 
+
+Suppose 
+
+that 
+
+the 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (199-f)  173-215 
+
+201 
+
+Foot 
+
+6 
+
+Fig.  11.  Motor  space  projection  of  the  operation  of  a  typical  mixed  pattern  generator.  The  layout  of 
+this  figure  is  the  same  as  for  Fig.  9. 
+
+legs.  Thus, 
+
+in  time  relative 
+
+the  sensory  feedback 
+
+legs  of  the  agent  were  to  grow  during  its  “life”.  For  a  given  amount  of  applied 
+longer  stancing  legs  will  take  more  time  to  swing  through  a  given  angle 
+torque, 
+leg  will  be 
+than  shorter 
+signal  from  a  longer 
+spread  out 
+the  mixed 
+leg.  Since 
+that  it  receives  from  the  body,  the 
+controller 
+to  slow  down  its 
+sensory  feedback 
+motor  output  pattern  accordingly.  Adapting 
+is  a  general  problem 
+development  or  following  peripheral  damage.  Note,  however, 
+
+that  pattern  generators  have  to  deal  with,  for  example 
+
+from  a  longer  leg  will  cause  the  leg  controller 
+
+is entrained  by  the  sensory  feedback 
+
+their  output  to  a  changing  periphery 
+
+to  that  of  a  normal 
+
+that  this  adaptation 
+
+length 
+
+in 
+
+202 
+
+K.D.  Beer  I  Artificial  Intelligence  72  (199S)  17.3-215 
+
+Fig.  12.  Entrainment 
+When 
+speeds  up  accordingly. 
+
+the  driving 
+
+of  the  mixed  pattern 
+is  lower 
+
+frequency 
+
+generator 
+
+shown 
+
+(A)  or  higher 
+
+(B)  than  normal, 
+
+in  Fig.  11  by  sinusoidal 
+the  motor  pattern 
+
+sensory 
+input. 
+slows  down  or 
+
+R.D.  Beer  I  Artificial  Intelligence  72 (1995)  173-215 
+
+203 
+
+a  separate 
+
+itself, 
+does  not  come  about  through  any  structural  change  to  the  neural  network 
+the  network 
+nor  does 
+it  require 
+it  arises  as  a  natural  consequence  of  the  dynamics  of  the 
+parameters.  Rather, 
+and  its  coupling  with  the  body.  This  is  a  kind  of  functional 
+mixed  controller 
+thought  of  as  learning. 
+plasticity  which  is  quite  different 
+However, 
+the 
+ability  of  an  insect  to  immediately  adjust  its  gait  following  the  loss  of  a  leg  [32]). 
+
+there  are  many  examples  of  such  plasticity  in  biology  (for  instance, 
+
+from  what  is  normally 
+
+to  modify 
+
+algorithm 
+
+learning 
+
+The  dynamical  sophistication  of  this  mixed  leg  controller 
+
+With  only  five  neurons  (three  of  which  are  motor  neurons), 
+generate 
+leg  movements  necessary 
+the  basic  swing/stance 
+advantage  of  sensory  feedback 
+only  a  slight  degradation 
+morphological 
+nism.  The 
+controller  by  hand  is  probably 
+
+of  anyone  designing 
+rather 
+
+in  performance; 
+
+likelihood 
+
+low. 
+
+and 
+
+changes  in  the  body  without  requiring  a  separate 
+
+if  it  is  available  but  can  tolerate 
+
+(3)  adapt 
+
+is  truly  remarkable. 
+this  controller  can  (1) 
+for  walking;  (2)  take 
+its  absence  with 
+its  operation 
+to 
+learning  mecha- 
+leg 
+
+such  a  flexible  and  compact 
+
+4.2.4.  Conclusion 
+
+controllers 
+
+to  loss  of  sensory 
+
+of  their  autonomous 
+
+This  section  has  illustrated  how  some  of  the  tools  of  dynamical  systems  theory 
+to  the  analysis  of  an  agent  interacting  with  its  environment.  For 
+can  be  applied 
+are 
+example,  we  have  been  able  to  explain  why  some  locomotion 
+feedback  and  others  are  not  in  terms  of  the  appro- 
+robust 
+priateness  or  inappropriateness 
+to  the  walking 
+task.  Furthermore,  we  have  been  able  to  gain  significant  insight  into  the  specific 
+the  network  dynamics  and  the  body  that  gave 
+nature  of  the  interaction  between 
+in  each  of  the  three  controllers  analyzed.  For  example, 
+rise  to  a  walking  pattern 
+while  the  reflexive  controllers  make  use  of  the  body  dynamics 
+in  a  fundamental 
+way  in  the  generation  of  the  limit  cycle  necessary 
+capable  of  generating  appropriate 
+mixed  controllers  use  rhythmic  sensory  feedback 
+cycles.  Along 
+feedback, 
+periphery. 
+
+the  CPGs  are 
+and  the 
+limit 
+it  is  entrained  by  sensory 
+to  a  changing 
+
+limit  cycles  completely  autonomously 
+
+to  fine-tune  autonomous 
+
+the  way,  we  discovered 
+
+the  mixed  controller 
+
+its  motor  output 
+
+that,  because 
+
+for  walking, 
+
+can  adapt 
+
+dynamics 
+
+indistinguishable  walking  behavior  when  coupled 
+
+What  general  conclusions  can  we  draw  from  this  analysis?  One  is struck  by  the 
+variety  of  agent  dynamics  which  evolved.  Not  only  are 
+the  actual  network 
+parameters  of  each  controller  different,  but  the  underlying  dynamics  vary  widely. 
+Yet  they  all  lead  to  virtually 
+to 
+lesion  studies  of  these  control- 
+the  body  under  normal  conditions.  Furthermore, 
+is  dynamically 
+lers  (not  described  here)  have  demonstrated 
+distributed, 
+to 
+to  assign  specific  functional 
+the  only  thing  that  can  be  said  about  all  of  these 
+individual 
+they  are 
+systems 
+controllers 
+embedded 
+in  which  they 
+this  is  all  that  they  were  selected  for  in 
+evolved. 
+in 
+that  it  is  simply  inappropriate 
+the  first  place.  We  are  thus  led  to  conclude 
+
+the  coupled  agent-environment 
+to  do  under 
+them 
+
+usually  making 
+interneurons.  About 
+
+is  that 
+do  what  we  asked 
+
+Indeed,  as  in  natural  evolution, 
+
+that  their  operation 
+
+the  conditions 
+
+it  impossible 
+
+in  which 
+
+roles 
+
+204 
+
+R.D.  Beer  I  Artificial  Intelligence  7.2 (1995)  173-215 
+
+general  to  attempt  to  impose  our  functional  preconceptions  on  the  organization  of 
+evolved  systems. 
+
+5.  Discussion 
+
+for 
+
+framework 
+
+agents.  The  framework 
+
+focuses  on  the  problem  of  generating 
+
+In  this  paper,  I have  attempted 
+theoretical 
+
+to  use  the  language  of  dynamical  systems  theory 
+the  design  and  analysis  of 
+to  sketch  a  general 
+the 
+autonomous 
+time  as both  an  agent’s  internal  state  and 
+appropriate  behavior  at  the  appropriate 
+continuously  change.  The  two  key  ideas  of  this  frame- 
+its  external  environment 
+as  two 
+work  are  (1)  that  an  agent  and  its  environment  must  be  understood 
+for  the 
+is jointly  responsible 
+coupled  dynamical  systems  whose  mutual  interaction 
+agent’s  behavior  and  (2)  that  the  adaptive  fit  between  an  agent  and  its  environ- 
+in  terms  of  the  satisfaction  of  a  given  constraint  on  the 
+ment  can  be  characterized 
+trajectories  of  the  coupled  agent-environment 
+system.  I  have  particularly  empha- 
+is,  strictly  speaking,  a  property  of  the  coupled 
+sized  that  an  agent’s  behavior 
+agent-environment 
+to  either  the 
+agent  or  environment 
+
+system  only  and  cannot  in  general  be  attributed 
+
+individually. 
+
+they  represent 
+
+to  either  continuous-time 
+
+for  a  six-legged  agent  was  used  to  illustrate 
+
+A  concrete  application  of  these  ideas  to  the  synthesis  and  analysis  of  a  walking 
+the  framework.  While  I  feel 
+recurrent  neural  networks  or 
+at  least  one  way  in  which  agent  dynamics 
+system  can  be 
+to  agent  design  allows  the  agent’s 
+to  the  particular  dynamical  and  statistical  structure  of 
+robust  and  compact  control- 
+that,  despite 
+the  fact  that  they  often  exhibit  no 
+the  operation  of  these  evolved  systems  can  be 
+
+behavior 
+no  particular  commitment 
+genetic  algorithms, 
+satisfying  a  given  constraint  on  the  coupled  agent-environment 
+designed.  Such  an  “evolutionary” 
+organization 
+its  environment 
+lers.  I  have  also  demonstrated 
+clean  functional  organization, 
+understood 
+this  perspective 
+interaction  between 
+walking  behavior 
+
+from  the  perspective  of  interacting  dynamical  systems.  Furthermore, 
+insight 
+
+the  specific  nature  of  the 
+that  gives  rise  to  the  observed 
+
+and  leads  to  remarkably  adaptive, 
+
+the  agent  and  its  environment 
+
+in  the  various  controllers. 
+
+can  provide  significant 
+
+to  be  tailored 
+
+approach 
+
+into 
+
+5.1.  Related  work 
+
+There 
+
+a  growing 
+
+is  currently 
+
+impact  in  such  fields  as  neuroscience, 
+
+in  dynamical  explanations 
+in  the  be- 
+interest 
+idea  dates  back  at  least  to  cybernetics 
+havioral  and  brain  sciences.  The  central 
+[6,63].  More  recently,  concepts  from  dynamical  systems  theory  have  been  making 
+cognitive  science  and  mobile 
+a  substantial 
+robotics.  Within  neuroscience, 
+to  single 
+(e.g.,  [55]),  small  circuits  (e.g.,  [62])  and  complete  brain  systems  (e.g., 
+neurons 
+the  model  of  olfactory  cortex  formulated  by  Skarda  and  Freeman 
+[58],  in  which  a 
+chaotic  attractor  plays  a  central  role).  The  concepts  of  dynamical  systems  are  also 
+control  of 
+beginning 
+
+dynamical  analyses  have  been  applied 
+
+to  play  a  major 
+
+in  understanding 
+
+the  biological 
+
+role 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (1995)  173-215 
+
+205 
+
+[57]).  Connectionism 
+
+(e.g., 
+[60]  (though 
+
+has  made  dynamics  one  of  its  founding 
+it  is  not  clear  that  the  full  implications  of  this  principle 
+[36])  and  has,  for  example, 
+
+movement 
+principles 
+have  yet  been  appreciated 
+begun  to  propose 
+theories  of  language  in  its  terms  [27,53].  Both  van  Gelder  [61] 
+in 
+and  Giunti  [30]  have  begun  to  formulate  a  dynamical  conception  of  cognition 
+cognitive  science  more  generally.  Finally,  Smithers  [59]  has  recently  argued  for  a 
+role  for  dynamical 
+
+ideas  in  mobile  robot  research. 
+
+in  connectionist 
+
+research 
+
+as  two 
+
+in  order 
+
+framework 
+
+for  it  to  engage 
+
+Within  the  autonomous  agents  literature, 
+related 
+is  perhaps  most  closely 
+[56].  He  models  an  agent  and 
+
+the  theoretical 
+that  I  have 
+to  Rosenschein’s  work  on  situated 
+proposed 
+interacting 
+its  environment 
+automata 
+that  knowledge  need  not  be  explicitly  encoded 
+automata  and  he  has  emphasized 
+within  an  agent 
+interactions  with  its 
+environment.  He  has  used  concepts  from  automata  and  formal  language  theory  to 
+characterize 
+this 
+how  concepts  from 
+perspective 
+dynamical 
+the  behavior  of  such 
+systems.  On  the  other  hand,  while 
+systems,  especially  emphasizing  continuous 
+Rosenschein’s  major  concern  has  been  how  propositional  content  can  be  assigned 
+between  an  agent’s  internal  states  and  the  states  of  its  environ- 
+to  correlations 
+ment,  my  interest 
+the  appropriate  behavior  at  the 
+time. 
+appropriate 
+
+to  arbitrary  dynamical  systems  and  demonstrated 
+systems 
+
+In  a  sense,  I  have  generalized 
+
+the  behavior  of  such  systems. 
+
+is in  how  an  agent  can  generate 
+
+theory  can  be  used 
+
+in  sophisticated 
+
+to  characterize 
+
+5.2.  Assumptions  and  extensions 
+
+This  paper  has  focused  on  continuous, 
+
+low- 
+and 
+In 
+dimensional  dynamical  systems  as  models  for  agents  and  their  environments. 
+this  section, 
+their 
+impact  on  the  framework,  and  a  number  of  ways  in  which  they  might  be  relaxed. 
+
+the  motivation  behind 
+
+these  assumptions, 
+
+I  briefly  consider 
+
+deterministic, 
+
+convergent 
+
+5.2.1.  Continuity 
+
+dynamics 
+
+continuous 
+
+The  emphasis  on  continuous 
+
+state  spaces  and 
+(i.e., 
+time)  in  this  paper  is  motivated  by  the  fact  that  the  dynamics  of  both 
+in  nature.  For 
+(a  seemingly  discrete 
+the  current  flows  that  underlie  action  potentials  are  continuous  quantities. 
+it  has  long  been  known  that  many  nerve  cells  do  not  produce  action 
+[52].  Likewise, 
+the 
+(e.g.,  decision  making) 
+it  is my  belief  that 
+in  the  rich  dynamical 
+
+continuous 
+nervous  systems  and  the  macroscopic  physical  world  are  continuous 
+though  many  nerve  cells  fire  action  potentials 
+example, 
+event), 
+Furthermore, 
+potentials  but  instead  communicate  using  graded  potentials 
+more  discrete  behavioral  phenomena 
+must  eventually  be  explained 
+the  versatility  and  robustness  of  animal  behavior 
+possibilities  of  continuous 
+
+terms.  In  addition, 
+
+that  we  observe 
+
+in  continuous 
+
+state  spaces. 
+
+resides 
+
+it  should  be  noted 
+
+However, 
+deterministically 
+of  the  concepts  we  have  used  hold  in  discrete-time 
+hold  in  systems  defined  on  discrete  state  spaces.  For  example, 
+
+that  any  system  with  finite  state  which  evolves 
+can  be  described  using  the  concepts  of  dynamical  systems.  Most 
+systems  as well,  and  many  also 
+table 
+
+the  transition 
+
+206 
+
+R.D.  Rwr 
+
+!  Artificial 
+
+Intelligencc~  72  (1995)  173-215 
+
+exhibit, 
+
+of  a  finite  state  machine 
+metric  on  this  state  space 
+can 
+equilibrium 
+ous 
+continuity 
+
+still  apply.  Thus 
+
+but 
+point, 
+
+assumption 
+
+defines 
+limits 
+concepts 
+
+a  flow  on  a  discrete 
+behavior 
+state, 
+
+the  dynamical 
+initial 
+
+state  space.  The 
+that  a  finite  state  machine 
+attractor, 
+flow, 
+
+lack  of  a 
+
+trajectory, 
+
+such 
+limit  cycle,  basin  of  attraction, 
+
+as 
+
+autonomous 
+
+framework  may 
+
+still  be  useful 
+
+and  nonautonom- 
+even 
+
+if  the 
+
+the  present 
+should 
+
+turn  out 
+
+to  be  inappropriate. 
+
+in 
+
+this  paper 
+
+is  purely 
+
+the  common 
+
+assumption 
+
+in  science 
+
+deterministic 
+
+in 
+that  the 
+
+framework 
+
+sketched 
+from 
+
+derives 
+
+physical  world 
+
+is  in  principle 
+
+completely 
+
+the  dynamical 
+
+laws  that  govern 
+
+determined 
+
+by  a  knowledge 
+its  evolution.  However,  we  often 
+unpredictable.  What 
+
+real  environments, 
+
+real  sensors, 
+
+etc.  are  somewhat 
+
+is  that,  because  we  have  only 
+laws,  we  are  forced 
+
+incomplete 
+
+knowledge 
+
+to  describe 
+
+of  a 
+its 
+
+In  other  words, 
+
+regardless 
+
+of  whether 
+
+the  macroscopic 
+
+physical 
+
+in  principle,  we  must 
+
+it  as  stochastic 
+
+in 
+
+to  use  stochastic  models 
+or  not 
+sometimes 
+
+treat 
+
+5.2.2.  Determinism 
+
+The 
+
+theoretical 
+nature.  This  determinism 
+macroscopic 
+of  its  state  and 
+say  that 
+this  usually  means 
+system’s 
+state  and 
+behavior. 
+world 
+practice. 
+
+is  deterministic 
+
+It  should  be  noted 
+
+that  continuous-time 
+
+recurrent 
+
+neural  networks 
+
+in  the  face  of  unpredictable 
+
+robust 
+controllers 
+
+feedback, 
+
+can  often 
+and  preliminary 
+
+the  sensory 
+
+feedback 
+
+tolerate 
+
+studies 
+signal 
+
+sign  of  being 
+locomotion 
+sensory 
+to  noise  on 
+robustness 
+theoretical 
+
+of 
+these 
+framework 
+
+controllers, 
+
+the  question 
+
+itself  might  be  applied 
+
+to  unpredictable 
+
+as 
+systems. 
+
+contingencies. 
+
+show  every 
+The 
+or  the  loss  of 
+
+environmental 
+the  loss  of  an  interneuron 
+indicate 
+that 
+as  well.  However, 
+naturally 
+
+arises 
+
+they  are  extremely 
+regardless 
+
+robust 
+the 
+of 
+the 
+to  how 
+
+As  I  see  it,  there  are  two  possibilities, 
+of  unpredictability 
+
+systems  can  exhibit  dynamics 
+in  practice 
+
+or  stochastic  model 
+namical 
+but  unpredictable 
+been  made 
+analysis  of  chaotic  dynamics 
+modeled  with  chaotic  dynamics, 
+
+on  extending 
+
+(so-called 
+the  qualitative 
+
+depending 
+is  adopted. 
+that 
+is  completely 
+chaotic  dynamics). 
+
+upon  whether 
+Recall 
+
+a  deterministic 
+
+that  nonlinear 
+
+dy- 
+
+deterministic 
+Significant 
+
+in  principle 
+progress  has 
+the 
+systems 
+to 
+of  a  given  system  can  be 
+
+theory 
+
+of  dynamical 
+
+[66].  If  the  unpredictability 
+techniques 
+
+then  such 
+
+can  be  applied. 
+
+Otherwise, 
+In 
+[7]).  Typical  concerns 
+
+tability. 
+example, 
+how  some  probability 
+time  and  determining 
+techniques 
+such 
+direction 
+
+we  must  deal  with  a  fundamentally 
+
+stochastic  model  of  unpredic- 
+
+this  case,  we  must  consider 
+
+stochastic 
+
+in  stochastic  dynamical 
+
+dynamical 
+
+systems 
+systems  are  understanding 
+
+(see, 
+
+for 
+
+function 
+
+density 
+the  asymptotic 
+
+over 
+
+the  states  of  the  system  evolves  with 
+of 
+
+The  application 
+
+form  of  this  distribution. 
+
+to  autonomous 
+
+agent  problems 
+
+is  clearly 
+
+an  important 
+
+research 
+
+for  the  future  development 
+
+of  the  framework. 
+
+5.2.3.  Convergence 
+In  this  paper, 
+
+are  convergent, 
+limit 
+sets 
+divergent 
+
+rather 
+regions 
+
+I  have  assumed 
+that 
+
+that  both 
+is,  the  values  of  their  state  variables 
+
+the  agent  and  environment 
+
+dynamics 
+
+than  diverging 
+is  acceptable 
+
+to 
+
+infinity. 
+
+In 
+
+fact,  even 
+
+as  long  as  the  dynamics 
+
+eventually 
+a  flow 
+of  interaction 
+
+converge 
+that  contains 
+
+to 
+
+between 
+
+the 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (1995)  173-215 
+
+207 
+
+agent  and  environment  never  enters  such  a  region.  Divergent  dynamical  systems 
+limitations  and  satura- 
+are  a  mathematical 
+tion  effects,  no  real  physical  system  is  truly  divergent.  Thus, 
+the  assumption  of 
+convergent  dynamics 
+
+abstraction  anyway.  Due  to  resource 
+
+is,  I  think,  a  fairly  reasonable  one. 
+
+However, 
+
+this  convergence 
+
+it  is  important  not  to  confuse 
+
+the  framework  applies.  Indeed, 
+
+never  settle  on  an  autonomous 
+
+assumption  with  the 
+limit  sets 
+claim  that  the  dynamics  of  agents  and  environments  must  settle  onto 
+the  dynamics  of  the  reflexive  and  mixed 
+before 
+instead  are 
+pattern  generators 
+their  flow  is  constantly  perturbed  by  the  sensory 
+always  in  a  transient  because 
+feedback 
+the  dynamics  of  the  coupled  agent- 
+system  in  these  examples  does  eventually  settle  into  a limit  cycle,  but 
+environment 
+even  this  need  not  be  the  case  in  general. 
+If  either  the  environment  or  the  agent 
+contains  dynamics  on  time  scales  that  are  long  relative  to  the  lifetime  of  the  agent, 
+then 
+them  will  take  place  on  an 
+extended 
+
+of  interaction  between 
+
+receive.  Of  course, 
+
+the  entire 
+
+trajectory 
+
+transient. 
+
+attractor, 
+
+they 
+
+that 
+
+but 
+
+transient,  however, 
+
+the  framework  described 
+
+Even  in  the  case  of  an  extended 
+
+in 
+the  agent  and  its 
+this  paper  still  applies.  The  dynamics  of  interaction  between 
+is  still  determined  by  the  global  structure  of  the  flow  of  the  coupled 
+environment 
+is itself  largely  determined  by  the  types  and  locations  of 
+system  and  this  structure 
+in  a  system  with  multiple  time  scales,  there  may  be  a 
+its  limit  sets.  Furthermore, 
+time 
+short 
+great  deal  of  recurrence 
+it  is  often  possible 
+the  slower  state 
+scales.  Under 
+such  conditions, 
+constant  parameters  of  the  faster  dynamics  and 
+variables  as  being  approximately 
+the  attractors  of  this 
+to  study 
+the  slower  state 
+reduced  system  are  not  true  attractors  of  the  full  system  (because 
+variables  are  in  fact  changing), 
+that  may 
+show  up  repeatedly  over  sufficiently  short  time  scales  (cf.  Agre  and  Chapman’s 
+notion  of  routines  [3]). 
+
+to  the  system’s  behavior  over  sufficiently 
+
+they  represent  patterns  of  interaction 
+
+the  dynamics  of  this  reduced 
+
+system.  Though 
+
+to  treat 
+
+5.2.4.  Low  dimensionality 
+
+strongly  on  their  relatively 
+
+Our  ability  to  visualize  the  dynamics  of  the  leg  controllers  described 
+
+in  Section 
+4  depended 
+low  dimensionality.  Clearly,  we  will  often 
+need  to  analyze  systems  whose  dimensionality  makes  direct  visualization  of  the 
+flow  impossible.  In  this  case,  we  must  find  ways  to  simplify  the  dynamics 
+complete 
+or  rely  upon  nonvisual  techniques.  One  obvious  approach  (utilized  in  Section  4)  is 
+to  visualize  higher  dimensional  dynamics  with  a  set  of  carefully  selected 
+lower 
+dimensional 
+find  a  series  of 
+that  map  the  dynamics  of  a  higher  dimensional  system 
+coordinate 
+system  while  preserving  most  of  its  global  structure.  For 
+to  a  lower  dimensional 
+to  reduce 
+example, 
+Hodgkin-Huxley  model  of  action  potential 
+generation 
+system  that  preserves  not  only  the  qualitative  behavior  of  the  original  system,  but 
+most  of  its  quantitative  behavior  as  well  [43]. 
+
+projections.  More  generally,  one  can  sometimes 
+
+the 
+four-dimensional 
+to  a  two-dimensional 
+
+such  a  technique 
+
+has  been  used 
+
+transformations 
+
+A  number  of  other 
+
+by  reducing  either  their  dimensionality  or  complexity 
+
+techniques  are  available  for  simplifying  dynamical  systems 
+in  some  spatial  or  temporal 
+
+208 
+
+R.D.  Beer 
+
+/  Artificial  Intelligence  72  (lYY.5)  173-215 
+
+systems 
+of  Lyapunov 
+
+region  of  interest  (e.g.,  Poincare  maps,  center  manifolds,  normal  forms,  symbolic 
+[66]).  In  addition,  many  of  the  analytical 
+dynamics  and  the  use  of  symmetries 
+techniques 
+limit  sets,  stability 
+of  dynamical 
+analysis,  computation 
+etc.)  do  not  require  a  global 
+visualization  of  the  flow.  Finally,  it  should  be  pointed  out  that  some  progress  has 
+even  been  made  on  extending 
+to 
+the  qualitative 
+infinite-dimensional 
+delay-differential 
+techniques  will  undoubtedly  need  to  be  explored  as  larger  systems  are  studied. 
+
+those  arising  from  sets  of  partial  differential, 
+and  other 
+
+theory  of  dynamical  systems 
+
+integro-differential 
+
+(e.g.,  computing 
+
+systems  (e.g., 
+
+[34]).  These 
+
+exponents, 
+
+equations; 
+
+theory 
+
+and 
+
+5.3.  Modularity  and  design 
+
+and 
+
+there 
+
+in  the 
+
+is  that 
+
+Because 
+
+its  environment 
+
+the  only  requirement 
+
+on  an  agent’s  dynamics 
+
+system  satisfy  a  given  constraint, 
+
+the  coupled 
+is  a  great  deal  of 
+agent-environment 
+the 
+freedom  both  in  how  a  desired  dynamics  of  interaction 
+the  agent’s 
+agent  and 
+leg 
+dynamics.  We  saw  examples  of  this  freedom 
+controllers  where,  despite 
+the  fact  that  both  their  individual  dynamics  and  the 
+nature  of  their  interaction  with  the  body  vary  widely,  all  of  these  leg  controllers 
+produce  virtually 
+to  the  body 
+is  a  growing  realization  within  neuro- 
+under  normal  conditions.  Likewise, 
+science 
+in  even  simpler 
+animals  are  highly  distributed  and  nonhierarchical 
+and  that  traditional  engineering 
+principles  may  not  apply  to  their  design  [4]. 
+
+there 
+the  neural  circuits  mediating  nontrivial  behaviors 
+
+indistinguishable  walking  behavior  when  coupled 
+
+is  divided  between 
+of 
+
+in  our  analysis  of  the  evolved 
+
+internal  organization 
+
+that 
+
+(rather 
+
+decomposition 
+
+to  be  solved, 
+
+of  the  problem 
+
+Because  evolution  only  directly  selects  against  agent  dynamics 
+
+that  do  not 
+satisfy  their  constraint 
+than  selecting  for  some  optimal  design),  evolution 
+tends  to  produce  designs  that  take  full  advantage  of  the  available  freedom.  This 
+is very  different  from  engineered  systems. 
+can  lead  to  designs  whose  organization 
+When  an  engineer  designs  a  complex  system,  he  or  she  typically  performs 
+a 
+in  simpler 
+hierarchical 
+functions  and  interfaces.  Such  a  modular 
+subsystems  with  clean,  well-defined 
+decomposition 
+and  maintainable 
+implementation, 
+the  part  of  the  designer.  Evolution,  however,  operates  under  no  such  constraints. 
+Natural  selection  preserves 
+those  animals  that,  as  a  package,  work  and  discards 
+those  that  do  not.  Of  course,  this  is not  to  say  that  evolved  systems  are  completely 
+unstructured.  Certainly,  evolved  systems  exhibit  modularity  and  it  is  likely  that 
+to  produce  systems  with  the  complexity  of  animals 
+evolution  would  be  unable 
+without  it.  However,  because  the  internal  organization  of  an  evolved  system  does 
+of  any  designer,  whatever  modules  do  exist  are 
+not  reflect  the  conceptualization 
+under  no  requirement 
+that  we 
+expect  from  an  engineered 
+
+is  necessary 
+and  it  also  appeals  to  a  certain  aesthetic  sense  of  parsimony  on 
+
+to  exhibit  the  sort  of  clean  functional  organization 
+
+to  ensure 
+
+a  correct, 
+
+resulting 
+
+system. 
+
+reliable 
+
+One  might  argue  that  this  “messiness” 
+
+reflecting 
+example,  we  might  be  tempted 
+
+detail 
+the  blindness  of  evolution  and  not  a fundamental  part  of  the  design.  For 
+to  describe  the  leg  controller  dynamics  as  “really” 
+
+is  really  just  an  implementation 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (1995)  173-215 
+
+209 
+
+of 
+
+features 
+
+versatile, 
+
+is  severely 
+
+the  “problem” 
+
+are  completely 
+
+is  not  a  predictive 
+
+but  highly  effective, 
+
+power  of  this  summary 
+
+the  underlying  dynamical 
+
+a  simple  finite  state  machine 
+
+but  merely 
+(and  therefore 
+
+two  states 
+to  realize 
+a 
+
+that  switches  between 
+it  is  important 
+
+this  negative  assessment  overlooks  a  crucial  difference  between 
+
+these  networks, 
+explanation 
+summary  of  their  normal  operation.  The  predictive 
+
+just  implementing 
+labeled  “swing  phase”  and  “stance  phase”.  However, 
+that 
+this 
+descriptive 
+explanatory) 
+limited  by  the  fact  that  it  fails  to 
+capture 
+the  system’s  oper- 
+ation.  For  example, 
+to 
+actually  make  the  leg  walk  are  not  deducible  from  such  a  description. 
+It  also  fails 
+is  capable  of  fine-tuning  a  walking  pattern,  or 
+to  capture  how  sensory  feedback 
+why  some  networks  are  robust  to  sensor  loss  while  others  are  not.  Yet  these  and 
+other 
+and  succinctly  explained  by  the  qualitative  dy- 
+namical  analysis  summarized 
+
+laws  that  actually  govern 
+the  temporal  patterns  of  motor  neuron  activations  required 
+
+in  Figs.  8,  9,  10  and  11. 
+The  fact  that  evolution  can  produce  such  messy  designs  is  typically  viewed  as  a 
+it  is  also  a  source  of  freedom 
+
+the 
+success.  Designing  an  artificial 
+tasks  in  an  uncon- 
+solved  by 
+for  which  traditional  engineering  methods 
+
+together 
+to  cobble 
+shortcoming.  However, 
+robust  and  compact  designs. 
+counterintuitive 
+Furthermore, 
+the 
+task  of  an  engineer  and  that  of  evolution.  Engineers  solve  well-defined  problems, 
+that  allow  modular 
+and  it  is  the  detailed  a priori  specifications  of  those  problems 
+to  be  designed  and  their  parsimony  or  optimality 
+solutions 
+In 
+to  be  evaluated. 
+that  any  given 
+contrast, 
+evolution  has  no  clear  specification  of  the  “problem” 
+it  would  do  little  good 
+animal  should  solve.  Even  if  such  a  specification  existed, 
+since 
+changes  and 
+relationship  between  behavior  and  reproductive 
+agent  capable  of  autonomously 
+strained  real-world  environment 
+evolution 
+have  been  successful. 
+While  evolutionary 
+designing  autonomous 
+standard  genetic  algorithm  does  not  scale  well  with  the  size  of  the  parameter 
+space  using  the  direct  encoding  of  neural  network  parameters 
+employed  here. 
+These  scaling  problems  will  need  to  be  addressed  before  such  techniques  can  be 
+that  end,  many 
+to 
+applied 
+encodings  and  many  different  variations  of  the  basic  genetic 
+different  parameter 
+to  autonomous 
+algorithm  have  been  proposed 
+other  search  techniques, 
+agent  design  needs  to  be  explored.  Where  appropriate, 
+should  also  be  explored. 
+techniques, 
+such  as  simulated  annealing  and  gradient 
+When  possible,  biological  data  and  symmetry 
+reduce 
+the 
+Another 
+directly, 
+constructs 
+
+to 
+to  be  searched,  as  in  the  adjacent  coupling  of 
+in  Section  4.1. 
+space  of  the  agent’s  dynamics 
+that 
+
+strategy 
+but 
+the  parameter 
+the  agent’s  dynamics  (e.g.,  [35,50]). 
+
+design  shows  great  promise  as  a  practical  method 
+agents, 
+
+is much  closer  to  the  sort  of  “problem” 
+
+evolving  as  the  physical  environment 
+
+the  design  of  more  complicated 
+
+(e.g.,  [16])  and  their  application 
+
+is  to  search  not  the  parameter 
+
+space  of  a  developmental 
+
+than  it  is  to  the  problems 
+
+accomplishing  open-ended 
+
+the  number  of  parameters 
+
+in  the  full  locomotion 
+
+controller  described 
+
+itself  is  constantly 
+
+it  is  well  known 
+
+species  modifies 
+
+the  performance 
+
+agents.  Toward 
+
+the  coevolution 
+
+of  conspecifics 
+
+for 
+of  the 
+
+leg  controllers 
+
+considerations 
+
+can  be  used 
+
+and  other 
+
+process 
+
+rather 
+
+that 
+
+Yet  another  approach 
+
+to  the  scaling  problem 
+
+is  to  evolve  a  complex  agent 
+
+One  possibility 
+to  independently 
+
+and 
+then  be  obtained 
+
+task.  Another 
+
+possibility 
+
+of  a  difficult  problem, 
+
+successively 
+
+the  controllers 
+
+to  solve 
+
+is  to  decompose 
+
+a  complex 
+
+task  into  a  set 
+
+by  evolving 
+
+evolve 
+
+increase 
+
+between 
+
+solutions 
+
+solutions 
+
+is  to  evolve 
+
+the  coupling 
+
+to  these.  A  complete 
+subnet- 
+these 
+to  a  simpler 
+and 
+Finally, 
+the  harder  versions  of  the  problem. 
+agents 
+of  simulated 
+search  can  only  be  carried  out 
+issues 
+
+in  transferring 
+
+the  problem 
+
+complexity, 
+
+involved 
+
+instead 
+
+robots 
+
+for  physical 
+since  evolutionary 
+are  nontrivial 
+
+incrementally. 
+subtasks 
+
+dynamics 
+of  simpler 
+solution 
+can 
+works  on  the  original 
+version 
+then 
+attempts 
+introduce 
+in  simulation 
+controllers 
+
+to  evolve 
+additional 
+
+re-evolve 
+
+at  present 
+from  simulated 
+
+there 
+to  physical 
+
+environments 
+
+[21,40]. 
+
+controllers 
+problems, 
+and 
+
+5.4. 
+
+Internal  state  and  representation 
+
+Due 
+
+to  its  emphasis 
+
+on  the  unpredictable 
+
+nature 
+
+and  real-time 
+
+the  real  world,  a  great  deal  of  recent  work  on  autonomous 
+the  development 
+immediate 
+their 
+present 
+function 
+autonomy 
+
+agent 
+no  internal 
+outputs.  A  reactive 
+
+inputs 
+it  is  constantly 
+
+it  maintains 
+to  motor 
+
+of  reactive 
+situation. 
+
+agents  whose  actions 
+
+framework 
+
+A  purely 
+
+because 
+
+because 
+
+reactive 
+
+sensory 
+
+pushed 
+
+around 
+
+from 
+
+are  completely 
+
+is  a  degenerate 
+state.  Rather, 
+
+by  its  environment. 
+
+requirements 
+of 
+agents  has  focused  on 
+by 
+determined 
+case  of  the 
+a 
+true 
+
+agent  has  no 
+
+it  is  simply 
+
+a  dynamical 
+of  internal 
+
+systems  perspective 
+state 
+
+to  an  agent’s  operation.  Unlike 
+
+on  autonomous 
+
+state  can  initiate 
+
+behavior 
+
+independently 
+
+and  organize 
+
+its  behavior 
+
+in  anticipation 
+
+This  ability 
+
+relies  upon 
+
+the  fact  that,  while 
+
+is  complicated 
+
+and  somewhat 
+
+unpredictable, 
+
+natural 
+
+agents  emphasizes 
+agent, 
+its  immedi- 
+configura- 
+
+a  reactive 
+from 
+of  future 
+
+it  is  true 
+environments 
+
+that 
+
+a  great  deal  of  structure 
+
+that  a  properly 
+
+designed 
+
+agent  can  depend 
+
+exploit 
+controllers 
+
+[39].  As  a  simple 
+exploit 
+
+the  structure 
+
+example, 
+
+consider 
+
+the  way 
+
+of  the  body  dynamics 
+
+in 
+to 
+
+internal 
+
+In  contrast, 
+the  importance 
+an  agent  with 
+ate  circumstances 
+tions  of  its  environment. 
+the  real  world 
+also  exhibit 
+and  even  actively 
+upon 
+which 
+reflexive 
+the 
+achieve  walking. 
+importance 
+Does 
+
+of  internal 
+the  framework 
+
+The 
+question: 
+Much  of  the  debate  between 
+the  equation 
+assumed 
+tacitly 
+nents  using  criticisms 
+limitations 
+using 
+(e.g., 
+t 
+this  question 
+me  briefly  explain  why  I  believe 
+
+the 
+[20,44]).  B u  are  internal 
+
+clearly  deserves 
+
+of  representation 
+of  state-free 
+
+The  problem  with 
+
+equating 
+
+state 
+
+in  the  present 
+imply  a  commitment 
+
+framework 
+
+raises  an  interesting 
+
+to  internal 
+
+representation? 
+
+proponents 
+
+of  internal 
+
+and  critics  of  situated 
+
+agent 
+
+state  with 
+
+representation, 
+
+to  argue 
+
+the  need 
+
+for  reactivity 
+
+research  has 
+with  propo- 
+and  critics 
+
+systems 
+
+to  argue 
+
+the  need 
+
+for  representation 
+
+a  more  detailed 
+
+state  and  representation 
+treatment 
+the  answer  must  be  no. 
+and 
+
+that 
+internal 
+
+state 
+
+than 
+
+the  same 
+
+thing?  Though 
+
+I  can  give  it  here, 
+
+let 
+
+theoretical 
+appropriate 
+
+claim 
+representations 
+
+that  a  system’s 
+and 
+
+then  becomes 
+
+a  tautological 
+
+theoretical 
+
+the 
+of 
+
+putationalism, 
+instantiation 
+[28,51,54], 
+esis  must  be  falsifiable, 
+empirically 
+
+tested  and  it  must  be  possible 
+
+that 
+
+is,  it  must  be  formulated 
+
+to  be 
+sufficiently 
+that  the  test  will  come  out  negative.  But 
+
+clearly 
+
+that 
+
+is 
+derives 
+
+representation 
+behavior 
+computational 
+
+from 
+processes 
+position.  A  scientific  hypoth- 
+
+com- 
+its 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (1995)  173-215 
+
+211 
+
+all  physical  systems  possess  internal  state  on  a  variety  of  timescales.  We  would 
+presumably  hesitate  in  accepting,  say,  the  temperature  of  the  fuel-air  mixture  in  a 
+cylinder  of  an  automobile  engine  as  a  representation 
+If,  on  the  other  hand,  we  did  admit  such  a 
+storm  as  performing  any  computation. 
+then  computationalism  would 
+broad  definition  of  representation 
+and  would  therefore  be 
+rather 
+become 
+making  no 
+the  processes 
+theoretical 
+underlying  behavior.  Similar  problems  exist  with  other  commonsense  notions  of 
+of  the 
+representation 
+relationship  between 
+input  and  output).  For  a  more  detailed  discussion  of  these 
+issues,  see  [12]. 
+
+and  computation, 
+than  by  demonstration 
+
+true  by  definition 
+interesting 
+
+of  anything,  or  a  thunder- 
+
+(e.g.,  correlation) 
+
+and  computation 
+
+the  nature  of 
+
+claim  about 
+
+systematicity 
+
+(e.g., 
+
+therefore 
+
+[30,61].  There 
+
+For  this  reason, 
+
+be  special  cases  of  dynamical 
+
+the  mere  possession  of  internal  state  (or  correlation, 
+systems  must 
+
+representation  must  require  additional  conditions  above  and 
+etc.)  and  computa- 
+beyond 
+systems  more 
+tional 
+generally 
+form 
+is  a  great  deal  of  controversy 
+of  these  extra  conditions,  but  the  details  fortunately  need  not  concern  us  here. 
+What  matters  is that  the  framework’s  emphasis  on  internal  state,  while  allowing  it 
+to  transcend 
+imply 
+the  question  of  whether  or  not 
+a  commitment 
+the  operation  of  any 
+the  notion  of  representation 
+of  the  internal 
+investigation 
+particular 
+is  thus,  strictly 
+organization  of  that  particular  agent’s  dynamics.  The  framework 
+speaking,  agnostic  about  the  theoretical 
+and  computation 
+in  the  design  and  analysis  of  autonomous 
+
+the  limitations  of  purely  reactive  systems,  does  not  necessarily 
+
+agent  must  be  settled  by  an  empirical 
+
+to  internal  representation.  Rather, 
+
+roles  of  representation 
+
+about  the  particular 
+
+for  understanding 
+
+is appropriate 
+
+agents. 
+
+5.5.  Conclusion 
+
+This  paper  has  largely  been  presenting  an  argument  about  language,  namely  the 
+In 
+language  that  we  use  to  talk  about  autonomous  agents  and  their  environments. 
+particular,  my  primary  goal  has  been 
+ideas 
+emerging  from  recent  work  on  autonomous  agents  (as  well  as  work  on  the  neural 
+basis  of  animal  behavior, 
+this  aspect  here)  can  be 
+though  I  have  not  emphasized 
+naturally  cast  into  the  language  of  dynamical  systems  theory. 
+
+that  many  of  the 
+
+to  demonstrate 
+
+One  must  never  underestimate 
+
+the  power  of  language 
+
+in  shaping  the  way  we 
+languages  provide  the  metaphors  we  use  to 
+
+the  very  phenomena  we  seek 
+
+to  understand.  A  computational 
+
+invites  us  to  think  about  representations 
+
+think  about  the  world.  Our  theoretical 
+conceptualize 
+language 
+and  their  manipulation.  Using 
+this  language,  we  become  concerned  with  the  structure  of  representations,  where 
+they  are  stored,  how  they  are  retrieved,  what  they  mean,  etc.  From  a  computa- 
+in  an  agent’s  behavior  become  windows 
+tional  perspective,  observed 
+into  its  program. 
+acts  toward  some  end, 
+tells  us,  it  must  be  by  virtue  of  possessing  an  internal 
+then,  computationalism 
+perception 
+that  goal.  From 
+representation 
+of  the 
+becomes  a  problem  of  reconstructing 
+and 
+external 
+
+Taking  action  becomes  a  problem  of  constructing 
+
+If,  for  example,  an  agent  persistently 
+
+a  computational 
+an  accurate 
+
+representation 
+
+environment. 
+
+perspective, 
+
+regularities 
+
+internal 
+
+of 
+
+212 
+
+R.D.  Beer  I  Artificial  Intelligence  72  (199.5)  17.3-215 
+
+representations 
+
+executing 
+problem  of  modifying  existing  representations 
+so  on. 
+
+of  the  actions 
+
+to  be  performed.  Learning  becomes  a 
+and  accumulating  new  ones.  And 
+
+the  difficult 
+
+This  paper  has  only  just  begun 
+
+exhibited  by  autonomous 
+in  developing 
+
+for  these  and  other  phenomena 
+to  be  done 
+
+task  of  developing  a  dynamical 
+language 
+agents.  A 
+great  deal  of  work  remains 
+into  a 
+full-fledged 
+theory. 
+for 
+our  understanding 
+then  specific  dynamical  accounts  of 
+sequential  behavior, 
+perception, 
+learning,  etc.  will  need  to  be  developed  and  these  accounts  will  need  to  be  applied 
+to  specific  agents,  both  natural  and  artificial.  I  strongly  suspect  that  a  dynamical 
+perspective  on  these  phenomena  will  significantly  change  the  way  we  think  about 
+them. 
+
+action,  goal-oriented  behavior,  decision-making, 
+
+is  to  succeed  in  providing  a  foundation 
+
+If  this  framework 
+of  autonomous 
+
+this  framework 
+
+agents, 
+
+Ultimately, 
+
+the  position 
+
+representations. 
+
+like  all  work  on  embodied  agents,  the  framework  must  face  the  fact 
+form  and  reason  with  conceptual 
+
+that  people  can  deliberately 
+that  such  intellectual  capabilities  are  relatively 
+While  I  have  taken 
+capacity  for  situated  action  (and 
+recent  elaborations  of  a  far  more  fundamental 
+are  therefore  not  nearly  so  crucial  as  is  usually  assumed  for  even  highly  complex 
+but  nondeliberative 
+eventually  be  explained. 
+to  such  cognitive  behavior  as 
+Will  attempts 
+of 
+language 
+computational 
+for 
+situated  action?  Or  will  the  very  way  we  think  about  such  cognitive  behavior,  and 
+the  notions  of  representation 
+that  currently  seek  to  underwrite 
+it,  also  have  to  change  in  the  process? 
+
+to  extend  a  dynamical  perspective 
+
+implementation 
+responsible 
+
+they  must  nevertheless 
+
+the 
+substrate 
+
+and  computation 
+
+the  dynamical 
+
+processes  on 
+
+and  abstract 
+
+to  require 
+
+behavior), 
+
+reasoning 
+
+turn  out 
+
+top  of 
+
+Acknowledgments 
+
+and  Beth  Preston 
+
+for  many  useful  discussions  and  for 
+
+I  would  like  to  thank  Phil  Agre,  Hillel  Chiel,  John  Gallagher,  Ken  Loparo, 
+Leslie  Picardo, 
+their 
+comments  on  earlier  drafts  of  this  paper.  I would  also  like  to  thank  the  reviewers, 
+the  Workshop 
+as  well  as  the  attendees 
+of 
+their  many  helpful  suggestions.  The  simulation 
+and  Agency, 
+Interaction 
+experiments 
+in  Section  4  were  carried  out  in  collaboration  with  John 
+reviewed 
+Gallagher.  This  work  was  supported  by  grant  NOOO14-90-J-1545 from  the  Office  of 
+the  Howard  Hughes 
+Naval  Research.  Additional 
+through 
+Medical  Institute  and  the  Cleveland  Advanced  Manufacturing  Program 
+the  Center  for  Automation 
+
+and  Intelligent  Systems  Research. 
+
+support  was  provided  by 
+
+on  Computational 
+
+of 
+for 
+
+Theories 
+
+References 
+
+[l]  R.H.  Abraham 
+
+and  CD. 
+
+Shaw,  Dynamics-The 
+
+Geometry  of  Behavior 
+
+(Addison-Wesley, 
+
+Redwood  City,  CA,  2nd  ed.,  1992). 
+
+R. D.  Beer  I  Artificial  Intelligence  72  (1995)  173-215 
+
+213 
+
+[2]  P.  Agre, 
+
+Cambridge,  MA 
+
+The  dynamic 
+(1988). 
+
+structure 
+
+of  everyday 
+
+life,  Technical 
+
+Report 
+
+1085,  MIT  AI  Lab., 
+
+[3]  P.E.  Agre  and  D.  Chapman, 
+
+Pengi: 
+
+an  implementation 
+
+of  a  theory 
+
+of  activity, 
+
+in:  Proceedings 
+
+Seattle,  WA  (1987)  268-272. 
+
+AAAI-87, 
+[4]  J.S.  Altman 
+[5]  M.A.  Arbib 
+
+and  J.  Kien,  Highlighting 
+and  J.-S.  Liaw,  Sensorimotor 
+
+Aplysia’s  networks, 
+transformations 
+
+Trends  Neurosci.  13  (3)  (1990)  81-82. 
+robots, 
+
+in  the  worlds  of  frogs  and 
+
+Artif.  Intell.  12  (1995)  53-79. 
+
+[6]  W.R.  Ashby,  Design  for  a  Brain  (Wiley,  New  York,  2nd  ed.,  1960). 
+[7]  K.J.  Astrom, 
+
+Introduction  to  Stochastic  Control  Theory  (Academic 
+
+Press,  New  York,  1970). 
+
+[S]  D.H.  Ballard,  Animate 
+
+vision,  Artif.  Intell.  48  (1991)  57-86. 
+
+[9]  A.G.  Barto,  S.J.  Bradtke 
+
+and  S.P.  Singh,  Learning 
+
+to  act  using  real-time 
+
+dynamic 
+
+programming. 
+
+Artif.  Intell.  72  (1995)  81-138. 
+
+[lo]  K.  Basye,  T.  Dean  and  L.P.  Kaelbling, 
+
+Learning 
+
+dynamics: 
+
+system 
+
+identification 
+
+for  perceptually 
+
+challenged 
+
+agents,  Artif.  Zntell.  72  (1995)  139-171. 
+
+[ll]  R.D.  Beer, 
+
+(Academic 
+
+Intelligence  as  Adaptive  Behavior:  An  Experiment 
+Press,  San  Diego,  CA,  1990). 
+and  dynamical 
+
+languages 
+
+for  autonomous 
+
+[12]  R.D.  Beer,  Computational 
+
+and  R.  Port,  eds.,  Mind  as  Motion  (MIT  Press,  Cambridge,  MA, 
+
+in  Computational  Neuroethology 
+
+agents, 
+to  appear). 
+
+in:  T.  van  Gelder 
+
+[13]  R.D.  Beer  and 
+
+J.C.  Gallagher, 
+
+Evolving 
+
+dynamical 
+
+neural 
+
+networks 
+
+for  Adaptive 
+
+behavior, 
+
+Adaptive  Behav.  1  (1992)  91-122. 
+
+[14]  R.D.  Beer,  R.E.  Ritzmann 
+
+and  T.  McKenna, 
+
+eds.,  Biological  Neural  Networks  in  Invertebrate 
+
+Neuroethology  and  Robotics  (Academic 
+
+Press,  San  Diego,  CA,  1993). 
+
+[15]  R.D.  Beer,  H.J.  Chiel,  R.D.  Quinn,  K.S.  Espenschied 
+
+and  P.  Larsson,  A  distributed 
+
+neural 
+
+network 
+[16]  R.K.  Belew 
+
+architecture 
+
+for  hexapod 
+
+and  L.B.  Booker, 
+
+robot 
+locomotion,  Neural  Comput.  4  (3)  (1992)  356-365. 
+eds.,  Proceedings  of  the  Fourth  International  Conference  on 
+
+Genetic  Algorithms 
+
+(Morgan  Kaufmann, 
+
+San  Mateo,  CA,  1991). 
+
+[17]  L.B.  Booker, 
+161-192. 
+
+Classifier 
+
+systems 
+
+that 
+
+learn 
+
+internal  world  models,  Mach.  Learn.  3  (1988) 
+
+[18]  R.A.  Brooks,  A  robust 
+
+layered 
+
+control 
+
+system 
+
+for  a  mobile 
+
+robot, 
+
+IEEE  Trans.  Rob.  Aurom. 
+
+2 
+
+(1986)  14-23. 
+
+[19]  R.A.  Brooks,  A  robot 
+
+that  walks:  emergent 
+
+behaviors 
+
+from  a  carefully 
+
+evolved  network,  Neural 
+
+Comput.  1 (2)  (1989)  253-262. 
+
+[20]  R.A.  Brooks, 
+[21]  R.A.  Brooks,  Artificial 
+
+Intelligence  without 
+life  and 
+
+representation, 
+real 
+
+robots, 
+
+Artif.  Intell.  47  (1991)  139-159. 
+
+in:  Toward  a  Practice  of  Autonomous  Agents: 
+
+Proceedings  of  the  First  European  Conference  of  Artificial  Life,  Paris,  France 
+
+(1992)  3-10. 
+
+[22]  D.  Chapman, 
+[23]  D.  Chapman 
+algorithm 
+726-731. 
+
+Vision,  Instruction  and  Action  (MIT  Press,  Cambridge,  MA,  1991). 
+and  L.P.  Kaelbling, 
+
+Input  generalization 
+
+reinforcement 
+
+in  delayed 
+
+and  performance 
+
+comparisons, 
+
+in:  Proceedings  ZJCAZ-91,  Sydney,  Australia 
+
+learning: 
+
+an 
+(1991) 
+
+neuroethology: 
+
+(241  D.  Cliff,  Computational 
+
+in:  From  Animals  to  Animafs: 
+Proceedings  of  the  First  International  Conference  on  Simulation  of  Adaptive  Behavior,  Paris, 
+France 
+[25]  F.  Delcomyn, 
+[26]  M.  Donner,  Real-Time  Control  of  Walking  (Birkhauser, 
+[27]  J.L.  Elman,  Distributed 
+
+Science  210  (1980)  492-498. 
+
+Neural  basis  of  rhythmic 
+
+a  provisional  manifesto, 
+
+Boston,  MA,  1987). 
+
+and  grammatical 
+
+(1991)  29-39. 
+
+representations, 
+
+in  animals, 
+
+structure, 
+
+networks 
+
+recurrent 
+
+behavior 
+
+simple 
+
+Mach.  Learn.  7  (1991)  195-225. 
+
+Press,  Cambridge,  MA,  1975). 
+[28]  J.A.  Fodor,  The  Language  of  Thought  (Harvard  University 
+of  evolved 
+[29]  J.C.  Gallagher 
+controllers, 
+eds.,  From  Animals  to  Animats  2: 
+Proceedings  of  the  Second  International  Conference  on  the  Simulation  of  Adaptive  Behavior  (MIT 
+Press,  Cambridge,  MA,  1993)  71-80. 
+
+and  R.D.  Beer,  A  qualitative 
+
+in:  J.-A.  Meyer,  H.  Roitblat 
+
+and  S.  Wilson, 
+
+locomotion 
+
+dynamical 
+
+analysis 
+
+[30]  M.  Giunti,  Computers, 
+
+dynamical 
+
+systems, 
+
+phenomena 
+
+and 
+
+the  mind,  Ph.D.  Thesis, 
+
+Indiana 
+
+University, 
+
+Bloomington, 
+
+IN  (1992). 
+
+214 
+
+R.  D.  Beer 
+
+I) Artificral 
+
+lnteiligence  72  (1 U9.q)  /7.1-115 
+
+1311  D.E.  Goldberg, 
+
+Genetic,  Algorithms 
+
+in  Search.  Optimizution 
+
+and  Machine  Learning 
+
+(Addison- 
+
+Wesley,  Reading.  MA.  1989). 
+
+[32]  D.  Graham, 
+[33]  J.K.  Hale  and  H.  Koc;ak,  Dynamics  and  Bifurcations 
+[34]  J.K.  Hale,  L.T.  Magalhaes 
+
+and  control  of  walking 
+
+Pattern 
+
+and  W.M.  Oliva.  An  Introduction 
+
+in  insects,  Adv. 
+
+fr1sec.t Physiol.  18  (1985)  31-140. 
+
+(Springer-Verlag, 
+
+New  York,  1991). 
+
+to  infinite  Dimensional  Dynamical 
+
+Systems--C;eometric 
+[35]  S.A.  Harp.  T.  Samad 
+Proceedings  Third 
+
+Theory 
+
+(Springer-Verlag. 
+and  A.  Guha.  Towards 
+
+New  York,  1984). 
+the  genetic 
+
+synthesis 
+
+of  neural 
+
+networks, 
+
+in: 
+
+Irlternational  Confererrcc  on  Genetic  Algorithms. 
+
+Fairfax.  VA  ( 1989)  360-369. 
+
+I.161  I.  Harvey,  Untimed 
+
+and  misrepresented: 
+Report  CSRP  245.  School  of  Cognitive 
+Adaptation 
+
+connectionism 
+and  Computing 
+in  Natural  and  Artificial  Systems  (University 
+
+and 
+Sciences.  University 
+
+(371  J.H.  Holland, 
+
+the  computer  metaphor, 
+
+of  Sussex 
+
+of  Michigan 
+
+Press.  Ann 
+
+Technical 
+(1992). 
+
+Arbor.  MI,  1975). 
+
+(381  J.J.  Hopfield,  Neurons  with  graded 
+
+response 
+
+properties 
+
+have  collective 
+
+computational 
+
+properties 
+
+like  those  of  two-state 
+I.  Horswill. 
+[39] 
+[40\  P.  Husbands 
+
+neurons. 
+
+Proc.  Nut.  Acad.  Sci.  81  (1984)  3088-3092. 
+
+analysis  of  adaptation 
+and  I.  Harvey.  Evolution 
+
+and  environment, 
+
+Artif. 
+vs.  design:  controlling 
+
+Intel/.  73  (1995). 
+autonomous 
+
+to appear. 
+
+robots. 
+
+in:  Proceedings 
+
+Third  Annual  Conferenc,c  on  Al,  Simulation  and  Plunning,  Perth.  Australia 
+
+( 1992)  139-  146. 
+
+[4l]  L.P.  Kaelbling, 
+(421  L.P.  Kaelbling 
+
+Learning 
+and  S.J.  Rosenschein. 
+
+in  Embedded  Systems  (MIT  Press.  Cambridge.  MA,  1993). 
+
+Action 
+
+and  planning 
+
+in  embedded 
+
+agents.  Robotics  and 
+
+Autonomous  Systems  6  (l-2) 
+
+(1990)  35-38. 
+
+(431  T.B.  Kepler.  L.F.  Abbott 
+
+and  E.  Marder.  Reduction 
+
+of  conductance-based 
+
+neuron  models,  Biol. 
+
+Cybern.  66  (1992)  381-387. 
+
+the  earwig. 
+
+tomorrow  man. ‘).  Artif. 
+
+(441  D.  Kirsch.  Today 
+[4Sl  P.  Maes,  ed..  Designing  Autonomous  Agents  (MIT  Press.  Cambridge.  MA,  1990). 
+1461  S.  Mahadevan 
+inforcement 
+[47]  H.R.  Maturana 
+1481  H.R.  Maturana 
+[49l  J.-A.  Meyer 
+
+and  F.J.  Varela.  Autopoiesis  and  Cognition 
+and  F.J.  Varela.  The  Tree  of  Knowledge 
+eds.. 
+
+of  behavior-based 
+CA  (1991)  768-773. 
+(Reidel.  Boston.  MA,  1980). 
+
+in:  Proceedings  AAAI-Yl, 
+
+J.  Connell.  Automatic 
+
+and 
+learning, 
+
+and  S.W.  Wilson. 
+
+Intell.  47  (1991)  161-184. 
+
+From  Animals 
+
+programming 
+
+to  Animats: 
+
+(Shambhala, 
+
+Anaheim, 
+
+robots 
+
+Boston.  MA,  1987). 
+
+using 
+
+re- 
+
+Proceedings  of 
+
+the  First 
+(MIT  Press.  Cambridge,  MA, 
+
+International 
+1991). 
+
+Conference  on  Simulation 
+
+of  Adaptive  Behavior 
+
+(501  G.F.  Miller.  P.M.  Todd  and  S.U.  Hegde.  Designing 
+
+neural  networks 
+International  Conference  on  Genetic  Algorithms. 
+
+Proceedings  Third 
+
+(511  A.  Newell 
+
+and  H.A. 
+
+Simon.  Computer 
+
+science 
+
+as  empirical 
+
+Commun.  ACM 
+
+19  (1976)  113-126. 
+
+using  genetic  algorithms, 
+Fairfax.  VA  (1989)  379-384. 
+search, 
+
+symbols 
+
+and 
+
+inquiry: 
+
+in: 
+
+action  potentials. 
+
+in:  J.C.  Fentress, 
+
+ed..  Simpler  Networks  and 
+
+Sunderland.  MA.  1976). 
+
+Behavior 
+
+[52]  K.G.  Pearson,  Nerve  cells  without 
+(Sinauer. 
+[53]  J.B.  Pollack,  The 
+[54]  Z.W.  Pylyshyn. 
+(551  J.  Rinzel  and  G.B.  Ermentrout, 
+I.  Segev.  eds.,  Methods 
+
+induction 
+Computation 
+
+of  dynamical 
+and  Cognition 
+Analysis 
+
+recognizers. 
+
+Mach.  Learn.  7  (1991)  227-252. 
+
+(MIT  Press,  Cambridge,  MA,  1984). 
+
+of  neural  excitability 
+
+and  oscillations. 
+
+in:  C.  Koch  and 
+
+in  Neuronal  Modeling 
+
+(MIT  Press,  Cambridge,  MA.  1989). 
+
+1561  S.J.  Rosenschein, 
+(1985)  345-357. 
+
+Formal 
+
+theories 
+
+of  knowledge 
+
+in  AI  and 
+
+robotics.  New  G‘erz.  Comput.  3  (4) 
+
+(571  G.  Sch6ner  and  J.A.S.  Kelso,  Dynamic 
+
+pattern 
+
+generation 
+
+in  behavioral 
+
+and  neural 
+
+systems, 
+
+Science  239  (1988)  1513-1520. 
+
+[58]  C.A.  Skarda 
+
+and  W.J.  Freeman,  How  brains  make  chaos 
+
+in  order 
+
+to  make 
+
+sense  of  the  world. 
+
+Behav.  Brain  Sci. 
+
+IO  (1987)  161-195. 
+
+(SY]  T.  Smithers. 
+research, 
+Conference  on  Artificial  Life.  Paris,  France 
+
+eliminative  materialism 
+
+in:  Toward  a  Practice  of  Autonomous 
+
+Taking 
+
+(1992)  31-40. 
+
+seriously: 
+
+a  methodology 
+
+systems 
+Systems:  Proceedings  of  the  First  European 
+
+for  autonomous 
+
+the  proper 
+(601  P.  Smolensky.  On 
+(hl]  T.  van  Gelder.  What  might 
+
+treatment 
+cognition 
+
+of  connectionism. 
+be 
+Science,  Bloomington. 
+
+IN  (1992). 
+
+if  not  computation. 
+
+University  Cognitive 
+
+Behav.  Brain  Sci.  11  (1988)  1-74. 
+
+‘1,  Technical 
+
+Report 
+
+75, 
+
+Indiana 
+
+R.D.  Beer 
+
+I  Artificial  Intelligence  72  (199.5)  173-215 
+
+215 
+
+[62]  X.-J.  Wang  and  J.  Rinzel,  Alternating  and  synchronous  rhythms  in  reciprocally  inhibitory  model 
+
+neurons,  Neural  Comput.  4  (1992)  M-97. 
+
+(631  N.  Wiener,  Cybernetics  (MIT  Press,  Cambridge,  MA,  2nd  ed.,  1961). 
+(641 G.  Wendler,  The  influence  of  proprioceptive 
+
+feedback  on  locust  flight  coordination, 
+
+J.  Comput. 
+
+Physiol.  88  (1974)  173-200. 
+
+[65]  G.M.  Werner  and  M.G.  Dyer,  Evolution  of  communication 
+
+in:  C.G. 
+Langton,  C.  Taylor,  J.D.  Farmer  and  S.  Rasmussen,  eds.,  Artificial  Life  II  (Addison-Wesley, 
+Reading,  MA,  1991). 
+
+in  artificial  organisms, 
+
+[66]  S.  Wiggins,  Introduction 
+New  York,  1990). 
+
+to  Applied  Nonlinear  Dynamical  Systems  and  Chaos  (Springer-Verlag, 
+
+[67]  S.W.  Wilson,  Knowledge  growth  in  an  artificial  animal,  in:  K.S.  Narendra,  ed.,  Adaptive  and 
+
+Learning  Systems  (Plenum  Press,  New  York,  1986). 
+
+

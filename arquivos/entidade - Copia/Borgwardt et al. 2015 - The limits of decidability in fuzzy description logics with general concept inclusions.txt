@@ -1,0 +1,6102 @@
+Artiﬁcial Intelligence 218 (2015) 23–55
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial  Intelligence
+
+www.elsevier.com/locate/artint
+
+The  limits  of  decidability  in  fuzzy  description  logics 
+with general  concept  inclusions
+,  Rafael Peñaloza a,b,∗
+,  Felix Distel a,∗
+Stefan Borgwardt a,∗
+a Institute for Theoretical Computer Science, Technische Universität Dresden, 01062 Dresden, Germany
+b Center for Advancing Electronics Dresden, Germany
+
+a  r  t  i  c  l  e 
+
+i  n  f  o
+
+a  b  s  t  r  a  c  t
+
+Article history:
+Received 25 November 2013
+Received in revised form 11 August 2014
+Accepted 25 September 2014
+Available online 2 October 2014
+
+Keywords:
+Fuzzy description logics
+Triangular norms
+Ontology consistency
+Decidability
+
+1.  Introduction
+
+Fuzzy description logics (DLs) can be used to represent and reason with vague knowledge. 
+This family of logical formalisms is very diverse, each member being characterized by a 
+speciﬁc  choice  of  constructors,  axioms,  and  triangular  norms,  which  are  used  to  specify 
+the semantics. Unfortunately, it has recently been shown that the consistency problem in 
+many fuzzy DLs with general concept inclusion axioms is undecidable. In this paper, we 
+present  a  proof  framework  that  allows  us  to  extend  these  results  to  cover  large  classes 
+of fuzzy DLs. On the other hand, we also provide matching decidability results for most 
+of the remaining logics. As a result, we obtain a near-universal classiﬁcation of fuzzy DLs 
+according to the decidability of their consistency problem.
+
+© 2014 Elsevier B.V. All rights reserved.
+
+Description logics (DLs) [1] are a family of knowledge representation formalisms, designed to represent the terminological 
+knowledge of a domain in a formally well-understood way. They form the base language for many large-scale knowledge 
+bases,  like Snomed CT1 and  the  Gene  Ontology,2 but  arguably  their  largest  success  to  date  is  the  recommendation  by 
+the W3C of the DL-based language OWL as the standard ontology language for the Semantic Web.3 DLs essentially allow 
+to state relations between concepts, which represent subsets of a speciﬁc domain containing exactly those domain elements 
+that  share  certain  properties.  Roles correspond  to  binary  relations  that  allow  to  state  connections  between  concepts.  For 
+example, the concept of a human father can be expressed as
+
+Human (cid:3) Male (cid:3) ∃hasChild.(cid:5),
+
+which describes the set of all humans that are male and have a child. Here,  Human and  Male are atomic concept names, 
+whereas hasChild is a role name. Domain-speciﬁc relations between concepts can be expressed in axioms such as
+
+bob : Male,
+
+Human (cid:6) ∀hasChild.Human,
+
+* Corresponding authors. Tel.: +49 351 463 38231; fax: +49 351 463 37959.
+
+E-mail addresses: stefborg@tcs.inf.tu-dresden.de (S. Borgwardt), felix@tcs.inf.tu-dresden.de (F. Distel), penaloza@tcs.inf.tu-dresden.de (R. Peñaloza).
+
+1 http :/ /www.ihtsdo .org /snomed-ct/.
+2 http :/ /www.geneontology.org/.
+3 http :/ /www.w3 .org /TR /owl2-overview/.
+
+http://dx.doi.org/10.1016/j.artint.2014.09.001
+0004-3702/© 2014 Elsevier B.V. All rights reserved.
+
+24
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+saying that bob is a male individual, and that every human can only have human children, respectively. The former axiom is 
+called an assertion, the latter a general concept inclusion (GCI). In DLs, various reasoning problems over a set of such axioms, 
+called an ontology or knowledge base, are studied. The most fundamental one is to decide whether an ontology is consistent; 
+that  is,  if  the  restrictions  expressed  by  its  axioms  can  actually  be  realized  in  a  model.  Different  sets  of  constructors  for 
+expressing  concepts,  such  as  conjunctions ((cid:3))  or  value  restrictions (∀),  lead  to  logics  of  varying  expressivity,  resulting  in 
+differences between the computational complexity of their consistency problems. For example, in the inexpressive DL EL, 
+consistency is trivial, whereas other reasoning problems such as subsumption have only polynomial complexity. In the more 
+expressive ALC, consistency without GCIs is PSpace-complete, and is ExpTime-complete in the presence of GCIs. The very 
+expressive SROIQ, the formalism underlying the OWL 2 Direct Semantics, has a 2-NExpTime-complete consistency problem.
+In their classical form, however, DLs are not well-suited for representing and reasoning with the vagueness and impre-
+cision that are endemic to many knowledge domains, e.g. in the bio-medical ﬁelds. For example, one of the most common 
+symptoms of diseases is the presence of fever, which is characterized by a high body temperature. Clearly, it is not possible 
+to precisely distinguish high body temperatures from non-high body temperatures. In order to appropriately represent this 
+knowledge, it is necessary to use a formalism capable of handling imprecision. Fuzzy variants of DLs have been introduced 
+as a means of handling imprecise terminological knowledge. This is achieved by interpreting concepts as fuzzy sets. In a nut-
+shell, a fuzzy set associates with every element of the universe a value from the interval [0, 1], which expresses its degree 
+of membership to the set. This makes it possible to express, e.g. that 38 °C is a high body temperature to degree 0.7, while 
+39 °C belongs to the same concept with degree 1.
+
+Compared  to  classical  DLs,  fuzzy  DLs  have  an  additional  degree  of  freedom  for  choosing  how  to  interpret  the  logical 
+constructors.  A  standard  approach,  inherited  from  mathematical  fuzzy  logic [2,3],  is  to  use  a  continuous  triangular  norm 
+(t-norm) [4] to interpret conjunction. The three most commonly used t-norms, called Gödel, Łukasiewicz, and product, have 
+the interesting property that all other continuous t-norms can be represented by composing copies of them in a certain way. 
+From the chosen t-norm ⊗, the semantics of all other logical constructors is determined, generalizing the properties of the 
+classical operators. Ontologies of fuzzy DLs generalize classical ontologies by annotating each axiom with a fuzzy value that 
+speciﬁes the degree to which the axiom holds. For example, a fuzzy assertion like (cid:9)bob : ∃hasFever.High ≥ 0.6(cid:11) can specify 
+that an individual (in this case bob) belongs to a fuzzy concept (∃hasFever.High) at least to a certain degree (e.g. 0.6).
+
+For  the  last  two  decades,  research  on  fuzzy  DLs  has  covered  many  different  logics,  from  the  inexpressive  EL [5] to 
+the expressive SROIQ(D) [6], from simple fuzzy semantics [7] to ones covering all continuous t-norms [8], from acyclic 
+terminologies [9] to GCIs [10]. Fuzzy reasoning algorithms were implemented [11,12] and the use of fuzziness in practical 
+applications  was  studied [13,14].  Recently,  the  focus  in  the  area  changed  when  some  tableau-based  algorithms  for  DLs 
+allowing  general  concept  inclusions  were  shown  to  be  incorrect [15,16].  This  raised  doubts  about  the  decidability  of  the 
+consistency  problem  in  these  logics,  and  eventually  led  to  a  plethora  of  undecidability  results  for  fuzzy  DLs [16–19].  In 
+particular, one does not need to go beyond the expressivity of ⊗-ALC to get undecidability [18,19].
+
+The main goal of this paper is to characterize the limits of decidability in fuzzy DLs; in other words, we want to partition 
+the family of fuzzy DLs according to the decidability of consistency in them. For the cases where the problem is decidable, 
+we are also interested in ﬁnding precise complexity bounds. Given the sheer number of fuzzy DLs available, identiﬁed by 
+the  set  of  constructors,  types  of  axioms,  and  t-norm  that  they  use,  it  is  infeasible  to  study  each  of  them  independently. 
+Instead, we develop general methods for proving (un)decidability of these logics.
+
+Most  of  the  known  undecidability  results [16,17,19] focus  on  one  speciﬁc  fuzzy  DL;  that  is,  undecidability  is  proven 
+for a speciﬁc set of constructors, axioms, and chosen semantics. The papers [16,17] show undecidability of (extensions of) 
+⊗-ALCf,≥,  where  ⊗ is  the  product  t-norm,  while [19] shows  the  same  for  the  Łukasiewicz  t-norm.  The  only  exception 
+is [18], where undecidability is shown for ⊗-IALf,= for all t-norms ⊗ “starting” with the product t-norm. Abstracting from 
+the  details  of  each  speciﬁc  logic,  all  these  proofs  of  undecidability  follow  the  same  basic  pattern.  In  essence,  it  is  shown 
+that the logic satisﬁes a series of properties that allows it to encode the Post Correspondence Problem [20].
+
+In the ﬁrst part of this paper, we generalize these ideas and describe a set of properties that together imply undecid-
+ability of a fuzzy DL. We use this general framework to strengthen all previously known undecidability results to cover all 
+continuous t-norms except the Gödel t-norm, for which the problem is decidable [21]. Additionally, we present some vari-
+ants on the same ideas that allow us to prove undecidability of fuzzy DLs that do not ﬁt precisely into the main framework. 
+For instance, we show that the fairly inexpressive fuzzy DL ⊗-IEL= is undecidable for any continuous t-norm ⊗ except the 
+Gödel t-norm. This can be strengthened to the even less expressive ⊗-NEL if ⊗ starts with the Łukasiewicz t-norm. These 
+logics  are  of  interest  since  they  correspond  to  fuzzy  variants  of  the  prototypical  classical  DL ALC.  Indeed,  they  have  the 
+same expressivity as ALC when their semantics is restricted to the two classical truth values.
+
+In the second part of the paper, we complement these results by considering fuzzy DLs based on t-norms that do not 
+start with the Łukasiewicz t-norm, which in particular includes the product and Gödel t-norms. Under this assumption, we 
+show that consistency is decidable even for the very expressive logic ⊗-SROIQf,≥ if axioms are not allowed to express 
+upper  bounds.  We  show  an  even  stronger  result:  under  these  conditions,  an  ontology  is  consistent  w.r.t.  fuzzy  semantics 
+iff  it  is  consistent  w.r.t.  crisp semantics,  i.e.  using  only  the  classical  truth  values 0 and 1.  Thus,  ontology  consistency  in 
+⊗-SHOI is ExpTime-complete, and in ⊗-SROIQ it is 2-NExpTime-complete. If these restrictions are not met, then the 
+problem is undecidable, as shown in the ﬁrst part of the paper.
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+25
+
+Table 1
+Gödel, product, and Łukasiewicz t-norms.
+x ⊗ y
+
+Name
+
+Gödel (G)
+
+Product (Π)
+
+min{x, y}
+
+x · y
+
+Łukasiewicz (Ł)
+
+max{x + y − 1, 0}
+
+x ⇒ y
+(cid:2)
+
+(cid:2)
+
+1 if x ≤ y
+y otherwise
+if x ≤ y
+
+1
+y/x otherwise
+min{1 − x + y, 1}
+
+(cid:13)x
+(cid:3)
+
+(cid:3)
+
+1 if x = 0
+0 otherwise
+1 if x = 0
+0 otherwise
+
+1 − x
+
+x ⊕ y
+
+max{x, y}
+
+x + y − x · y
+
+min{x + y, 1}
+
+Some of the results in this paper have appeared in a preliminary form in conference papers [22,23]. Here, we not only 
+combine those previous publications, but include more detailed proofs, add new undecidability results (see Section 3.5), and 
+discuss (un-)decidability results for fuzzy DLs under general model semantics (see Section 5.1). In particular, we
+
+• use the framework for showing undecidability from [22] to prove these results here in more detail;
+• add some explanatory material (examples, ﬁgures) to aid understanding of these proofs;
+• describe additions to the framework that allow us to show more undecidability results for fuzzy DLs of the form ⊗-IEL
+
+• extend  the  proof  from [23] that  shows  decidability  for  many  of  the  remaining  fuzzy  DLs  to  deal  with  ⊗-SROIQf,≥
+
+(Section 3.5);
+
+instead of only ⊗-SHOI f,≥; and
+
+• discuss related semantics and reasoning problems and present related work in more detail (Section 5).
+
+2.  Preliminaries
+
+We  start  with  a  brief  introduction  to  t-norms  and  mathematical  fuzzy  logic,  which  will  be  useful  for  deﬁning  fuzzy 
+
+extensions of description logics.
+
+2.1.  Triangular norms and mathematical fuzzy logic
+
+Mathematical  fuzzy  logic can  be  used  to  express  imprecise  or  vague  information [2].  It  extends  classical  logic  by  in-
+terpreting predicates as fuzzy sets over an interpretation domain. Given a non-empty domain  D, a fuzzy set is a function 
+F : D → [0, 1] from  D into  the  real  unit  interval  [0, 1],  with  the  intuition  that  an  element  x ∈ D belongs  to  F with  de-
+gree F (x). The interpretation of the logical constructors is based on appropriate truth functions that generalize the properties 
+of the connectives of classical logic to the interval [0, 1]. The most prominent truth functions used in the fuzzy logic litera-
+ture are based on triangular norms (or t-norms) [4].
+
+A t-norm is a binary operator ⊗: [0, 1] × [0, 1] → [0, 1] that is associative, commutative, and monotone, and has 1 as its 
+unit element. The t-norm is used to generalize classical conjunction. We will only consider continuous t-norms in this paper, 
+which means that they are continuous as a function, i.e. we have for all convergent sequences (xn)n≥0, ( yn)n≥0 that
+
+(cid:4)
+
+(cid:5)
+
+(cid:4)
+
+(cid:5)
+
+lim
+n→∞
+
+xn
+
+⊗
+
+lim
+n→∞
+
+yn
+
+= lim
+n→∞
+
+(xn ⊗ yn).
+
+The  residuum of  a  t-norm  ⊗ is  a  binary  operator  ⇒: [0, 1] × [0, 1] → [0, 1] that  satisﬁes  z ≤ x ⇒ y iff  x ⊗ z ≤ y for  all 
+x, y, z ∈ [0, 1]. If ⊗ is continuous, then this equivalence determines the unique residuum
+
+x ⇒ y := sup
+
+(cid:6)
+
+z ∈ [0, 1]
+
+(cid:7)
+(cid:7) x ⊗ z ≤ y
+
+(cid:8)
+
+.
+
+The  residuum  behaves  like  classical  implication  on  the  truth  values  0 and  1 and  is  used  to  generalize  the  implication  to 
+fuzzy logics. Given a residuum ⇒, the residual negation is the unary operator (cid:13): [0, 1] → [0, 1] deﬁned by (cid:13)x := x ⇒ 0. As 
+implied by its name, this operator generalizes classical negation. Finally, the disjunction can be fuzziﬁed using the t-conorm
+of a t-norm ⊗, which is a binary operator ⊕: [0, 1] × [0, 1] → [0, 1] deﬁned as x ⊕ y := 1 − ((1 − x) ⊗ (1 − y)). Like ⊗, it is 
+associative, commutative, and monotone in both arguments, but its unit element is 0.
+
+Whenever  we  have  a  continuous  t-norm  ⊗,  then  we  denote  by  ⇒,  (cid:13),  and  ⊕ the  corresponding  residuum,  residual 
+negation, and t-conorm, respectively. Three important continuous t-norms are the Gödel (G), product (Π), and Łukasiewicz 
+(Ł) t-norms. They are listed in Table 1 together with their induced operators. Fuzzy logics are sometimes extended with the 
+involutive negation operator, deﬁned as ∼x := 1 − x [24,25]. Observe that for ⊗ = Ł the involutive negation and the residual 
+negation  coincide;  that  is,  the  equality  ∼x = x ⇒ 0 holds.  However,  for  any  other  continuous  t-norm ⊗,  the  involutive 
+negation is not expressible in terms of ⊗ and its residuum ⇒.
+
+The following are simple consequences of the above deﬁnitions [4].
+
+Proposition 1. For every continuous t-norm ⊗ and x, y ∈ [0, 1],
+
+• x ⇒ y = 1 iff x ≤ y,
+
+26
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+• 1 ⇒ y = y, and
+• x ⊕ y = 0 iff x = 0 and y = 0.
+
+From the three fundamental t-norms listed in Table 1, all continuous t-norms can be constructed as described next. For 
+any a, b ∈ [0, 1] with a < b, we deﬁne the scaling function σa,b: [0, 1] → [a, b] by σa,b(x) := a + (b − a)x for all x ∈ [0, 1]. This 
+linear function is bijective with the inverse given by σ −1
+a,b (x) := x−a
+b−a . Let now ((ai, bi))i∈I be a (possibly inﬁnite) family of 
+non-empty, mutually disjoint open subintervals of [0, 1] and (⊗i)i∈I be a family of continuous t-norms over the same index 
+set  I . The ordinal sum of (((ai, bi), ⊗i))i∈I is the t-norm ⊗, deﬁned for every x, y ∈ [0, 1] by
+
+(cid:2)
+
+⎧
+⎨
+
+x ⊗ y :=
+
+σai ,bi (σ −1
+ai ,bi
+min{x, y}
+
+(x) ⊗i σ −1
+ai ,bi
+
+( y))
+
+if x, y ∈ [ai, bi] for some i ∈ I;
+otherwise.
+
+This construction always yields a continuous t-norm, whose residuum is given by
+
+x ⇒ y :=
+
+⎩
+
+1
+σai ,bi (σ −1
+ai ,bi
+y
+
+(x) ⇒i σ −1
+ai ,bi
+
+( y))
+
+if x ≤ y;
+if ai ≤ y < x ≤ bi;
+otherwise,
+
+where ⇒i denotes the residuum of ⊗i , for each i ∈ I . Intuitively, this means that the t-norm ⊗ and its residuum “behave 
+like” ⊗i and its residuum in each of the intervals [ai, bi], and like the Gödel t-norm and residuum everywhere else.
+
+are  isomorphic if  there  exists  a  strictly  increasing  mapping  ι: [0, 1] → [0, 1] such  that  ι(x ⊗ y) =
+ι(x) ⊗(cid:20) ι( y). It has been shown that, up to isomorphism, every continuous t-norm can be represented as the ordinal sum of 
+copies of the Łukasiewicz and product t-norms.
+
+Two  t-norms  ⊗,  ⊗(cid:20)
+
+Theorem 2. (See [26].) Every continuous t-norm is an ordinal sum of t-norms isomorphic to the Łukasiewicz t-norm or the product 
+t-norm.
+
+In the following, let ⊗ be a continuous t-norm and (((ai, bi), ⊗i))i∈I be its (unique) representation as ordinal sum given 
+by  Theorem 2.  For  ease  of  presentation,  we  assume  without  loss  of  generality  that  the  isomorphisms  occurring  in  this 
+theorem  are  the  identity  mapping,  which  means  that  each ⊗i
+is  either  the  Łukasiewicz  or  product  t-norm.  We  call  the 
+tuples (((ai, bi), ⊗i))i∈I the components of ⊗. We say that ⊗ (a, b)-contains Łukasiewicz or product if it has a component of 
+the form ((a, b), Ł) or ((a, b), Π), respectively. Similarly, ⊗ starts with Łukasiewicz if it has a component ((0, b), Ł). Whenever 
+the exact location of the interval (a, b) is irrelevant, we will omit it.
+
+An element x ∈ [0, 1] is called idempotent (w.r.t. ⊗) if x ⊗ x = x. Note that the idempotent elements are exactly those that 
+are not in (ai, bi) for any i ∈ I . In particular, 0 and 1 are always idempotent, as are ai and bi for any i ∈ I . It is easy to see 
+that a continuous t-norm has inﬁnitely many non-idempotent elements if and only if it is not the Gödel t-norm.
+
+An element x ∈ (0, 1] is called a zero divisor (of ⊗) if there exists a y ∈ (0, 1] such that x ⊗ y = 0. Of the three fundamental 
+continuous t-norms from Table 1, only the Łukasiewicz t-norm has zero divisors: every element x ∈ (0, 1) is a zero divisor 
+for this t-norm since 1 − x > 0 and x ⊗ (1 − x) = 0. In fact, a continuous t-norm has zero divisors if and only if it starts with 
+Łukasiewicz.
+
+Lemma 3. (See [4].) A continuous t-norm has zero divisors iff it starts with the Łukasiewicz t-norm.
+
+All continuous t-norms that do not start with Łukasiewicz deﬁne the same residual negation, known as the Gödel negation
+
+(cf. Table 1).
+
+Lemma 4. (See [4].) For any t-norm ⊗ without zero divisors and every x ∈ [0, 1],
+
+(cid:3)
+
+(a) x ⇒ y = 0 iff x > 0 and y = 0; and
+(b) (cid:13)x =
+
+1 if x = 0,
+0 otherwise.
+
+Example 5. The continuous t-norm ⊗ deﬁned by
+
+(cid:12)
+
+x ⊗ y :=
+
+2xy
+max{x + y − 1, 0.5}
+min{x, y}
+
+if x, y ∈ [0, 0.5],
+if x, y ∈ [0.5, 1],
+otherwise,
+
+is the ordinal sum of the two components ((0, 0.5), Π) and ((0.5, 1), Ł). In particular, it has no zero divisors, and therefore 
+its residual negation is the Gödel negation. Its only idempotent elements are 0, 0.5, and 1.
+
+Triangular norms are the basis for deﬁning the semantics of fuzzy description logics, which are introduced in the follow-
+
+ing section.
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+27
+
+Table 2
+Some relevant DLs and their expressivity.
+
+Name
+EL
+IEL
+NEL
+ELC
+
+AL
+IAL
+NAL
+ALC
+
+(cid:5)
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+(cid:3)
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+∃
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+∀
+
+⊥
+
+(cid:3)
+((cid:3))
+((cid:3))
+
+(cid:3)
+((cid:3))
+((cid:3))
+
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+→
+
+(cid:3)
+
+(cid:3)
+
+(cid:2)
+
+¬
+
+((cid:3))
+(cid:3)
+
+((cid:3))
+(cid:3)
+
+(cid:3)
+
+(cid:3)
+
+2.2.  Fuzzy description logics
+
+The  syntax  and  semantics  of  a  fuzzy  description  logic  ⊗-L are  determined  by  two  components:  the  language L and 
+the t-norm ⊗. We ﬁrst introduce the syntactical part L, which is determined by a choice of logical constructors and axioms, 
+and  usually  extends  the  syntax  of  an  underlying  classical  description  logic.  As  there  exists  a large  variety  of  constructors 
+available  in  description  logics,  we  start  deﬁning  a  generic  syntax  of  L and  later  describe  instantiations  to  more  speciﬁc 
+logics.
+
+The  central  notion  of  DLs  is  that  of  concepts,  which  are  built  from  atomic  concepts  (so-called  concept names)  using 
+
+different constructors, like conjunction, implication, or existential restrictions.
+
+Deﬁnition 6  (Concepts).  Let  NC,  NR,  and  NI be  mutually  disjoint  sets  of  concept names,  role names,  and  individual names, 
+respectively. The set of (complex) concepts is deﬁned inductively as follows:
+
+• every concept name  A ∈ NC is a concept; and
+• if  C, D are  concepts  and  r is  a  role  name,  then  (cid:5) (top concept),  ⊥ (bottom concept),  C (cid:3) D (conjunction),  C → D (im-
+plication),  ¬C (strong negation),  (cid:2)C (residual negation),  ∃r.C (existential restriction),  and  ∀r.C (value restriction)  are  also 
+concepts.
+
+For n ∈ N, we deﬁne C n as the n-ary conjunction of a concept C with itself. More formally, if C is a concept, then we set
+
+• C 0 := (cid:5), and
+• C n+1 := C (cid:3) C n for all n ∈ N.
+
+As mentioned before, different description logics L are determined by the constructors they allow. In the DL EL, con-
+cepts are built using only the constructors (cid:5), (cid:3), and ∃. Extending EL with value restrictions yields the DL AL. Following 
+the  notation  from [27],  the  letters  C and  N denote  the  presence  of  the  strong  negation  (¬)  and  residual  negation  ((cid:2)), 
+respectively. The preﬁx I expresses that the implication (→) and bottom (⊥) constructors are allowed. Table 2 summarizes 
+this nomenclature for the logics that we will investigate in this paper. Constructors that can be simulated by others in the 
+same logic are indicated in parentheses. In Section 4 we further extend the set of constructors to prove decidability of more 
+expressive fuzzy DLs.
+
+The second component deﬁning the expressivity of a fuzzy DL ⊗-L are its axioms. Axioms are the means to represent 
+domain  knowledge,  by  describing  relations  between  individuals,  roles,  and  concepts.  In  contrast  to  classical  DLs,  in  fuzzy 
+DLs axioms often include a lower bound for the degree to which the axiom should hold. This lower bound provides a larger 
+ﬂexibility for the interpretations that satisfy the axiom.
+
+Deﬁnition 7 (Axioms). An axiom is either a general concept inclusion (GCI) or an assertion, where
+
+• a GCI is an expression of the form (cid:9)C (cid:6) D ≥ p(cid:11), where C, D are concepts and  p ∈ [0, 1]; and
+• an assertion is of the form (cid:9)e : C (cid:22) p(cid:11) or (cid:9)(d, e) : r (cid:22) p(cid:11), where C is a concept, r is a role name, d, e are individual names, 
+
+p ∈ [0, 1], and (cid:22) ∈ {≥, =}. It is an inequality assertion if (cid:22) is ≥ and an equality assertion if (cid:22) is =.
+
+An axiom is called crisp if  p = 1. An ontology is a ﬁnite set of axioms. It is called a classical ontology if it contains only crisp 
+axioms.
+
+For  crisp  axioms,  we  will  usually  remove  the  part  “(cid:22) 1”,  and  simply  write,  e.g.  (cid:9)C (cid:6) D(cid:11).  As  with  the  choice  of  the 
+constructors, the axioms inﬂuence the expressivity of the logic. We always assume that our logics allow at least classical 
+ontologies. Given a DL  L, we will use the subscripts  f,  ≥, and  = to denote that arbitrary GCIs, inequality assertions, and 
+equality assertions are allowed, respectively. For instance, ELf,≥ denotes the logic EL where ontologies may contain arbitrary 
+GCIs and inequality assertions, but no equality assertions. Table 3 summarizes the expressivity of these subscripts.
+
+28
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Table 3
+The possible subscripts of a fuzzy DL.
+
+Subscript
+
+None
+f
+≥
+=
+
+Crisp GCIs
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+Fuzzy GCIs
+
+(cid:3)
+
+Crisp assertions
+(cid:3)
+(cid:3)
+(cid:3)
+(cid:3)
+
+≥-assertions
+
+=-assertions
+
+(cid:3)
+((cid:3))
+
+(cid:3)
+
+The semantics of a fuzzy DL ⊗-L is deﬁned by interpreting concepts as fuzzy sets, and roles as fuzzy binary relations. 
+Compared  to  classical  DLs,  fuzzy  DLs  have  an  additional  degree  of  freedom  in  the  selection  of  their  semantics  since  the 
+interpretation  of  the  constructors  depends  on  the  continuous  t-norm  ⊗ that  was  chosen.  The  semantics  of  fuzzy  DLs  is 
+usually  obtained  by  viewing  the  DL  part  as  a  fragment  of  ﬁrst-order  logic [1] and  lifting  the  ﬁrst-order  expression  to 
+the fuzzy semantics used in fuzzy predicate logics [2]. In particular, this means that existential and value restrictions are 
+interpreted by suprema and inﬁma, respectively, over the whole interpretation domain.
+
+Deﬁnition  8  (Interpretations).  An  interpretation I = (ΔI , ·I ) consists  of  a  non-empty  domain ΔI
+tion  function ·I
+I
+r
+to complex concepts as follows for all x ∈ ΔI
+
+I
+that  assigns  to  every  A ∈ NC a  fuzzy  set  A
+I ∈ ΔI
+
+and  an  interpreta-
+: ΔI → [0, 1],  to  every  r ∈ NR a  fuzzy  binary  relation 
+of  the  domain.  The  interpretation  function  is  extended 
+
+: ΔI × ΔI → [0, 1],  and  to  every  d ∈ NI an  element  d
+
+:
+
+I (x),
+
+I (x),
+
+I (x) ⊗ D
+I (x) ⇒ D
+
+• (cid:5)I (x) = 1,
+• (C (cid:3) D)I (x) = C
+• (C → D)I (x) = C
+• (¬C)I (x) = ∼C
+• ((cid:2)C)I (x) = (cid:13)C
+• (∃r.C)I (x) = sup y∈ΔI (r
+• (∀r.C)I (x) = inf y∈ΔI (r
+
+I (x),
+I (x),
+
+I (x, y) ⊗ C
+I (x, y) ⇒ C
+
+I ( y)),
+I ( y)).
+
+The interpretation I is ﬁnite if its domain is ﬁnite, and crisp if A
+
+I (x, y) ∈ {0, 1} for all concept names A, 
+role names r, and domain elements  x, y. We say that an interpretation I(cid:20)
+is an extension of I if it has the same domain 
+as I, agrees with I on the interpretation of NC, NR, and NI and additionally deﬁnes values for some new concept names 
+not appearing in NC.
+
+I (x) ∈ {0, 1} and r
+
+Notice  that  the  semantics  of  existential  and  value  restrictions  require  the  computation  of  a  supremum  or  inﬁmum  of 
+the membership degrees of a possibly inﬁnite set of elements of the interpretation domain. As is customary for fuzzy DLs, 
+we  therefore  restrict  reasoning  to  a  special  kind  of  models,  called  witnessed  models [8,28].  An  interpretation  I is  called 
+witnessed if for every concept C , role name r, and x ∈ ΔI
+
+there exist  y, y
+
+such that
+
+(cid:20) ∈ ΔI
+
+• (∃r.C)I (x) = r
+• (∀r.C)I (x) = r
+
+I (x, y) ⊗ C
+I (x, y
+(cid:20)) ⇒ C
+
+I ( y), and
+I ( y
+(cid:20)).
+
+This  means  that  the  suprema  and  inﬁma  in  the  semantics  of  existential  and  value  restrictions  are  actually  maxima  and 
+minima,  respectively.  Without  this  restriction,  the  value  of  (∃r.C)I (x) might,  e.g.  be  1 without  x actually  having  a  single 
+r-successor with degree 1 that belongs to C with degree 1. Such a behavior is usually unwanted in description logics, where 
+an existential restriction is intended to express the existence of an adequate successor.
+
+The main reasoning problem that we consider in this paper is (witnessed) ontology consistency; that is, deciding whether 
+
+one can ﬁnd a witnessed interpretation satisfying all the axioms of an ontology.
+
+Deﬁnition 9 (Consistency). A witnessed interpretation I = (ΔI , ·I ) satisﬁes the GCI (cid:9)C (cid:6) D ≥ p(cid:11) if for all  x ∈ ΔI
+I (x) ⇒ D
+C
+of an ontology O if it satisﬁes all the axioms in O.
+An ontology is consistent if it has a model.
+
+I (x) ≥ p. It satisﬁes the assertion (cid:9)e : C (cid:22) p(cid:11) (resp., (cid:9)(d, e) : r (cid:22) p(cid:11)) if C
+
+I ) (cid:22) p (resp., r
+
+I , e
+
+I (d
+
+I (e
+
+, we have 
+I ) (cid:22) p). It is a model
+
+According to this semantics, the crisp GCIs (cid:9)C (cid:6) D(cid:11) and (cid:9)D (cid:6) C(cid:11) are satisﬁed iff C
+
+. It thus 
+makes sense to abbreviate them by the expression (cid:9)C ≡ D(cid:11), as we will do for the rest of this paper. Note that the restriction 
+to  witnessed  interpretations  is  not  without  loss  of  generality  since  there  exist  ontologies  that  have  general  models,  but 
+no  witnessed  models [28].  In  Section 5.1,  we  comment  on  the  importance  of  this  restriction  and  the  consequences  of 
+dropping it.
+
+I (x) for every x ∈ ΔI
+
+I (x) = D
+
+We now relate some of the introduced fuzzy DLs according to their expressive power. For every choice of constructors L
+and t-norm ⊗, the inequality concept assertion (cid:9)e : C ≥ q(cid:11) can be expressed in ⊗-L= using the two axioms (cid:9)e : A = q(cid:11) and 
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+29
+
+Fig. 1. The search tree for an instance P of the PCP.
+
+(cid:9) A (cid:6) C(cid:11), where  A is a new concept name, and thus ⊗-L= is at least as expressive as ⊗-L≥. Furthermore, since the residual 
+negation can be expressed using the implication and bottom constructors, we know that ⊗-IAL is as least as expressive as 
+⊗-NAL and the same holds for ⊗-IEL and ⊗-NEL.
+
+If we restrict the semantics to the Łukasiewicz t-norm, for which involutive and residual negation coincide, we obtain 
+that  Ł-ELC,  Ł-NEL,  Ł-IEL,  Ł-ALC,  Ł-NAL,  and  Ł-IAL are  all  equivalent [2].  Indeed,  under  this  semantics  value  and 
+existential restrictions are dual to each other ((∀r.C)I = (¬∃r.¬C)I ) and the implication can be expressed by negation and 
+conjunction ((C → D)I = (¬(C (cid:3) ¬D))I ). However, for arbitrary t-norms these equalities need not hold. For instance, if any 
+t-norm different from Łukasiewicz is used, then (¬∃r.¬C)I (cid:24)= (∀r.C)I
+
+.
+
+In the next section, we describe a general framework to show undecidability of consistency in fuzzy description logics. 
+Subsequently,  we  show  that  consistency  in  many  of  the  logics  for  which  we  cannot  show  undecidability  is  equivalent  to 
+consistency in the underlying crisp description logics, and thus decidable. Intuitively, a fuzzy DL is undecidable whenever it 
+can express upper bounds for the membership degrees of concepts, e.g. through the involutive negation or the implication 
+constructor.  On  the  other  hand,  our  decidability  results  exploit  the  fact  that  some  fuzzy  DLs  cannot  express  such  upper 
+bounds except for 0. At the end of this paper, we comment on reasoning w.r.t. general (non-witnessed) models and on the 
+decidability of reasoning problems other than consistency.
+
+3.  Undecidable fuzzy DLs
+
+We now describe a general approach for proving that the consistency problem for a fuzzy DL ⊗-L is undecidable. It is 
+
+based on a reduction from a variant of the Post correspondence problem (PCP) which is known to be undecidable [20].
+
+Deﬁnition 10 (PCP). Let P = {(v 1, w 1), . . . , (vn, wn)} be a ﬁnite set of pairs of words over the alphabet Σ = {1, . . . , s} with 
+s > 1. The Post correspondence problem asks whether there is a ﬁnite sequence i1 . . . ik ∈ {1, . . . , n}∗
+=
+w 1 w i1 . . . w ik . If this sequence exists, it is called a solution for P .
+
+such that  v 1 v i1 . . . v ik
+
+Notice that in this variant of the PCP, a solution always starts with the ﬁrst pair of words (v 1, w 1). We will abbreviate 
+{1, . . . , n} by N . For ν = i1 . . . ik ∈ N ∗
+, we use the notation vν := v 1 v i1 . . . v ik and  wν := w 1 w i1 . . . w ik . In order to solve an 
+instance P = {(v 1, w 1), . . . , (vn, wn)} of the PCP, we consider its search tree, which has one node for every ν ∈ N ∗
+, where ε
+is the root, and νi is the i-th successor of ν for each i ∈ N . Every node ν in this tree is labeled with the words vν , wν ∈ Σ ∗
+, 
+as shown in Fig. 1. Obviously, the instance P has a solution iff its search tree contains a node labeled by two equal words.
+Correspondingly,  our  reduction  of  the  PCP  to  the  consistency  problem  of  a  fuzzy  DL  consists  of  two  parts.  Given  an 
+instance P of the PCP, we ﬁrst construct an ontology OP that describes the search tree of P , and then check whether this 
+tree  contains  a  solution  for P .  More  precisely,  we  enforce  that  for  every  model I of OP and  every  ν ∈ N ∗
+,  there  is  an 
+xν ∈ ΔI
+I (xν ) = enc(wν ), where enc: Σ ∗ → [0, 1] is an injective function that encodes 
+words  over  Σ into  the  interval  [0, 1] (see  Theorem 12).  Once  we  have  encoded  the  words  vν and  wν using  V and  W , 
+. This ensures that P has a 
+we add axioms that restrict the models to those that satisfy  V
+solution if and only if the ontology is inconsistent (see Theorem 13).
+
+I (xν ) = enc(vν ) and  W
+
+I (xν ) for all ν ∈ N ∗
+
+I (xν ) (cid:24)= W
+
+such that  V
+
+3.1.  A special case
+
+We ﬁrst describe the construction on the relatively easy example of the fuzzy DL Π-IAL=. This is essentially the proof 
+from [18],  divided  into  several  small  steps.  Later,  we  present  a  general  framework  that  allows  us  to  prove  undecidability 
+of  many  fuzzy  DLs  at  the  same  time.  This  framework  consists  of  several  properties  that  a  fuzzy  DL  can  have,  which  to-
+gether lead to undecidability. We label each part of the following construction by the name of the property of the general 
+framework it corresponds to (see Section 3.2).
+
+30
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Let in the following P = {(v 1, w 1), . . . , (vn, wn)} be an instance of the PCP over the alphabet Σ . Recall that Σ consists 
+of  the  ﬁrst  s positive  integers.  We  can  thus  view  every  word  in  Σ ∗
+as  a  natural  number  represented  in  base  s + 1.  On 
+the  other  hand,  every  natural  number  n has  a  unique  representation  in  base  s + 1,  which  can  be  seen  as  a  word  over 
+the alphabet Σ0 := Σ ∪ {0} = {0, . . . , s}. This is not a bijection since, e.g. the words 001202 and 1202 represent the same 
+number. However, it is a bijection between the set ΣΣ ∗
+0 and the positive natural numbers. In the following, we interpret 
+the empty word ε as 0, thereby extending this bijection to {ε} ∪ ΣΣ ∗
+In the following constructions and proofs, we view elements of Σ ∗
+
+0 and all non-negative integers.
+0 both as words and as natural numbers in base s + 1. It 
+is usually clear from the context which interpretation is used. However, to avoid confusion, we sometimes use the notation 
+u to express that u is seen as a word. Thus, for instance, if s = 3, then 3 · 22 = 30 (in base 4), but 3 · 22 = 322. Furthermore, 
+000 is a word of length 3, whereas 000 is simply the number 0. We extend this notation to rational numbers, and may use, 
+e.g. the expression 0.03 · 1 to denote the number 0.0001 (again, in base 4). For a word u = α1 · · · αm with αi ∈ Σ0, 1 ≤ i ≤ m, 
+we denote by ←−
+
+u the word αm · · · α1 ∈ Σ ∗
+0 .
+
+For  the  case  of  Π-IAL=,  we  use  the  encoding  function  enc: Σ ∗ → [0, 1] given  by  enc(u) := 2
+
+−u to  encode  words  as 
+
+values from the interval [0, 1], and thus we have, e.g. enc(ε) = 2
+
+−0 = 1 and enc(2) = 2
+
+−2 = 1/4.
+
+The initialization property  The ﬁrst step in constructing the ontology OP that describes the search tree of P is to initialize 
+the root of this search tree. The root is represented by the individual name e0, for which we have to initialize the values 
+for V and W ,  as  well  as  several  other  auxiliary  concept  names.  Due  to  the  presence  of  equality  assertions,  this  step  is 
+particularly easy in Π-IAL=:
+
+(cid:14)
+(cid:13)
+, (cid:9)e0 : M = 1/2(cid:11),
+e0 : W = enc(w 1)
+
+(cid:13)
+(cid:14)
+e0 : V = enc(v 1)
+,
+(cid:13)
+(cid:14)
+e0 : V 1 = enc(v 1)
+, . . . ,
+(cid:13)
+(cid:14)
+e0 : W 1 = enc(w 1)
+
+, . . . ,
+
+(cid:14)
+(cid:13)
+e0 : V n = enc(vn)
+,
+(cid:14)
+(cid:13)
+e0 : W n = enc(wn)
+
+.
+
+(1)
+
+The concept names  V 1, . . . , V n, W 1, . . . , W n are intended to be constants that hold the above values at every node of the 
+search tree, and are used in each step to concatenate the words v 1, . . . , vn, w 1, . . . , wn to the words currently encoded by V
+and W . Similarly, the value of M is always 1/2 throughout the search tree, and is used to compare the values of V and W
+at each node.
+
+The concatenation property  The  next  step  is  to  compute  the  values  enc(v 1 v i) and  enc(w 1 w i) for  the  successors  i ∈ N of 
+the root node. We introduce additional auxiliary concept names D V ◦v i and D W ◦w i to hold these values. We can achieve the 
+correct concatenation using the equivalence
+
+(cid:13)
+
+D V ◦v i
+
+≡ V (s+1)|vi
+
+| (cid:3) V i
+
+(cid:14)
+
+(2)
+
+for every i ∈ N , and similarly for D W ◦w i . Indeed, since V has the value enc(v 1) = 2
+at e0,  D V ◦v i is evaluated to 2
+ν ∈ N ∗
+
+−v i
+−v1 v i = enc(v 1 v i). In general, whenever  V has the value enc(vν ) for some 
+
+−v1 and V i has the value enc(v i) = 2
+
+, then  D V ◦v i has the value enc(vνi).
+
+|+v i ) = 2
+
+−(v1(s+1)|vi
+
+The successor property  We now construct the successors of the root node, which are labeled by the role names r1, . . . , rn, 
+using the axioms
+
+(cid:9)(cid:5) (cid:6) ∃r1.(cid:5)(cid:11), . . . , (cid:9)(cid:5) (cid:6) ∃rn.(cid:5)(cid:11).
+
+(3)
+
+Every (witnessed) model of these axioms has an ri -successor for every domain element and every i ∈ N .
+
+The  transfer  property  To  ﬁnish  the  construction  of  the  search  tree  of  P ,  it  remains  to  transfer  the  values  of  D V ◦v i
+to  the  value  of  V at  the  ri -successors.  We  also  have  to  transfer  the  values  of  D W ◦w i and  the  auxiliary  constants 
+M, V 1, . . . , V n, W 1, . . . , W n. This is accomplished using the axioms
+
+(cid:11), (cid:9)D V ◦v i
+
+(cid:9)∃ri.V (cid:6) D V ◦v i
+(cid:9)∃ri.W (cid:6) D W ◦w i
+(cid:11), (cid:9)D W ◦w i
+(cid:9)∃ri.M (cid:6) M(cid:11), (cid:9)M (cid:6) ∀ri.M(cid:11)
+
+(cid:6) ∀ri.V (cid:11)
+
+(cid:6) ∀ri.W (cid:11)
+
+. . .
+
+(4)
+
+for each i ∈ N . It can be shown that the axioms in (1)–(4) restrict all their models to “embed” an encoding of the search 
+tree of P . This is summarized in the canonical model property in the next section (for details, see the proof of Theorem 12).
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+31
+
+The solution property  Finally, to ensure that V and W always encode different words, we employ the axiom
+
+(cid:13)
+
+(cid:5) (cid:6)
+
+(cid:15)
+
+(cid:16)
+(V → W ) (cid:3) (W → V )
+
+(cid:14)
+
+→ M
+
+.
+
+(5)
+This ensures that at each node ν ∈ N ∗
+of the search tree one of the concepts  V → W or W → V has a value smaller than 
+or equal to that of M, i.e. 1/2. This means that enc(vν ) and enc(wν ) differ by at least a factor of 2, which is equivalent to 
+the fact that  vν (cid:24)= wν (for details, see Lemmata 14 and 19). Axiom (5) is of a simpler form than the ones used in previous 
+undecidability proofs [18,19] since we consider here the variant of the PCP where all solutions must start with the ﬁrst pair 
+of words (v 1, w 1), and thus we do not need to exclude the root node ε from consideration.
+
+If we collect all the axioms in (1)–(5), the resulting ontology is consistent iff P has no solution. Therefore, the consistency 
+problem in Π-IAL= is undecidable. For different fuzzy DLs, different steps of this construction are more or less diﬃcult, 
+depending on the t-norm and the allowed constructors. In the next section, we present a generalized description of how 
+to show undecidability by a reduction of the PCP, which we then instantiate to yield undecidability results for a variety of 
+fuzzy description logics.
+
+3.2.  The framework
+
+In the following, let P be an instance of the PCP and ⊗-L be any fuzzy DL as introduced in Section 2. We ﬁrst formalize 
+the requirements for the encoding function  enc. Recall from the previous section that we have to be able to concatenate 
+constant words (i.e. v i ) to already computed encodings of words (i.e. vν ). Furthermore, we need to be able to test equality 
+of  words  by  comparing  the  residua  of  their  encodings.  When  enc satisﬁes  the  latter  property,  we  call  it  a  valid encoding 
+function. The former requirement is formalized later in the concatenation property.
+
+Recall that for every  p, q ∈ [0, 1], we have  p = q iff  p ⇒ q = q ⇒ p = 1 (see Lemma 1). Thus, to decide whether P has 
+a  solution,  we  have  to  check  whether  enc(vν ) ⇒ enc(wν ) < 1 or  enc(wν ) ⇒ enc(vν ) < 1 holds  for  every  ν ∈ N ∗
+.  In  the 
+special  case  in  Section 3.1,  it  is  clear  that  these  residua  are  either  1 or  smaller  or  equal  to  1/2.  Thus,  the  test  simpliﬁes 
+to  checking  whether  enc(vν ) ⇒ enc(wν ) ≤ 1/2 or  enc(wν ) ⇒ enc(vν ) ≤ 1/2 holds.  However,  in  general  it  is  not  possible 
+to put a constant bound on these residua in case they are smaller than 1. Instead, we can often construct a word whose 
+encoding bounds these residua. Clearly, the precise word and encoding must depend on the t-norm used. Another difference 
+to the special case of Section 3.1 is that we allow a word u to be encoded by a set of values Enc(u) ⊆ [0, 1]. This simpliﬁes 
+some of the proofs, but requires us to ensure that these encodings remain unique, i.e. that no two words can be encoded 
+by the same value.
+
+Deﬁnition 11 (Valid encoding function). A function Enc: Σ ∗
+0
+
+→ 2
+
+[0,1]
+
+is called a valid encoding function for ⊗ if
+
+(a) for every u ∈ {ε} ∪ ΣΣ ∗
+(b) the sets Enc(u) and Enc(u
+(c) there  exist  two  words  uε, u+ ∈ Σ ∗
+
+0 and every v ∈ {0}∗
+
+, we have Enc(vu) = Enc(u),
+(cid:20)) are nonempty and disjoint for any two different words u, u
+
+(cid:20) ∈ {ε} ∪ ΣΣ ∗
+
+0 , and
+
+0 such  that  for  every  ν ∈ N ∗
+
+,  p ∈ Enc(vν ),  q ∈ Enc(wν ),  and m ∈ Enc(uε · u+
+
+|ν|) it 
+
+holds that uε · u+
+
+vν (cid:24)= wν
+
+|ν| ∈ {ε} ∪ ΣΣ ∗
+iff min{p ⇒ q, q ⇒ p} ≤ m.
+
+0 and
+
+Condition (a) is due to the fact that we often view the words of Σ ∗
+
+0 as natural numbers in base s + 1 (cf. Section 3.1), 
+and thus words that differ only in the number of leading zeros should have the same encoding. Condition (b) ensures that 
+one can uniquely identify a word from its encoding, modulo leading zeros. Finally, Condition (c) requires that every value 
+|ν|) can be used to check whether encodings of vν and wν are equal by comparing the above residua to this 
+in Enc(uε · u+
+value.
+
+In the following,  Enc represents a valid encoding function for ⊗, and  uε ,  u+ are the words required by Condition (c). 
+→ [0, 1] that  chooses  a  representative  enc(u) ∈ Enc(u) for  each 
+
+We  additionally  assume  that  we  have  a  function  enc: Σ ∗
+0
+u ∈ Σ ∗
+
+0 . Such a function must always exist due to the Conditions (a) and (b) of Deﬁnition 11.
+
+As in the previous section, we use the concept names V , W to represent the values of the words vν and wν at the nodes 
+of the search tree for P . We designate the concept name  M to represent the bounding word uε · u+
+from Deﬁnition 11, 
+and M+ to represent u+. We also use the concept names V i , W i to encode the words v i, w i from P , and the role names ri
+to distinguish the different successors in the search tree, for each i ∈ N . The individual name e0 is used to distinguish the 
+root node. Formally, the search tree for P is represented by the canonical model IP = (N ∗, ·IP ) of the ontology OP we 
+will construct. It is deﬁned as follows for every ν ∈ N ∗
+and i ∈ N :
+
+|ν|
+
+:= ε,
+
+IP
+• e
+0
+IP (ν) := enc(vν ), W
+• V
+IP
+• V
+(ν) := enc(v i), W
+i
+IP (ν) := enc(uε · u+
+• M
+IP
+IP
+(ν, νi) := 1 and r
+• r
+i
+i
+
+IP (ν) := enc(wν ),
+IP
+(ν) := enc(w i),
+i
+
+IP
++ (ν) := enc(u+),
+
+|ν|), M
+(ν, ν(cid:20)) := 0 if ν(cid:20) (cid:24)= νi.
+
+32
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Fig. 2. The canonical model IP for an instance P of the PCP.
+
+Since every element of N ∗
+model is depicted in Fig. 2 and clearly represents the search tree for P (cf. Fig. 1).
+
+has exactly one ri -successor with degree greater than 0, IP is a witnessed interpretation. This 
+
+The goal is to construct an ontology OP that can only be satisﬁed by interpretations that “include” the search tree of P . 
+Given that the interpretation IP represents this tree, we want the logic to satisfy the following property. Here, we use the 
+expression  p ∼ q for  p, q ∈ [0, 1] to denote the fact that  p, q ∈ Enc(u) for some word u ∈ Σ ∗
+0 . By Conditions (a) and (b) of 
+Deﬁnition 11, this word is unique except for the number of leading zeros. But Condition (a) ensures that leading zeros are 
+irrelevant for the encoding, and thus from  p ∼ q and  p ∈ Enc(u) for some u ∈ Σ ∗
+
+0 , we can always infer that q ∈ Enc(u).
+
+The canonical model property (P(cid:29))
+
+The logic ⊗-L has the canonical model property if there is an ontology OP such that for every model I of OP
+there is a mapping  g: ΔIP → ΔI
+
+with
+
+IP (ν) ∼ A
+
+A
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+for every  A ∈ {V , W , M, M+} ∪
+
+(cid:17)
+n
+i=1
+
+{V i, W i}, and ν ∈ N ∗
+
+.
+
+As  in  the  previous  section,  rather  than  trying  to  prove  this  property  directly  for  some  fuzzy  DL,  we  provide  several 
+simpler properties that together imply the canonical model property. We often motivate the following constructions using 
+only the concept V and the words vν ; however, all arguments apply analogously to W , wν and M, uε · u+
+
+I (e
+
+IP (ε) ∼ A
+
+As  illustrated  in  Section 3.1,  we  construct  the  search  tree  in  an  inductive  way.  First,  we  restrict  every  interpretation 
+I
+I to  satisfy  that  A
+0 ) for  every  relevant  concept  name.  This  makes  sure  that  the  root  ε of  the  search  tree 
+I
+0 .  Let  now  g(ν) be  a  node  satisfying  this  property,  and  i ∈ N .  We 
+is  properly  represented  at  the  individual  g(ε) := e
+ensure  that  there  is  a  node  g(νi) that  also  satisﬁes  the  property  in  three  steps:  ﬁrst,  we  force  the  existence  of  an  indi-
+I
+I (g(ν)) ∈ Enc(vν ) and 
+i (g(ν), y) = 1 and  set  g(νi) := y.  Then,  we  compute  a  value  in  Enc(vν v i) from  V
+vidual  y with  r
+I
+I (g(νi)) ∼ enc(vν v i). 
+i (g(ν)) ∈ Enc(v i). Finally, we transfer this value to the previously created successor to ensure that V
+V
+The value of V
+
+I
+j (g(ν)) for every  j ∈ N is similarly transferred to V
+
+Each step of the previous construction is guaranteed by a property of the logic ⊗-L. These properties, which are ulti-
+
+I
+j (g(νi)).
+
+|ν|
+
+.
+
+mately used to produce the ontology OP , are described next.
+
+The initialization property (Pini)
+
+The  logic  ⊗-L has  the  initialization property if  for  every  concept C ,  individual  name e,  and  u ∈ Σ ∗
+ontology OC(e)=u such that for every model I of OC(e)=u it holds that C
+
+I ) ∈ Enc(u).
+
+I (e
+
+0 there  is  an 
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+33
+
+Assume now that ⊗-L satisﬁes Pini. Then, to initialize the search tree, we can set the values of V and W at e0 to valid 
+encodings of v 1 and w 1, respectively, and the value of M to an encoding of uε . Moreover, we need that M+ encodes u+
+and every V i and W i encodes the word v i and w i , respectively, for every i ∈ N . We thus deﬁne the ontology
+
+OP,ini := OM(e0)=uε
+
+∪ OM+(e0)=u+ ∪ OV (e0)=v1
+
+∪ OW (e0)=w 1
+
+∪
+
+n(cid:18)
+
+(OV i (e0)=v i
+
+i=1
+
+∪ OW i (e0)=w i ).
+
+This is an abstract version of the axioms (1) presented in Section 3.1 for Π-IAL=. Note that there we had u+ = ε, and thus 
+the concept name M+ was not needed.
+
+The successor property (P→)
+
+The  logic  ⊗-L has  the  successor property if  for  all  role  names r there  is  an  ontology O∃r such  that  for  every 
+model I of O∃r and every x ∈ ΔI
+with r
+
+there is a  y ∈ ΔI
+
+I (x, y) = 1.
+
+If a logic satisﬁes this property, then the ontology
+
+OP,→ :=
+
+(cid:18)
+
+i∈N
+
+O∃ri
+
+ensures the existence of an ri -successor with value 1 for every node of the search tree and every i ∈ N , corresponding to 
+the ri -connections in the canonical model. For our initial example of Π-IAL=, this task was achieved by the axioms in (3).
+
+The concatenation property (P◦)
+
+The logic ⊗-L has the concatenation property if for all words u ∈ Σ ∗
+OC◦u and a concept name  D C◦u such that for every model I of OC◦u and every  x ∈ ΔI
+I (x) ∈ Enc(u
+0 , then  D
+C
+
+0 , and concepts C and Cu , there is an ontology 
+I
+u (x) ∈ Enc(u) and 
+
+I
+C◦u(x) ∈ Enc(u
+
+(cid:20) ∈ {ε} ∪ ΣΣ ∗
+
+(cid:20)) for some u
+
+, if  C
+
+u).
+
+(cid:20)
+
+The  goal  of  this  property  is  to  ensure  that  at  every  node  where  V
+(x) ∈ Enc(v i), then  D
+
+(x) ∈ Enc(uv i), and similarly for W , w i and M, u+. Thus, we deﬁne the ontology
+
+I (x) ∈ Enc(u) for  some  u ∈ {ε} ∪ ΣΣ ∗
+
+0 ,  and 
+
+I
+V ◦v i
+
+C
+
+I
+v i
+
+OP,◦ :=
+
+n(cid:18)
+
+(OV ◦v i
+
+i=1
+
+∪ OW ◦w i
+
+∪ OM◦u+ ).
+
+To simplify the notation, we use the concept names  V i, W i, M+ instead of C v i , C w i , Cu+ in this ontology. This corresponds 
+I (x) should always 
+to the axioms given for Π-IAL= in (2). Note that by construction, the values of  V
+be encodings of words from {ε} ∪ ΣΣ ∗
+0 .
+
+I (x), and  M
+
+I (x),  W
+
+3.2.1.  The transfer property (P(cid:2))
+
+The logic ⊗-L has the transfer property if for all concepts C, D and role names r there is an ontology O
+that for every model I of O
+D
+
+r(cid:2)D
+I (x) ∈ Enc(u) for some u ∈ Σ ∗
+
+and every x, y ∈ ΔI
+
+I (x, y) = 1 and C
+
+I ( y) ∈ Enc(u).
+
+, if r
+
+r(cid:2)D
+
+C
+
+C
+
+such 
+0 , then 
+
+To ensure that the values of enc(uε · u+
+
+|ν|), enc(u+), enc(vνi), and enc(v j) for every  j ∈ N are transferred from x to the 
+
+ri -successor yi for every i ∈ N , we use the ontology
+
+OP,(cid:2) :=
+
+O
+
+D M◦u+
+
+ri(cid:2)M
+
+∪ O
+
+ri(cid:2)M+
+
+M+
+
+∪ O
+
+ri(cid:2)V
+
+D V ◦vi
+
+∪ O
+
+D W ◦wi
+
+ri(cid:2)W
+
+(cid:18)
+
+i∈N
+
+(cid:18)
+
+∪
+
+i, j∈N
+
+O
+
+ri(cid:2)V j
+
+V j
+
+∪ O
+
+ri(cid:2)W j
+
+W j
+
+.
+
+This was accomplished by the Π-IAL=-axioms in (4).
+
+As argued before, if we combine these four properties, then we obtain the canonical model property.
+
+34
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Theorem 12. Let Enc be a valid encoding function for ⊗. If the logic ⊗-L satisﬁes Pini, P→, P◦, and P(cid:2), then it also satisﬁes P(cid:29).
+
+V
+
+Proof. We  show  that  the  ontology  OP := OP,ini ∪ OP,◦ ∪ OP,→ ∪ OP,(cid:2) satisﬁes  the  conditions  of P(cid:29).  For  a  model I
+of OP , we construct the function  g: N ∗ → ΔI
+
+inductively as follows.
+
+I
+0 .  The  fact  that  I is  a  model  of  OP,ini
+IP (ε), and likewise for W , M, M+, V i , and W i for all i ∈ N .
+
+We  ﬁrst  set  g(ε) := e
+I (g(ε)) ∼ enc(v 1) = V
+Let  now  ν be  such  that  g(ν) has  already  been  deﬁned,  V
+valid encoding function and by the deﬁnition of ∼, we know that  V
+from the fact that I is a model of OP,◦ we infer that D
+there  must  be  an  element  yi ∈ ΔI
+V
+
+with  r
+IP (νi) and V
+
+I (g(ν)) ∼ enc(vν ),  and  V
+
+I
+i (g(ν)) ∼ enc(v i).  Since  Enc is  a 
+I
+i (g(ν)) ∈ Enc(v i) hold. Thus, 
+(g(ν)) ∈ Enc(vνi). Since I satisﬁes OP,→, for each i ∈ {1, . . . , n}
+I
+i (g(ν), yi) = 1.  Deﬁne  now  g(νi) := yi .  The  restrictions  of  OP,(cid:2) ensure  that 
+I
+i (g(νi)) ∼ V
+
+(νi) for all i ∈ N , and analogously for W , W i and M, M+. (cid:2)
+
+I (g(ν)) ∈ Enc(vν ) and  V
+
+I
+0 ) ∈ Enc(v 1),  and  thus 
+
+I (g(νi)) ∼ D
+
+I (g(ε)) = V
+
+implies  that  V
+
+(g(ν)) ∼ V
+
+I
+V ◦v i
+
+IP
+i
+
+I (e
+
+I
+V ◦v i
+
+We now describe how the property P(cid:29) can be used to prove undecidability of ⊗-L. Recall that the idea is to add a set 
+I (g(ν)) for every ν ∈ N ∗
+OV (cid:24)=W of axioms (as in (5)) to OP so that every model I is restricted to satisfy  V
+, 
+thus obtaining an ontology that is consistent if and only if P has no solution. More formally, we have to show that (i) every 
+model of OP ∪ OV (cid:24)=W witnesses the non-existence of a solution for P , and (ii) if P has no solution, then we can ﬁnd a 
+model of OP ∪ OV (cid:24)=W . Part (i) uses the fact that every model of OP encodes the canonical model by P(cid:29). For part (ii), the 
+idea  is  to  show  that  IP can  be  extended  to  a  model  of  OP ∪ OV (cid:24)=W .  However,  for  this  to  work,  IP has  to  be  a  model 
+of OP in the ﬁrst place.
+
+I (g(ν)) (cid:2) W
+
+For the rest of this section, we thus assume that IP can actually be extended to a model of OP ; while OP might deﬁne 
+additional concept names, it should not contradict the information about  V , W , M, . . . represented by IP . It is important 
+to keep in mind for the subsequent sections that this constitutes an additional condition that has to be veriﬁed before we 
+can show undecidability of a given fuzzy DL ⊗-L. We also assume that ⊗-L satisﬁes P(cid:29), and for a given model I of OP , 
+g denotes the function mapping the nodes of IP to elements of ΔI
+given by the property. In Section 3.3, we show that 
+these assumptions actually hold for a variety of fuzzy description logics.
+
+Recall  that  the  key  to  showing  undecidability  of  ⊗-L is  to  be  able  to  express  the  restriction  that V and W encode 
+of the search tree. Since Enc is a valid encoding function and the concept name M
+IP (ν)
+
+, it suﬃces to check whether, for all ν ∈ N ∗
+
+, either (V → W )IP (ν) ≤ M
+
+at every ν ∈ N ∗
+
+different words at every node ν ∈ N ∗
+encodes the word uε · u+
+or (W → V )IP (ν) ≤ M
+
+|ν|
+
+IP (ν) holds (see Condition (c) of Deﬁnition 11).
+
+The solution property (P(cid:24)=)
+
+If the logic ⊗-L satisﬁes P(cid:29) with OP , and IP can be extended to a model of OP , then  ⊗-L has the solution 
+property if there is an ontology OV (cid:24)=W such that the following conditions are satisﬁed:
+
+1. For every model I of OP ∪ OV (cid:24)=W and every ν ∈ N ∗
+
+,
+
+(cid:15)
+
+(cid:6)
+min
+2. If for every ν ∈ N ∗
+
+V
+
+(cid:16)
+g(ν)
+
+I
+
+we have
+
+⇒ W
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+, W
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+⇒ V
+
+(cid:15)
+
+I
+
+(cid:16)(cid:8)
+
+g(ν)
+
+I
+
+≤ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+.
+
+(cid:6)
+min
+
+(cid:8)
+IP (ν)
+then IP can be extended to a model of OP ∪ OV (cid:24)=W .
+
+IP (ν) ⇒ W
+
+IP (ν) ⇒ V
+
+IP (ν), W
+
+V
+
+≤ M
+
+IP (ν),
+
+Notice that for any instance P of the PCP, the ontologies OP and OV (cid:24)=W are both ﬁnite. We now show that if a fuzzy 
+
+DL satisﬁes this property, then consistency of ontologies is undecidable.
+
+Theorem 13. If ⊗-L satisﬁes P(cid:24)=, then P has a solution iff OP ∪ OV (cid:24)=W is inconsistent.
+
+Proof. If  OP ∪ OV (cid:24)=W is  inconsistent,  then  in  particular  no  extension  of IP can  satisfy  this  ontology.  By P(cid:24)=,  there  is  a 
+ν ∈ N ∗
+
+such that
+IP (ν) ⇒ W
+
+V
+
+IP (ν) > M
+
+IP (ν) and W
+
+IP (ν) ⇒ V
+
+IP (ν) > M
+
+IP (ν).
+
+By the deﬁnition of IP and Condition (c) of Deﬁnition 11, we have vν = wν , and thus P has a solution.
+we have
+
+For the converse direction, assume that OP ∪ OV (cid:24)=W has a model I. By P(cid:24)=, for every ν ∈ N ∗
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+I
+
+V
+
+⇒ W
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+I
+
+≤ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+I
+
+or W
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+I
+
+⇒ V
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+I
+
+≤ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+.
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+35
+
+Fig. 3. The framework for showing undecidability of consistency in a fuzzy DL ⊗-L.
+
+By P(cid:29), the deﬁnition of IP , and Condition (c) of Deﬁnition 11, it follows that  vν (cid:24)= wν . Since this holds for all ν ∈ N ∗
+know that P has no solution. (cid:2)
+
+, we 
+
+Fig. 3 informally depicts the relationships between all notions introduced in this section. The existence of a valid encod-
+ing function is the basic condition for all our properties. The canonical model property is implied by the conjunction of the 
+smaller properties. Finally, the solution property depends on the canonical model property and guarantees undecidability of 
+consistency in the given logic ⊗-L.
+
+3.3.  First results
+
+We use the properties of the previous section to show undecidability results for consistency in numerous fuzzy DLs. In 
+Sections 3.4 and 3.5, we develop extensions of the framework to prove undecidability of this problem in a wider class of 
+logics. The technical proofs of the following lemmata can be found in Appendix A.
+
+The  ﬁrst  step  is  to  ﬁnd  a  valid  encoding  function  for  our  continuous  t-norm ⊗.  We  assume  in  the  following  that  ⊗
+is  not  the  Gödel  t-norm.  The  reason  for  this  is  that  our  encoding  function  and  the  subsequent  constructions  depend  on 
+the  choice  of  one  component  ((a, b), ⊗(cid:20)) of ⊗ where  ⊗(cid:20)
+is  either  Ł or  Π.  If  ⊗ is  different  from  the  Gödel  t-norm,  such 
+a component must exist by Theorem 2. It is important that the component that we choose remains ﬁxed throughout the 
+whole construction. In the case that ⊗(cid:20) = Ł, we denote our choice by Ł(a,b), and similarly for ⊗(cid:20) = Π. Correspondingly, we 
+denote the fuzzy description logic by Ł(a,b)-L or Π(a,b)-L.
+
+We now use the chosen component to encode the words from Σ ∗
+
+(in particular for u = ε) we always use 
+the  encoding  Enc(u) := [b, 1],  i.e.  all  values  from  the  upper  bound  of  our  component  to  1 are  valid  encodings  for  ε.  For 
+these words, we deﬁne enc(u) := b. For the remaining words u ∈ Σ ∗
+0 , we use only a singleton set Enc(u) := {enc(u)}, 
+where enc(u) depends on the chosen component. For the case of Π(a,b), we deﬁne
+
+0 . For u ∈ {0}∗
+0 ΣΣ ∗
+
+enc(u) := σa,b
+
+(cid:16)
+
+(cid:15)
+
+−u
+
+2
+
+∈ (a, b),
+
+and for Ł(a,b) we use
+
+enc(u) := σa,b(1 − 0.
+
+←−
+u) ∈ (a, b).
+
+Recall that we deﬁned σa,b(x) := a + (b − a)x for all x ∈ [0, 1] (see Section 2).
+
+Lemma 14. The functions Enc described above are valid encoding functions for t-norms of the form Π(a,b) or Ł(a,b).
+
+Variants of these encoding functions and words uε , u+ have been used before to show undecidability of fuzzy description 
+
+logics based on the product [18] and Łukasiewicz [19] t-norms.
+
+We  now  present  several  results  about  instances  of  ⊗-L that  satisfy  the  properties  introduced  in  the  previous  section. 
+Recall  that  one  precondition  for  the  property P(cid:24)= is  that IP can  be  extended  to  a  model  of OP .  Thus,  in  the  following 
+, it is important keep in mind that the resulting ontology OP (as deﬁned 
+constructions of OC(e)=u , O∃r , OC◦u , and O
+in  the  previous  section)  should  not  contradict  information  in IP .  However,  we  are  allowed  to  deﬁne  values  for  auxiliary 
+concept names like  D V ◦v i .
+
+First, we present several cases for ⊗-L in which the initialization property holds. For the case of the logic Ł(0,b)-NEL, 
+note  ﬁrst  that  for  every  x ∈ (0, b] we  have  that  x ⇒ 0 = b − x;  that  is,  the  residual  negation  yields  a  “local  involutive 
+negation” over the interval [0, b]. Thus, the concept (cid:2)C is interpreted as the local involutive negation of the interpretation 
+
+r(cid:2)D
+
+C
+
+36
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+of C , whenever the latter is in this interval. In this logic, we use the short-hand C (cid:9) D for (cid:2)(C (cid:3) (cid:2)D) to express a function 
+similar to the residuum. In fact, for all x, y ∈ [0, 1], we have
+(cid:12)
+
+(cid:15)
+
+(cid:16)
+x ⊗ ( y ⇒ 0)
+
+if y < b ≤ x
+y
+b − x + y if y < x < b
+otherwise.
+1
+In particular, (C (cid:9) D)I (x) = (C → D)I (x) holds whenever  D
+
+⇒ 0 =
+
+I (x) < b for an interpretation I and x ∈ ΔI
+
+.
+
+Lemma 15. For every continuous t-norm ⊗, the logics ⊗-EL=, ⊗-ELC≥, and Ł(0,b)-NEL satisfy Pini.
+
+It turns out that the successor and concatenation properties hold for all logics ⊗-L that we consider. In particular, the 
+successor property only needs the constructors (cid:5) and ∃ and the restriction to witnessed models, whereas the concatenation 
+property only requires the constructors (cid:5) and (cid:3).
+
+Lemma 16. For every continuous t-norm ⊗, the logic ⊗-EL satisﬁes P→.
+
+For the concatenation property, it is necessary to have non-idempotent elements. Since we have assumed at the begin-
+
+ning of this section that ⊗ is not the Gödel t-norm, this restriction is always satisﬁed.
+
+Lemma 17. For every continuous t-norm ⊗ except the Gödel t-norm, the logic ⊗-EL satisﬁes P◦.
+
+This  leaves  only  one  property  required  for  the  canonical  model  property,  namely  the  transfer  property.  We  prove  in 
+Appendix A that this can be satisﬁed using existential restrictions in combination with either value restrictions, involutive 
+negation, or residual negation under Łukasiewicz semantics.
+
+Lemma 18. For every continuous t-norm ⊗ except the Gödel t-norm, the logics ⊗-AL, ⊗-ELC, and Ł(0,b)-NEL satisfy P(cid:2).
+
+Together  with  Theorem 12,  the  previous  lemmata  show  that  the  logics  ⊗-AL=,  ⊗-ELC≥,  and  Ł(0,b)-NEL have  the 
+canonical  model  property.  We  will  see  that  the  last  two  logics  also  satisfy  the  solution  property,  while  for  ⊗-AL= we 
+additionally need the implication constructor.
+
+Recall that a necessary condition for the solution property is that the canonical model IP can be extended to a model 
+of the ontology OP constructed from the individual parts in Lemmata 15 to 18. It is a simple task to verify that this holds 
+in  all  the  cases  described  above.  We  only  need  to  assume  that  a  unique  new  concept  name  is  used  for  every  auxiliary 
+concept name appearing in the different ontologies, such as  D V ◦v i . In fact, the values of these auxiliary concept names at 
+each node ν are uniquely determined by the values of the concept names V , W , V i, W i, M, M+ at ν. Moreover, since every 
+ν has exactly one ri -successor with degree greater than 0 for every i ∈ N , it follows that IP can be extended to a witnessed
+model of OP .
+
+Lemma 19. Let ⊗ be any continuous t-norm except the Gödel t-norm. If one of the logics ⊗-IEL=, ⊗-ELC≥, or Ł(0,b)-NEL satis-
+ﬁes P(cid:29)with OP and IP can be extended to a model of OP , then this logic also satisﬁes P(cid:24)=.
+
+This concludes the ﬁrst round of undecidability proofs using the framework presented in Section 3.2. Using Theorem 13, 
+
+we get the following results.
+
+Corollary 20. For every continuous t-norm ⊗ except the Gödel t-norm, ontology consistency is undecidable in the logics ⊗-IAL=, 
+⊗-ELC≥, and furthermore it is undecidable for Ł(0,b)-NEL.
+
+Table 4 summarizes the results and distinguishes between classical ontologies, inequality assertions, and equality asser-
+tions on the vertical axis, and different combinations of constructors on the horizontal axis. An entry “⊗” stands for every 
+continuous t-norm except the Gödel t-norm. Note that Ł-ELC is as expressive as Ł-NEL = Ł(0,1)-NEL, and thus consistency 
+Ł-ELC is also undecidable. This already subsumes the previously known undecidability results for consistency in
+
+• Π-ALCf,≥ with strict GCIs [16],
+• Π(0,b)-IALf,= [18], and
+• Ł-ELCf,≥ [19].
+
+We have strengthened the ﬁrst and the last result to cover all fuzzy DLs ⊗-ELC≥ with any continuous t-norm except the 
+Gödel  t-norm.  Moreover,  consistency  in  Ł-ELC is  undecidable  even  for  classical  ontologies.  The  second  result  was  simi-
+larly  extended  to  cover  (almost)  all  continuous  t-norms.  Interestingly,  all  logics  considered  so  far  are  fuzzy  extensions  of 
+classical ALC, and indeed equivalent to ALC when restricted to two truth values.
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+37
+
+Table 4
+The undecidability results of Corollary 20.
+
+Classical
+≥
+=
+
+NEL
+Ł(0,b)
+Ł(0,b)
+Ł(0,b)
+
+IAL
+Ł(0,b)
+Ł(0,b)
+⊗
+
+ELC
+
+Ł
+⊗
+⊗
+
+We  will  show  in  Section 4 that  ontology  consistency  is  decidable in  ⊗-IALf,≥ if  ⊗ does  not  start  with  Łukasiewicz. 
+Furthermore,  for  the  Gödel  t-norm,  consistency  even  in  G-IALCf,= is  decidable [21].  Together  with  Corollary 20,  this 
+already covers many fuzzy description logics. Only two gaps remain for which the decidability status of consistency is still 
+open.
+
+The ﬁrst gap concerns the fuzzy DLs above ⊗-NEL=, where ⊗ does not start with Łukasiewicz. For such t-norms, we 
+show in Section 3.5 that consistency is undecidable for ⊗-IEL=. Unfortunately, we must leave open the decidability status 
+of consistency in ⊗-NEL= and ⊗-NAL= if ⊗ does not start with Łukasiewicz.
+
+The  second  gap  is  about  fuzzy  DLs  ⊗-ELC with  involutive  negation  over  classical  ontologies.  In  addition  to  the 
+Łukasiewicz  t-norm,  in  Section 3.4 we  show  that  consistency  is  also  undecidable  for  the  product  t-norm.  However,  apart 
+from the fundamental t-norms, not much is known about the decidability of consistency in ⊗-ELC.
+
+3.4.  The case of Π-ELC
+
+To prove that consistency in Π-ELC is also undecidable, we extend the framework of Section 3.2 by allowing a differ-
+ent version of the PCP to be reduced. In this section, the compared words do not start with  v 1/w 1, but with the empty 
+word.  More  formally,  we  consider  a  solution  to  an  instance  P = {(v 1, w 1), . . . , (vn, wn)} of  the  PCP  to  be  a  non-empty 
+sequence ν = i1 . . . ik ∈ {1, . . . , n}+
+= w i1 . . . w ik holds. Correspondingly, we redeﬁne here the abbrevi-
+ations  vν := v i1 . . . v ik and  wν := w i1 . . . w ik .  We  call  the  canonical  model  resulting  from  these  modiﬁed  deﬁnitions  IP (cid:20) . 
+It can be deﬁned just as in Section 3.2, but the values it holds are now different. This also leads to a modiﬁed canonical 
+(cid:20)
+(cid:29), which is deﬁned exactly as before, except that IP is replaced by IP (cid:20) . Observe that Enc, as deﬁned in 
+model property P
+Section 3.3 for Π(a,b), remains a valid encoding function, and we can use uε = 1 and u+ = ε as before.
+
+for which  v i1 . . . v ik
+
+Unfortunately, we cannot show the initialization property, and instead directly construct an ontology for the canonical 
+
+model property. The full construction is presented in Appendix A (p. 49).
+
+Lemma 21. The logic Π-ELC satisﬁes P
+
+(cid:20)
+(cid:29).
+
+As before, it is easily veriﬁed that IP (cid:20) can be extended to a witnessed model ontology constructed in this proof. In the 
+light of the different version of the PCP we consider here, it is clear that we also need a different solution property. It has 
+to be ensured that  V and W encode different words at every node of the search tree except the root node, where they both 
+encode ε. We denote by P
+to reﬂect this change. It is easy 
+to see that Theorem 13 also holds under these changes.
+
+(cid:20)
+(cid:24)= the solution property in which N ∗
+
+has been replaced by N +
+
+Lemma 22. The logic Π-ELC satisﬁes P
+
+(cid:20)
+(cid:24)=.
+
+We thus obtain the following result.
+
+Corollary 23. Ontology consistency in Π-ELC is undecidable.
+
+The proofs of undecidability for both Ł-ELC and Π-ELC use the fact that one can construct the constant 1/2 using the 
+axiom (cid:9)H ≡ ¬H(cid:11). We conjecture that these proofs can be lifted to ⊗-ELC, where ⊗ is any continuous t-norm for which 1/2
+is not an idempotent element. This condition ensures that 1/2 lies in a component of norm that uses either the Łukasiewicz 
+or the product t-norm. Starting from this value, one can construct encodings of the words v i and w i . However, the encoding 
+has to be adapted since 1/2 need not lie in the exact center of the component interval.
+
+3.5.  The case of ⊗-IEL=
+
+We have shown so far that for every continuous t-norm ⊗, except the Gödel t-norm, ⊗-IEL= satisﬁes the properties Pini, 
+P◦,  and  P→.  By  Theorem 12,  we  need  only  to  show  the  transfer  property  to  know  that  these  logics  satisfy  P(cid:29) and,  due 
+to Lemma 19, that consistency is undecidable. Rather than showing that ⊗-IEL= satisﬁes P(cid:2), in this section we strengthen 
+Theorem 12 by showing that a weaker property, which we call the simultaneous transfer property, together with the other 
+properties,  implies  the  canonical  model  property.  This  extends  our  framework  by  another  method  to  verify  P(cid:29).  We  then 
+show that for every continuous t-norm except the Gödel t-norm ⊗-IEL satisﬁes the simultaneous transfer property.
+
+38
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Fig. 4. A new way to prove the canonical model property.
+
+Recall that the transfer property ensures that it is possible to transfer a membership degree from any domain element 
+to all its r-successors. In the reduction from the PCP, this property is used to copy several degrees. It thus makes sense to 
+allow for all these degrees to be transferred simultaneously, as described in the following property.
+
+Simultaneous transfer property (P →(cid:2))
+
+The  logic  ⊗-L has  the  simultaneous transfer property if  for  every  ﬁnite  set  {(C1, D1), . . . , (Ck, Dk)} of  pairs  of 
+concept  names  there  is  an  ontology  O(C j )(cid:2)(D j ) such  that  for  every  model  I of  O(C j )(cid:2)(D j ) and  every  x ∈ ΔI
+, 
+I
+, then there exists a  y ∈ ΔI
+if for every  j, 1 ≤ j ≤ m, there is a u j ∈ Σ ∗
+such that for all  j, 1 ≤ j ≤ m, it holds that  D
+
+j (x) ∈ Enc(u j) and u1 /∈ {0}∗
+
+0 such that C
+
+I
+j ( y) ∈ Enc(u j).
+
+Given an instance P of the PCP with words (v 1, w 1), . . . , (vn, wn), we can assume w.l.o.g. that v 1 (cid:24)= ε, and thus v 1 /∈ {0}∗
+
+Then, we can choose for every i, 1 ≤ i ≤ n, the set
+
+. 
+
+(cid:6)
+
+(cid:8)
+(V 1, V 1), . . . , (V n, V n), (W 1, W 1), . . . , (W n, W n), (M+, M+), (D M◦u+ , M), (D V ◦v i , V ), (D W ◦w i , W )
+
+,
+
+which  ensures  the  existence  of  the  i-th  successor  of  every  node;  i.e.,  that  the  concatenation  with  the  pair  (v i, w i) is 
+considered. The last three pairs are used to transfer the computed concatenations to the i-th successors, while the remaining 
+pairs ensure that all constants are available for the next round of concatenations. We then deﬁne the ontology O
+→(cid:2) as the 
+union of the resulting ontologies O
+
+to transfer all the needed values to the correct successors.
+
+P,
+
+(C
+
+(i)
+j )(cid:2)(D
+
+(i)
+j )
+
+It  is  easy  to  see  that  any  logic  that  satisﬁes  P→ and  P(cid:2) must  also  satisfy  P →(cid:2).  Indeed,  P→ ensures  that  there  is  an 
+I (x, y) = 1. Moreover, the ontology 
+
+r-successor with degree 1, and P(cid:2) states that each  C
+OP := O
+
+∪ OP,ini ∪ OP,◦ satisﬁes the conditions in the deﬁnition of P(cid:29).
+
+I
+j (x) can be copied to  D
+
+I
+j ( y) if r
+
+→(cid:2)
+
+P,
+
+Theorem 24. If a logic ⊗-L satisﬁes the properties Pini, P◦, and P →(cid:2), then it also satisﬁes P(cid:29).
+
+Proof. The function g for a model I of OP can be constructed as in the proof of Theorem 12, with the exception that we 
+deﬁne as  g(νi) that element  y ∈ ΔI
+
+whose existence is guaranteed by O
+
+→(cid:2) when we consider x = g(ν). (cid:2)
+
+P,
+
+Fig. 4 depicts  the  alternative  way  of  showing  undecidability  using  the  simultaneous  transfer  property  instead  of  the 
+
+successor and transfer properties (cf. Fig. 3).
+
+Lemma 25. For every continuous t-norm except the Gödel t-norm, the logic ⊗-IEL satisﬁes P →(cid:2).
+
+Together  with  Theorem 24,  this  implies  that  ⊗-IEL= satisﬁes  the  canonical  model  property  whenever  ⊗ is  not  the 
+
+Gödel t-norm.
+
+It is also easy to see that IP can be extended to a model of the ontology OP constructed from the ontologies provided 
+by the initialization, concatenation, and simultaneous transfer properties: as before, the values of the auxiliary variables are 
+uniquely determined by the values of the concept names V , W , V i, W i at each node ν. By Lemma 19, we know that ⊗-IEL=
+satisﬁes the solution property, which yields the ﬁnal undecidability result of this paper.
+
+Corollary 26. For any continuous t-norm ⊗ except the Gödel t-norm, ontology consistency in ⊗-IEL= is undecidable.
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+39
+
+4.  Decidable fuzzy DLs
+
+It  remains  to  show  the  decidability  results  claimed  in  the  previous  section.  We  will  prove  that  ontology  consistency 
+is  decidable  in  ⊗-IALf,≥ if  ⊗ has  no  zero  divisors,  i.e.  it  does  not  start  with  Łukasiewicz.  We  show  this  by  means  of  a 
+straightforward reduction of fuzzy to classical ontologies. We present this reduction for a much more expressive description 
+logic, namely ⊗-SROIQ+
+f,≥, which extends ⊗-IALf,≥ by several concept and role constructors and complex role inclusion 
+axioms.
+
+Note that even in the classical case the syntax of SROIQ+
+
+we introduce below leads to undecidability of consistency. 
+Decidability is regained for SROIQ, which imposes several restrictions on the form of number restrictions and complex 
+role  inclusions [29,30].  However,  our  reduction  also  works  for  the  more  expressive  logic  and  is  easier  to  present  without 
+the restrictions of SROIQ.
+
+4.1.  Fuzzy SROIQ+
+
+Formally, in addition to the syntax of ⊗-IALf,≥, the fuzzy DL ⊗-SROIQ+
+
+f,≥ allows the role constructors u (universal 
+(inverse), and (cid:2)s (residual negation) to build complex roles s from role names. An interpretation I is extended to 
+
+−
+
+role),  s
+complex roles as follows for all x, y ∈ ΔI
+
+:
+
+I (x, y) = 1,
+• u
+−)I (x, y) = s
+• (s
+• ((cid:2)s)I (x, y) = (cid:13)s
+
+I ( y, x),
+
+I (x, y).
+
+We also introduce the new concept constructors ∃s.Self f , {d} (nominal),  C (cid:30) D (disjunction), ≥n s.C (at-least restriction), 
+and ≤n s.C (at-most restriction) for d ∈ NI, a complex role s, and n ∈ N. Moreover, complex roles are allowed in existential 
+and  value  restrictions  and  role  assertions.  The  new  constructors  are  interpreted  by  an  interpretation I as  follows  for  all 
+x ∈ ΔI
+
+:
+
+I (x, x),
+• (∃s.Self)I (x) = s
+I = x and 0 otherwise,
+• {d}I (x) = 1 if d
+• (C (cid:30) D)I (x) = C
+I (x),
+I (x) ⊕ D
+• (≥n s.C)I (x) = sup{p ∈ [0, 1] | |{ y ∈ ΔI | s
+• (≤n s.C)I (x) = sup{p ∈ [0, 1] | |{ y ∈ ΔI | s
+
+I (x, y) ⊗ C
+I (x, y) ⇒ (cid:13)C
+
+I ( y) ≥ p}| ≥ n},
+
+I ( y) < p}| ≤ n}.
+
+The last two expressions are equivalent to the semantics of number restrictions used in [31]. Notice that whenever ⊗ has 
+no zero divisors, the residual negation (cid:13) is the Gödel negation (see Lemma 4) and for every interpretation I and x ∈ ΔI
+, it 
+holds that
+
+(≤n s.C)I (x) =
+
+(cid:15)
+
+(cid:15)
+(cid:2)
+
+≥(n + 1) s.C
+
+(cid:2)
+
+(cid:16)(cid:16)I
+
+(x) =
+
+1 if |{ y ∈ ΔI | s
+0 otherwise.
+
+I (x, y) ⊗ C
+
+I ( y) > 0}| ≤ n,
+
+This means that under such a t-norm at-most restrictions are always crisp.
+
+We additionally allow complex role inclusions to occur in ontologies, which are axioms of the form (cid:9)s1 ◦ · · · ◦ sn (cid:6) t ≥ p(cid:11), 
+
+where n ∈ N, s1, . . . , sn, t are complex roles, and  p ∈ [0, 1]. An interpretation I satisﬁes this role inclusion if
+
+(cid:15)
+
+s
+
+I
+1 (x0, x1) ⊗ · · · ⊗ s
+
+(cid:16)
+I
+n (xn−1, xn)
+
+⇒ t
+
+I (x0, xn) ≥ p
+
+for all x0, . . . , xn ∈ ΔI
+
+. If n = 0, then we write (cid:9)id (cid:6) t ≥ p(cid:11) and the semantics simpliﬁes to t
+
+I (x0, x0) ≥ p for all x0 ∈ ΔI
+
+.
+
+Those axioms of classical SROIQ that are not included in SROIQ+
+
+can be simulated as follows:
+
+• negated role assertions: (cid:9)(d, e) : (cid:2)s(cid:11);
+• inequality assertions between individual names: (cid:9){d} (cid:6) (cid:2){e}(cid:11);
+• transitivity: (cid:9)s ◦ s (cid:6) s(cid:11);
+−(cid:11);
+• symmetry: (cid:9)s (cid:6) s
+• asymmetry: (cid:9)s (cid:6) (cid:2)s
+• reﬂexivity: (cid:9)id (cid:6) s(cid:11);
+• irreﬂexivity: (cid:9)id (cid:6) (cid:2)s(cid:11);
+• role disjointness: (cid:9)s (cid:6) (cid:2)t(cid:11).
+
+−(cid:11);
+
+40
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+4.2.  The crisp model property
+
+The undecidability results of Section 3 all rely heavily on the fact that one can design ontologies that allow only models 
+f,≥ if ⊗ has no 
+f,≥-ontologies have a crisp model; that is, a model using only 
+
+with inﬁnitely many truth values. We shall see that one cannot construct such an ontology in ⊗-SROIQ+
+zero divisors. It is even true that all consistent ⊗-SROIQ+
+the values 0 and 1.
+
+Deﬁnition 27. A fuzzy DL ⊗-L has the crisp model property if every ontology that is consistent in ⊗-L has a crisp model.
+
+As  mentioned  in  the  beginning  of  this  section,  we  now  consider  only  continuous  t-norms  without  zero  divisors.  Our 
+
+main result is based on the function 1 that maps fuzzy truth values to crisp truth values by deﬁning, for all x ∈ [0, 1],
+
+(cid:3)
+
+1(x) =
+
+1 if x > 0
+0 if x = 0.
+
+Since  ⊗ is  a  continuous  t-norm  without  zero  divisors,  it  follows  from  Lemma 4 that  1(x) = (cid:13) (cid:13) x for  all  x ∈ [0, 1].  This 
+function is compatible with the residual negation, the t-norm, the corresponding t-conorm, implication, and suprema. It is 
+also compatible with minima, provided that they exist. The proofs of the following lemmata can be found in Appendix B.
+
+Lemma 28. Let ⊗ be a continuous t-norm without zero divisors. For all x, y ∈ [0, 1] and all non-empty sets X ⊆ [0, 1] it holds that
+
+1. 1((cid:13)x) = (cid:13)1(x),
+2. 1(x ⊗ y) = 1(x) ⊗ 1( y),
+3. 1(x ⊕ y) = 1(x) ⊕ 1( y),
+4. 1(x ⇒ y) = 1(x) ⇒ 1( y),
+5. 1(sup{x | x ∈ X}) = sup{1(x) | x ∈ X}, and
+6. if min{x | x ∈ X} exists, then 1(min{x | x ∈ X}) = min{1(x) | x ∈ X}.
+
+Notice that in general the function 1 is not compatible with the inﬁmum. Consider for example the set  X = { 1
+n
+
+| n ∈ N}. 
+n ) | n ∈ N} = inf{1} = 1.  However,  under  witnessed  model  semantics  all 
+
+Then  inf X = 0 and  hence  1(inf X) = 0,  but  inf{1( 1
+inﬁma needed to interpret universal restrictions are minima, which eliminates this problem.
+
+We  use  Lemma 28 to  construct  a  crisp  interpretation  from  a  fuzzy  interpretation  by  simply  applying  the  function  1. 
+by  deﬁning,  for  all 
+
+Given  a  (witnessed)  interpretation  I,  we  construct  the  interpretation  J over  the  domain  ΔJ := ΔI
+concept names  A ∈ NC, role names r ∈ NR, individual names d ∈ NI, and x, y ∈ ΔI
+
+,
+
+(cid:15)
+J (x) := 1
+
+(cid:16)
+I (x)
+
+(cid:15)
+J (x, y) := 1
+r
+
+(cid:16)
+I (x, y)
+
+A
+
+,
+We now show that J preserves the compatibility shown in Lemma 28 w.r.t. complex roles and concepts.
+
+and d
+
+A
+
+,
+
+r
+
+J := d
+
+I .
+
+Lemma 29. For all complex concepts C , complex roles s, and x, y ∈ ΔI
+
+, it holds that C
+
+J (x) = 1(C
+
+I (x)) and s
+
+J (x, y) = 1(s
+
+I (x, y)).
+
+With the help of this lemma, we can show that the crisp interpretation J satisﬁes all the axioms that are satisﬁed by I.
+
+Lemma 30. If I is a witnessed model of an ontology O in ⊗-SROIQ+
+
+f,≥, then J is also a witnessed model of O.
+
+Proof. Observe ﬁrst that axioms with value p = 0 are trivially satisﬁed by J . Let now (cid:9)e : C ≥ p(cid:11) be a concept assertion in O
+J ) = 1 ≥ p. The same argument 
+with  p ∈ (0, 1]. Since it is satisﬁed by I, we have C
+can be used for role assertions.
+
+I ) ≥ p > 0. Lemma 29 yields C
+
+J (e
+
+I (e
+
+Let  now  (cid:9)C (cid:6) D ≥ p(cid:11) be  a  GCI  in  O with  p ∈ (0, 1] and  consider  any  x ∈ ΔI
+
+.  As  the  GCI  is  satisﬁed  by  I,  we  have 
+
+I (x) ⇒ D
+
+C
+
+I (x) ≥ p > 0. By Lemmata 28 and 29, we obtain
+(cid:16)
+I (x)
+
+(cid:15)
+⇒ 1
+
+(cid:16)
+I (x)
+
+(cid:15)
+= 1
+
+D
+
+C
+
+(cid:15)
+J (x) = 1
+J (x) ⇒ D
+C
+and thus J satisﬁes the GCI.
+
+C
+
+I (x) ⇒ D
+
+(cid:16)
+I (x)
+
+= 1 ≥ p,
+
+A similar argument shows that J satisﬁes all complex role inclusions in O. (cid:2)
+
+Thus,  by  applying  1 to  the  truth  degrees  we  obtain  a  crisp  model  J from  any  fuzzy  model  I of  a  ⊗-
+
+SROIQ+
+
+f,≥-ontology O.
+
+Theorem 31. If ⊗ is a continuous t-norm without zero divisors, then the logic ⊗-SROIQ+
+
+f,≥ has the crisp model property.
+
+In the next section, we use this result to show that ontology consistency in sublogics of ⊗-SROIQ+
+
+f,≥ can be decided 
+
+using classical reasoning algorithms.
+
+4.3.  Consistency
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+41
+
+For  a  given  ontology  O in  ⊗-SROIQ+
+
+-ontology  that  is  obtained 
+from O by  replacing  all  the  non-zero  truth  values  appearing  in  the  axioms  by 1.  Axioms  with  value 0 can  be  removed 
+without affecting the semantics of O. For example, for the ontology
+
+f,≥,  we  deﬁne  crisp(O) to  be  the  classical  SROIQ+
+
+(cid:6)
+
+O =
+
+(cid:9)a : C ≥ 0.2(cid:11),
+
+(cid:13)
+
+(a, b) : (cid:2)r ≥ 0.8
+
+(cid:14)
+
+(cid:8)
+, (cid:9)C (cid:6) D ≥ 0.5(cid:11), (cid:9)r ◦ s (cid:6) s ≥ 0.1(cid:11)
+
+we obtain
+
+crisp(O) =
+
+(cid:6)
+(cid:9)a : C(cid:11),
+
+(cid:13)
+
+(a, b) : (cid:2)r
+
+(cid:14)
+
+(cid:8)
+, (cid:9)C (cid:6) D(cid:11), (cid:9)r ◦ s (cid:6) s(cid:11)
+
+.
+
+Lemma 32. Let ⊗ be a continuous t-norm without zero divisors, O be a ⊗-SROIQ+
+I is a model of O iff it is a model of crisp(O).
+
+f,≥-ontology and I be a crisp interpretation. Then 
+
+Proof. In  the  proof  of  both  directions  we  can  ignore  axioms  with  truth  value  0.  Assume  that  crisp(O) has  a  model I
+and let (cid:9)C (cid:6) D ≥ p(cid:11) be an axiom from O with  p ∈ (0, 1]. Since I is a model of crisp(O), it must satisfy (cid:9)C (cid:6) D(cid:11); that is, 
+I (x) ⇒ D
+. Thus, I satisﬁes (cid:9)C (cid:6) D ≥ p(cid:11). The proof that I satisﬁes assertions and complex 
+C
+role inclusions is analogous. Hence I is also a model of O.
+
+I (x) ≥ 1 ≥ p holds for all x ∈ ΔI
+
+For the other direction, assume that I satisﬁes a GCI (cid:9)C (cid:6) D ≥ p(cid:11) from O with  p ∈ (0, 1]. As I is a crisp interpretation, 
+I (x) = 1, 
+we have C
+and  thus  I satisﬁes  the  crisp  GCI  (cid:9)C (cid:6) D(cid:11).  The  same  argument  can  be  used  for  complex  role  inclusions  and  assertions. 
+Thus I is also a model of crisp(O). (cid:2)
+
+I (x) ≥ p > 0, this implies that C
+
+I (x) ∈ {0, 1} for all x ∈ ΔI
+
+. Together with C
+
+I (x) ⇒ D
+
+I (x) ⇒ D
+
+I (x) ⇒ D
+
+In particular, a ⊗-SROIQ+
+this shows that a ⊗-SROIQ+
+problem.
+
+f,≥-ontology O has a crisp model iff crisp(O) has a crisp model. Together with Theorem 31, 
+f,≥-ontology O is consistent iff crisp(O) has a crisp model. The latter is a classical reasoning 
+
+Consistency  in  classical  SROIQ+
+
+is  undecidable  in  general,  as  the  number  restrictions  and  role  axioms  we  in-
+troduced  are  too  powerful.  However,  one  can  use  reasoning  algorithms  for  any  sublogic  of  SROIQ+
+,  for  example 
+SROIQ or  SHOI,  to  decide  consistency  of  ontologies  in  the  corresponding  fuzzy  DL  over  a  t-norm  without  zero  di-
+visors.  For  example,  reasoning  with  GCIs  in  crisp  SHOI is  known  to  be ExpTime-complete [32],  while  in  SROIQ it  is
+2-NExpTime-complete [30].
+
+Corollary 33. If ⊗ is a continuous t-norm without zero divisors, then the complexity of deciding consistency in any sublogic of 
+⊗-SROIQ+
+
+f,≥ is the same as in the underlying classical description logic.
+
+This  result  is  different  from  previous  work  on  reducing  reasoning  in  ﬁnite-valued  fuzzy  DLs  to  classical  reasoning [6,
+31,33,34].  There,  the  authors  simulate  fuzzy  concepts  by  using  linearly  many  cut-concepts and -roles of  the  form  A p and 
+r p for  A ∈ NC,  r ∈ NR,  and  p ∈ [0, 1].  They  then  recursively  translate  the  fuzzy  ontology  into  a  classical  one,  which  may 
+be  exponentially  larger.  In  contrast,  our  reduction  shows  that  inﬁnite-valued  fuzzy  DLs  of  the  form  ⊗-SROIQ+
+f,≥ for  a 
+t-norm ⊗ without  zero  divisors  are  too  weak  to  support  actual  fuzzy  consistency  reasoning—one  can  simply  remove  all 
+fuzzy values from the input ontology. However, this is not true for other reasoning problems supported by the algorithms 
+in [6,31,33,34] (see Section 5.3).
+
+Theorem 31 and Lemma 32 still hold when we restrict the semantics to the less expressive logics ⊗-SHOf,≥, or ⊗-SI f,≥. 
+The crisp DLs SHO and SI are known to have the ﬁnite model property [35,36], and ⊗-SHOf,≥ and ⊗-SI f,≥ inherit the 
+ﬁnite model property from their crisp ancestors.
+
+Theorem 34. If ⊗ is a continuous t-norm without zero divisors, then the logics ⊗-SHOf,≥ and ⊗-SI f,≥ and their sublogics have the 
+ﬁnite model property.
+
+At this point, we want to correct a typing error in [15, Theorem 3.8]. There, it appears to be shown that Π-AL≥ does 
+not have  the  ﬁnite  model  property,  contradicting  the  above  result.  However,  the  assertion  (cid:9)a : A ≥ 0.5(cid:11) used  in  the  proof 
+must in fact be (cid:9)a : A = 0.5(cid:11) in order for the arguments to work.
+
+5.  Discussion and related work
+
+Table 5 summarizes the results obtained in Sections 3 and 4. As in Table 4, columns describe the class of logical con-
+structors  allowed  in  the  logic,  while  the  rows  denote  the  types  of  assertions  allowed:  classical,  inequality  assertions,  or 
+equality assertions. The content of a cell then shows the class of continuous t-norms for which consistency has been shown 
+to  be  undecidable,  where  ⊗ stands  for  any  non-idempotent  t-norm;  that  is,  any  t-norm  except  the  Gödel  t-norm.  Thus, 
+
+42
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Table 5
+Undecidability of consistency in fuzzy description logics.
+
+Classical
+≥
+=
+
+NEL
+Ł(0,b)
+Ł(0,b)
+Ł(0,b)
+
+NAL
+Ł(0,b)
+Ł(0,b)
+Ł(0,b)
+
+IEL
+Ł(0,b)
+Ł(0,b)
+⊗
+
+SROIQ
+
+Ł(0,b)
+Ł(0,b)
+⊗
+
+ELC
+
+Π, Ł
+⊗
+⊗
+
+IALC
+Π, Ł(0,b)
+⊗
+⊗
+
+for  instance,  the  upper–left  cell  states  that  Ł(0,b)-NEL is  undecidable.  Cells  with  gray  background  mark  logics  for  which 
+decidability of consistency has been fully characterized, either between t-norms with or without zero divisors, or between 
+the Gödel t-norm and all other t-norms. For the other logics, only the stated undecidability results are known. Regarding the 
+Gödel t-norm, one could think that papers like [6,31] show decidability even for the very expressive fuzzy DL G-SROIQf,=. 
+However, these papers explicitly restrict reasoning to a ﬁnite set of truth values. Thus, decidability of consistency for the 
+Gödel t-norm is only known up to G-IALCf,= [21]. However, we strongly believe also G-SROIQf,= to have a decidable 
+consistency problem. Notice that we have shown undecidability using only classical ontologies, while the decidability results 
+hold also in the presence of fuzzy GCIs (f). Thus, the results depicted in Table 5 are independent of whether we use crisp 
+or fuzzy GCIs.
+
+In  the  rest  of  this  section,  we  present  a  short  survey  on  other  kinds  of  reasoning  problems  in  fuzzy  DLs.  We  start  by 
+describing the known results regarding reasoning w.r.t. general models, i.e., removing the restriction to witnessed models. 
+Afterwards,  we  brieﬂy  discuss  the  other  standard  reasoning  tasks  in  fuzzy  DLs,  namely  satisﬁability,  subsumption,  and 
+instance checking.
+
+5.1.  General models
+
+The general framework for proving undecidability presented in Section 3 is independent of the class of models used for 
+reasoning, and hence applies also for reasoning w.r.t. general models. However, when instantiating the general framework 
+to  speciﬁc  fuzzy  DLs,  we  have  used  the  properties  of  witnessed  models  to  prove  the  successor  property.  Indeed,  in  the 
+proof  of  Lemma 16,  we  use  that  if  (∃r.(cid:5))I (x) = 1 for  some  model  I and  x ∈ ΔI
+such 
+I (x, y) = 1, which cannot be guaranteed for general models. If this assumption is dropped, it is possible to modify the 
+that r
+fuzzy DL in question to show (a variant of) the successor property.
+
+,  then  there  must  exist  a  y ∈ ΔI
+
+First,  one  can  see  from  the  proof  of  Lemma 16 that  it  is  only  necessary  to  witness  existential  restrictions  of  the 
+form ∃r.(cid:5).  In [22],  interpretations  that  fulﬁll  the  witnessing  condition  only  for  this  kind  of  existential  restrictions  are 
+called (cid:5)-witnessed. Restricting the semantics to (cid:5)-witnessed interpretations thus also leads to undecidability in the logics 
+of  Corollaries 20 and  23.  A  second  possibility  is  to  allow  axioms  of  the  form  crisp(r),  asserting  that  the  role  name  r can 
+take only the values  0 or  1. Indeed, in such a logic one can use the two axioms  crisp(r) and ∃r.(cid:5) to show the successor 
+property. The corresponding results have also been shown in [22].
+
+Consider now a continuous t-norm ⊗ that has a component ((a, b), Ł) or ((a, b), Π) with b < 1. Using this component for 
+the encoding function, it is possible to relax the successor property to only create an r-successor with value ≥ b rather than 
+= 1, similar to the construction used in Section 3.5. Indeed, if we modify the successor and the transfer properties to say 
+I (x, y) = 1, we can show a result analogous to Theorem 12 to obtain the canonical model property. 
+I (x, y) ≥ b instead of r
+r
+For the successor property, we can still use the axiom ∃r.(cid:5) since for every model I of this axiom and every x ∈ ΔI
+there 
+must be at least one  y ∈ ΔI
+I (x, y) ≥ b, as the supremum of all these values is 1 (recall the semantics of ∃ from 
+such that r
+I (x, y) has the value 1 or any value ≥ b since both 
+Deﬁnition 8). For the transfer property, it is often irrelevant whether r
+behave  in  the  same  way  when  combined  with  encodings  in  the  interval  [a, b] using  ⊗ and  ⇒.  Unfortunately,  under  the 
+mentioned modiﬁcation we cannot show the transfer property for ⊗-ELC anymore. The reason is that we cannot guarantee 
+I (x, y) need not behave as a neutral element when 
+that the involutive negation remains in the interval [a, b], and hence r
+computing its t-norm with (¬D)I ( y) (see the proof of Lemma 18).
+
+For the special case of Ł-NEL, it is also possible to show undecidability of consistency w.r.t. general models [37], but this 
+requires greater modiﬁcations. The main idea is not to encode the words  u ∈ Σ +
+by single values, but to allow a certain 
+error bound in the encoding. Thus, the encoding Enc(u) of each u ∈ Σ +
+is a subinterval of [0, 1]. To obtain a valid encoding 
+function, one has to ensure that intervals encoding different words do not overlap. Since the axiom ∃r.(cid:5) can only ensure, 
+for each p < 1, the existence of an r-successor with value greater than or equal to p, the transfer of values using the axioms 
+from the proof of Lemma 18 might incur some additional error. By always choosing  p large enough, one can ensure that 
+the resulting value stays inside the prescribed error bounds. A ﬁnal difference is that for the solution property, instead of 
+a single value  M one has to use two values that keep track of the length of the words  vν and  wν encoded in V and W , 
+respectively. For further details, see [37].
+
+For the special case of ⊗-IEL= treated in Section 3.5, the restriction to witnessed models is fundamental in the proofs 
+of the simultaneous transfer property (Lemmata 36 and 37). In this case, undecidability can still be shown if roles can be 
+restricted to be crisp; unfortunately, the same is not true if we restrict only to (cid:5)-witnessed models, or to t-norms containing 
+a component ((a, b), Ł) or ((a, b), Π) with b < 1.
+
+For the decidability results from Section 4, the restriction to witnessed models was only used in the proof of Lemma 29
+to  show  that  the  semantics  of  value  restrictions  ∀s.C is  compatible  with  the  function  1.  From  this  it  is  easy  to  see  that, 
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+43
+
+under  general  model  semantics,  the  result  of  Corollary 33 still  holds  for  all  sublogics  of  ⊗-SROIQ+
+the ∀ constructor [38].
+
+Furthermore, the decidability result for G-IALCf,= also holds under general model semantics [39].
+
+f,≥ that  do  not  have 
+
+5.2.  Satisﬁability and local consistency
+
+Given  an  ontology  O without  assertions,  a  concept  C ,  and  a  degree  p > 0,  we  say  that  C is  p-satisﬁable w.r.t.  O if 
+there  is  a  model  I of  O where  C
+.  The  undecidability  results  for  consistency  of  classical
+ontologies (the ﬁrst row of Table 5) immediately carry over to this problem since the reduction uses only one individual 
+name and consistency of a ﬁnite set O of GCIs together with the crisp assertions (cid:9)e0 : C1(cid:11), . . . , (cid:9)e0 : Cn(cid:11) is equivalent to the 
+1-satisﬁability of the concept C1 (cid:3) · · · (cid:3) Cn w.r.t. O.
+
+I (x) ≥ p holds  for  some  x ∈ ΔI
+
+For the other undecidability results of Section 3, such an adaptation is not so straightforward. The reason is that several 
+concept  names  need  to  be  initialized  to  different  values.  However,  this  shows  undecidability  of  local consistency [40,41], 
+which is a decision problem between concept satisﬁability and ontology consistency that asks for a model with an individual 
+that has different degrees for several concepts at the same time. In the presence of fuzzy GCIs, at least the consistency of 
+inequality assertions (cid:9)e0 : C1 ≥ p1(cid:11), . . . , (cid:9)e0 : Cn ≥ pn(cid:11) can be reduced to the 1-satisﬁability of a new concept name A w.r.t. 
+the original GCIs and the axioms (cid:9) A (cid:6) C1 ≥ p1(cid:11), . . . , (cid:9) A (cid:6) Cn ≥ pn(cid:11). This shows that all undecidability results in the ﬁrst row 
+of Table 5 also apply to concept satisﬁability w.r.t. classical ontologies. Similarly, the second row can be used to determine 
+the decidability of concept satisﬁability in the presence of fuzzy GCIs.
+
+On the other hand, the decidability results of Section 4 also hold for concept satisﬁability since  C is  p-satisﬁable w.r.t. 
+O iff  O ∪ {(cid:9)a : C ≥ p(cid:11)} is  consistent,  where a is  a  fresh  individual  name.  Furthermore,  it  follows  from  the  construction  of 
+Section 4 that the best satisﬁability degree of a concept C , i.e. the supremum over all p for which C is p-satisﬁable, is always 
+either 0 or 1 (for details, see [23]).
+
+Also  note  that  in  the  smaller  logics  ⊗-EL and  ⊗-AL,  both  consistency  and  satisﬁability  are  trivial  problems  since  all 
+
+ontologies written in these logics are consistent.
+
+5.3.  Subsumption and instance checking
+
+Little  is  known  about  subsumption,  another  fundamental  reasoning  problem  for  fuzzy  DLs,  in  the  presence  of  GCIs. 
+Formally,  for  p ∈ [0, 1],  a  concept  C is  p-subsumed by  a  concept  D w.r.t.  an  ontology  O if  the  fuzzy  GCI  (cid:9)C (cid:6) D ≥ p(cid:11)
+is  satisﬁed  in  every  model  of  O.  A  related  problem  is  to  ﬁnd  the  best subsumption degree of  C and  D w.r.t.  O,  i.e.  the 
+supremum over all  p for which C is  p-subsumed by  D w.r.t. O.
+
+Even  though  ⊗-SROIQ+
+
+f,≥ has  the  crisp  model  property,  p-subsumption  in  this  logic  cannot  be  decided  using  only 
+crisp models. In fact, the GCI (cid:9)(cid:5) (cid:6) A ≥ p(cid:11) for p ∈ (0, 1) forces the best subsumption degree of (cid:5) and  A to be p, whereas (cid:5)
+is even 1-subsumed by  A when only crisp models are considered. Thus, in every fuzzy DL of the form ⊗-Lf, p-subsumption 
+cannot  be  decided  using  only  crisp  models.  A  similar  example  is  used  in [23] to  show  the  same  for  all  fuzzy  DLs  ⊗-L
+where ⊗ has no zero divisors and L contains the residual negation. If ⊗ is the product t-norm, then p-subsumption cannot 
+even be decided over the class of all ﬁnite models [23].
+
+The listed negative results also hold for the related problem of deciding  p-instances, i.e. whether an assertion (cid:9)a : C ≥ p(cid:11)
+
+holds in every model of a given ontology [23].
+
+On the positive side,  p-subsumption in G-EL can be decided in polynomial time in the size of the input ontology [5]. 
+
+However,  p-subsumption is co-NP-hard in ⊗-EL whenever ⊗ contains the Łukasiewicz t-norm [42].
+
+5.4.  Related work
+
+Fuzzy  description  logics  were  ﬁrst  considered  in [43],  where  a  sublanguage  of  ALC was  fuzziﬁed  using  the  so-called 
+Zadeh semantics.  This  approach  has  its  origin  in  fuzzy  set  theory [24] and  uses  the  Gödel  t-norm  and  t-conorm,  but  the 
+S-implication ∼x ⊕ y rather than the residuum x ⇒ y. In fact, the ﬁrst algorithms for deciding consistency and entailment 
+in fuzzy variants of ALC were based on the Zadeh semantics [9,44,45]. Later, it was discovered that reasoning in this logic 
+can  be  restricted  to  the  ﬁnitely  many  values  occurring  in  the  input  ontology  (and  their  negations).  Based  on  this  idea, 
+a reduction to reasoning in classical DLs was presented [7].
+
+As  later  noticed  by  Hájek [28],  all  the  previously  developed  tableau  algorithms  implicitly  restricted  reasoning  to  wit-
+nessed models, without making this assumption explicit. In that paper, Hájek also introduced general t-norm based fuzzy 
+semantics  for  fuzzy  ALC and  proved  that  1-satisﬁability  and  1-subsumption  under  these  semantics  are  decidable  if  the 
+background ontology is empty. For the Łukasiewicz t-norm, this is true even without the restriction to witnessed models 
+since in this case the two semantics coincide. In [46], it is proved that 1-subsumption is also decidable in Π-ALC without 
+a background ontology. If one restricts reasoning to so-called quasi-witnessed models, satisﬁability is also decidable in this 
+setting. In [47], the framework from [28] is extended to include ontologies, and axiomatizations of t-norm based fuzzy DLs 
+are investigated.
+
+After  the  introduction  of  t-norm  based  semantics  for  fuzzy  DLs,  several  tableau  algorithms  were  developed  to  decide 
+consistency and subsumption in these new logics. The main idea is that the tableau rules generate a system of constraints 
+
+44
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+that  has  to  be  solved  at  the  end.  The  variables  in  these  constraints  are  either  binary  variables  or  range  over  [0, 1].  The 
+constraints themselves are either linear or quadratic, depending on the t-norm used. Such tableau algorithms are presented 
+in [48] for an extension of Π-ALCf,=, and in [49] for an extension of Ł-ALCf,=. In [50], the latter algorithm is extended to 
+deal with qualiﬁed cardinality restrictions (denoted by Q). In [51], a tableau algorithm for ⊗-SI= is developed for arbitrary 
+continuous  t-norms  ⊗,  as  long  as  the  fuzzy  operators  can  be  expressed  by  ﬁnite  systems  of  quadratic  equations.  Finally, 
+in [52] the authors propose a tableau algorithm for ⊗-ALCf,=, but using S-implications instead of residua, and even allow 
+for truth values from an arbitrary complete lattice instead of [0, 1].
+
+However,  all  of  the  above  tableau  algorithms  were  shown  to  be  incorrect  in  the  presence  of  (crisp)  GCIs [15,16].  The 
+reason  is  that  the  blocking  conditions  employed  by  these  algorithms  are  too  greedy,  and  might  lead  to  a  satisﬁable  set 
+of  constraints,  even  though  the  given  ontology  has  no  model.  A  sound,  complete  and  terminating  tableau-based  algo-
+rithm  for  consistency  of  ⊗-ALCf,≥ was  proposed  in [53,54];  however,  it  requires  the  solution  of  a  ﬁnitely-represented, 
+but inﬁnite, system of (linear or quadratic) inequalities. Following these revelations, many t-norm based fuzzy description 
+logics  were  shown  to  have  an  undecidable  consistency  problem,  e.g.  Π-ALCf,≥ with  strict  GCIs [16],  Π(0,b)-IALf,= [18], 
+and Ł-ELCf,≥ [19].  In [22],  a  ﬁrst  version  of  the  framework  presented  in  Section 3 was  described,  which  subsumed  all 
+previously known undecidability results.
+
+Restricting  to  Zadeh  semantics,  decidability  of  consistency  has  been  shown  even  for  very  expressive  description  logics 
+like  SHOIN [7,55].  The  main  reason  for  these  results  is  that  reasoning  can  be  limited  to  the  values  occurring  in  the 
+input  ontology  (and  their  negations).  Under  Gödel  semantics,  consistency  is ExpTime-complete  in  G-IALCf,= w.r.t.  both 
+witnessed [21] and  non-witnessed  semantics [39].  Here,  one  additionally  needs  to  keep  track  of  the  order between  the 
+values of concepts, but not the values themselves. Moreover, we ﬁrst proved in [23] that in ⊗-SHOI f,≥ for any t-norm ⊗
+without zero divisors, the values in the input ontology do not have any effect in the consistency of the ontology, and can 
+simply  be  removed  (see  Section 4).  The  inexpressive  DL  EL also  keeps  its  polynomial  complexity  for  subsumption  under 
+Gödel semantics [5].
+
+Some  work  has  also  considered  fuzzy  DLs  that  are  restricted  a priori to  ﬁnitely  many  degrees  of  truth.  The  idea  to 
+reduce consistency to consistency in classical DLs has been used for arbitrary ﬁnite chains of truth values with combination 
+functions similar to ordinal sums of the Gödel and Łukasiewicz t-norms, and even for very expressive DLs such as SROIQ
+[33,34];  however,  the  reduction  often  increases  the  size  of  the  input  ontology  by  an  exponential  factor.  In  contrast,  tight 
+complexity bounds were shown for consistency and subsumption in fuzzy DLs below SHOI over an arbitrary ﬁnite lattice 
+using a combination of automata-based constructions [40,56] and tableaux rules [41].
+
+6.  Conclusions
+
+We have studied the limits of decidability of ontology consistency in fuzzy DLs. On one hand, we have presented several 
+undecidability results that strengthen all previously-known cases of fuzzy DLs with an undecidable consistency problem. To 
+do  this,  we  have  developed  a  general  framework  for  proving  undecidability,  which  is  based  on  a  set  of  relatively  simple 
+properties.  Using  this  framework,  we  were  able  to  show,  for  instance,  that  consistency  is  undecidable  in  the  very  simple 
+DL  NEL if  the  semantics  are  based  on  a  t-norm  with  zero  divisors.  Extensions  of  this  framework  with  different  ways  to 
+prove the canonical model property also allowed us to prove that the problem is undecidable in Π-ELC and ⊗-IEL= for 
+any  t-norm  different  from  the  Gödel  t-norm.  All  of  these  logics  are  equivalent  to  classical  ALC when  their  semantics  is 
+restricted to two truth values.
+
+An analysis of these results suggests that the culprit for undecidability of a fuzzy DL is the capacity of expressing speciﬁc 
+upper bounds within a non-idempotent component of the t-norm. Indeed, fuzzy GCIs usually provide a lower bound for the 
+interpretation of a concept. If the involutive negation is allowed, then a lower bound for the concept ¬C corresponds to an 
+upper bound for C . Similarly, the implication constructor can be used to propagate upper bounds through concepts, and the 
+residual negation deﬁnes a “local” involutive negation in every t-norm that contains zero divisors. Conversely, our proofs of 
+decidability exploit the fact that for any continuous t-norm ⊗ without zero divisors, upper bounds different from 0 cannot 
+be expressed in ⊗-SROIQf,≥. If I is a witnessed model of an ontology O, then mapping all the positive truth degrees 
+given by I to 1 yields a crisp model of O (see Lemma 30). If this intuition is correct, then it suggests that for any t-norm 
+without zero divisors, consistency in ⊗-NEL= and ⊗-NAL= is decidable.
+
+Our analysis of the limits of decidability for fuzzy DLs is almost complete. As can be seen from Table 5, there are only a 
+few remaining gaps, which we plan to cover in future work. In this work, we consider mainly standard constructors studied 
+for  classical  DLs.  Other  fuzzy  constructors  like  hedges [44,57–59],  or  aggregation operators [60,61] may  require  a  different 
+analysis. Note also that we have considered here only the ontology consistency problem. The decidability and complexity 
+of other standard reasoning tasks, such as subsumption or instance checking, are other topics for future research. We also 
+intend to ﬁnd the precise complexity, and optimal algorithms, for reasoning in light-weight fuzzy DLs, such as ⊗-EL and 
+⊗-DL-Lite, over arbitrary continuous t-norms ⊗.
+
+As has been noted by several authors [13,14], the ability to manage vague and imprecise knowledge is a desired feature 
+of intelligent systems to be used in the biological and medical domains, among many others. Studying the  complexity of 
+reasoning with different fuzzy DLs allows us to discern which of these may be suitable formalisms for implementing a fuzzy 
+knowledge  representation  and  reasoning  system.  It  is  clearly  desirable  to  stay  in  the  decidable  part  of  Table 5.  However, 
+the  decidability  results  of  Section 4 are  also  not  helpful  since  they  show  that  consistency  can  be  decided  using  classical 
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+45
+
+reasoners without any modiﬁcation of the input ontology. This leaves only the Gödel t-norm as a promising candidate for 
+an implementation. As an alternative, one could use many-valued DLs that support only a ﬁnite set of truth values, arranged 
+in a residuated lattice or a total order [31,33,34,40,41]. The complexity of reasoning in such logics is often the same as for 
+the underlying classical DLs. Sometimes, highly-optimized reasoners [62,63] for classical reasoning problems can be reused 
+after a suitable reduction.
+
+Acknowledgements
+
+This  work  was  partially  supported  by  the  German  Research  Foundation  (DFG)  under  grant  BA 1122/17-1 (FuzzyDL),  in 
+the  Research  Training  Group  1763  (QuantLA),  within  the  Cluster  of  Excellence  ‘Center  for  Advancing  Electronics  Dresden’ 
+(cfAED), and in the Collaborative Research Center ‘Highly Adaptive Energy-Eﬃcient Computing’ (HAEC). The authors would 
+also like to thank Franz Baader for fruitful discussions on the topic of fuzzy description logics and the anonymous reviewers 
+for their help in improving the presentation of this paper.
+
+Appendix A.  Proofs for Section 3
+
+Lemma 14. The functions Enc described above are valid encoding functions for t-norms of the form Π(a,b) or Ł(a,b).
+
+Proof. In both cases described in Section 3.3, the encodings of different words u, u
+0 are different, and in particular 
+smaller than b, and thus are not included in Enc(ε). Furthermore, the encodings do not depend on the number of leading 
+zeros.  Thus,  the  ﬁrst  two  conditions  of  Deﬁnition 11 are  satisﬁed.  For  Condition (c),  we  analyze  the  two  cases  of  Π(a,b)
+and Ł(a,b) separately.
+
+(cid:20) ∈ ΣΣ ∗
+
+and  assume  w.l.o.g.  that  v < w.  Then  v + 1 ≤ w and  hence 
+
+For  Π(a,b),  consider  two  different  words  v, w ∈ Σ ∗
+
+−w ≤ 2
+2
+
+−(v+1) = 2
+
+−v /2. If v (cid:24)= ε, this implies that
+
+enc(v) ⇒ enc(w) = σa,b
+
+(cid:15)
+
+−w /2
+
+2
+
+−v
+
+(cid:16)
+
+≤ σa,b(1/2) = enc(1) < 1.
+
+For  v = ε,  we  similarly  have  p ⇒ enc(w) = enc(w) ≤ enc(1) < 1 for  any  p ∈ Enc(ε) = [b, 1].  Conversely,  if  v = w,  then 
+enc(v) ⇒ enc(w) = 1 = enc(w) ⇒ enc(v). Thus, the words uε := 1 and u+ := ε satisfy Condition (c) of Deﬁnition 11.
+
+For  the  case  of  Ł(a,b),  let k = max{|v i|, |w i| | i ∈ N } be  the  maximal  length  of  a  word  occurring  in  P .  Then,  for  every 
+, we have |vν | ≤ (|ν| + 1)k and |wν | ≤ (|ν| + 1)k. If vν (cid:24)= wν , these words must differ in one of the ﬁrst (cid:10) := (|ν| + 1)k
+
+ν ∈ N ∗
+letters. Thus, if vν (cid:24)= ε and  wν (cid:24)= ε, then either enc(vν ) > enc(wν ), and thus
+
+(cid:15)
+
+enc(vν ) ⇒ enc(wν ) = σa,b
+= min
+(cid:15)
+≤ σa,b
+= σa,b
+(cid:15)
+= enc
+
+min{1, 1 + 0.
+(cid:6)
+b, σa,b(1 + 0.
+1 − (s + 1)
+←−−−−
+1 · 0(cid:10)
+1 − 0.
+(cid:16)
+1 · 0(cid:10)
+
+< 1,
+
+(cid:15)
+
+−((cid:10)+1)
+(cid:16)
+
+(cid:16)
+
+←−−
+wν }
+(cid:8)
+←−−
+wν )
+
+←−−
+vν − 0.
+←−−
+vν − 0.
+(cid:16)
+
+or, similarly, enc(vν ) < enc(wν ) and enc(wν ) ⇒ enc(vν ) ≤ enc(1 · 0(cid:10)) < 1. Note that again this also holds if vν = ε, since wν
+also differs from 0(cid:10) in one of the ﬁrst (cid:10) letters, and similarly if wν = ε. Conversely, if vν = wν , then both residua yield 1 as 
+result, which is greater than enc(1 · 0(cid:10)). Thus, setting uε := 1 · 0k and u+ := 0k satisﬁes Condition (c) of Deﬁnition 11. (cid:2)
+
+Lemma 15. For every continuous t-norm ⊗, the logics ⊗-EL=, ⊗-ELC≥, and Ł(0,b)-NEL satisfy Pini.
+
+Proof. In the case of ⊗-EL=, we can use the simple ontology OC(e)=u := {(cid:9)e : C = enc(u)(cid:11)} to enforce that C
+Enc(u) is satisﬁed by every model I.
+
+I (e
+
+I ) = enc(u) ∈
+
+In  ⊗-ELC≥,  the  two  axioms  (cid:9)e : C ≥ enc(u)(cid:11) and  (cid:9)e : ¬C ≥ 1 − enc(u)(cid:11) express  the  same  restriction.  The  ﬁrst  axiom 
+
+ensures that C
+
+I (e
+
+I ) ≥ enc(u), while the second requires that 1 − C
+
+I (e
+
+I ) ≥ 1 − enc(u), i.e. C
+
+I (e
+
+I ) ≤ enc(u), holds.
+
+For the logic Ł(0,b)-NEL, a more involved construction is necessary. We ﬁrst ensure that a fresh auxiliary concept name A
+has a value from Enc(u) at all domain elements, and then require that C and  A have the same value at e. For the ﬁrst part, 
+we use the two axioms
+
+(cid:13)
+
+H (s+1)|u| ≡ (cid:2)H (s+1)|u| (cid:14)
+
+,
+
+(cid:13)
+
+(cid:14)
+←−
+u
+
+A ≡ H 2
+
+.
+
+I (x) ∈ [0, b] for  some  interpretation  I and  x ∈ ΔI
+
+,  then  for  every m ∈ N we  have  by  linearity 
+
+Observe  that,  whenever  H
+of σ0,b that
+(cid:15)
+
+(cid:15)
+
+(cid:16)I
+
+Hm
+
+(x) = σ0,b
+
+(cid:6)
+
+max
+
+0, m
+
+(cid:15)
+
+(cid:15)
+σ −1
+0,b
+
+(cid:16)
+I (x)
+
+H
+
+(cid:16)
+
+− 1
+
+(cid:8)(cid:16)
+
++ 1
+
+= max
+
+(cid:6)
+
+(cid:15)
+
+0, m
+
+I (x) − b
+
+H
+
+(cid:16)
+
+(cid:8)
+
+.
+
++ b
+
+46
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Let  now  I be  an  interpretation  that  satisﬁes  these  axioms  and  x ∈ ΔI
+I (x) = (cid:5)I (x) = 1 ∈ Enc(u) holds. If u /∈ {0}∗
+A
+(cid:15)
+
+, then by the ﬁrst axiom we have
+(cid:16)
+
+(cid:6)
+
+(cid:8)
+
+(cid:15)
+
+(cid:16)
+
+(cid:6)
+= b − max
+
+0, (s + 1)
+
+|u|
+
+I (x) − b
+
+H
+
+(cid:8)
+
+.
+
++ b
+
+max
+
+0, (s + 1)
+
+|u|
+
+I (x) − b
+
+H
+
++ b
+
+.  If  u ∈ {0}∗
+
+,  then  the  second  axiom  enforces  that 
+
+This shows that −b = 2(s + 1)|u|(H
+
+I (x) − b), and thus  H
+(cid:21)
+
+(cid:20)
+
+I (x) = b −
+
+b
+
+2(s+1)|u| . From the second axiom it follows that
+
+(cid:2)
+I (x) = max
+
+A
+
+0, 2
+
+(cid:19)
+←−
+u
+
+− b
+
+2(s+1)|u|
+
++ b
+
+.
+
+Since 
+
+←−
+u
+
+(s+1)|u| = 0.
+
+←−
+u < 1, we obtain  A
+
+I (x) = b − b(0.
+
+←−
+u) = σ0,b(1 − 0.
+
+←−
+u) = enc(u).
+
+For the second part, we use the axiom
+
+(cid:13)
+(cid:14)
+e : (C (cid:9) A) (cid:3) ( A (cid:9) C)
+
+.
+
+If u ∈ {0}∗
+u /∈ {0}∗
+
+, the semantics of (cid:9) and the fact that  A
+
+I (e
+
+I ) ∈ Enc(u) = Enc(ε) = [b, 1] imply that C
+
+I ) ∈ [b, 1] = Enc(u). If 
+
+, then  A
+
+I (e
+
+I ) = enc(u) < b, which implies that C
+
+I (e
+
+I ) < b, and thus C
+
+I (e
+
+I ) = A
+
+I (e
+
+I (e
+I ) = enc(u). (cid:2)
+
+Lemma 16. For every continuous t-norm ⊗, the logic ⊗-EL satisﬁes P→.
+
+Proof. Consider  the  ontology  O∃r := {(cid:9)(cid:5) (cid:6) ∃r.(cid:5)(cid:11)}.  Any  model  I of  this  axiom  satisﬁes  (∃r.(cid:5))I (x) = 1 for  every  x ∈ ΔI
+. 
+Since reasoning is restricted to witnessed models, there must exist a  y ∈ ΔI
+I (x, y) = 1, as required for the successor 
+property. (cid:2)
+
+with r
+
+Lemma 17. For every continuous t-norm ⊗ except the Gödel t-norm, the logic ⊗-EL satisﬁes P◦.
+
+Proof. By assumption, ⊗ must contain either the product or the Łukasiewicz t-norm in some interval. We divide the proof 
+depending on the representative chosen for the encoding function.
+0 and u
+
+For the case of Π(a,b)-EL, observe that for every u ∈ Σ ∗
+
+(cid:20)(s + 1)|u| + u = u
+
+u. Given u ∈ Σ ∗
+
+0 , we have u
+
+(cid:20) ∈ ΣΣ ∗
+
+0 , we 
+
+(cid:20)
+
+deﬁne the ontology
+
+(cid:6)(cid:13)
+
+OC◦u :=
+
+D C◦u ≡ C (s+1)|u| (cid:3) Cu
+
+(cid:14)(cid:8)
+
+.
+
+Observe that for every interpretation I and x ∈ ΔI
+
+, if C
+
+I (x) = σa,b(p) and m ∈ N, then
+
+(cid:16)I
+
+(cid:15)
+
+C m
+
+(x) = σa,b
+
+(cid:15)
+
+(cid:16)
+
+.
+
+pm
+
+Let now I be a model of OC◦u , x ∈ ΔI
+(cid:20) (cid:24)= ε, then we have
+u
+
+, and u
+
+(cid:20) ∈ {ε} ∪ ΣΣ ∗
+
+0 such that C
+
+I
+u (x) ∈ Enc(u) and C
+
+I (x) ∈ Enc(u
+
+(cid:20)). If u /∈ {0}∗
+
+and 
+
+D
+
+I
+C◦u(x) = σa,b
+and u
+
+If u ∈ {0}∗
+
+D
+
+I
+C◦u(x) =
+
+(cid:15)
+
+2
+
+−(u
+
+(cid:20)(s+1)|u|+u)
+
+(cid:16)
+
+(cid:15)
+= enc
+
+(cid:20)
+
+u
+
+u
+
+(cid:16)
+
+.
+
+(cid:20) (cid:24)= ε, we have C
+C (s+1)|u| (cid:16)I
+(cid:15)
+
+I
+u (x) ∈ [b, 1], and thus
+(cid:20)(s+1)|u|+0)
+−(u
+
+(cid:15)
+
+2
+
+(x) = σa,b
+(cid:20) = ε we get (C (s+1)|u|
+
+(cid:16)
+
+(cid:15)
+= enc
+
+(cid:20)
+
+u
+
+u
+
+(cid:16)
+
+.
+
+Similarly, for u /∈ {0}∗
+
+and u
+
+)I (x) ∈ [b, 1], which implies that
+
+D
+
+I
+C◦u(x) = C
+Finally, if u ∈ {0}∗
+
+I
+u (x) = enc(εu).
+(cid:20) = ε, then  D
+
+and u
+
+For the case of Ł(a,b)-EL, we deﬁne the ontology
+
+I (x) = (C (s+1)|u| (cid:3) Cu)I (x) ∈ [b, 1] = Enc(εu).
+
+(cid:6)
+
+OC◦u :=
+
+(cid:20)(s+1)|u| ≡ C, D C◦u ≡ C
+
+C
+Let I be a model of OC◦u , x ∈ ΔI
+then from the ﬁrst axiom it follows that
+
+(cid:20) (cid:3) Cu
+
+(cid:8)
+
+.
+
+, and assume that C
+
+I
+u (x) ∈ Enc(u) and C
+
+I (x) ∈ Enc(u
+
+(cid:20)) for some u
+
+(cid:20) ∈ {ε} ∪ ΣΣ ∗
+
+0 . If u
+
+(cid:20) (cid:24)= ε, 
+
+(cid:20)(s+1)|u| (cid:16)I
+
+(cid:15)
+
+C
+
+(x) = C
+
+I (x) = σa,b
+
+(cid:15)
+
+1 − 0.
+
+(cid:16)
+←−
+(cid:20)
+u
+
+∈ (a, b).
+
+Since ⊗(a, b)-contains Łukasiewicz, this implies that C
+(cid:8)(cid:16)
+
+(cid:6)
+
+(cid:15)
+
+(cid:16)
+
+(cid:16)
+
+(cid:15)
+
+(cid:15)
+
+σa,b
+
+max
+
+0, (s + 1)
+
+|u|
+
+σ −1
+a,b
+
+(cid:20)I(x)
+
+C
+
+− 1
+
++ 1
+
+= C
+
+(cid:20) I (x) ∈ (a, b). Thus,
+
+I (x) = σa,b
+
+(cid:15)
+
+1 − 0.
+
+(cid:16)
+←−
+(cid:20)
+u
+
+,
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+47
+
+which shows that
+
+(cid:20) I (x) = σa,b
+
+C
+
+(cid:15)
+
+1 − (s + 1)
+
+−|u|
+
+(cid:16)
+←−
+(cid:20)
+u
+
+0.
+
+.
+
+If u /∈ {0}∗
+
+, then it follows that
+
+(cid:15)
+
+(cid:6)
+
+D
+
+D
+
+(cid:15)
+
+max
+1 − 0.
+
+0, (1 − 0.
+←−
+u − (s + 1)
+
+I
+C◦u(x) = σa,b
+= σa,b
+I
+u (x) ∈ [b, 1], and thus
+(cid:20) I(x) = σa,b
+
+I
+C◦u(x) = C
+
+, then C
+
+(cid:15)
+
+If u ∈ {0}∗
+
+(cid:15)
+
+←−
+u) +
+−|u|
+
+−|u|
+1 − (s + 1)
+(cid:15)
+(cid:16)
+←−
+(cid:20)
+= enc
+u
+
+0.
+
+u
+
+(cid:20)
+
+u
+
+.
+
+(cid:16)
+←−
+(cid:20)
+u
+
+0.
+(cid:16)
+
+(cid:8)(cid:16)
+
+− 1
+
+1 − (s + 1)
+
+−|u|
+
+(cid:16)
+←−
+(cid:20)
+u
+
+0.
+
+(cid:15)
+= enc
+
+(cid:20)
+
+u
+
+u
+
+(cid:16)
+
+.
+
+It  remains  to  consider  the  case  that  u
+(cid:20) I (x) ∈ [b, 1]. If u /∈ {0}∗
+C
+
+, then
+
+(cid:20)
+
+is  the  empty  word,  and  thus  C
+
+I (x) ∈ [b, 1].  By  the  ﬁrst  axiom,  we  also  have 
+
+D
+
+I
+C◦u(x) = C
+On the other hand, if u ∈ {0}∗
+
+I
+u (x) = enc(u) = enc(εu).
+, then we have  D
+
+I
+C◦u(x) ∈ [b, 1] = Enc(εu). (cid:2)
+
+Lemma 18. For every continuous t-norm ⊗ except the Gödel t-norm, the logics ⊗-AL, ⊗-ELC, and Ł(0,b)-NEL satisfy P(cid:2).
+
+Proof. Let I be an interpretation and x, y ∈ ΔI
+whether we have chosen Π(a,b) or Ł(a,b), if u /∈ {0}∗
+I (x) ≥ b, and we only need to ensure that  D
+then C
+
+such that C
+
+I (x) ∈ Enc(u) for some u ∈ Σ ∗
+
+0 and r
+
+I (x, y) = 1. Regardless of 
+I (x). On the other hand, if u ∈ {0}∗
+, 
+
+I ( y) = C
+
+, then the goal is to have  D
+I (x) ≥ b.
+
+In all fuzzy DLs based on EL, we can formulate the axiom (cid:9)∃r.D (cid:6) C(cid:11). If I satisﬁes this axiom, then
+
+I ( y) = r
+
+I (x, y) ⊗ D
+
+I ( y) ≤ (∃r.D)I (x) ≤ C
+
+I (x).
+
+D
+
+We  now  add  an  axiom  ensuring  that  also  D
+form of this axiom depends on the expressivity of the logic used.
+
+In ⊗-AL, we can use the axiom (cid:9)C (cid:6) ∀r.D(cid:11) to restrict I to satisfy
+
+I ( y) ≥ C
+
+I (x) holds  if  u /∈ {0}∗
+
+,  and  D
+
+I ( y) ≥ b holds  if  u ∈ {0}∗
+
+.  The  precise 
+
+C
+
+I (x) ≤ (∀r.D)I (x) ≤ r
+I ( y) ≥ C
+
+I (x, y) ⇒ D
+I (x) ≥ b if u ∈ {0}∗
+In the case of ⊗-ELC, if I is a model of (cid:9)∃r.¬D (cid:6) ¬C(cid:11), then
+
+I ( y) = D
+
+I ( y),
+
+and thus also  D
+
+.
+
+1 − D
+
+I ( y) = r
+I (x) ≤ D
+
+1 − D
+
+I (x, y) ⊗
+I ( y) as in the previous case.
+
+and thus C
+
+(cid:15)
+
+(cid:16)
+I ( y)
+
+≤ (∃r.¬D)I (x) ≤ 1 − C
+
+I (x),
+
+Finally, for Ł(0,b)-NEL, we use the axiom (cid:9)∃r.(cid:2)D (cid:6) (cid:2)C(cid:11), similar to the one for ⊗-ELC. If I satisﬁes this axiom, then
+
+(cid:13)D
+
+I ( y) = r
+
+I (x, y) ⊗
+I ( y) ≤ C
+I (x) = 0, and thus  D
+
+If  u /∈ {0}∗
+(cid:13)D
+
+I ( y) ≤ (cid:13)C
+
+, then  D
+
+(cid:15)
+
+(cid:16)
+I ( y)
+
+(cid:13)D
+
+≤ (∃r.(cid:2)D)I (x) ≤ (cid:13)C
+I (x) < b, which shows that b − D
+
+I (x).
+I ( y) ≤ b − C
+
+I ( y) ≥ b as required. (cid:2)
+
+I (x), and thus  C
+
+I (x) ≤ D
+
+I ( y). If  u ∈ {0}∗
+
+, then 
+
+Lemma 19. Let ⊗ be any continuous t-norm except the Gödel t-norm. If one of the logics ⊗-IEL=, ⊗-ELC≥, or Ł(0,b)-NEL satis-
+ﬁes P(cid:29)with OP and IP can be extended to a model of OP , then this logic also satisﬁes P(cid:24)=.
+
+Proof. For ⊗-IEL=, we deﬁne the ontology
+
+(cid:15)
+
+(cid:6)(cid:13)
+
+(cid:16)
+(V → W ) (cid:3) (W → V )
+
+(cid:5) (cid:6)
+
+OV (cid:24)=W :=
+
+→ M
+For every model I of OP ∪ OV (cid:24)=W and every ν ∈ N ∗
+(cid:15)
+
+(cid:16)(cid:16)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:14)(cid:8)
+
+.
+
+, we have
+(cid:16)(cid:16)
+(cid:15)
+
+(cid:16)
+g(ν)
+
+I
+
+V
+
+⇒ W
+
+I
+
+g(ν)
+
+⊗
+
+I
+
+W
+
+(cid:16)
+g(ν)
+
+I
+
+⇒ V
+
+g(ν)
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+.
+
+≤ M
+
+Since at least one of the two residua must be 1, this implies
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:6)
+min
+
+V
+
+I
+
+(cid:16)
+g(ν)
+
+⇒ W
+
+I
+
+(cid:16)
+g(ν)
+
+I
+
+, W
+
+(cid:16)
+g(ν)
+
+I
+
+⇒ V
+
+g(ν)
+
+(cid:16)(cid:8)
+
+I
+
+≤ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+as required.
+
+48
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+For the second condition, assume that IP cannot be extended to a model of OP ∪ OV (cid:24)=W . Since there is an extension I
+
+of IP that satisﬁes OP , we know that I must violate OV (cid:24)=W . This means that there is a ν ∈ N ∗
+(cid:16)
+(V → W ) (cid:3) (W → V )
+
+1 = (cid:5)IP (ν) >
+
+(cid:16)IP (ν).
+
+→ M
+
+(cid:15)(cid:15)
+
+such that
+
+This implies that
+
+(cid:15)
+
+V
+= min
+
+IP (ν) <
+
+M
+
+IP (ν) ⇒ W
+(cid:6)
+
+IP (ν) ⇒ W
+For ⊗-ELC≥, consider the ontology
+
+V
+
+(cid:16)
+IP (ν)
+
+(cid:15)
+
+⊗
+W
+IP (ν), W
+
+IP (ν) ⇒ V
+IP (ν) ⇒ V
+
+(cid:16)
+IP (ν)
+(cid:8)
+IP (ν)
+
+.
+
+(cid:6)
+
+OV (cid:24)=W :=
+
+(cid:13)
+
+(cid:14)
+(cid:5) (cid:6) ¬(X (cid:3) ¬X)
+
+(cid:9) X (cid:6) X (cid:3) X(cid:11),
+(cid:9)X (cid:3) V (cid:6) X (cid:3) W (cid:3) M(cid:11),
+(cid:8)
+(cid:9)¬X (cid:3) W (cid:6) ¬X (cid:3) V (cid:3) M(cid:11)
+
+.
+
+,
+
+(A.1)
+
+(A.2)
+
+(A.3)
+
+For every model of the axioms in (A.1) and every x ∈ ΔI
+
+be an idempotent element w.r.t. ⊗. Recall that  X
+like the Gödel t-norm on  X
+
+I (x). In particular, we get 0 ≥ ( X (cid:3) ¬ X)I (x) = min{ X
+
+, we know that  X
+
+I (x) must 
+I (x) can thus not lie in any component of ⊗, which implies that ⊗ behaves 
+I (x), 1 − X
+
+I (x) and hence,  X
+
+I (x)}, and thus  X
+
+I (x) ∈ {0, 1}.
+
+I (x) ⊗ X
+
+I (x) ≤ X
+
+Let  now  I be  a  model  of  OP ∪ OV (cid:24)=W and  ν ∈ N ∗
+I (g(ν)) ⊗ M
+
+I (g(ν)). We consider which representative was chosen for the encoding function:
+
+I (g(ν)) = 1,  then  axiom (A.2) states  that  V
+
+.  If  X
+
+W
+
+I (g(ν)) ≤
+
+Π(a,b): Since  W
+
+I (g(ν)) ∈ Enc(wν ), we know in particular that  W
+
+I (g(ν)) > a. Furthermore, since  M
+
+I (g(ν)),  we  have  that  W
+
+I (g(ν)) ⊗ z > W
+
+I (g(ν)) = enc(1) < b
+I (g(ν)) ≥
+
+I (g(ν)) ⊗ M
+
+and  product  is  a  strict  t-norm,4 for  every  z > M
+V
+
+I (g(ν)).
+
+Ł(a,b): If  wν (cid:24)= ε, then since the length of  wν is bounded by (cid:10) := (|ν| + 1)k and
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+W
+
+I
+
+⊗ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+(cid:15)
+
+(cid:6)
+max
+
+= σa,b
+
+0, 1 − 0.
+
+←−−
+wν −
+
+(cid:15)
+
+0.0(cid:10) · 1
+
+(cid:16)(cid:8)(cid:16)
+,
+
+we have
+
+I
+
+I
+
+(cid:15)
+
+(cid:15)
+
+W
+
+⊗ M
+
+(cid:16)
+g(ν)
+
+(cid:16)
+g(ν)
+For  wν = ε, it also follows that
+(cid:16)
+(cid:16)
+g(ν)
+g(ν)
+
+⊗ M
+
+W
+
+(cid:15)
+
+(cid:15)
+
+I
+
+I
+
+(cid:15)
+
+= σa,b
+
+1 − 0.
+
+←−−
+wν −
+
+(cid:15)
+
+0.0(cid:10) · 1
+
+(cid:16)(cid:16)
+
+∈ (a, b).
+
+I
+
+= M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+(cid:15)
+
+(cid:15)
+
+1 −
+
+= σa,b
+
+(cid:16)(cid:16)
+
+0.0(cid:10) · 1
+
+∈ (a, b).
+
+Thus,  by  the  properties  of  the  Łukasiewicz  t-norm  we  again  have  that  for  any  z > M
+W
+
+I (g(ν)) holds.
+
+I (g(ν)) ⊗ M
+
+I (g(ν)) ≥ V
+
+I (g(ν)),  W
+
+I (g(ν)) ⊗ z >
+
+In both cases, we get
+(cid:15)
+
+I
+
+W
+
+(cid:16)
+g(ν)
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+⇒ V
+
+= sup
+(cid:6)
+= inf
+(cid:6)
+≤ inf
+I
+= M
+
+(cid:15)
+
+(cid:6)
+
+I
+(cid:15)
+
+(cid:7)
+(cid:7) W
+z ∈ [0, 1]
+(cid:7)
+(cid:7) W
+I
+z ∈ [0, 1]
+(cid:7)
+(cid:7) z > M
+z ∈ [0, 1]
+(cid:15)
+(cid:16)
+g(ν)
+
+.
+
+(cid:16)
+g(ν)
+(cid:16)
+g(ν)
+(cid:15)
+I
+
+g(ν)
+
+⊗ z ≤ V
+I
+⊗ z > V
+(cid:16)(cid:8)
+
+(cid:16)(cid:8)
+
+(cid:15)
+
+I
+(cid:15)
+
+g(ν)
+(cid:16)(cid:8)
+
+g(ν)
+
+On  the  other  hand,  if  X
+axiom (A.3) instead of (A.2). Thus, we always have
+
+I (g(ν)) = 0,  then  we  know  that  V
+
+I (g(ν)) ⇒ W
+
+I (g(ν)) ≤ M
+
+I (g(ν)) by  similar  arguments,  using 
+
+(cid:6)
+min
+
+V
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+⇒ W
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+, W
+
+I
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+⇒ V
+
+(cid:15)
+
+I
+
+(cid:16)(cid:8)
+
+g(ν)
+
+I
+
+≤ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+.
+
+To show the second point of P(cid:24)=, assume that
+
+(cid:6)
+min
+
+IP (ν) ⇒ W
+
+IP (ν), W
+
+IP (ν) ⇒ V
+
+V
+
+(cid:8)
+IP (ν)
+
+≤ M
+
+IP (ν) < 1
+
+and consider an extension I of IP that satisﬁes OP , which exists by assumption. We show that I can be further extended 
+to a model of OV (cid:24)=W .
+
+4 A continuous t-norm is strict if it is strictly monotone [4].
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+49
+
+To ﬁnd the values for  X , consider any element ν ∈ N ∗
+IP (ν) is equal to  1. If  V
+
+IP (ν) ⇒ W
+
+IP (ν) ⇒ V
+
+and  W
+at  ν.  By  assumption,  we  must  then  have  W
+(cid:20) > M
+that  W
+W
+
+IP (ν) ⊗ M
+If the other residuum is equal to 1, we set  X
+
+IP (ν) for  all  m
+
+IP (ν) ⊗ m
+
+IP (ν), i.e. axiom (A.2) is also satisﬁed at ν.
+
+(cid:20) > V
+
+. By assumption, exactly one of the residua  V
+
+IP (ν) ⇒ V
+IP (ν).  Since  ⊗ is  continuous  and  monotone,  this  means  that  V
+
+IP (ν)
+I (ν) := 1, which trivially satisﬁes axiom (A.3)
+IP (ν).  By  the  deﬁnition  of  the  residuum,  we  know 
+IP (ν) ≤
+
+IP (ν) = 1, we set  X
+
+IP (ν) ⇒ W
+
+IP (ν) ≤ M
+
+I (ν) := 0 and can use dual arguments to show that axioms (A.2) and (A.3)
+
+are satisﬁed at ν. We have thus constructed an extension of IP that satisﬁes both OP and OV (cid:24)=W .
+
+The last case is that of Ł(0,b)-NEL, for which we can use the ontology
+
+OV (cid:24)=W :=
+
+(cid:6)(cid:13)
+
+(cid:5) (cid:6)
+
+(cid:15)
+
+(cid:16)
+(V (cid:9) W ) (cid:3) (W (cid:9) V )
+
+(cid:14)(cid:8)
+,
+
+(cid:9) M
+
+which  is  similar  to  the  one  for  ⊗-IEL=.  In  any  model  I of  OP ∪ OV (cid:24)=W it  holds  that  for  every  ν ∈ N ∗
+(((V (cid:9) W ) (cid:3) (W (cid:9) V )) (cid:9) M)I (g(ν)) ≥ 1.
+
+,
+
+If  V
+
+I (g(ν)) ≤ W
+
+I (g(ν)), then ((W (cid:9) V ) (cid:9) M)I (g(ν)) ≥ 1. This can only be the case if  M
+
+I (g(ν)) ≥
+I (g(ν)) = enc(1 · 0(|ν|+1)k) < b by construction of OP . By the deﬁnition 
+
+I (g(ν)) ≥ b or  M
+
+(W (cid:9) V )I (g(ν)). The former is impossible since M
+I (g(ν)) < b, and thus
+of (cid:9), the latter implies that V
+(cid:16)
+(cid:16)
+g(ν)
+g(ν)
+
+= (W (cid:9) V )I
+
+(cid:16)
+g(ν)
+
+⇒ V
+
+W
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+I
+
+I
+
+I
+
+≤ M
+
+(cid:15)
+
+(cid:16)
+g(ν)
+
+.
+
+Similarly, if W
+
+I (g(ν)) ≤ V
+(cid:15)
+(cid:16)
+g(ν)
+
+⇒ W
+
+I (g(ν)), then V
+(cid:15)
+(cid:16)
+g(ν)
+
+, W
+
+(cid:15)
+
+I
+
+I
+
+(cid:16)
+g(ν)
+
+(cid:6)
+min
+
+V
+
+I
+
+I (g(ν)) ⇒ W
+(cid:15)
+
+I (g(ν)) ≤ M
+(cid:16)(cid:8)
+
+I (g(ν)). In both cases, we have
+(cid:15)
+
+I
+
+⇒ V
+
+g(ν)
+
+I
+
+≤ M
+
+(cid:16)
+g(ν)
+
+.
+
+To show the second condition of P(cid:24)=, assume that IP cannot be extended to a model of OP ∪ OV (cid:24)=W . Since there is an 
+
+extension I of IP that satisﬁes OP , we know that I violates OV (cid:24)=W . This means that there is a ν ∈ N ∗
+
+such that
+
+(cid:15)(cid:15)
+
+(cid:16)
+(V (cid:9) W ) (cid:3) (W (cid:9) V )
+
+(cid:16)IP (ν) < 1,
+
+(cid:9) M
+
+and thus
+
+(V (cid:9) W )IP (ν) ⊗ (W (cid:9) V )IP (ν) > M
+
+IP (ν).
+
+As above, the value (V (cid:9) W )IP (ν) ⊗ (W (cid:9) V )IP (ν) is either  V
+which  of  the  values  V
+greater than M
+
+IP (ν) is  greater.  Thus,  both  V
+
+IP (ν), showing that
+
+IP (ν) and  W
+
+IP (ν) ⇒ W
+
+IP (ν) or  W
+
+IP (ν) ⇒ W
+
+IP (ν) and  W
+
+IP (ν) ⇒ V
+
+IP (ν), depending on 
+IP (ν) must  be 
+
+IP (ν) ⇒ V
+
+(cid:6)
+min
+
+IP (ν) ⇒ W
+
+IP (ν), W
+
+IP (ν) ⇒ V
+
+V
+
+(cid:8)
+IP (ν)
+
+> M
+
+IP (ν).
+
+(cid:2)
+
+Lemma 21. The logic Π-ELCsatisﬁes P
+
+(cid:20)
+(cid:29).
+
+Proof. We use the following modiﬁed ontology instead of OP from Section 3.3:
+
+OP (cid:20) := OP,◦ ∪ OP,→ ∪
+
+(cid:6)
+
+(cid:9)e0 : V (cid:11), (cid:9)e0 : W (cid:11)
+
+(cid:8)
+
+∪
+
+ri(cid:2)V
+
+D V ◦vi
+
+∪ O
+
+∪
+
+D W ◦wi
+
+ri(cid:2)W
+
+n(cid:18)
+
+O
+
+i=1
+(cid:6)
+
+(cid:8)
+(cid:9)M ≡ ¬M(cid:11), (cid:9)M+ ≡ (cid:5)(cid:11)
+
+n(cid:18)
+
+(cid:6)(cid:13)
+
+∪
+
+i=1
+
+V i ≡ M v i
+
+(cid:13)
+
+(cid:14)
+,
+
+W i ≡ M w i
+
+(cid:14)(cid:8)
+.
+
+C
+
+r(cid:2)D
+
+Here, OP,◦, OP,→, and O
+are as deﬁned in Section 3.2 and in the proofs of the corresponding lemmata in Section 3.3. 
+As before, the values of the concept names  V and  W are initialized at e0 to an encoding of  vε = wε = ε, namely  1. But 
+instead of initializing all the constants  M,  M+,  V i ,  W i at e0 and then transferring their values to all successors, we deﬁne 
+the  values  to  be  constant  at  all  domain  elements  and  need  to  transfer  only  the  new  values  of  V and  W .  In  particular, 
+M always has the value enc(1) = 1/2, while  M+ is always enc(ε) = 1. The axioms for  V i and  W i ensure that they get the 
+values (1/2)v i = 2
+
+−v i = enc(v i) and enc(w i), respectively, at all domain elements.
+
+It can now be shown similarly to Theorem 12 that this ontology satisﬁes the conditions of the canonical model prop-
+
+erty. (cid:2)
+
+Lemma 22. The logic Π-ELC satisﬁes P
+
+(cid:20)
+(cid:24)=.
+
+50
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Proof. The proof is essentially the same as that of Lemma 19; we only describe the differences here.
+
+The ontology OV (cid:24)=W is similar to the one used for ⊗-ELC≥, with the addition of a ﬂag Y to distinguish the root node ε
+
+of IP (cid:20) . We deﬁne
+(cid:6)
+
+OV (cid:24)=W :=
+
+(cid:6)
+
+(cid:8)
+
+∪
+
+(cid:7)
+(cid:7) 1 ≤ i ≤ n
+(cid:14)
+(cid:5) (cid:6) ¬(X (cid:3) ¬X)
+
+(cid:9)∃ri.¬Y (cid:6) ¬(cid:5)(cid:11)
+(cid:13)
+(cid:9) X (cid:6) X (cid:3) X(cid:11),
+(cid:9)Y (cid:3) X (cid:3) V (cid:6) Y (cid:3) X (cid:3) W (cid:3) M(cid:11),
+(cid:8)
+(cid:9)Y (cid:3) ¬X (cid:3) W (cid:6) Y (cid:3) ¬X (cid:3) V (cid:3) M(cid:11)
+.
+
+, (cid:9)e0 : ¬Y (cid:11),
+
+(A.4)
+
+Every model of the axioms in (A.4) has to satisfy that every ri -successor with degree 1 must belong to Y with degree 1, 
+for every i ∈ N . In particular, because of the construction of OP,→ (see the proof of Lemma 16), this means that for every 
+I (g(ε)) must be 0. The role of 
+model I of OP (cid:20) ∪ OV (cid:24)=W and every ν ∈ N +
+(cid:20)
+(cid:24)= can thus be shown as in the proof of Lemma 19, but 
+X is the same as before. The remainder of the ﬁrst condition of P
+using N +
+
+I (g(ν)) = 1. On the other hand,  Y
+
+, we have  Y
+
+.
+
+we ﬁrst set Y
+exactly as in the proof of Lemma 19. Again, the proof is the same as before, with N +
+
+I (ν) := 1 for every ν ∈ N +
+
+(cid:20)
+(cid:24)=, consider an extension I of IP (cid:20) that satisﬁes OP (cid:20) . To extend I to a model of OV (cid:24)=W , 
+can be chosen 
+
+I (ε) := 0. The remaining values  X
+
+I (ν) for ν ∈ N +
+
+I (ε) := Y
+
+and  X
+
+instead of N ∗
+
+. (cid:2)
+
+instead of N ∗
+For the second condition of P
+
+Lemma 25. For every continuous t-norm except the Gödel t-norm, the logic ⊗-IEL satisﬁes P →(cid:2).
+
+The  proof  is  divided  into  the  following  three  lemmata.  The  ﬁrst  one  provides  an  auxiliary  result  that  is  similar  to  the 
+
+successor property.
+
+Lemma 35. Let ⊗ be a continuous t-norm of the form Π(a,b) or Ł(a,b). In ⊗-EL, for every role name r and all concept names C, D, 
+I (x) ∈ (a, b) there 
+such that for every model I of this ontology and every x ∈ ΔI
+there is a classical ontology O
+is a y ∈ ΔI
+
+r→D
+I (x, y) ≥ b and C
+
+I (x) = D
+
+I (x) ⊗ C
+
+such that r
+
+I ( y).
+
+with C
+
+C
+
+Proof. We can use the ontology O
+a model I of this ontology and some x ∈ ΔI
+there is an element  y ∈ ΔI
+
+such that
+
+r→D
+
+C
+
+:= {(cid:9)C (cid:6) ∃r.D(cid:11), (cid:9)∃r.(D (cid:3) D) (cid:6) C (cid:3) C(cid:11)} to achieve this behavior. To see this, consider 
+I (x) ∈ (a, b). Since I is witnessed, the ﬁrst axiom ensures that 
+
+I (x) ⊗ C
+
+with C
+
+C
+
+I (x) ≤ sup
+z∈ΔI
+
+I (x, z) ⊗ D
+
+I (z) = r
+
+I (x, y) ⊗ D
+
+I ( y),
+
+r
+
+while the second axiom implies that
+
+I (x, y) ⊗ D
+
+I ( y) ⊗ D
+
+r
+
+I ( y) ≤ sup
+z∈ΔI
+
+I (x, z) ⊗ D
+
+I (z) ⊗ D
+
+I (z) ≤ C
+
+I (x) ⊗ C
+
+I (x).
+
+r
+
+From these two inequalities and the monotonicity of ⊗, we then have
+
+r
+
+I ( y) ⊗ D
+
+I (x, y) ⊗ D
+I (x) ⊗ C
+
+I (x, y) ⊗ r
+I (x, y) ⊗ D
+Since  C
+must be greater than or equal to b since otherwise we would have
+
+I (x) ≤ r
+I (x) ∈ (a, b), from this it follows that r
+
+I ( y) ≤ C
+
+I (x) ⊗ C
+
+I (x, y) ⊗ D
+I ( y) ⊗ D
+
+I ( y) ⊗ D
+
+I ( y).
+
+I ( y) is also in (a, b). This means that r
+
+(A.5)
+I (x, y)
+
+I (x, y) ⊗
+
+r
+
+(cid:15)
+r
+
+I (x, y) ⊗ D
+
+I ( y) ⊗ D
+
+(cid:16)
+I ( y)
+
+< r
+
+I (x, y) ⊗ D
+
+I ( y) ⊗ D
+
+I ( y),
+
+by the deﬁnitions of ordinal sums and the product and the Łukasiewicz t-norms, in contradiction to (A.5). This implies that 
+D
+
+I ( y) ⊗ D
+
+I ( y) = C
+
+I ( y) ∈ (a, b), and thus (A.5) can be simpliﬁed to  D
+
+I ( y) ⊗ D
+If ⊗ contains the product t-norm in (a, b), then we obtain (D
+⊗ contains the Łukasiewicz t-norm in (a, b), then the fact that C
+than  a+b
+
+I ( y). We obtain 2 · D
+
+2 , and similarly for  D
+
+I ( y) − b = 2 · C
+
+I (x) ⊗ C
+I (x))2, i.e. D
+
+I (x).
+I ( y) = C
+
+I ( y))2 = (C
+I (x) ⊗ C
+
+I (x) > a implies that C
+I (x) − b, which again shows that  D
+
+I (x). On the other hand, if 
+I (x) must be strictly greater 
+
+I ( y) = C
+
+I (x). (cid:2)
+
+We divide the main proof of Lemma 25 in two cases, depending on whether ⊗ contains the product or the Łukasiewicz 
+
+t-norm.
+
+Lemma 36. Π(a,b)-IEL satisﬁes P →(cid:2).
+
+51
+
+, and 
+
+(A.6)
+
+(A.7)
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+Proof. We know that for every word u ∈ Σ ∗
+I
+j (x) > a. We deﬁne the ontology O(C j )(cid:2)(D j ) as follows:
+j, 1 ≤ j ≤ k, we have C
+
+0 , enc(u) = σa,b(2
+
+−u) > a. In particular, for every interpretation I, x ∈ ΔI
+
+O(C j )(cid:2)(D j ) := O
+(cid:6)(cid:13)
+
+r→H (cid:20) ∪
+H
+H ≡ C 2
+1
+(cid:9)∃r.D j (cid:6) C j(cid:11),
+
+(cid:3) · · · (cid:3) C 2
+k
+(cid:15)
+(cid:13)
+∃r.
+(cid:20)
+
+(cid:6)
+
+(cid:14)(cid:8)
+
+∪
+
+where r is a fresh role name,  H and  H
+
+(cid:16)
+
+(cid:20)
+
+(cid:6) C j → H
+D j → H
+are fresh concept names, and O
+
+(cid:14) (cid:7)
+(cid:7) 1 ≤ j ≤ k
+
+(cid:8)
+
+,
+
+We  show  that  this  ontology  satisﬁes  the  conditions  for  the  simultaneous  transfer  property.  Let  I be  a  model  of  this 
+I
+1 (x) = enc(u) ∈ (a, b), 
+such  that  C
+I (x) ∈ (a, b). Since ⊗ behaves as 
+I (x) ∈ (a, b), and thus by Lemma 35 there exists an element  y ∈ ΔI
+
+ontology  and  x ∈ ΔI
+.  By  assumption,  we  know  that  there  exists  a  word  u ∈ Σ ∗
+0
+I
+j (x) ∈ (a, 1] for all  j, 2 ≤ j ≤ k. Using the axiom from (A.6), we get  H
+and furthermore, C
+the product t-norm in (a, b), this implies  H
+with r
+
+I (x) ⊗ H
+
+\ {0}∗
+
+r→H (cid:20) is the ontology given by Lemma 35.
+
+H
+
+I (x).
+
+I (x, y) ≥ b and  H
+
+(cid:20)I ( y) = H
+We  need  only  show  that,  for  every  j, 1 ≤ j ≤ k,  D
+
+I
+j (x) = enc(u j) if  u j /∈ {0}∗
+j ( y) = C
+I
+Let  j be  an  arbitrary  index  1 ≤ j ≤ k and  suppose  ﬁrst  that  C
+j (x) ≥ b holds.  Since  H
+I
+j (x) ⇒ H
+C
+
+I (x) < b. The second axiom from (A.7) ensures that
+(cid:15)
+
+I (x) = H
+(cid:15)
+
+(cid:15)
+
+I
+
+I (x, y) ⊗
+
+r
+
+D
+
+I
+j ( y) ⇒ H
+
+≤
+
+∃r.
+
+D j → H
+
+(x) ≤ C
+
+I
+j (x) ⇒ H
+
+I (x) = H
+
+I (x) < b.
+
+(cid:16)
+(cid:20) I ( y)
+
+(cid:16)(cid:16)I
+
+(cid:20)
+
+and  D
+
+I
+I
+j (x) ≥ b. 
+j ( y) ≥ b if  C
+I (x) < b,  then  it  also  follows  that 
+
+I (x, y) ≥ b and  H
+
+(cid:20) I ( y) = H
+Since  r
+residuum ⇒of an ordinal sum, it must be the case that  D
+
+I (x),  this  implies  a < D
+I
+j ( y) ≥ b.
+j (x) = enc(u j) < b for  some  u j ∈ Σ ∗
+
+I
+j ( y) ⇒ H
+
+I (x) ≤ H
+
+I
+
+0
+
+For  the  other  case,  suppose  now  that  C
+
+from (A.7) ensure that  D
+
+I
+j ( y) = C
+
+I
+j (x). The ﬁrst axiom restricts I to satisfy
+
+I (x) < b,  and  thus  by  the  deﬁnition  of  the 
+
+\ {0}∗
+
+.  We  show  that  the  two  axioms 
+
+I (x, y) ⊗ D
+
+r
+
+I
+j ( y) ≤ C
+
+I
+j (x) < b,
+
+and  since  r
+I
+j ( y) ⇒ H
+D
+I
+j (x) > H
+
+I (x, y)  ≥ b,  it  follows  that  D
+
+(cid:20) I ( y) ≤ C
+I (x).  We  can  infer  that  D
+
+I
+j (x) ⇒ H
+
+I
+j ( y)  ≤ C
+I (x).  Recall  that  a < H
+I
+I (x) ≤ C
+j ( y) ⇒ H
+
+I
+j (x).  Analogously,  from  the  second  axiom,  we  derive  that
+I (x) < b,  and  thus  by  the  axiom  in (A.6) we  have 
+(cid:20) I ( y) = H
+I
+I (x).  From 
+I (x) < b,  and  thus  we  also  have  D
+j (x) ⇒ H
+
+I
+j (x) > H
+
+C
+the deﬁnition of the residuum of an ordinal sum, we obtain
+
+≤
+
+σ −1
+a,b (H
+σ −1
+a,b (C
+
+σ −1
+I (x))
+a,b (H
+σ −1
+I
+j ( y))
+a,b (D
+I (x) > a and  σa,b is  a  strictly  monotone  bijection  between  [0, 1] and  [a, b],  we  get  σ −1
+
+and  since  H
+I
+I
+j (x). As this holds for every  j, it is possible to transfer all the values simultaneously. (cid:2)
+j ( y) ≥ C
+D
+
+I (x))
+I
+j (x))
+
+,
+
+a,b (H
+
+I (x)) > 0 and 
+
+The  novel  idea  in  this  construction  is  to  exploit  the  fact  that  the  residuum  is  antitone  in  its  ﬁrst  argument  to  pro-
+I
+j ( y) since otherwise the 
+
+I
+j ( y). For this construction to work, it is necessary that a < H
+
+I (x) < C
+I (x) will simply be a or 1. This restriction is ensured by the axiom in (A.6).
+
+vide a lower bound for  D
+I
+j (x) ⇒ H
+implication C
+
+For  the  case  in  which  ⊗ contains  the  Łukasiewicz  t-norm  in  the  interval  (a, b),  we  use  the  same  idea  for  showing 
+that the simultaneous transfer property holds. However, in this case we cannot ensure that H , which is interpreted as the 
+conjunction of all the concepts C 2
+j , has a degree strictly greater than a. Thus, we need to add some additional restrictions 
+to handle the case where  H
+
+I (x) = a.
+
+Lemma 37. Ł(a,b)-IEL satisﬁes P →(cid:2).
+
+Proof. Deﬁne the ontology O(C j )(cid:2)(D j ) as follows:
+
+O(C j )(cid:2)(D j ) := O
+(cid:6)(cid:13)
+
+E
+
+(cid:14)
+
+r→G(cid:20) ∪ O
+G
+H ≡ C 2
+1
+(cid:9)C1 ≡ E (cid:3) E(cid:11),
+(cid:6)
+(cid:9)∃r.D j (cid:6) C j(cid:11),
+
+r→E(cid:20) ∪
+, (cid:9)H ≡ G (cid:3) G(cid:11),
+(cid:3) · · · (cid:3) C 2
+k
+(cid:13)
+(cid:13)
+(cid:20) (cid:6) H
+∃r.
+∃r.H
+(cid:16)
+(cid:15)
+(cid:13)
+(cid:20)
+D j → H
+∃r.
+
+H
+(cid:20) → H
+(cid:6) C j → H
+
+(cid:14)
+,
+
+(cid:15)(cid:15)
+
+E
+
+(cid:13)
+
+(cid:20) ≡ G
+(cid:16)
+(cid:20)
+
+(cid:14)
+
+(cid:20)
+(cid:16)
+
+(cid:20) (cid:3) G
+(cid:20)
+(cid:6) E
+→ H
+(cid:14) (cid:7)
+(cid:8)
+(cid:7) 1 ≤ j ≤ k
+
+,
+
+(cid:14)(cid:8)
+
+∪
+
+(A.8)
+
+(A.9)
+
+(A.10)
+
+52
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+where r is a fresh role name,  H, H
+by Lemma 35.
+
+(cid:20), G, G
+
+(cid:20), E, and  E
+
+(cid:20)
+
+are fresh concept names, and O
+
+r→G(cid:20) , O
+
+G
+
+r→E(cid:20) are the ontologies given 
+
+E
+
+Let I be a model of this ontology and x ∈ ΔI
+
+. It is easy to see that  H
+
+I (x) ≤ C
+
+ally,  we  know  that  H
+H
+
+I (x) = H
+
+I (x) ∈ [a, b).  Using  Lemma 35,  we  ﬁrst  show  that  there  exists  a  y ∈ ΔI
+
+(cid:20) I ( y). The proof is divided in two cases: (1) if  H
+
+I (x) > a and (2) if  H
+
+I (x) = a.
+
+I
+j (x) holds for all  j, 1 ≤ j ≤ k. Addition-
+I (x, y) ≥ b and 
+such  that  r
+
+Case (1)  If  H
+the  existence  of  an  element  y ∈ ΔI
+H
+
+I (x) > a, then from the second axiom in (A.8) we get G
+with  r
+I (x) = H
+
+I (x, y) ≥ b and  G
+
+(cid:20) I ( y) = G
+
+(cid:20) I ( y) = G
+
+(cid:20) I ( y) ⊗ G
+
+I (x) ⊗ G
+
+I (x).
+
+(cid:20) I ( y) = G
+
+I (x) ⊗ G
+
+I (x) = H
+
+I (x) ∈ (a, b). Thus, Lemma 35 yields 
+I (x).  The  third  axiom  in (A.8) then  implies  that 
+
+I (x) = a,  then  we  use  the  axioms  from (A.9).  By  assumption,  E
+
+I (x) ⊗ E
+
+such that r
+
+I (x, y) ≥ b and  E
+
+I (x, y) ≥ b, it follows that  H
+
+I (x) = C
+
+I
+1 (x) ∈ (a, b),  and  hence  as 
+(cid:20) I ( y). The second axiom 
+I (x) = E
+(cid:20) I ( y) ≤ a. From the third axiom we 
+
+Case (2)  If  H
+before Lemma 35 shows the existence of an element  y ∈ ΔI
+in (A.9) states that r
+then have that
+(cid:15)
+
+I (x) = a. Since r
+
+I (x, y) ⊗ H
+
+(cid:20) I ( y) ≤ H
+
+(cid:20) I ( y) ⇒ H
+
+E
+
+(cid:16)
+(cid:20) I ( y)
+
+⇒ H
+
+I (x) < b.
+
+(cid:20) I ( y) ≤ E
+(cid:20) I ( y) ⇒ H
+
+(cid:20) I ( y) > H
+In  particular,  this  means  that  E
+(cid:20) I ( y) > a and by the deﬁnition of the residuum of an ordinal sum, this can only be the case if  H
+E
+
+(cid:20) I ( y) since  otherwise  the  residuum  would  be  1 ≥ b.  But  since 
+
+In both cases, we have shown the existence of a  y ∈ ΔI
+I
+j (x) ≥ b,  then  also  D
+
+(cid:20) I ( y) ∈ [a, b). As in Lemma 36, 
+I
+j (x) = enc(u j).  The 
+we  need  to  show  that,  whenever  C
+former case can be shown as in the proof of Lemma 36. In the latter case, the ﬁrst axiom from (A.10) again ensures that 
+I
+I (x) it  similarly 
+j ( y) ≤ C
+D
+I
+follows  that  D
+j ( y) < b,  and 
+therefore
+
+I (x, y) ≥ b.  From  the  second  axiom  and  the  fact  that  H
+
+I (x, y) ≥ b and H
+with r
+I
+j ( y) ≥ b,  and  if  u j /∈ {0}∗
+
+I (x) < b.  We  now  know  that  H
+
+I
+j (x) < b and  r
+I (x) ≤ C
+
+I
+j (x) since  C
+I
+j ( y) ⇒ H
+
+I
+j (x) < b and  H
+
+(cid:20) I ( y) = a = H
+
+I
+j (x) ⇒ H
+
+I
+j ( y) = C
+
+(cid:20) I ( y) = H
+
+I (x) < D
+
+I (x) = H
+
+I (x) < C
+
+,  then  D
+
+I (x).
+
+1 − σ −1
+a,b
+
+(cid:15)
+
+(cid:16)
+I
+j ( y)
+
+D
+
++ σ −1
+a,b
+
+(cid:15)
+
+(cid:16)
+I (x)
+
+H
+
+≤ 1 − σ −1
+a,b
+
+(cid:15)
+
+(cid:16)
+I
+j (x)
+
+C
+
++ σ −1
+a,b
+
+(cid:15)
+
+(cid:16)
+I (x)
+
+.
+
+H
+
+Thus, we have  D
+
+I
+j ( y) ≥ C
+This concludes the proof of Lemma 25.
+
+I
+j (x), which ﬁnishes the proof.
+
+Appendix B.  Proofs for Section 4
+
+Lemma 28. Let ⊗ be a continuous t-norm without zero divisors. For all x, y ∈ [0, 1] and all non-empty sets X ⊆ [0, 1] it holds that
+
+1. 1((cid:13)x) = (cid:13)1(x),
+2. 1(x ⊗ y) = 1(x) ⊗ 1( y),
+3. 1(x ⊕ y) = 1(x) ⊕ 1( y),
+4. 1(x ⇒ y) = 1(x) ⇒ 1( y),
+5. 1(sup{x | x ∈ X}) = sup{1(x) | x ∈ X}, and
+6. if min{x | x ∈ X} exists, then 1(min{x | x ∈ X}) = min{1(x) | x ∈ X}.
+
+Proof. It holds that 1((cid:13)x) = (cid:13)(cid:13)(cid:13)x = (cid:13)1(x), which proves 1. Since ⊗ does not have zero divisors, it holds that x ⊗ y = 0
+iff x = 0 or  y = 0. This yields 1(x ⊗ y) = 0 iff 1(x) = 0 or 1( y) = 0. Because there are no zero divisors, this shows that
+
+1(x ⊗ y) = 0 iff 1(x) ⊗ 1( y) = 0.
+
+Since both 1(x ⊗ y) and 1(x) ⊗ 1( y) can only have the values 0 or 1, this is suﬃcient to prove the second statement. Since 0
+is a unit for ⊕, we have x ⊕ y = 0 iff x = y = 0, and thus 1(x ⊕ y) = 0 holds iff 1(x) ⊕ 1( y) = 0. This suﬃces to prove 3. 
+We use Proposition 4 to prove 4:
+
+(cid:2)
+
+1(x ⇒ y) =
+
+(cid:2)
+
+=
+
+1 if x = 0 or y > 0
+0 if x > 0 and y = 0
+1 if 1(x) = 0 or 1( y) = 1
+0 if 1(x) = 1 and 1( y) = 0
+
+= 1(x) ⇒ 1( y).
+
+To prove 5, observe that sup X = 0 iff  X = {0}, which yields
+
+1(sup X) = 0 ⇔ sup X = 0 ⇔ X = {0} ⇔
+
+(cid:6)
+
+1(x)
+
+(cid:8)
+
+(cid:7)
+(cid:7) x ∈ X
+
+= {0} ⇔ sup
+
+(cid:6)
+
+1(x)
+
+(cid:8)
+
+(cid:7)
+(cid:7) x ∈ X
+
+= 0.
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+53
+
+Assume now that min X = xmin exists. Then we have
+(cid:7)
+(cid:7) x ∈ X
+
+1(min X) = 0 ⇔ xmin = 0 ⇔ 0 ∈
+
+1(x)
+
+(cid:6)
+
+(cid:8)
+
+(cid:6)
+⇔ min
+
+1(x)
+
+(cid:8)
+
+(cid:7)
+(cid:7) x ∈ X
+
+= 0,
+
+which proves 6. (cid:2)
+
+Lemma 29. For all complex concepts C , complex roles s, and x, y ∈ ΔI
+
+, it holds that C
+
+J (x) = 1(C
+
+I (x)) and s
+
+J (x, y) = 1(s
+
+I (x, y)).
+
+−
+
+J (x, y) = t
+
+,  then  we  have  s
+
+Proof. We ﬁrst prove the claim for complex roles by induction over the structure of s. For role names, this follows directly 
+J (x, y) = 1 = 1(1) = 1(u
+from  the  deﬁnition  of  J .  If  s is  the  universal  role u,  then  u
+.  If 
+I (x, y)) by  induction.  Finally,  if  s = (cid:2)t,  then  ((cid:2)t)J (x, y) =
+I ( y, x)) = 1(s
+s = t
+(cid:13)t
+
+J (x, y) = (cid:13)1(t
+For the complex concepts, we also use induction over the structure of C . The claim obviously holds for C = ⊥ and C = (cid:5). 
+For C = A ∈ NC it follows immediately from the deﬁnition of J . It also holds for C = {a} with a ∈ NI, because {a}I (x) can 
+only take the values 0 or 1 for all x ∈ ΔI
+I (x, x)) = 1((∃s.Self)I (x)) by 
+. Furthermore, we have (∃s.Self)J (x) = s
+the claim for complex roles.
+
+I (x, y)) = 1(((cid:2)t)I (x, y)) by Lemma 28.
+
+I (x, y)) holds  for  all  x, y ∈ ΔI
+
+J ( y, x) = 1(t
+
+J (x, x) = 1(s
+
+J (x) = 1(D
+
+I (x)) and  E
+
+J (x) = 1(E
+
+I (x)) for all x ∈ ΔI
+
+. For the case of 
+
+Assume now that the concepts  D and  E satisfy  D
+
+C = D (cid:3) E, Lemma 28 yields that for all x ∈ ΔI
+
+J (x) = D
+
+J (x) ⊗ E
+
+C
+
+(cid:15)
+J (x) = 1
+(cid:15)
+= 1
+
+D
+
+D
+
+(cid:15)
+(cid:16)
+I (x)
+⊗ 1
+I (x) ⊗ E
+
+(cid:16)
+I (x)
+E
+(cid:16)
+I (x)
+
+(cid:15)
+= 1
+
+(cid:16)
+I (x)
+
+.
+
+C
+
+Likewise,  the  compatibility  of  1 with  the  t-conorm,  residuum,  and  residual  negation  entails  the  result  for  the  cases 
+C = D (cid:30) E, C = D → E, and C = (cid:2)D.
+
+For C = ≥n s.D, where s is a complex role and n ∈ N, we obtain
+
+(cid:15)
+1
+
+C
+
+(cid:16)
+I (x)
+
+(cid:6)
+
+(cid:15)
+= 1
+= sup
+(cid:2)
+
+sup
+(cid:6)
+
+1(p)
+
+p ∈ [0, 1]
+
+(cid:7)
+(cid:7) p ∈ [0, 1],
+
+(cid:7)
+(cid:7)
+
+(cid:7)
+(cid:6)
+(cid:7)
+
+y ∈ ΔI
+(cid:7)
+(cid:6)
+(cid:7)
+
+(cid:7)
+(cid:7) s
+y ∈ ΔI
+I (x, y) ⊗ D
+
+I (x, y) ⊗ D
+(cid:7)
+(cid:7) s
+I (x, y) ⊗ D
+I ( y) > 0}| ≥ n
+
+I ( y) ≥ p
+
+(cid:8)(cid:16)
+
+(cid:8)(cid:7)
+(cid:7) ≥ n
+(cid:8)(cid:7)
+(cid:7) ≥ n
+
+(cid:8)
+
+I ( y) ≥ p
+
+=
+
+=
+
+(cid:2)
+
+1 if |{ y ∈ ΔI | s
+0 otherwise
+1 if |{ y ∈ ΔI | s
+0 otherwise
+(cid:7)
+(cid:7)
+p ∈ [0, 1]
+
+(cid:7)
+(cid:6)
+(cid:7)
+
+(cid:6)
+
+= sup
+= C
+
+J (x)
+
+J (x, y) ⊗ D
+
+J ( y) = 1}| ≥ n
+
+y ∈ ΔI
+
+(cid:7)
+(cid:7) s
+
+J (x, y) ⊗ D
+
+J ( y) ≥ p
+
+(cid:8)
+
+(cid:8)(cid:7)
+(cid:7) ≥ n
+
+from Lemma 28 and the claim for complex roles. The claim for existential restrictions follows from rewriting ∃r.C as ≥1 r.C
+and observing that the restriction to witnessed models is irrelevant in this situation.
+
+If C = ≤n s.D, we have
+(cid:6)
+(cid:16)
+I (x)
+
+(cid:15)
+1
+
+sup
+
+C
+
+(cid:15)
+= 1
+(cid:15)
+= 1
+(cid:2)
+
+=
+
+=
+
+(cid:2)
+
+(cid:6)
+
+p ∈ [0, 1]
+p ∈ [0, 1]
+
+sup
+1 if |{ y ∈ ΔI | s
+0 otherwise
+1 if |{ y ∈ ΔI | s
+0 otherwise
+(cid:7)
+(cid:7)
+p ∈ [0, 1]
+(cid:7)
+(cid:7)
+p ∈ [0, 1]
+
+(cid:7)
+(cid:6)
+(cid:7)
+(cid:7)
+(cid:6)
+(cid:7)
+
+(cid:6)
+
+(cid:6)
+
+= sup
+= sup
+= C
+
+J (x)
+
+(cid:7)
+(cid:7)
+(cid:7)
+(cid:7)
+
+(cid:7)
+(cid:6)
+(cid:7)
+(cid:7)
+(cid:6)
+(cid:7)
+
+(cid:7)
+(cid:7) s
+y ∈ ΔI
+(cid:7)
+(cid:7) s
+y ∈ ΔI
+I (x, y) ⊗ D
+
+(cid:8)(cid:16)
+
+(cid:8)(cid:7)
+(cid:7) ≤ n
+I ( y) < p
+(cid:8)(cid:7)
+(cid:8)(cid:16)
+(cid:7) ≤ n
+I ( y) >(cid:13) p
+
+I (x, y) ⇒ (cid:13)D
+I (x, y) ⊗ D
+I ( y) > 0}| ≤ n
+
+J (x, y) ⊗ D
+
+J ( y) > 0}| ≤ n
+
+y ∈ ΔI
+y ∈ ΔI
+
+(cid:7)
+(cid:7) s
+(cid:7)
+(cid:7) s
+
+J (x, y) ⊗ D
+J (x, y) ⇒ (cid:13)D
+
+J ( y) > (cid:13)p
+J ( y) < p
+
+(cid:8)
+
+(cid:8)(cid:7)
+(cid:7) ≤ n
+(cid:8)(cid:7)
+(cid:7) ≤ n
+
+(cid:8)
+
+by the same arguments.
+
+Finally, if C = ∀s.D, we have
+
+(cid:15)
+1
+
+(cid:16)
+I (x)
+
+(cid:4)
+= 1
+
+C
+
+inf
+y∈ΔI
+Since I is witnessed, there must be some  y0 ∈ ΔI
+
+s
+
+I (x, y) ⇒ D
+
+(cid:5)
+I ( y)
+
+.
+
+such that
+
+54
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+I (x, y0) ⇒ D
+
+s
+
+I (x, y) ⇒ D
+
+I ( y0) = inf
+y∈ΔI
+I ( y) exists. Thus, as in the above cases, we can apply Lemma 28 and the claim for complex 
+
+I ( y);
+
+I (x, y) ⇒ D
+
+s
+
+that is, min y∈ΔI s
+roles to derive that 1(C
+
+I (x)) = C
+
+J (x). (cid:2)
+
+References
+
+[1] F. Baader, D. Calvanese, D.L. McGuinness, D. Nardi, P.F. Patel-Schneider (Eds.), The Description Logic Handbook: Theory, Implementation, and Applica-
+
+tions, 2nd edition, Cambridge University Press, 2007.
+
+[2] P. Hájek, Metamathematics of Fuzzy Logic (Trends in Logic), Springer-Verlag, 2001.
+[3] P. Cintula, P. Hájek, C. Noguera (Eds.), Handbook of Mathematical Fuzzy Logic, Studies in Logic, vols. 37–38, College Publications, 2011.
+[4] E.P. Klement, R. Mesiar, E. Pap, Triangular Norms, Trends in Logic, Studia Logica Library, Springer-Verlag, 2000.
+[5] T. Mailis, G. Stoilos, N. Simou, G.B. Stamou, S. Kollias, Tractable reasoning with vague knowledge using fuzzy EL++
+
+, J. Intell. Inf. Syst. 39 (2012) 
+
+399–440, http://dx.doi.org/10.1007/s10844-012-0195-6.
+
+[6] F. Bobillo, M. Delgado, J. Gómez-Romero, U. Straccia, Fuzzy description logics under Gödel semantics, Int. J. Approx. Reason. 50 (3) (2009) 494–514, 
+
+http://dx.doi.org/10.1016/j.ijar.2008.10.003.
+
+[7] U. Straccia, Transforming fuzzy description logics into classical description logics, in: J.J. Alferes, J.A. Leite (Eds.), Proceedings of the 9th European 
+
+Conference on Logics in Artiﬁcial Intelligence (JELIA’04), in: Lect. Notes Comput. Sci., vol. 3229, Springer-Verlag, 2004, pp. 385–399.
+
+[8] F.  Bobillo,  U.  Straccia,  Fuzzy  description  logics  with  general  t-norms  and  datatypes,  Fuzzy  Sets  Syst.  160 (23)  (2009)  3382–3402, 
+
+http://dx.doi.org/10.1016/j.fss.2009.03.006.
+
+[9] U. Straccia, Reasoning within fuzzy description logics, J. Artif. Intell. Res. 14 (2001) 137–166, http://dx.doi.org/10.1613/jair.813.
+[10] G.  Stoilos,  U.  Straccia,  G.B.  Stamou,  J.Z.  Pan,  General  concept  inclusions  in  fuzzy  description  logics,  in:  G.  Brewka,  S.  Coradeschi,  A. 
+Perini,  P.  Traverso  (Eds.),  Proceedings  of  the  17th  European  Conference  on  Artiﬁcial  Intelligence  (ECAI’06),  IOS  Press,  2006,  pp. 457–461, 
+http://booksonline.iospress.nl/Content/View.aspx?piid=1727.
+
+[11] F. Bobillo, U. Straccia, fuzzyDL: an expressive fuzzy description logic reasoner, in: Proceedings of the 2008 IEEE International Conference on Fuzzy 
+
+Systems (FUZZ-IEEE’08), IEEE Computer Society Press, 2008, pp. 923–930.
+
+[12] F. Bobillo, M. Delgado, J. Gómez-Romero, Reasoning in fuzzy OWL 2 with DeLorean, in: F. Bobillo, P.C.G. da Costa, C. d’Amato, N. Fanizzi, K. Laskey, K. 
+Laskey, T. Lukasiewicz, M. Nickles, M. Pool (Eds.), Uncertainty Reasoning for the Semantic Web II, in: Lect. Notes Comput. Sci., vol. 7123, Springer-Verlag, 
+2013, pp. 119–138.
+
+[13] R. Molitor, C.B. Tresp, Extending description logics to vague knowledge in medicine, in: P.S. Szczepaniak, P.J.G. Lisboa, J. Kacprzyk (Eds.), Fuzzy Systems 
+
+in Medicine, in: Stud. Fuzziness Soft Comput., vol. 41, Springer-Verlag, 2000, pp. 617–635.
+
+[14] A. Ciaramella, M.G.C.A. Cimino, F. Marcelloni, U. Straccia, Combining fuzzy logic and semantic web to enable situation-awareness in service recom-
+mendation, in: P.G. Bringas, A. Hameurlain, G. Quirchmayr (Eds.), Proceedings of the 21st International Conference on Database and Expert Systems 
+Applications (DEXA’10), in: Lect. Notes Comput. Sci., vol. 6261, Springer-Verlag, 2010, pp. 31–45.
+
+[15] F. Bobillo, F. Bou, U. Straccia, On the failure of the ﬁnite model property in some fuzzy description logics, Fuzzy Sets Syst. 172 (1) (2011) 1–12, 
+
+http://dx.doi.org/10.1016/j.fss.2011.02.012.
+
+[16] F. Baader, R. Peñaloza, Are fuzzy description logics with general concept inclusion axioms decidable?, in: Proceedings of the 2011 IEEE International 
+
+Conference on Fuzzy Systems (FUZZ-IEEE’11), IEEE Computer Society Press, 2011, pp. 1735–1742.
+
+[17] F.  Baader,  R.  Peñaloza,  GCIs  make  reasoning  in  fuzzy  DL  with  the  product  t-norm  undecidable,  in:  R.  Rosati,  S.  Rudolph,  M.  Zakharyaschev 
+(Eds.), Proceedings of the 24th International Workshop on Description Logics (DL’11), in: CEUR Workshop Proceedings, vol. 745, 2011, pp. 37–47, 
+http://ceur-ws.org/Vol-745/paper_10.pdf.
+
+[18] F. Baader, R. Peñaloza, On the undecidability of fuzzy description logics with GCIs and product t-norm, in: C. Tinelli, V. Sofronie-Stokkermans (Eds.), 
+Proceedings of the 8th International Symposium on Frontiers of Combining Systems (FroCoS’11), in: Lect. Notes Comput. Sci., vol. 6989, Springer-Verlag, 
+2011, pp. 55–70.
+
+[19] M.  Cerami,  U.  Straccia,  On  the  (un)decidability  of  fuzzy  description  logics  under  Łukasiewicz  t-norm,  Inf.  Sci.  227  (2013)  1–21, 
+
+http://dx.doi.org/10.1016/j.ins.2012.11.019.
+
+[20] E.L.  Post,  A  variant  of  a  recursively  unsolvable  problem,  Bull.  Am.  Math.  Soc.  52 (4)  (1946)  264–268,  http://dx.doi.org/10.1090/S0002-9904-
+
+1946-08555-9.
+
+[21] S.  Borgwardt,  F.  Distel,  R.  Peñaloza,  Decidable  Gödel  description  logics  without  the  ﬁnitely-valued  model  property,  in:  C.  Baral,  G.  De  Giacomo, 
+T. Eiter (Eds.), Proceedings of the 14th International Conference on Principles of Knowledge Representation and Reasoning (KR’14), AAAI Press, 2014, 
+pp. 228–237, http://www.aaai.org/ocs/index.php/KR/KR14/paper/view/7803.
+
+[22] S. Borgwardt, R. Peñaloza, Undecidability of fuzzy description logics, in: G. Brewka, T. Eiter, S.A. McIlraith (Eds.), Proceedings of the 13th International 
+
+Conference on Principles of Knowledge Representation and Reasoning (KR’12), AAAI Press, 2012, pp. 232–242.
+
+[23] S. Borgwardt, F. Distel, R. Peñaloza, How fuzzy is my fuzzy description logic?, in: B. Gramlich, D. Miller, U. Sattler (Eds.), Proceedings of the 6th Inter-
+national Joint Conference on Automated Reasoning (IJCAR’12), in: Lecture Notes in Artiﬁcial Intelligence, vol. 7364, Springer-Verlag, 2012, pp. 82–96.
+
+[24] L.A. Zadeh, Fuzzy sets, Inf. Control 8 (3) (1965) 338–353, http://dx.doi.org/10.1016/S0019-9958(65)90241-X.
+[25] F.  Esteva,  L.  Godo,  P.  Hájek,  M.  Navara,  Residuated  fuzzy  logics  with  an  involutive  negation,  Arch.  Math.  Log.  39 (2)  (2000)  103–124, 
+
+http://dx.doi.org/10.1007/s001530050006.
+
+[26] P.S.  Mostert,  A.L.  Shields,  On  the  structure  of  semigroups  on  a  compact  manifold  with  boundary,  Ann.  Math.  65 (1)  (1957)  117–143, 
+
+http://www.jstor.org/stable/1969668.
+
+[27] M. Cerami, À. Garcia-Cerdaña, F. Esteva, From classical description logic to n-graded fuzzy description logic, in: Proceedings of the 2010 IEEE Interna-
+
+tional Conference on Fuzzy Systems (FUZZ-IEEE’10), IEEE Computer Society Press, 2010, pp. 1–8.
+
+[28] P. Hájek, Making fuzzy description logic more general, Fuzzy Sets Syst. 154 (1) (2005) 1–15, http://dx.doi.org/10.1016/j.fss.2005.03.005.
+[29] I.  Horrocks,  O.  Kutz,  U.  Sattler,  The  even  more  irresistible  SROIQ,  in:  P.  Doherty,  J.  Mylopoulos,  C.  Welty  (Eds.),  Proceedings  of  the 
+10th  International  Conference  on  Principles  of  Knowledge  Representation  and  Reasoning  (KR’06),  AAAI  Press,  2006,  pp. 57–67,  http://www.
+aaai.org/Library/KR/2006/kr06-009.php.
+
+[30] Y.  Kazakov,  RIQ and  SROIQ are  harder  than  SHOIQ,  in:  G.  Brewka,  J.  Lang  (Eds.),  Proceedings  of  the  11th  International  Conference  on 
+Principles of Knowledge Representation and Reasoning (KR’08), AAAI Press, 2008, pp. 274–284, http://www.aaai.org/Library/KR/2008/kr08-027.php.
+[31] F. Bobillo, M. Delgado, J. Gómez-Romero, U. Straccia, Joining Gödel and Zadeh fuzzy logics in fuzzy description logics, Int. J. Uncertain. Fuzziness 
+
+Knowl.-Based Syst. 20 (4) (2012) 475–508, http://dx.doi.org/10.1142/S0218488512500249.
+
+[32] J. Hladik, A tableau system for the description logic SHIO, in: U. Sattler (Ed.), IJCAR’04 Doctoral Programme, in: CEUR Workshop Proceedings, 
+
+vol. 106, 2004.
+
+[33] U.  Straccia,  Description  logics  over  lattices,  Int.  J.  Uncertain.  Fuzziness  Knowl.-Based  Syst.  14 (1)  (2006)  1–16,  http://dx.doi.org/10.1142/
+
+S. Borgwardt et al. / Artiﬁcial Intelligence 218 (2015) 23–55
+
+55
+
+S0218488506003807.
+
+[34] F. Bobillo, U. Straccia, Finite fuzzy description logics and crisp representations, in: F. Bobillo, P.C.G. da Costa, C. d’Amato, N. Fanizzi, K. Laskey, K. Laskey, 
+T. Lukasiewicz, M. Nickles, M. Pool (Eds.), Uncertainty Reasoning for the Semantic Web II, in: Lect. Notes Comput. Sci., vol. 7123, Springer-Verlag, 2013, 
+pp. 102–121.
+
+[35] I.  Horrocks,  U.  Sattler,  S.  Tobies,  A  PSpace-algorithm  for  deciding  ALCN I
+
+R+ -satisﬁability,  LTCS-report  98-08,  RWTH  Aachen,  Germany,  1998, 
+
+https://lat.inf.tu-dresden.de/research/reports.html#HoSatTob98.
+
+[36] C. Lutz, C. Areces, I. Horrocks, U. Sattler, Keys, nominals, and concrete domains, J. Artif. Intell. Res. 23 (2005) 667–726, http://dx.doi.org/10.1613/jair.
+
+1542.
+
+[37] S. Borgwardt, R. Peñaloza, Non-Gödel negation makes unwitnessed consistency undecidable, in: Y. Kazakov, D. Lembo, F. Wolter (Eds.), Proceedings of 
+
+the 25th International Workshop on Description Logics (DL’12), in: CEUR Workshop Proceedings, vol. 846, 2012, pp. 411–421.
+
+[38] S. Borgwardt, F. Distel, R. Peñaloza, Gödel negation makes unwitnessed consistency crisp, in: Y. Kazakov, D. Lembo, F. Wolter (Eds.), Proceedings of the 
+
+25th International Workshop on Description Logics (DL’12), in: CEUR Workshop Proceedings, vol. 846, 2012, pp. 103–113.
+
+[39] S. Borgwardt, F. Distel, R. Peñaloza, Gödel description logics with general models, in: M. Bienvenu, M. Ortiz, R. Rosati, M. Šimkus (Eds.), Proceed-
+ings of the 27th International Workshop on Description Logics (DL’14), in: CEUR Workshop Proceedings, vol. 1193, 2014, pp. 391–403, Poster paper, 
+http://ceur-ws.org/Vol-1193/paper_2.pdf.
+
+[40] S.  Borgwardt,  R.  Peñaloza,  The  complexity  of  lattice-based  fuzzy  description  logics,  J.  Data  Semant.  2 (1)  (2013)  1–19,  http://dx.doi.org/10.1007/
+
+s13740-012-0013-x.
+
+[41] S.  Borgwardt,  R.  Peñaloza,  Consistency  reasoning  in  lattice-based  fuzzy  description  logics,  Int.  J.  Approx.  Reason.  55 (9)  (2014)  1917–1938, 
+
+http://dx.doi.org/10.1016/j.ijar.2013.07.006.
+
+[42] S. Borgwardt, R. Peñaloza, Positive subsumption in fuzzy EL with general t-norms, in: F. Rossi (Ed.), Proceedings of the 23rd International Joint 
+
+Conferences on Artiﬁcial Intelligence (IJCAI’13), AAAI Press, 2013, pp. 789–795.
+
+[43] J. Yen, Generalizing term subsumption languages to fuzzy logic, in: J. Mylopoulos, R. Reiter (Eds.), Proceedings of the 12th International Joint Confer-
+ences on Artiﬁcial Intelligence (IJCAI’91), Morgan Kaufmann, 1991, pp. 472–477, http://ijcai.org/Past%20Proceedings/IJCAI-91-VOL1/PDF/073.pdf.
+
+[44] C.B. Tresp, R. Molitor, A description logic for vague knowledge, in: H. Prade (Ed.), Proceedings of the 13th European Conference on Artiﬁcial Intelligence 
+
+(ECAI’98), John Wiley and Sons, 1998, pp. 361–365.
+
+[45] U.  Straccia,  A  fuzzy  description  logic,  in:  Proceedings  of  the  15th  National  Conference  on  Artiﬁcial  Intelligence  (AAAI’98),  1998,  pp. 594–599, 
+
+http://www.aaai.org/Library/AAAI/1998/aaai98-084.php.
+
+[46] M. Cerami, F. Esteva, F. Bou, Decidability of a description logic over inﬁnite-valued product logic, in: F. Lin, U. Sattler, M. Truszczynski (Eds.), Pro-
+ceedings of the 12th International Conference on Principles of Knowledge Representation and Reasoning (KR’10), AAAI Press, 2010, pp. 203–213, 
+http://aaai.org/ocs/index.php/KR/KR2010/paper/view/1401.
+
+[47] À. García-Cerdaña, E. Armengol, F. Esteva, Fuzzy description logics and t-norm based fuzzy logics, Int. J. Approx. Reason. 51 (6) (2010) 632–655, 
+
+[48] F. Bobillo, U. Straccia, A fuzzy description logic with product t-norm, in: Proceedings of the 2007 IEEE International Conference on Fuzzy Systems 
+
+http://dx.doi.org/10.1016/j.ijar.2010.01.001.
+
+(FUZZ-IEEE’07), IEEE Computer Society Press, 2007, pp. 1–6.
+
+[49] U. Straccia, F. Bobillo, Mixed integer programming, general concept inclusions and fuzzy description logics, Mathw. Soft Comput. 14 (3) (2007) 247–259, 
+
+http://ic.ugr.es/Mathware/index.php/Mathware/article/view/21.
+
+[50] F. Bobillo, U. Straccia, On qualiﬁed cardinality restrictions in fuzzy description logics under Łukasiewicz semantics, in: Proceedings of the 12th Interna-
+
+tional Conference on Information Processing and Management of Uncertainty in Knowledge-Based Systems (IPMU’08), 2008, pp. 1008–1015.
+
+[51] G. Stoilos, G.B. Stamou, A framework for reasoning with expressive continuous fuzzy description logics, in: B.C. Grau, I. Horrocks, B. Motik, U. Sattler 
+
+(Eds.), Proceedings of the 2009 International Workshop on Description Logics (DL’09), in: CEUR Workshop Proceedings, vol. 477, 2009.
+
+[52] V.  Haarslev,  H.-I.  Pai,  N.  Shiri,  A  formal  framework  for  description  logics  with  uncertainty,  Int.  J.  Approx.  Reason.  50 (9)  (2009)  1399–1415, 
+
+http://dx.doi.org/10.1016/j.ijar.2009.04.009.
+
+[53] R. Peñaloza, Towards a tableau algorithm for fuzzy ALC with product t-norm, LTCS-report 11-03, Chair for Automata Theory, Institute for Theoretical 
+
+Computer Science, Technische Universität Dresden, Dresden, Germany, 2011, http://lat.inf.tu-dresden.de/research/reports.html.
+
+[54] F.  Baader,  S.  Borgwardt,  R.  Peñaloza,  On  the  decidability  status  of  fuzzy  ALC with  general  concept  inclusions,  J.  Philos.  Log.  (2014),  http://
+
+dx.doi.org/10.1007/s10992-014-9329-3, in press.
+
+[55] F. Bobillo, M. Delgado, J. Gómez-Romero, A crisp representation for fuzzy SHOIN with fuzzy nominals and general concept inclusions, in: P.C.G. 
+da Costa, C. d’Amato, N. Fanizzi, K.B. Laskey, K.J. Laskey, T. Lukasiewicz, M. Nickles, M. Pool (Eds.), Uncertainty Reasoning for the Semantic Web I, in: 
+Lecture Notes in Artiﬁcial Intelligence, vol. 5327, Springer-Verlag, 2008, pp. 174–188.
+
+[56] S. Borgwardt, Fuzzy DLs over ﬁnite lattices with nominals, in: M. Bienvenu, M. Ortiz, R. Rosati, M. Šimkus (Eds.), Proceedings of the 27th International 
+
+Workshop on Description Logics (DL’14), in: CEUR Workshop Proceedings, vol. 1193, 2014.
+
+[57] U.  Straccia,  Description  logics  with  fuzzy  concrete  domains,  in:  F.  Bacchus,  T.  Jaakola  (Eds.),  Proceedings  of  the  21st  Conference  on  Uncer-
+tainty in Artiﬁcial Intelligence (UAI’05), AUAI Press, 2005, pp. 559–567, http://uai.sis.pitt.edu/displayArticleDetails.jsp?mmnu=1&smnu=2&article_id=
+1228&proceeding_id=21.
+
+[58] S. Hölldobler, N.H. Nga, T.D. Khang, The fuzzy description logic ALCFLH , in: A.P. del Pobil (Ed.), Proceedings of the 9th IASTED International Conference 
+
+on Artiﬁcial Intelligence and Soft Computing (ASC’05), ACTA Press, 2005, pp. 99–104.
+
+[59] L.A. Zadeh, A fuzzy-set-theoretic interpretation of linguistic hedges, J. Cybern. 2 (3) (1972) 4–34, http://dx.doi.org/10.1080/01969727208542910.
+[60] F.  Bobillo,  U.  Straccia,  Aggregation  operators  for  fuzzy  ontologies,  Appl.  Soft  Comput.  13 (9)  (2013)  3816–3830,  http://dx.doi.org/10.1016/j.asoc.
+
+2013.05.008.
+
+[61] P. Vojtáš, A fuzzy EL description logic with crisp roles and fuzzy aggregation for web consulting, in: Proceedings of the 11th International Conference 
+
+on Information Processing and Management of Uncertainty in Knowledge-Based Systems (IPMU’06), Éditions EDK, 2006, pp. 1834–1841.
+
+[62] B.  Motik,  R.  Shearer,  I.  Horrocks,  Hypertableau  reasoning  for  description  logics,  J.  Artif.  Intell.  Res.  36  (2009)  165–228,  http://dx.doi.org/
+
+10.1613/jair.2811.
+
+[63] A. Steigmiller, T. Liebig, B. Glimm, Extended caching, backjumping and merging for expressive description logics, in: B. Gramlich, D. Miller, U. Sattler 
+(Eds.), Proceedings of the 6th International Joint Conference on Automated Reasoning (IJCAR’12), in: Lect. Notes Comput. Sci., vol. 7364, Springer-Verlag, 
+2012, pp. 514–529.
+
+

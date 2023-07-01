@@ -1,5 +1,0 @@
-"Título": Can Machine Learning from Real-World Data Support Drug Treatment Decisions? A Prediction Modeling Case for Direct Oral Anticoagulants
-"Autores": Andreas D. Meid , Lucas Wirbka, ARMIN Study Group, Andreas Groll, and Walter E. Haefeli
-"Palavras-chave": claims data, clinical decision support system, direct oral anticoagulants, heterogeneous treatment effects, machine-learning, personalized medicine
-"Data de publicação": November 12, 2021
-"DOI ou identificador único": 10.1177/0272989X211064604

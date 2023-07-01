@@ -1,0 +1,5771 @@
+ELSEVIER 
+
+Artificial Intelligence  98  (1998)  317-349 
+
+Artificial 
+Intelligence 
+
+On  the  knowledge  requirements  of  tasks 
+
+Ronen  I.  Brafman  a,*, Joseph  Y. Halpern b*l, Yoav  Shoham  c,2 
+a Department  of  Mathematics  and  Computer  Science,  Ben-Gurion  University,  Beer-Sheva  84105,  Israel 
+b  Computer  Science  Department,  Cornell  University,  Ithaca,  NY  14853-7501,  USA 
+c  Computer  Science  Department,  Stanford  University,  Stanford,  CA  94305,  USA 
+
+Abstract 
+
+In  order 
+
+to  successfully  perform  a  task,  a  situated  system  requires  some  information  about 
+its  domain.  If  we  can  understand  what  information 
+the  system  requires,  we  may  be  able  to 
+equip  it  with  more  suitable  sensors  or  make  better  use  of  the  information  available  to  it.  These 
+considerations  have  motivated  roboticists  to  examine  the  issue  of  sensor  design,  and  in  particular, 
+the  minimal  information  required  to perform  a task.  We show here  that  reasoning  in  terms  of  what 
+the  robot  knows  and  needs  to  know  to  perform  a  task  is  a  useful  approach  for  analyzing  these 
+issues.  We  extend  the  formal  framework  for  reasoning  about  knowledge,  already  used  in  Al  and 
+distributed  c:omputing,  by  developing  a set of  basic  concepts  and  tools  for modeling  and  analyzing 
+the  knowledge  requirements  of  tasks.  We  investigate  properties  of  the  resulting  framework,  and 
+show  how  ii: can  be  applied  to  robotics  tasks.  @  1998 Elsevier  Science  B.V. 
+
+Keywords:  Knowledge;  Sensor  design;  Configuration 
+programs;  Knowledge 
+
+complexity;  Knowledge 
+
+capability 
+
+space;  Manipulation 
+
+tasks; 
+
+(Skeletal)  knowledge-based 
+
+1.  Introduction 
+
+complexity 
+
+The  notion  of  computational 
+
+effect  on  the  develop- 
+ment  of  computer  science.  While  imperfect,  our  ability  to  classify  different  computational 
+problems 
+solving 
+in  polynomial 
+versely,  when  a  problem 
+
+in 
+solved 
+for  its  solution.  Con- 
+to  be)  a  more 
+
+such  problems.  Thus,  when  a  problem  can  be  solved  or  approximately 
+
+on  improving 
+to  be  a  member  of  (what 
+
+in  terms  of  their  complexity 
+
+time,  we  can  concentrate 
+
+allows  us  to  understand 
+
+has  had  a  profound 
+
+inherent  difficulties 
+
+is  believed 
+
+algorithms 
+
+is  shown 
+
+author.  Email:  brafman@cs.bgu.ac.il 
+
+* Corresponding 
+] EmaiI:  halpcm@cs.comeIl.edu. 
+2 Email:  shoham@cs.stauford.edu. 
+
+0004-3702/98/$19.00 
+PIISOOO4-3702(97)00061-l 
+
+@  1998  Elsevier  Science  B.V.  All  rights  reserved 
+
+318 
+
+R.I.  Brajinan  et  al. /ArtiJicial 
+
+Intelligence  98  (I 99%) 317-349 
+
+assumptions  when  confronting 
+
+(e.g., 
+
+).  However, 
+
+is  true  primarily 
+
+difficult  class  such  as  the  class  of  NP-complete 
+for  heuristics 
+
+and  simplifying 
+Some  areas  of  robotics  have  benefited 
+of  certain  stylized 
+[5,17,18] 
+
+This 
+motion-planning 
+the  analog  of  a  Turing  machine,  a  formal  device 
+of  a  robotic 
+task  or  the  capabilities 
+space  and 
+issues  such  as  the  sloppiness 
+for  communication 
+This  suggests 
+information 
+Donald 
+
+between 
+that  a  good  model 
+
+time  complexity 
+
+of  controllers, 
+
+for  robotics 
+
+spatially 
+
+[ 71. 
+
+are  not  the  dominating 
+
+from  advances 
+robotics  problems, 
+
+problems,  we  know  that  we  must  look 
+this  problem. 
+in  computational 
+
+complexity. 
+such  as  variants  of  robot 
+the  area  of  robotics  as  a  whole  still  lacks 
+the  difficulty 
+for  this  is  that  usually 
+in  a  robotic 
+task.  Rather, 
+of  sensors,  and  the  need 
+
+factors 
+the  imprecision 
+
+that  faithfully  quantifies 
+
+of  a  robot.  3  The  reason 
+
+separated  components 
+
+assume  major 
+
+should 
+
+revolve  around 
+
+importance. 
+the  notions  of 
+[9]  and 
+
+and  uncertainty.  Similar  points  have  also  been  made  by  Erdmann 
+
+to  capture 
+
+framework 
+
+We  propose  a  formal 
+
+can  form  the  basis  for  a  general  model  of  informational 
+robotic 
+
+[ 101,  which  makes  use  of  a  formal  notion  of  knowledge.  We  believe 
+terms  of  knowledge 
+robots  and  robotic 
+of  the  knowledge 
+of  the  knowledge 
+robot 
+to  perform 
+requirements 
+systems 
+attack 
+
+these  notions,  closely  based  on  that  of 
+in 
+aspects  of 
+in  terms 
+tasks.  In  our  framework, 
+required 
+in  terms 
+they  can  acquire.  We  can  therefore  assess  the  ability  of  a  particular 
+to  the  knowledge 
+a  task  by  comparing 
+in  distributed 
+tasks  such  as  coordinated 
+
+tasks  can  be  characterized 
+them,  and  robots  can  be  characterized 
+
+of  the  use  of  knowledge 
+
+of  the  task.  This 
+
+the  information 
+
+to  characterize 
+
+its  knowledge 
+
+that  reasoning 
+
+is  reminiscent 
+
+to  perform 
+
+to  perform 
+
+capabilities 
+
+needed 
+
+[ 111. 
+
+attained. 
+
+a  crucial 
+
+. . .-plays 
+
+is  attained 
+
+In  a  certain 
+
+is  eventually 
+
+I.  Moreover, 
+
+for  coordination 
+
+In  the  coordinated 
+
+that  everyone  knows 
+
+state  where  everyone  knows 
+
+and  agreement 
+is  irrelevant; 
+
+task  is  to  move  an  object  from  some 
+
+These  are  the  types  of  tasks  discussed 
+
+attack  problem  and  other  problems  of  coordination 
+
+and  agreement, 
+it  turns  out  that  common  knowledge-the 
+that  everyone 
+role.  It  is,  in  a  precise  sense,  a  nec- 
+knows 
+[ 10,ll 
+the 
+essary  and  sufficient  condition 
+is  that 
+all  that  matters 
+knowledge  before  common  knowledge 
+common  knowledge 
+important  class  of  tasks  that  we 
+consider  here,  which  we  refer  to  as  manipulation  tasks,  we  can  say  even  more.  The  goal 
+to  a  goal 
+in  a  manipulation 
+literature 
+configuration. 
+[ 9,141. 
+formulas 
+such  that,  if  the  agent  knows  one  of  these  formulas  at  every  step,  then  the  task  can  be 
+performed 
+for  the 
+it  is  possible 
+each  of  these  tests  identifies 
+agent  always 
+the 
+a  set  of  configurations 
+the 
+distance, 
+goal.  This  is  essentially 
+[9].  As  we  shall  see,  thinking 
+tool  to  clarify  what  is  going  on.  We  illustrate 
+in  terms  of  knowledge  gives  us  a  high-level 
+this  point  by  applying  our  ideas 
+analyzed  by 
+example  originally 
+Blum  and  Kozen 
+
+initial  configuration 
+in  the  motion-planning 
+find  a  set  of  propositional 
+
+to  know  one  of  these  conditions. 
+for  which  a  particular 
+
+exists  which  would  reduce 
+from 
+
+to  some  distance  measure,  of  the  system’s  configuration 
+
+(if  the  agent  has  appropriate 
+
+task,  we  can  typically 
+
+[ 11;  see  Section  4. 
+
+to  a  maze-searching 
+
+taken  by  Erdmann 
+
+In  a  manipulation 
+
+and,  moreover, 
+
+the  approach 
+
+Intuitively, 
+
+according 
+
+transition 
+
+sensors) 
+
+’ This  observation  was  made  by  John  Mitchell. 
+
+R.I.  Brajkan  et  al. /Artificial  Intelligence  98  II 998)  317-349 
+
+319 
+
+- 
+
+- 
+
+10 
+
+9 
+
+8 
+
+7 
+
+6 
+
+5 
+
+4 
+
+3 
+
+2 
+
+1 
+
+0 
+
+Fig.  1. The  two-arm  system. 
+
+To  provide 
+
+intuition, 
+
+throughout 
+
+this  paper  we  will  anchor 
+
+example.  Although 
+
+simple, 
+
+the  example  embodies 
+
+sensing,  and  the  need  to  coordinate 
+
+the  formal  develop- 
+two  impor- 
+the  actions  of  spatially 
+
+ment 
+in  the  following 
+tant  ingredients-imprecise 
+distributed 
+
+actuators. 
+
+one-dimensional 
+
+in  feet,  from  0  through  10  (for  simplicity  we  ignore 
+
+robotic  arms  must  coor- 
+Example  1.1.  Two  horizontal,  perpendicular, 
+dinate  as  follows.  The  first  arm  must  push  a  hot  object  lengthwise 
+across  the  table  until 
+the  second  arm  is  able  to  push  it  sideways  so  that  it  falls  into  a  cooling  bin.  The  length 
+is  marked 
+the  vertical 
+of  the  table 
+is  initially  placed  at  position  0  on  the  table.  The  second  arm  is 
+coordinate). 
+The  object 
+[ 3,7].  4  The  second  arm  cannot 
+able  to  push  the  object 
+if  it  is  anywhere 
+this  will  cause  the  mechanism 
+hit  the  obiject  while 
+for  more  than  an  instant 
+to  jam;  on  the  other  hand,  the  object  cannot  remain  motionless 
+the  second  arm  must  move  precisely  when 
+or  it  will  burn  a  hole  into  the  table.  Thus, 
+the  first  one  stops.  This  setup 
+two  variants  of  the 
+in  Fig.  1.  We  consider 
+is  illustrated 
+problem: 
+
+it  is  pushed  by  the  first  arm,  since 
+
+in  the  region 
+
+(a)  The  arms  share  a  controller.  The  controller  has  access  to  a  sensor  reporting 
+
+the 
+
+position  of  the  object  with  error  no  greater 
+location 
+
+is  q  then  the  reading  can  be  anywhere 
+
+than  1,  i.e.,  if  the  object’s 
+
+current 
+
+in  [q  -  1, q +  1 ] . 
+
+(b)  Same  as  (a),  except  the  error  bound 
+It  is  not  hard 
+
+to  see  that  in  case 
+
+(b), 
+
+is  4  rather  than  1. 
+is  no  protocol 
+
+there 
+
+that  performs 
+
+that  deals  with  (a) 
+
+the  task, 
+is 
+
+whereas 
+the  following 
+
+in  case  (a), 
+(where 
+
+there  is.  For  example,  a  centralized  protocol 
+r  is  the  current 
+
+reading) 
+
+: 
+
+if  I  61 4  then  Move(armi) 
+
+else  Move(armz). 
+
+4 We use  the  [a,  b]  notation  to  denote  the  interval  of  natural  numbers  between  a  and  b,  including  a  and  b. 
+
+Thus,  [3,7]  ={3,4,5,6,7}. 
+
+320 
+
+RI. Brafman  et  al. /AriQicial 
+
+Intelligence  98  (1998)  317-349 
+
+several  basic 
+
+information 
+controller 
+
+this  task  and  what  information 
+
+Example  1 .l  illustrates 
+
+the  need 
+the  controller  needs  in  order  to  perform 
+
+to  analyze 
+
+issues,  such  as  how  much 
+each 
+in  this  paper. 
+taken  by  the 
+actions,  and  plans,  we  take 
+tools  for 
+activities. 
+a  situated 
+
+is  capable  of  obtaining.  These  are  the  types  of  issues  we  consider 
+the  planning  perspective 
+
+This  example  should  make  apparent 
+[ 151  and  Morgenstern 
+
+that,  unlike 
+[ 161  on  knowledge, 
+
+that  can  perform  some  given  set  of  tasks.  To  use  the  analogy  of  computational 
+the  task  of  building 
+
+that  must 
+
+representation 
+the  course  of  its  planning 
+that  can  aid  in  the  process  of  designing 
+
+its  knowledge  during 
+
+It  is  not  our  goal  to  provide  knowledge 
+
+work  of  Moore 
+a  design  perspective. 
+an  agent 
+that  reasons  about 
+Rather,  we  provide  a  set  of  concepts 
+system 
+complexity,  we  are  not  considering 
+how  to  solve  a  particular  computational 
+which  a  designer  could  characterize 
+problem.  Although  both  problems 
+assumptions, 
+concepts,  and  languages  are  appropriate 
+to  say  on  this  issue  in  our  discussion  of  related  work  (Section  5). 
+
+are  related  at  some  abstract 
+
+problem; 
+
+rather,  we  attempt 
+
+agents 
+
+to  provide 
+
+figure  out 
+tools  by 
+that  soIves  this 
+level,  different  models, 
+in  each  case.  We  shall  have  more 
+
+the  resources  needed  by  a  program 
+
+The  rest  of  this  paper  is  organized  as  follows:  In  the  next  section,  we  describe 
+
+to  define  measures  of  information 
+
+requirements 
+
+tasks,  agents,  and  their  information 
+
+requirements. 
+
+we  take  in  modeling 
+use  the  concept  of  knowledge 
+and  information 
+these  measures. 
+of  additional 
+the  problem  of  maze  searching.  We  discuss 
+Section  6  with  some  directions 
+
+for  further  work. 
+
+of  agents,  and  we  show  some  relations 
+
+capabilities 
+In  Section  4,  we  continue  with  this  development, 
+tools,  such  as  control  variables  and  learning.  We  illustrate 
+
+supplying 
+
+related  work  in  Section  5,  and  conclude 
+
+the  view 
+In  Section  3,  we 
+of  tasks 
+that  exist  among 
+a  number 
+these  tools  with 
+in 
+
+2.  The  basic  model 
+
+In  this  section,  we  describe  a  basic  model  of  an  agent  embedded 
+it  must  act.  We  start  with  an  overview  of  our  perspective 
+
+in  which 
+understanding 
+and  our  technical  choices 
+
+of  which  will  help  the  reader  understand 
+
+the  development 
+
+in  the  rest  of  this  paper.  We  then  formalize 
+
+these  ideas. 
+
+in  an  environment 
+and  our  aims,  an 
+of  this  paper 
+
+2.1.  An  overview  of  our  approach 
+
+To  investigate 
+
+issues  such  as  the  information 
+
+complexity 
+
+capabilities 
+
+for  example, 
+
+in  some  context; 
+
+of  agents,  we  must  first  make 
+
+take  place;  the  task  of  rearranging 
+
+in  the  context  of  some  physical  environment 
+
+attaining 
+Tasks  are  defined 
+to  point  B  is  defined 
+the  furniture 
+motions 
+text  of  some  room  description, 
+some  description  of  the  furniture, 
+and  their  desired  final  positions.  More  abstractly,  a  task  is  defined 
+set  of  possible  configurations 
+A  typical 
+involve 
+task  might 
+goal  configuration,  while  making 
+certain  conditions.  Such  a  task  can  be  described  abstractly 
+
+of  tasks  and  information- 
+the  notion  of  a  task  more  precise. 
+the  task  of  getting  a  robot  from  point  A 
+in  which  the  robot’s 
+in  the  con- 
+their  initial  positions, 
+in  the  context  of  some 
+space. 
+to  some 
+always  satisfies 
+in  terms  of  sets  of  acceptable 
+
+of  the  system  of  interest,  called 
+taking  a  system 
+
+sure  that  the  system’s  configuration 
+
+from  some  initial  configuration 
+
+in  a  room  is  defined 
+
+its  configuration 
+
+R.I.  Brajhan  et  al. /Artipcial 
+
+Intelligence  98  (1998)  317-349 
+
+321 
+
+For  example, 
+
+sequences  of  configurations, 
+to  configurations. 
+some  goal  configuration 
+which  cc  appears  first  and  cr  appears 
+thds  task  corresponds 
+paper), 
+at  cr  from  some  point  on. 
+
+case,  acceptable 
+
+the  task  of  getting 
+
+or  in  the  continuous 
+
+cr  can  be  defined  as  the  set  of  sequences  of  configurations 
+
+functions 
+from  an  initial  configuration  CO to 
+in 
+(as  we  do  in  this 
+to  the  set  of  sequences  which  start  with  CO and  stabilize 
+
+infinite  sequences 
+
+last.  Or,  using 
+
+from  [ 0,oo) 
+
+So  far,  we  have  said  nothing  about  how  the  task  is  to  be  performed, 
+
+that  is,  how  we 
+to  the  final  configuration.  We  abstract  away  from  this  issue  here, 
+that  an  agent  can 
+that  there  is  a  fixed  set  of  changes,  or  transitions, 
+
+get  from 
+the  initial 
+and  simply  assume 
+effect.  Our  goal  is  to  understand  what  information 
+needs 
+information-gathering 
+
+its  task.  This, 
+
+to  perform 
+
+capabilities, 
+
+in  order 
+
+an  agent  capable  of  these  transitions 
+the  design  of  the  agent’s 
+
+in  turn,  affects 
+
+such  as  its  sensors  and  communication 
+
+channels. 
+
+To  summarize,  we  are  given 
+( 1)  a  set  of  possible  configurations 
+(2)  a  set  of  sequences  of  configurations 
+transitions  defining 
+(3)  a  s.et of  allowed 
+in  time. 
+configuration 
+
+at  each  point 
+
+for  a  system, 
+defining 
+the  changes 
+
+the  task,  and 
+
+that  can  be  made  to  the  system’s 
+
+the  agent  with 
+that  uses  this  information 
+
+We  must  supply 
+program 
+of  knowle:dge,  we  can  analyze 
+for  the  design  of  the  agent’s  sensory  apparatus  at  an  abstract,  yet  useful 
+
+its  task,  and  a 
+appropriately.  As  we  shall  see,  using  a  formal  notion 
+needs  of  a  task,  and  provide  guidelines 
+
+the  information 
+
+the  information 
+
+to  perform 
+
+necessary 
+
+level. 
+
+[ 91,  which  explicitly  examines 
+
+The  view  developed  here  was  strongly 
+
+sensor  systems, 
+
+and  evaluating 
+
+the  framework 
+
+sion  of  abstract  sensors 
+to  consider  many  of  the  issues  discussed 
+mantics.  Donald’s  work  on  information 
+comparing 
+complexity.  Finally, 
+[ lo]  provides  a  natural 
+its  past  use  in  establishing 
+required 
+Erdmann’:s 
+Our  major  contribution 
+the  context  of  robotics.  We  discuss 
+in  Section  5. 
+papers 
+
+semantics  of  abstract  sensors 
+
+in  more  detail 
+
+for  performing 
+
+tasks  in  distributed 
+
+is  the  formalization 
+
+invariants 
+
+led  us  to  examine 
+
+the  issue  of  sensor  design, 
+
+[ 71,  which  provides  a  framework 
+
+influenced  by  three  sources.  Erdmann’s  discus- 
+led  us 
+in  this  paper  and  motivated  our  choice  of  se- 
+for 
+the  ideas  of  task  and  sensor 
+in 
+these  ideas,  especially  given 
+and  other  resources 
+. Indeed, 
+to  the  concept  of  knowledge. 
+
+transmission 
+(see,  for  example, 
+
+systems  developed 
+
+leads  naturally 
+
+in  multi-agent 
+
+systems 
+
+[ 6,111) 
+
+and  further  development 
+
+of  these  ideas  in 
+between  our  work  and  these  other 
+
+the  connection 
+
+for  knowledge 
+
+tool  for  capturing  and  formalizing 
+lower  bounds  on  message 
+
+In  the  remainder  of  this  section,  we  present  enough  background 
+
+to  make  the  technical 
+
+development 
+
+in  the  paper  self  contained. 
+
+2.2.  The  model 
+
+Our  formal  model 
+
+cations  appropriate 
+and  a  set  of  possible 
+domains.  While  a  knowledge-level 
+(e.g.,  see 
+complicate 
+
+[ 21)) 
+this  exposition. 
+
+the  technical 
+
+transitions 
+
+is  based  on  the  notion  of  system,  as  defined 
+
+for  our  context.  We  start  by  defining 
+
+on  that  space.  We  shall  confine  ourselves 
+
+analysis  can  be  carried  out  in  continuous 
+
+issues 
+
+raised  by  continuous 
+
+in  [ lo],  with  modifi- 
+the  space  in  which  agents  act 
+to  discrete 
+domains, 
+domains  would  needlessly 
+
+322 
+
+RI.  Brajinan  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+Definition  2.1.  Let  & be  the  environment’s  set  of  states,  also  referred 
+ration  space.  The  set  A  of  transitions  over  & consists  of  functions 
+assume 
+
+that  the  identity  mapping 
+
+Id  is  contained 
+
+in  A. 
+
+to  as  the  con&u- 
+
+from  & to  2& \  0.  We 
+
+A  task  is  simply  a  set  of  a  sequences  of  configurations,  which  we  call  C-histories. 
+
+One  can  view  the  C-histories  defining  a  task  as  the  set  of  desirable  behaviors. 
+
+Definition  2.2.  A  C-history  C  (over  E)  is  an  infinite  sequence  of  configurations 
+We  use  C(n) 
+set  of  C-histories 
+
+in  E. 
+the  nth  element  of  this  sequence.  A  tusk  (over  E)  is  a 
+
+(n  >  0)  to  denote 
+(over  E). 
+
+the 
+
+the  agent 
+
+transforms 
+
+state.  This 
+
+the  external 
+
+for  an  action 
+
+to  change  only 
+
+is  the  world  which 
+
+An  agent 
+
+is  defined 
+
+or  the  conjigurution,  describes 
+
+it  is  possible 
+is  the  case  for  sensing 
+
+i.e.,  all  the  relevant  aspects  of  the  world  not  belonging 
+
+ble  transitions.  The  state  of  the  environment, 
+of  the  external  world, 
+robot’s 
+internal 
+itself  has  a  set  of  local  states  and  actions,  where  each  action 
+state  of  the  agent  and 
+deterministic, 
+and 
+agent,  as,  in  fact, 
+first  is  that  the  effects  of  an  action  on  the  environment 
+state  of  the  environment. 
+only 
+vironment 
+same  abilities 
+fer  only 
+have)  and  in  the  effect  of  actions  on  these  local  states.  Although 
+ment”  a  fixed  set  of  transitions, 
+the  same 
+different  effects  on  each  agent’s 
+an  agent  as  a  “robot,” 
+for  a  contiguous 
+other. 
+
+in  the  context  of  a  fixed  environment  &  and  a  set  A  of  possi- 
+the  state 
+to  the 
+is  to  manipulate.  The  agent 
+local 
+state  of  the  world.  These  actions  need  not  be 
+the  local  state  of  the 
+The 
+two  requirements. 
+depend  only  on  the  current 
+that  the  local  state  of  the  agent  represents 
+is  that  the  effects  an  action  can  have  on  the  en- 
+transitions.  Hence,  agents  defined  have  the 
+;  they  dif- 
+they 
+the  actions  “imple- 
+transition  may  have 
+that  although  we  often  refer  to 
+its  sensors  and  effecters  make 
+to  one  an- 
+related 
+
+actions 
+implementing 
+local  state.  We  note 
+that 
+
+there 
+piece  of  equipment 
+
+the  state  of  the  external  world 
+
+the  structure  of  their 
+
+to  the  set  of  possible 
+
+they  are  otherwise 
+
+actions.  We  make 
+
+state.  The  second 
+
+is  no  requirement 
+
+This  guarantees 
+
+(environment) 
+
+to  transform 
+
+local  states 
+
+its  internal 
+
+information 
+
+is,  in  the 
+
+conform 
+
+or  that 
+
+(that 
+
+that 
+
+in 
+
+As  the  discussion 
+state  of  the  system 
+
+above  suggests,  we  assume  that  agents  have  local  states.  The  global 
+is  a  pair  consisting  of  the  configuration 
+
+and  the  agent’s 
+
+local  state. 
+
+Definition  2.3.  If  E  is  the  set  of  configurations 
+then 
+G =  & x  L  is  the  set  of  gZobu1 states  (based  on  & and  15). The  projections  of  a  global  state 
+g  =  (c,  I)  E  $7 to  E  and  L  are defined  as  proj,,,,( 
+(c,  I))  =  c  and  proj/O,,I(  (c,  1))  =  1. 
+Projections  of  sets  and  sequences  of  global  states  are  similarly  defined,  e.g.,  proj,(  S)  = 
+
+and  L  is  the  set  of  local  states, 
+
+UsESprojx(s). 
+
+Definition  2.4.  An  agent  A situated  in  (E,  A)  is  a  pair  (L,  Actions),  where  L  is  the  set 
+from  B  =  &  x  L  to  2”  \  8 
+of  local  states  of  the  agent,  and  Actions  is  a  set  of  functions 
+satisfying 
+
+the  following  conditions: 
+
+( 1)  For  all  a  E  Actions,  c  E  E,  and  2, 2’  E  L,  we  have  proj,,,,(u( 
+
+c,  1) )  = 
+
+projo,fi8(4c+l’)). 
+
+R.I.  Brajkan 
+
+et  al. /Art$icial 
+
+Intelligence  98  (1998)  317-349 
+
+323 
+
+(2)  For  a  E Actions,  let  ra  be  the  transition  defined  by  r0 (c)  =  proj,,Bg  (a(  c,  Z) )  for 
+for  all 
+
+some  1 E  L. s  Then  for  all  a  E Actions,  we  must  have  r,  E  A.  Moreover, 
+r  C: A,  there  exists  some  a  E Actions  such  that  r  =  ra. 
+
+We  call  r,,  the  transition 
+
+induced  by  a  E Actions. 
+
+From  now  on,  we  assume  we  are  working  with  a@ed 
+
+transitions.  All  agents  discussed  will  be  situated 
+
+n  of  possible 
+agents  we  discuss  have  the  same  physical  capabilities  but  may  differ  in  their  information- 
+attaining 
+
+capabilities. 
+
+configuration 
+
+space  & and  set 
+in  (E,  A).  Therefore,  all 
+
+space  for  Example  1.1 (a)  consists  of  all  possible  po- 
+
+Example  2.5.  The  configuration 
+sitions  of  the  hot  object:  & =  [0,  lo]  x  {Tuble,Bin}.  6  The  set  A  of  possible 
+consists  of  Move(  armt  ),  Move(  armz),  and  the  identity  mapping,  where  Move(  arm]  ) 
+(q,  x)  to  (q+  1, x)  when  x  =  Table and  q  6  9, while  Move(  armz)  transforms 
+transforms 
+(q,  x)  to  ( q, Bin)  when  q  E  [ 3,7].  Otherwise, 
+these  transitions  do  not  change  the  config- 
+uration.  We  model  the  controller  of  Example  1.1 (a)  as  the  agent  At,  =  (Ll,,  Actionsl,), 
+where  L,,  =  [ 0,  lo],  so  that  the  controller’s 
+reading, 
+and  Actionsla  = {Movet,  Movez},  where 
+
+local  state  consists  of  its  position 
+
+transitions, 
+
+Mow  ((9,  xl,  r> 
+
+{((q’,x),r’) 
+
+1  Iq’-r’l 
+
+<  1,  q’=q+l 
+
+ifq69, 
+
+= 
+
+q’ = q  if  q  > 9}, 
+
+{ 
+
+{((qJ)JN 
+
+Move2((q,n),r) 
+
+if  x  =  Table, 
+
+if  x  =  Bin, 
+
+{((q,Bin),r’) 
+
+1 jq-r’l  <  l}, 
+
+if  x  E  Bin  or 
+
+= 
+
+(X  E  Table and  q  E  [3,7]), 
+
+{ 
+
+{((q,x),r’)), 
+
+otherwise. 
+
+let  z?zsk,b  consist  of  all  trajectories 
+
+Finally, 
+(0,  Table)  to  one  of  the  goal  configurations 
+
+that  lead  us  from  the  initial  configuration 
+[ 3,7]  x  {Bin}. 
+
+Global 
+
+:states  provide  us  with  an  instantaneous 
+
+description  of  a  system.  To  characterize 
+the  system,  we  need  to  consider  how  the  global  state  changes  over  time.  The  following 
+definitions 
+
+are  taken  from  [lo]. 
+
+Definition  2.6.  A  run  is  a  function  r  from  N  (the  natural  numbers) 
+to  the  set  of  global 
+states  6.  A  run  r  is  consistent  with  respect  to  agent  A = (L,  Actions)  if  for  every  n  E N, 
+it  is  the  case  that  r( n +  1)  E  a( r( n) )  for  some  a  E Actions.  A  system  is  a  set  of  runs. 
+
+5 The  choic.e of  the  local  state  in  the  definition  of  70 is  inconsequential  because  for  all  1,l’  E  L  we  require 
+
+that  projCO,~,~Ca(c,l)) =  Proj,,frg(a(c,  1’)). 
+
+6 Recall  that  [0,  lo]  denotes  all  natural  numbers  between  0  and  10. 
+
+324 
+
+R.I.  Brafman  et  al. /Art$icial 
+
+Intelligence  98  (1998)  317-349 
+
+According 
+
+to  this  definition,  we  are  identifying 
+
+a  system  with  its  possible  behaviors. 
+
+Typically, 
+
+systems  are  generated  by  protocols. 
+
+Definition  2.7.  A  protocol  for  an  agent  A  =  (L,Actions) 
+2Actionr \  0.  A  run  r  is  an  execution  of  a  protocol  P 
+r(  n)  > > (r(n)  ) . If  I  &  9  is  a  set  of  (initial) 
+that  r(  n  +  1)  E  P(  proj,,,( 
+then  the  system  R[  I,  A]  consists  of  every  run  r  consistent  with  respect 
+r(0)  E  I.  If  P  is  a  protocol 
+r  of  P  by  A such  that  r(0)  E  I. 
+
+is  a  function  P 
+if  for  every  n  E  N  it  is  the  case 
+global  states, 
+to  A such  that 
+for  A,  then  system  R[  I,  A, P]  consists  of  every  execution 
+
+:  L  ---f 
+
+A  protocol  describes 
+
+the  agent’s  program, 
+
+whenever  more  than  one  action 
+runs  in  which 
+protocol. 
+
+the  agent’s  action  at  each  point 
+
+allowing 
+
+behavior 
+is  assigned  at  a  local  state.  Its  executions  are  the  set  of 
+of  the 
+
+is  consistent  with  the  assignment 
+
+for  non-deterministic 
+
+Finally,  we  say  that  an  agent  can  perform  a  task  if  it  has  a  protocol  all  of  whose 
+
+executions 
+
+are  in  the  task. 
+
+Definition  2.8.  A  protocol  P  for  agent  A performs  Tusk from  Z if  proj,,$g  (R[ 
+C  Task. An  agent  can  perjorm  Task from  Z if  it  has  a  protocol 
+
+I,  A, P]  ) 
+that  performs  Task from  I. 
+
+Example  2.9.  Consider  Example 
+Z[  I,  A]  consists  of  all  runs  starting 
+some  number  of  steps  (possibly  0)  and  is  eventually  moved 
+points, 
+addition, 
+and  remains 
+
+1.1 (a),  and  let  Z  =  { ( (0,  Table),  0)  }.  The  system 
+for 
+to  the  cooling  bin.  At  all 
+than  1.  In 
+(10,  Table) 
+
+this  system  contains  all  runs  in  which  the  object  reaches  position 
+
+there  forever,  with  similar  constraints  on  the  local  state. 
+
+the  current  position  with  an  error  no  greater 
+
+the  local  state  indicates 
+
+in  Z  in  which 
+
+the  object 
+
+is  moved 
+
+forward 
+
+Let  protocol  P  assign 
+
+local  state  is  in  [ 0,3]  U 
+the  action  Move,  when  the  controller’s 
+[ 7,  lo]  and  Move;!  when  its  local  state  is  in  [4,6].  The  system  R[  I,  A,  P]  consists  of 
+in  [4,6]  occurs  for  the  first 
+all  runs  in  which  the  object  moves  forward  until  a  reading 
+in  [ 3,5].  At 
+time.  Given 
+this  point 
+to  the  cooling  bin.  Since  all  such  runs  are  in  Tusk,b,  P 
+performs  %sk,b. 
+
+the  above  restrictions  on  sensing  error,  this  could  be  anywhere 
+
+the  object 
+
+is  pushed 
+
+2.3.  A  language  for  reasoning  about  knowledge 
+
+Having  set  up  a  model,  we  would  like  to  have  a  formal  language 
+
+that  will  allow  us  to 
+[ 121, 
+systems.  Epistemic  logic,  introduced  by  Hintikka 
+express  properties  of  particular 
+tool  for  this  purpose.  We  start  with  set  @  of  primitive 
+suitable 
+provides  a  particularly 
+like  “the  robot 
+propositions.  We  can  think  of  these  primitive  propositions 
+is  high”.  The  language  C  contains  @, and  is  closed 
+is  at  position  2”  or  “the  temperature 
+and  the  knowledge  operator  K.  Thus,  if  LYE and 
+under 
+to 
+9 
+formulas 
+in  L  at  points  in  some  system  R,  where  a  point  is  a  pair  (r,  m),  consisting  of 
+a  run  r  and  a  time  m.  To  do  this,  we  first  need  a  way  of  deciding  when  the  primitive 
+propositions 
+
+in  @  are  true.  Given  a  set  9  of  global  states,  an  interpretationfinction  7~ 
+
+then  so  are  LYI A 02,  T(Y, and  KCY. We  want  to  assign 
+
+the  standard  boolean  connectives 
+
+are  formulas, 
+
+as  statements 
+
+truth  values 
+
+R.I.  Brafinan  et  al. /Arh&ial 
+
+Intelligence  98  (1998)  317-349 
+
+325 
+
+of  a  system  R  of  runs  over  set  B  and  an  interpretation 
+
+to  each  proposition  p  E  @ a  truth  value  at  each  global  state  in  E.  A  pair 
+r  over  G 
+system,  we  can  define  the  semantics  of 
+a  formula  of  the  form  Ktx  is 
+
+in  a  straightforward  way.  Intuitively, 
+
+over  &7 assigns 
+Z  =  (R,  zr)  consisting 
+is  called  an  interpreted  system.  In  an  interpreted 
+propositional 
+true  at  a  point 
+from 
+both.  These 
+read  “(Y is  true  at  the  point 
+
+(r,  m).  An  agent  cannot  distinguish 
+
+(r,  m)  if  4  is  true  at  all  points 
+
+are  formalized 
+
+intuitions 
+
+formulas 
+
+(r’,  m’)  that  the  agent  cannot  distinguish 
+
+two  points 
+
+if  it  has  the  same 
+
+local  state  in 
+(where  Z,  r,  m  b  LY is 
+
+in  the  following  definition 
+
+(r,  m)  in  the  interpreted 
+
+system  27’) : 
+
+0  1,  r,  m  +  p  for  p  E  @ if  z-(r(m),p) 
+0  Z,r,mk7cuifZ,r,m#cu; 
+l Z,r,m~ff~r\ifZ,r,m~aandZ,r,m~p. 
+l Z,  r, .m +  Ku  if  Z,  r’,  rn’ b  (Y for  all  points  ( 8,  m’)  in  R  such  that  proj,,,( 
+
+= true; 
+
+r(  m)  )  = 
+
+pr0jh~ 
+
+( r’ (m’)  ) . 
+
+language 
+
+then  for  all  formulas 
+
+that  included  explicit 
+
+local  state.  Thus,  we  further  abuse  notation 
+
+that  whether  Z,  r,  m  k  a  depends  only  on  the  global  state  r(m)  ; 
+(Y, we  have  1,  r, m  k  LY iff  Z,  r’,  m’  b  a. 
+if  s  is  a  global  state,  we  often  abuse  notation  and  write  Z,  s  k  cy.  (We  remark 
+temporal 
+is  true  depends  only  on  the 
+if  I  is  a 
+operator  allows  us 
+the  external  world. 
+function  depends 
+of  the  global  state.  That  is,  for  all  propositions 
+then  r(  s,p)  =  T(  s’,p). 
+
+It  is  ea:sy  to  check 
+that  is,  if  r’(  m’)  =  r(m), 
+Thus, 
+that  this  would  not  be  true  if  we  used  a  richer 
+operators.)  Moreover,  whether  a  formula  of  the  form  Ka 
+agent’s 
+local  state  This  notation 
+to  express  correlations 
+Finally,  we  assume 
+only  on  tihe  configuration 
+p, 
+This 
+applications, 
+the  external  world  only.  Thus,  for  a  propositional 
+of  the  modal  operator  K),  we  often  abuse  notation  and  write  2,  c  k  cy, where  c  is  a 
+configuration. 
+
+the  fact  that  the  knowledge 
+the  local  state  of  the  agent  and 
+that  the  interpretation 
+
+since 
+formula  LY (one  with  no  occurrences 
+
+if  the  system’s  configuration 
+
+in  s  and  s’  are  the  same, 
+
+for  the  rest  of  this  paper 
+
+and  write  Z,Z  b  Kia, 
+
+tasks  are  defined 
+
+for  our  intended 
+
+is  reasonable 
+
+in  terms  of 
+
+emphasizes 
+
+component 
+
+between 
+
+For  the  remainder 
+
+of  the  paper,  fix  an  interpretation 
+
+on  the  configuration.  We  use  Z[  I,  A]  and  Z[  I,  A,  P] 
+(R[Z,d],7r) 
+every  point 
+
+and  (R[Z,d,P],,), 
+
+(r,  m)  in  1. 
+
+that  depends  only 
+system 
+respectively.  We  write  Z  +  cr  if  Z,r,m  +  a  for 
+
+the  interpreted 
+
+function  v 
+
+to  denote 
+
+3.  Knowledge  as  an  analysis  and  specification  tool 
+
+3.1.  Skeletal  knowledge-based 
+
+programs 
+
+Work 
+powerful 
+purposes 
+grams 
+
+systems  has  shown 
+
+in  distributed 
+tool  for  analyzing 
+traditional  protocols.  Knowledge 
+too;  it  allows  one  to  design  high-level  protocols,  called  knowledge-based 
+
+that  the  formal  notion  of  knowledge 
+
+is  also  useful 
+
+[ 101 ,7 
+
+that  focus  on  the  informational 
+
+aspects  of  a  task  without  drowning 
+
+is  a 
+for  design 
+pro- 
+in 
+
+’ The  similarity  in  names  between  knowledge-based  program  and  knowledge-based  (or  expert)  systems  in 
+
+AI  is  coincidental. 
+
+326 
+
+R.I.  Brafman  et  al. /Arttjicial 
+
+Intelligence  98  (1998)  317-349 
+
+details.  Roughly  speaking,  knowledge-based 
+
+the  agent  should  perform  as  a  function  of  its  knowledge. 
+
+implementation 
+tions 
+a  slightly  more  general  notion, 
+An  SKBP  describes  what 
+knowledge.  Hence,  an  SKBP  can  be  used  by  different  agents  with  different  actions 
+implement 
+all  agents  considered 
+
+programs  describe  what  ac- 
+In  this  paper,  we  use 
+(SKBPs). 
+an  agent  should  bring  about  as  a  function  of  its 
+that 
+in  our  context,  where 
+
+similar  sets  of  transitions.  This 
+implement 
+
+is  particularly 
+a  fixed  set  of  transitions. 
+
+that  of  skeletal  knowledge-based  programs 
+
+transition 
+
+useful 
+
+Definition  3.1.  An  SKBP 
+7  E  n. 
+
+is  a  set  of  pairs  of  the  form 
+
+(Ku,  T),  where  KCY E  C  and 
+
+An  SKBP  can  be  viewed  as  a  big  case  statement  of  the  form 
+
+case  of 
+
+if  Kal  then  71; 
+
+if  KLU~ then  72; 
+
+. . . 
+
+if  Kcu,  then  r,; 
+
+(i.e., 
+
+to  a  condition 
+
+that  is  satisfied.  8 
+
+to  Kq,..., 
+formula 
+
+of  the  case  statement 
+
+conditions  of  this  SKBP 
+
+is  a  test  on  the  knowledge 
+
+of  this  protocol 
+the  transition 
+
+of  the  agent.  The 
+performs  an  action 
+
+is  that  the  agent  non-deterministically 
+corresponding 
+KCY, as  the  (knowledge) 
+
+Each  condition 
+interpretation 
+that  implements 
+We  refer 
+propositional 
+positive.  In  the  remainder 
+The  fact  that  we  do  not  allow  nested  K’s  is  not  a  serious 
+a  single  agent-every 
+p, 501.  However, 
+that  an  agent  cannot  perform 
+restriction 
+Section  4.2.  Nevertheless, 
+many 
+positivity  makes 
+in  Section  3.2. 
+Intuitively, 
+
+formula  can  be  denested 
+the  fact  that  we  do  not  allow 
+
+of  interest 
+it  much  easier  to  capture 
+
+If  cq  is  a 
+it  contains  no  occurrences  of  the  K  operator),  we  call  KUi 
+to  positive  SKBPs. 
+of  this  paper,  we  restrict  our  attention 
+in  the  case  of 
+restriction 
+[ 13, 
+so  that  there  are  no  nested  K’s 
+tests  of  the  form  ~Kcx,  which  means 
+is  a  nontrivial 
+learning 
+
+in 
+as  we  shall  see,  positive  SKBPs  still  allow  us  to  capture 
+the  restriction 
+to 
+application.  Moreover, 
+for  our 
+complexity,  defined 
+
+a  protocol  P  for  agent  A implements 
+
+an  action  based  on  lack  of  knowledge, 
+
+in  some  applications.  We  return 
+
+to  this  issue  when  we  discuss 
+
+the  notion  of  knowledge 
+
+intuitions 
+
+intended 
+
+ri.  However,  recall  that  an  agent’s  knowledge 
+
+to  some  system 
+
+the  agent’s  knowledge 
+
+local  state  I  in  which 
+
+at  every 
+that  implements 
+with  respect 
+to  determine  which  local  states  should  be  substituted 
+to  which 
+must  first  specify 
+to  that  of  [ lo] 
+Formally,  we  adopt  a  semantics 
+modified  so  as  to  handle  our  use  of  transitions 
+
+the  system  with  respect 
+
+that  determines 
+
+similar 
+
+rather  than  actions. 
+
+Pg  =  { (Kai,  Ti)  1 i  =  1, . . . , n}  if, 
+is  Kcu;,  P  assigns  an  action  a 
+in  a  local  state  is  defined 
+in  order 
+for  each  knowledge  condition,  we 
+is  defined. 
+the  agent’s  knowledge 
+programs, 
+for  knowledge-based 
+
+its  set  of  possible  worlds.  Hence, 
+
+*Hence, 
+
+unlike 
+the  case 
+conditions  does  not  matter. 
+
+statement 
+
+in  certain  programming 
+
+languages, 
+
+the  order  of  appearance 
+
+of  the 
+
+R.I.  Brajinan  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+327 
+
+Definition  3.2.  The  standard  translation of  SKBP  Pg  with  respect  to  interpreted 
+Z  and  agent  A  =  (L, Actions) 
+2,l  b  K,ru,  (Ka,  7)  E  Pg,  and  u7  implements 
+Pg’(l) 
+protocol  7’  for  A  =  (L,  Actions)  implements  Pg  from  I  if,  for  every  1 E  L  that  occurs 
+Z[  I,  A,  P]  ,  we  have  that  P(Z)  2  PgZ[‘,d,pl 
+
+then 
+h w  ere  UId is  the  identity  action,  which  maps  a  global  state  to  itself.  A 
+in 
+
+is  the  protocol  Pg”,  where  Pg’(  1)  =  {a,  E  Actions  1 
+
+latter  set  is  empty, 
+
+r}.  If  this 
+
+=  {aId}, 
+
+system 
+
+(I). 
+
+Example  3.3.  Consider 
+
+the  following  SKBP  for  the  controller  of  Example  1.1 (a)  : 
+
+Pg =  {(Kg,Move(armd), 
+
+(KSp,Move(md)}, 
+
+the  object’s  position 
+the  systems  Z[  I,  A]  and  Z[  I,  A,  P]  described 
+
+where  cp holds  when 
+goal  region.  Consider 
+Z[  I,  A], 
+[ 5,6,7]. 
+runs  of  Z[  I,  A,  P]  only  when  the  actual  position 
+this  local  state  can  occur  when  the  robot’s  position 
+
+in  the 
+in  Example  2.9.  In 
+the  local  states  in  which  Kg  holds  are  [ 5,6],  while  in  Z[  I,  A,  P],  Kg  holds  in 
+the 
+The  local  state  in  which  the  controller’s  position 
+in  the  system  Z[  I,  A], 
+in  [ 6,8]. 
+
+is  in  [0,4]  U  [7,  lo]  and  g  holds 
+
+is  6.  However, 
+is  anywhere 
+
+is  7  occurs  within 
+
+reading 
+
+The  standard 
+
+({5},Mo=2}). 
+, Move,), 
+{ ( [ 0,4] 
+runsofZ[Z,d],suchas 
+
+translation  of  Pg  with  respect  to  Z[  I,  A] 
+H owever, 
+
+the  standard 
+
+is 
+( [ 5,7],  Move2)  }.  Notice  that  certain  global  states  that  occur  in  some 
+
+translation  of  Pg  with  respect 
+
+to  Z[  I,  A,  P] 
+
+is  { ( [ 0,4]  U  [ 6,  lo],  Move,), 
+
+((7,Table),8),donotoccurinanyrunofZ[Z,d,F] 
+
+(I).  Notice 
+
+their  definitions 
+
+an  SKBP 
+is  referred 
+
+Our  notion  of  implementation 
+
+leads  to  a  natural  notion  of  correctness: 
+if  all  protocols  consistent  with  it  satisfy  the  given  task.  This  notion 
+
+is 
+to 
+correct 
+as  strong  correctness  in  [lo].  Adapting 
+to  our  presentation,  we  would 
+say  that  ‘P  represents  Pg  if  P(Z)  =  PC  [l,d*PI  (1))  and  that  P  is  consistent  with  Pg  if 
+that  the  set  of  protocols  consistent  with  an  SKBP  Pg  is 
+P(  1)  C  P~[‘*d,p] 
+that  represent  Pg.  Moreover,  a  protocol 
+(in  geneml  a  strict) 
+there 
+consistent  with  a  given  SKBP 
+may  not  be  any  protocol 
+in 
+in  our  context,  strong  correct- 
+terms  of  consistency, 
+requiring 
+ness  seems  more  appropriate 
+the 
+to  accept  a  protocol  as  long  as  its  behaviors 
+SKBP  satisfy 
+are  compatible  with 
+if  it  does  not  generate  all  the  behaviors  of  the 
+SKBP. 
+
+than  just 
+the  task.  We  are  willing 
+
+that  represents 
+rather  than  representation, 
+
+to  exist  (see  Lemma  A.l), 
+
+it  [lo].  We  have  defined 
+
+superset  of  the  protocols 
+
+that  all  protocols 
+
+the  SKBP,  even 
+
+implementation 
+
+that  represent 
+
+is  guaranteed 
+
+although 
+
+because, 
+
+In  this  paper,  we  are  interested 
+
+in  a  particular 
+
+class  of  implementations 
+
+of  skeletal 
+
+knowledge-based 
+
+programs. 
+
+Definition  3.4.  Protocol  P 
+Z[Z,d,P] 
+of  Pg. 
+
+for  agent  A 
+
+is  a  good  implementation 
+
+of  Pg  from  Z  if 
+
+k  KCYI V  ...  V  KcY”, where  Kq 
+
+,...,  Ka,  are  the  knowledge 
+
+conditions 
+
+our  attention 
+
+By  restricting 
+
+to  the  good 
+SKBPs  from  abstract  program  specifications 
+a  skeletal  knowledge-based 
+notions  of  standard 
+
+of  SKBPs,  we  transform 
+specifications.  Now, 
+program  not  only  specifies  what  an  agent  should  do,  via  the 
+it  also  specifies  a  class  of  agents 
+
+implementations 
+to  abstract  knowledge 
+
+and  implementations, 
+
+translations 
+
+328 
+
+RI.  Brajhan  et  al./Artifcial 
+
+Intelligence  98  (1998)  317-349 
+
+in  which 
+
+to  execute 
+
+this  specification,  These  agents  have  an  implementation 
+
+that  are  qualified 
+the  SKBP 
+they  always  know  enough  so  that  one  of  the  tests  for  knowledge 
+holds  at  every  global  state.  The  importance  of  this  property  will  become  clearer  when 
+we  present  our  definition  of  upper  bound  on  the  knowledge  complexity  of  a  task.  From 
+of  a  SKBP  Pg,  we  always  mean 
+now  on,  unless  otherwise  noted,  by  an  implementation 
+a  good  implementation. 
+
+of 
+
+Note 
+
+that  an  agent  may  have  a  good  implementation 
+
+If  this  happens, 
+
+of  an  SKBP  with  conditions 
+it  can  reach  local  states  in  Z[  I,  A] in  which  it  knows  none 
+the  agent  from 
+leading 
+that  lead  to  an  increase  of 
+
+the  SKBP  must  be  preventing 
+this  can  be  due  to  one  of  two  reasons:  actions 
+actions 
+
+are  avoided  and/or 
+
+Z&3,...,  Kpk  even  though 
+of  the  above  conditions. 
+reaching 
+to  states  of  relative 
+knowledge 
+
+are  taken. 
+
+such  states.  Intuitively, 
+
+ignorance 
+
+The  notion  of  per$orms  can  now  be  generalized 
+
+to  SKBPs. 
+
+Definition  3.5.  A  set  I  of  global  states 
+if  proj,nfig 
+from  every  set  I 
+implementation 
+
+=  {C(O) 
+
+(I) 
+
+from  some  Z  to-consistent  with  Tusk. 
+
+1 C  E  Tusk}.  Pg  pegorms  Tusk if  all  its  good  implementations 
+
+to-consistent  with  Task  perform  Tusk  from  I,  and 
+
+it  has  a  (good) 
+
+(for  agent  d) 
+
+is  to-consistent  with  task  Tusk 
+
+in  defining 
+
+that, 
+to  sets  Z  of  initial  states  that  are  to-consistent  with  Task.  Clearly, 
+
+the  notion  of  an  SKBP  Pg  performing  Task,  we  restrict 
+if  we  start 
+in  Task,  it  will 
+to  initial  states  that  are 
+
+Notice 
+attention 
+Pg  in  an  initial  state  that  is  not  the  initial  state  of  some  configuration 
+generate  an  execution 
+that  is  not  in  Tusk. Thus,  we  must  restrict 
+to-consistent  with  Tusk in  order  to  get  a  reasonable  notion  of  implementation.  Weakening 
+by  replacing 
+the  definition 
+set  equality  with  set  containment  would 
+In  particular,  certain  programs  Pg  that  can  only  perform 
+lead  to  undesirable 
+the  task,  despite 
+Task  from  restricted 
+the  fact  that  their  good  implementations 
+about  the  initial 
+state. 
+
+of  to  consistency 
+side-effects. 
+
+starting  states  would  be  considered 
+
+as  performing 
+information 
+
+require  excessive 
+
+In  practice, 
+
+it  may  be  difficult 
+
+to  transform  an  SKBP  to  a  standard  protocol.  However, 
+
+the  case 
+
+that,  as  has  been 
+
+we  believe 
+analysis  and  design  gives  a  useful  methodology 
+of  SKBPs 
+than  discuss 
+us  to  talk  about  the  robot  knowing 
+
+to  abstract  away  the  idiosyncrasies 
+
+the  ability 
+rather 
+the  content  of  the  frame  buffer  of  a  robot’s  vision  system,  an  SKBP  allows 
+
+of  local  state.  Thus,  for  example, 
+
+by  allowing  us  to  leverage 
+
+systems,  using  knowledge-based 
+
+that  there  is  an  obstacle 
+
+in  front  of  it. 
+
+in  distributed 
+
+3.2.  Knowledge  complexity 
+
+We  now  wish  to  define  a  formal  concept  of  informational 
+
+the  amount  of  knowledge  an  agent  must  attain  in  order  to  perform 
+
+complexity  of  a  task  that  can 
+the 
+the  type  of  statement  we  want  to  make  is  that  an  agent  must  eventually 
+the  task. 
+that  to  perform  coordinated  attack,  the  agents 
+to  eventually  have  common  knowledge  of  the  fact  that  at  least  one  message  was 
+
+to  know  a  certain 
+in 
+
+fact  (or  one  of  a  set  of  facts) 
+
+[ 111, it  was  shown 
+
+in  order  to  perform 
+
+serve  to  quantify 
+task.  Typically, 
+come 
+For  example, 
+needed 
+delivered. 
+
+R.I.  Brafman  et  al. /Artijicial  Intelligence  98  (1998)  317-349 
+
+329 
+
+the 
+
+introduction 
+from 
+i.s  to  move  an  object 
+
+that  we  are  interested 
+Recall 
+the  goal 
+from  some 
+tion.  We  hope  to  find  a  set  of  propositional 
+scribing 
+every  step, 
+itively,  moving 
+goal. 
+
+from  one  set  of  configurations 
+
+sets  of  configurations 
+
+the  task  can  be  performed  by  an  SKBP 
+
+formulas 
+
+then 
+
+initial  configuration 
+
+in  manipulation  tasks,  where 
+to  a  goal  configura- 
+
+that  can  be  thought  of  as  de- 
+at 
+tests.  Intu- 
+to  its 
+
+that  uses 
+to  another  gets  the  agent  closer 
+
+these 
+
+such  that,  if  the  agent  knows  one  of  these  formulas 
+
+Keeping 
+appropriate 
+
+these 
+intuitions 
+for  manipulation 
+
+in  mind,  we  define  a  notion  of  informational 
+
+upper  bound 
+
+tasks. 
+
+. . , c,& are  propositional 
+
+Definition  3.6.  If  41,. 
+an  upper  bound  on  the  knowledge  complexity  of  a  task  Task,  or  just 
+0({(01,..., 
+forms  Task. 
+
+formulas,  we  say  that  { ~$1, . . . , C#Q} is 
+that  Task  is 
+. . , Kq~k that  per- 
+
+ppk}),  if  there  exists  an  SKBP  Pg  with  conditions  &I,. 
+
+that, 
+
+ones) 
+
+assuming 
+
+interested 
+
+that  there 
+
+is  a  fixed 
+
+interpretation. 
+
+the  non-good 
+
+This  definition 
+
+in- 
+to  in- 
+it 
+
+space  E,  and  we  are  restricting 
+
+that  we  require  all  the  implementations 
+
+attention 
+should  also  make 
+
+in  this  definition,  we  are  implicitly 
+
+r  on  the  configuration 
+systems  Z  that  use  this 
+
+Notice 
+terpretation 
+terpreted 
+clear  why  we  are  particularly 
+based  program.  Suppose 
+cluding 
+are  tautologies, 
+at  any  state.  This  agent  will  have  an  implementation 
+tion 
+of  this  execution  will  not  be  in  Task,  and  under 
+not  perform  Task.  To  avoid 
+doing 
+ments 
+state. 
+
+so,  we  are,  in  fact,  saying 
+for  its  execution: 
+
+there  will  be  an  agent 
+
+in  wihich  it  constantly 
+
+some  of  the  conditions 
+
+in  good  implementations 
+
+of  a  knowledge- 
+of  an  SKBP  Pg  (in- 
+in  Pg 
+that  does  not  know  any  of  the  tests  of  Pg 
+‘P  of  Pg  which  has  an  execu- 
+the  projection 
+Pg  would 
+By 
+require- 
+at  each 
+
+transition.  Typically, 
+the  stronger  definition, 
+
+to  good  implementations. 
+
+that  an  SKBP  comes  with  some  minimal 
+conditions 
+
+to  know  one  of  its  knowledge 
+
+to  perform  Task.  Unless 
+
+this  problem,  we  restrict 
+
+the  identity 
+
+the  ability 
+
+performs 
+
+Of  course, 
+
+if  we  are  to  use  sets  of  (propositional) 
+
+formulas  as  a  measure  of  knowledge 
+
+complexiry-,  we  must  define  an  ordering  on  such  sets, 
+information 
+characterized 
+
+by  one  set  is  more  difficult 
+
+by  another  set. 
+
+characterized 
+
+to  allow  us  to  say  when 
+to  attain 
+
+the  information 
+
+than 
+
+the 
+
+Definition  3.7.  Given  a  configuration 
+mulas,  we  say  that  B  dominates  A  (with  respect 
+formula 
+
+(I/ E  B,  there  is  a  formula  4  E  A  such  that  & k  $  +  4. 
+
+space  E,  and  sets  A  and  B  of  propositional 
+
+for- 
+to  E),  and  write  A  5~  B,  if  for  every 
+
+Notice 
+
+that  if  A  5~  B,  then  for  every  formula  cc/ E  B,  there  is  a  formula  4  E  A  such 
+that  knowing  JI  implies  knowing  4.  It  is  easy  to  see  that  3~  defines  a  partial  order  (that 
+is,  a  reflexive, 
+result  shows, 
+relation) 
+this  ordering  does  capture  a  reasonable  notion  of  hardness. 
+
+on  sets  of  formulas.  As  the  following 
+
+transitive 
+
+Proposition 
+
+3.8. 
+
+If  A  5~  B,  Task is  O(A),  and  & k  VdEB  4,  then  Task  is  O(B). 
+
+330 
+
+R.I.  Brajimn  et  al. /Artificial 
+
+Intelligence  9% (1998)  317-349 
+
+that  performs  Task.  Since  A  5~  B,  for  each  condition 
+
+there  is  an  SKBP  Pg  with  appropriate  knowledge 
+spi  E  A  in  this 
+implies  cp.  As  we  show 
+in  Pg  by  @f(i)  performs 
+to  ensure 
+
+each  vi 
+that  E  b  VdEB  4  suffices 
+
+ef(i)  E  B  such 
+
+that  there 
+
+that  $ 
+
+is  a 
+
+there 
+
+if  Task  is  O(A), 
+
+Proof.  Intuitively, 
+conditions 
+SKBP 
+is  a  stronger  condition 
+in  Appendix  A,  the  SKBP  obtained  by  replacing 
+the  requirement 
+Task.  Moreover, 
+good  implementation 
+can  be  weakened, 
+something 
+A  5~  false,  but  there  is  no  good  implementation 
+See  Appendix  A  for  further  details. 
+
+0 
+
+of  some  SKBP  Pg  that  performs  Task.  Although 
+
+this  requirement 
+
+like  it  is  necessary.  For  example, 
+
+to  see  that 
+of  a  protocol  whose  only  test  is  Kfalse. 
+
+it  is  easy 
+
+in 
+
+in 
+
+and 
+
+to  which 
+
+it  is  easy 
+
+is  O({lg,g}): 
+
+if  he  knows 
+
+[3,  lo].  Clearly 
+
+[0,4]  U  [6,  lo] 
+
+and  moves  arm2 
+
+let  42  denote  being 
+
+the  agent  moves  arm1 
+
+is  in  charge  of  a  two-armed 
+
+SKBP  {(K~g,Move(armi)), 
+lg 
+
+to  verify 
+(K&,  Move(arm2) 
+to  the  two  we  have  just  presented.  Let  4;  denote  being 
+
+Example  3.9.  Consider  Examples  1.1 (a)  and  1.1 (b)  again.  Recall  that  in  both  variants 
+robot,  which  must  switch  between  hori- 
+a  central  controller 
+[ 3,7]  x  {Bin}.  It  is  easy 
+zontal  and  vertical  motions  when  the  object  is  in  the  goal  region 
+to  see  that  %Yk,,b 
+(Kg,Move(armz))}, 
+according 
+if  he 
+knows  g,  performs  Task,b.  However,  we  can  get  a  better  bound.  Let  41  denote  be- 
+3~ 
+ing 
+{-g,  g}.  Moreover, 
+{ (Kqb,,  Move(armt)), 
+Task,b, 
+incomparable 
+It  is  easy  to  see  that  (4:  ,42}  is  incomparable 
+it 
+to  {4i,42} 
+that  the  SKBP  {(Kg’,  , Move(  arm,)  ) , (K&,  Move(  arm;?)  )}  also 
+is  not  hard 
+performs  Task,.,+  For  suppose 
+of 
+this  SKBP  from  { (0,  Table)}.  Let  r  be  a  run  of  Z  =  Z[  { (0,  Table)},  A, P]. Consider 
+that  there  must  be  such  a  time,  since  A 
+the  first  time  m  that  1,  r,  m  k  KC,&. Notice 
+then  A must  eventually 
+performs  Move(armi) 
+that 
+reach  position  7,  at  which  point  K41  cannot  hold,  contradicting 
+our  assumption 
+P 
+the 
+configuration  must  be  in  [ 3,7].  Hence,  when  the  agent  performs  Move(  arm,), 
+it  gets 
+into  the  goal  region. 
+
+that  protocol  P  for  agent  A  is  a  good  implementation 
+
+the  following  SKBP  performs  Task& 
+
+until  K&  holds.  If  K&  never  holds, 
+
+is  yet  another  upper  bound 
+
+that 
+)}.  There 
+
+and  {g,  Tg}.  Moreover, 
+
+that  at  the  point 
+
+implementation. 
+
+Our  argument 
+
+also  shows 
+
+is  a  good 
+
+in  [ 0,6]. 
+
+to  show 
+
+(I,  m), 
+
+{$i,&} 
+
+for 
+
+We  can  define  a  notion  of  lower  bound 
+
+that  corresponds 
+
+to  our  notion  of  upper 
+
+bound. 
+
+Definition  3.10.  We  say  that  the  set  A  of  propositional 
+the  K-complexity 
+Task  is  O(B),  we  have  that  A  5~  B. 
+
+of  Task,  or  Task  is  a(  A), 
+
+is  a  lower  bound  on 
+if,  for  every  set  of  formulas  B  such  that 
+
+formulas 
+
+Notice 
+
+that  {true} 
+
+is  a  lower  bound  for  the  K-complexity 
+
+lower  bound  does  not  give  much 
+bound 
+For  example,  we  can  show  that  Task,.,b  has  no  tight  bound. 
+
+that  is  also  an  upper  bound.  Unfortunately, 
+
+Ideally,  we  would 
+
+insight. 
+
+it  seems  difficult 
+
+of  any  task.  Obviously, 
+this 
+like  a  right  bound:  a  lower 
+to  get  tight  bounds. 
+
+Proposition  3.11.  There  is  no  set  A  of  primitive  propositions 
+and  O(A). 
+
+such  that  Task,,b  is  0  (A) 
+
+R.I.  Brafian 
+
+et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+331 
+
+i%sk,b  is  Q(A) 
+
+and  O(A).  Then  A  5~  (41,  ~$2) and  A  5~  {#,  42). 
+Proof.  Suppose 
+formulas  $1  and  JI,’ such  that  E  b  41  +  #I  and  E  +  q5’, +  #,‘. 
+Thus,  A  must  contain 
+there  must  be  an  SKBP  Pg  that  performs  TLHk,b  and  has 
+Since  Task,.,b  is  O(A), 
+the  pair 
+conditions  K&  and  KJ/i.  Clearly,  neither 
+that  has  perfect 
+( KI/~, Move(arm2)) 
+for  this  agent,  both 
+sensors, 
+KJll  and  K+,’  hold  in  the  initial  position,  where 
+is  clearly 
+inappropriate.  Thus,  both  (Kti~,  Move(armt)  > and  ( KI&, Move(arm1))  must  be  in  Pg. 
+But  since  $1  V  qh{  holds  in  every  location,  so  does  fit  V J&.  Thus,  the  agent  with  perfect 
+sensors  always  performs 
+to  Pg,  so  Pg  does  not 
+perform  Tuskrob.  0 
+
+can  be  in  Pg.  To  see  this,  consider 
+
+and  knows  exactly  what 
+
+the  transition  Move(arm2) 
+
+the  transition  Move(armi) 
+
+it  is  in.  In  particular, 
+
+(Kq+,  Move(armz)) 
+
+according 
+
+an  agent 
+
+the  pair 
+
+location 
+
+nor 
+
+(nontrivial) 
+
+Although  we  cannot  provide  a  tight  bound  for  TaskrOb, we  might  still  hope  to  provide 
+this  can  be  done,  we  have  found  it  more  useful 
+intuition  of  the 
+to  our  original 
+
+useful 
+to  use  a  different  notion  of  lower  bound, 
+agent  eventually  needing 
+
+to  know  one  of  a  collection  of  facts. 
+
+lower  bounds.  While 
+
+that  is  closer 
+
+Definition  3.12.  We  say  that  {cpi, . . . , qok) is  a  weak  lower  bound  on  the  K-complexity 
+of  Tusk, OB Tusk is  fl,  ( { ~1,  . . . , ppk}) , if,  for  every  I  fe-consistent  with  Tusk, every  agent 
+A, every  protocol  P  for  A that  performs  Tusk from  I,  and  every  run  r  in  Z[  I,  A, P]  , 
+there  exists  some  time  m  such  that  Z[Z,d,P], r,m  b  Kq51 V  ...  V  K&,. 
+
+We  can  use  this  notion  of  lower  bound 
+
+to  prove  that  the  controller 
+
+in  Example 
+
+l.lb 
+
+cannot  perform  Tusk,b. 
+
+Theorem  3.13.  TuskrOt, is  C&,((g)). 
+
+time  m  such 
+It  follows 
+
+Proof.  Suppose 
+Let  r  be  a  run  in  27 =  Z[  { (0,  Table)},  A, PI. Since  proj,,,Bg  (r) 
+be  some 
+that  proj,,,,(r, 
+such  time. 
+that  at  the  point 
+Move(  arm2).  We  claim 
+some  point 
+Since  proj[Oocar( r, mo -  1)  =  projl,,r( 
+action  at  the  points 
+not  in  %sk,b,  a  contradiction. 
+
+that  P  is  a protocol  for  agent  A that  performs  Task,b  from  { (0,  Table) }. 
+is  in  TuskrOb, there  must 
+m)  E  [3,7]  x  {Bin}.  Let  mo  be  the  earliest 
+(r,  mo -  1 ),  agent  A must  perform 
+the  action 
+there  must  be 
+m’)  and  1,  r’,  m’  b  lg. 
+the  same 
+that  r’  is 
+
+that  the  agent  performs 
+(r,  mo -  1)  and  (r’,  m’),  namely,  Move(  arm2).  It  follows 
+
+that  Z,  r,  me  -  1  /=  Kg.  For  suppose  not.  Then 
+
+(r’,  m’)  such  that  projlOcal(r,  mo  -  1)  =  projl,,l(r’, 
+
+r’,  m’),  it  follows 
+
+0 
+
+Corollary  3.14.  The  controller  in  Example  1.1 (b)  cannot  perJorm  i%sk,,b. 
+
+is  a  protocol 
+
+for  the  controller 
+from  { (0,  Table) }.  Since  the  controller’s  error  bound 
+
+Proof.  Suppose  P 
+i%sk,b  starting 
+could  be  any  one  of  0,.  . . ,4  while  it  is  in  the  initial  configuration 
+must  perform 
+must  have  P(  0)  =  . . . =  P(4)  =  Move(  armi). 
+
+that  performs 
+is  4,  its  local  state 
+(0,  Table).  It  clearly 
+thus  we 
+that  there  is  a  run  r  of  P  in 
+
+it  is  in  the  initial  configuration, 
+
+the  action  Move(armi) 
+
+of  Example 
+
+It  follows 
+
+1.1 (b) 
+
+when 
+
+332 
+
+R.I.  Braftnan  et  al. /Arti~ial 
+
+Intelligence  98  (1998)  317-349 
+
+(8,  Table)  while  its  local  state  is  always 
+
+which  the  agent  reaches 
+cannot  hold  at  any  point  in  r:  it  cannot  hold  up  to  the  time  the  agent  reaches 
+since 
+reaches 
+not  perform  Task,b.  (cid:144)i 
+
+in  [ 0,4].  Clearly,  Kg 
+(8,  Table), 
+It  also  cannot  hold  after  the  agent 
+from  Theorem  3.13  that  P  does 
+
+(8,  Table),  since  g  does  not  hold.  It  follows 
+
+it  does  not  hold  in  any  local  state  in  [0,4]. 
+
+that 
+
+in  the  proof  of  the  corollary 
+
+Actually,  we  can  prove  Corollary  3.14  without  appealing 
+r  constructed 
+
+to  Theorem  3.13.  We  simply 
+in  Task,b. 
+is  not 
+observe 
+the  run 
+cannot 
+However,  we  feel  that  the  appeal 
+it  to  gain  the  appropriate 
+perform  Taskrob: its  sensing  capability 
+knowledge.  A  similar  argument 
+to  show  that  a  controller  with  an  error 
+bound  of  3  also  cannot  perform  Task,b.  However,  a  controller  with  an  error  bound 
+the  SKBP  with  tests  for  4’,  and  $2 
+of  2  can  perform  TaskrOb, since 
+discussed 
+
+to  Theorem  3.13  explains  why  this  controller 
+
+is  too  weak  to  allow 
+
+in  Example  3.9. 
+
+it  can  implement 
+
+can  be  used 
+
+3.3,  Knowledge  capability 
+
+Having  defined 
+
+the  notions  of  upper  and  lower  bounds  on  the  K-complexity 
+
+of  a  task, 
+
+we  turn  to  the  capabilities 
+
+of  an  agent. 
+
+Definition  3.15.  Let  A  =  (~$1, . . . , q5k) be  a  set  of  propositional 
+K-capable  of  A  with  respect 
+
+to  initial  global  states  I  if  2[  I,  A] k Kql  V  . .  .  V  Kqk. 
+
+formulas.  Agent  A is 
+
+That  is,  an  agent  is  K-capable  of  {pi,. 
+
+the  same  one.  Notice 
+in  different 
+
+. . , rpk}  if  it  always  knows  one  of  vi,. 
+that  this  does  not  imply 
+
+. . , qk, 
+that  the  agent 
+run.  It 
+it  will  know  97,  and  forget 
+
+runs  or  in  different  points  along  a  single 
+
+then,  after  performing 
+
+some  action, 
+
+although  not  necessarily 
+has  the  same  knowledge 
+may  know  ~4  initially, 
+about  94. 
+
+This  definition 
+
+embodies 
+
+the  notion 
+
+that  sensing 
+to  know  one  of  several 
+
+in  location  4  will  yield  knowledge  of  one  of  the  following 
+
+is  between  2  and  4”,  “the  location 
+
+to  guarantee 
+that  it  will  come 
+in  particular.  For  example,  given  a  position 
+
+be  able 
+of  them 
+position  when 
+“the  location 
+is  between  4  and  6”.  Yet,  knowledge  of  any  one  particular 
+Notice 
+that  K-capability, 
+notion  of  weak  lower  bound) 
+point 
+systems  of  the  form  Z[I,  d,P]. But  this  difference 
+following 
+
+requires 
+this  requirement 
+
+in  the  system.  However, 
+
+lemma  shows. 
+
+the  agent 
+
+sensor  with  fl 
+
+is  nondeterministic. 
+
+The  robot  may 
+facts,  but  not  any  one 
+the 
+error,  sensing 
+three  facts: 
+is  between  3  and  5”,  and  “the  location 
+is  not  guaranteed. 
+(and  unlike 
+the 
+. . , qbk at  every 
+to  know  one  of  41,. 
+is  made  for  the  system  Z[Z,  A], not 
+one,  as  the 
+
+is  not  a  significant 
+
+statement 
+
+like  our  notions  of  upper  and  lower  bound 
+
+Lemma  3.16.  Let  ~$1, . . . , +k  be  propositional  formulas.  Then  z[  I, A] k Kqol V  . .  .  V 
+Kqk  ifSIL[Z,d,F]  b  Kspl V-.. 
+
+V  &ok  for  every  protocol  P  for  agent  A 
+
+Proof.  See  Appendix  A. 
+
+0 
+
+R.I.  Brafmn  et  al. /Artijicial  Intelligence  98  (1998)  317-349 
+
+333 
+
+We  could  have  also  defined  a  notion  of  K-capability  with  respect 
+
+protocol  Z’,  but  this  does  not  seem  to  be  quite  so  useful  a  notion.  The  following 
+illustrates  how  we  intend 
+
+to  use  K-capability. 
+
+to  I  and  P,  for  a 
+result 
+
+Theorem  3.17.  If  Tusk =  O( {PI,. 
+respect  to  I,  where  I  is  to-consistent  with Task, then  A can  perjorm  Task from  I. 
+
+. . , spk}),  and  A is K-capable  of  {qq,  . . . , tpk}  with 
+
+Proof.  If  ‘7&k =  O( { cp~, . . . , pk}) 
+then  there  exists  an  SKIP  Pg  with  knowledge  condi- 
+tions  Kqq : . . . , Kqk  that  performs  Tusk. It  follows  from  Lemma  A.1  (see  Appendix  A) 
+from  I.  Since  Pg  performs  Task and  I  is  to-consistent 
+that  Pg  ha.3 a  good  implementation 
+with  Task,  by  definition, 
+of  Pg  from  I  performs  Task.  This 
+implies 
+
+that  A can  perform  Task.  0 
+
+any  good  implementation 
+
+Theorem  3.17  suggests  a  useful  methodology 
+task: 
+
+a  particular 
+
+perform 
+
+O({%..V 
+we  can  conclude 
+
+If  we  are  able 
+qk}),  and  that  agent  A is  K-capable  of  (91,. 
+that  A can  perform  Tusk from  I. 
+
+to  show 
+
+for  determining  whether  an  agent  can 
+of  Tusk  is 
+. . , pk}  with  respect  to  I,  then 
+
+that  the  K-complexity 
+
+i3.18.  We  return 
+
+Example 
+is  0(  {g,  q)}),  where  cp denotes  being 
+I .la,  can  perform 
+Example 
+with  respect 
+possible 
+conclude 
+
+readings  are  2,3,4, 
+that  this  controller 
+
+to  ((0,  Table)}.  This 
+
+to  the  scenario  of  Example  1.1.  We  have  seen  that  Tusk,,b 
+[ 1,4]  U  [6,  lo].  To  show  that  controller  of 
+to  show  that  it  is  K-capable  of  {g,  up} 
+in  position  3,  its 
+it  know  9.  We 
+
+is  easily  verified.  For  example, 
+
+it  know  g  or  makes 
+
+this  task,  it  suffices 
+
+each  of  which  makes 
+can  perform  %sk,b. 
+
+in 
+
+On  the  other  hand, 
+
+the  controller  of  Example 
+
+l.lb,  whose  error  bound 
+
+seen  not  to  be  K-capable  of  {g,  (p}.  For  example,  a  reading  of  5  can  be  obtained 
+anywhere  within 
+does  not  imply 
+shows, 
+
+[ 1,9],  and  this  region  is  contained  neither 
+
+cannot  perform  Task,,b  (although, 
+
+that  the  controller 
+
+in  .fact  it  cannot). 
+
+in  g  nor  in  4.  However, 
+
+Cl 
+
+is  4,  is  easily 
+from 
+this 
+as  Corollary  3.14 
+
+We  end  this  section  with  a  result 
+
+that  complements  Theorem  3.17,  and  shows  that  if 
+. . , qk},  there  is  an 
+
+a  task  can  be  performed  by  every  agent  that  is  K-capable  of  {VI,. 
+SKIP 
+
+for  this  task  with  conditions 
+
+{Kqq  , . . . , Kqk}. 
+
+Theorem  3.19.  Suppose  that  ( 1)  for  all  I  to-consistent  with Task,  if  A  is  K-capable 
+of  {‘PI 7..  . , pk}  with  respect  to  I,  then  A can  pelform  Task from  I,  and  that  (2) 
+some  agent  is  K-capable  of  (~1, . . . , qk}  from  some  Z  to-consistent  with  Task.  Then 
+%sk=O(~[qq,...,cpk}). 
+
+Proof.  The  idea  is  to  identify  one  particular  agent  A that  is  K-capable  of  (4~1, . . . , pk}. 
+this  agent  knows  one  of  { ~1,  . . . , pk}  at  each  local  state,  and  no  more  than 
+In  a  sense, 
+that  performs  Tusk. We 
+that.  We  use  the  protocol  of  this  agent 
+is  identical 
+can  then  show  that  any  execution  of  a  good  implementation 
+to  some  execution  of  d’s  protocol 
+(when  projected 
+(which  we  know  performs 
+in  Appendix  A. 
+Tusk).  The  details  can  be  found 
+
+to  construct  an  SKBP 
+
+of  this  SKBP 
+
+to  E) 
+
+0 
+
+334 
+
+R.I.  Brafman  et  al. /Artijicial 
+
+Intelligence  98  (I 998)  317-349 
+
+4.  Control  variables  and  learning 
+
+The  concepts  developed 
+the  analysis  of  information 
+to  the  flexibility 
+( 1)  adding 
+knowledge 
+
+flexibility 
+attainment 
+
+in  the  previous 
+aspects  of  tasks.  There  are  a  number  of  extensions 
+
+the  core  of  an  approach 
+
+to 
+that  add 
+
+sections 
+
+form 
+
+and  power  of  this  approach.  Here,  we  examine 
+
+two  such  extensions: 
+the  use  of  control  variables  and  (2)  relaxing 
+
+to  SKBPs 
+requirements 
+
+through 
+
+to  allow  for  learning. 
+
+4.1.  Using  control  variables 
+
+Suppose 
+
+that  I  want  to  paint  my  wall  green,  but  I  have  at  my  disposal  only  blue  and 
+I  should  first  paint  the  wall  blue,  and  then  paint  it  yellow.  That 
+
+yellow  paint.  Intuitively, 
+is,  we  should  execute  a  program 
+
+like 
+
+while  K(wal1 
+
+is  not  blue)  apply  blue  paint; 
+
+while  K(wal1 
+
+is  not  green)  apply  yellow  paint. 
+
+know,  constructs 
+
+(although  most  programmers 
+
+such  as  while  and  sequential 
+
+this  is  not  an  SKBP.  Nor  is  there  any  obvious  way  to  implement 
+
+control  embodied  by  this  program  using  SKBPs  as  we  have  defined 
+
+the 
+them. 
+are 
+using  a  number  of  control  variables,  or  program  counters,  which 
+
+Unfortunately, 
+sequential 
+As  most  programmers 
+often 
+implemented 
+control  program  execution 
+concerned  with  the  implementation 
+based  programs  do  not  support  such  convenient 
+our  insistence 
+on  control  variables 
+does  not  depend  on  the  configuration.  Moreover,  an  SKBP  cannot  perform 
+the  value  of  a  control  variable,  because  such  an  action 
+of  setting 
+This  renders  SKBPs 
+to  describe  constructs 
+execution. 
+
+should  not  be!- 
+form,  skeletal  knowledge- 
+and  natural  constructs.  This  stems  from 
+function  depend  only  on  the  configuration.  No  tests 
+the  value  of  a  control  variable 
+the  action 
+is  not  a  transition. 
+such  as  sequential 
+
+in  the  SKBP,  because 
+
+that  the  interpretation 
+
+In  their  present 
+
+in  their  ability 
+
+can  appear 
+
+are  not-and 
+
+execution 
+
+details). 
+
+limited 
+
+to  allow 
+
+There  are  several  solutions 
+
+control  bits.  An  SKBP  extended 
+
+tests  on  the  values  of  the  control  bits,  and  actions 
+
+for  this  problem.  One  approach,  which  we  formalize  here, 
+to  allow  control  bits  would 
+is  to  allow  for  additional 
+the 
+also  need 
+take 
+counters 
+allow 
+value  of  the  bits.  We  could  similarly 
+arbitrary  nonnegative 
+tests  on  the  value  of 
+integer  values,  not  just  the  values  0  and  l), 
+the  program  counter,  and  increment  and  decrement  operations.  Additional  data  structures 
+could  also  be  allowed;  whatever  choice  is  made,  it  is  important 
+the  additional 
+tests  and  actions 
+
+that  change 
+could 
+
+that  are  allowed. 
+
+to  specify 
+
+(program) 
+
+(which 
+
+We  can  easily  describe 
+
+Boolean  variable)  b,  which  we  assume 
+simply  be 
+
+the  program  above  using  an  SKBP  with  one  control  bit  (i.e., 
+it  would 
+
+is  initially  0  (false).  Roughly  speaking, 
+
+if  K( Tb  A  wall  is  not  blue) 
+
+then  apply  blue  paint; 
+
+if  K( lb  A  wall  is  blue) 
+
+then  b  :=  1; 
+
+if  K( b  A  wall  is  not  green) 
+
+then  apply  yellow  paint. 
+
+R.I.  Brafmn  et  al. /Artijicial  Intelligence  98  (1998)  317-349 
+
+335 
+
+We  formalize 
+
+in  which  the  local  state  of  the  agent  is  made  up  of  two  disjoint  components: 
+
+the  addition  of  control  bits  to  SKBPs  as  follows.  An  m-bit  system  is  a 
+system 
+an 
+element  of  an  arbitrary  set  L  of  local  states  (corresponding 
+to  our  standard  concept  of  a 
+local  state)  and  a  tuple  in  (0,  l}m  (describing 
+the 
+symbols,  bl , . . . , b,.  We 
+set  @ of  primitive  propositions 
+denote  this  new  set  by  Grn.  Let  L,  be  the  result  of  starting  with  Grn and  closing  off  under 
+negation,  and  knowledge.  The  proposition  bi  (for  i = 1,.  . . , m)  is  assigned 
+conjunction, 
+true  when  the  ith  bit  is  1.  The  propositions 
+state, 
+as  before. 
+
+the  values  of  the  m  bits).  We  extend 
+
+in  @ depend  only  on  the  environment 
+
+by  adding  m  new  propositional 
+
+Definition  4.1.  An  m-bit  system  is  a  system 
+the  form  {O, l}m  x  L.  An  m-bit  SKBP  is  an  SKBP  consisting 
+(Y E  L,  and  r  =  (r’,  S),  where  7’  E  A  and  S  :  2”  ----t 2m  assigns  values 
+based  on  their  old  values. 
+
+in  which  the  agent’s  set  of  local  states  has 
+of  pairs  (Kcx, 7)  where 
+to  bl,  . . . , b,, 
+
+to  generalize 
+
+“can  execute”, 
+
+It  is  now  straightforward 
+
+the  notions  of  “implementation”, 
+
+and  “can  perform  Task” to  m-bit  SKBP  There 
+
+im- 
+is  one 
+plementation”, 
+that  the  control  bits 
+minor  subtlety.  To  ensure  correct  flow  of  control,  we  must  assume 
+are  initiali:zed  when  the  execution  of  an  m-bit  protocol  commences.  We  have  arbitrarily 
+chosen  0  as  the  initial  value.  Thus,  when 
+for  an 
+SKBP  to  perform  Task, we  restrict  to  initial  global  states  in  which  the  agent’s  local  state 
+has  the  form  (0,  . . . , 0, I). 
+
+to  defining  what  it  means 
+
+it  comes 
+
+“good 
+
+Definition  4.2.  If  I  is  a  set  of  global  states,  define  Z+,  =  {(c,  ( (0,  . . . , 0)  , E) )  1 (c,  I)  E 
+I}.  The  m-bit  SKBP  Pg  pelforms  Task if  all  its  good  implementations 
+from  every  set 
+Z+,r1 to-consistent  with  Task perform  Task from  I+,,,  and  it  has  a  (good) 
+implementation 
+from  some  I+, 
+
+to-consistent  with  Task. 
+
+of  a  task  Task,  written  Task = O,(  (~1,.  . . , pk}), 
+
+Definition  4.3.  Let  (pi,.  . . , pk  E  Cc; ((~1,. . . , Q} 
+complexity 
+SKBP  Pg  with  knowledge 
+are  propositional 
+formulas 
+performs  Task. 
+
+is  an  m-bit  upper  bound  on  the  K- 
+if  there  exists  an  m-bit 
+conditions  K(q,  A PI),  . . . , K(cpk A  &),  where  pi,. 
+. . , ,& 
+that  mention  only  the  primitive  propositions  bl , . . . , b,,,  that 
+
+Notice 
+
+that  our  old  0  notation 
+
+is  equivalent 
+
+to  00.  It  is  straightforward 
+
+to  generalize 
+
+Theorem  3.17  using 
+
+the  0,  notation. 
+
+Definition  4.4.  Given 
+((0,  1)“’ x  L,Actions  x  Set,,),  where  Set,,  is  the  set  of  functions 
+
+an  agent  A  = (L  x  Actions),  define  agent  A+,,,  as  A+,,  = 
+
+from  2”’  to  2”‘. 
+
+Theorem  4.5. 
+{POP.. . , pk} 
+from  ZW. 
+
+If  Task  =  0,  ({cpo, . . . , pk})  and  A = (L,  Actions) 
+
+in  Z[ I, A] for  Z  to-consistent  with  Task,  then  d+, 
+
+is  K-capable  of 
+can  petiorm  Task 
+
+Proof.  With  slight  modification 
+of  Lemma  A.1  and  Theorem  3.17  generalize 
+
+to  accommodate 
+
+to  this  case. 
+
+0 
+
+the  m additional  control  bits,  the  proofs 
+
+336 
+
+R.I.  Brafman  et  al. /Arttjkial 
+
+Intelligence  98  (1998)  317-349 
+
+4.2.  Learning 
+
+If  Task  is  O(C$I,...,~~), 
+
+we  know 
+
+the  tests  K&, 
+
+. . . , Kc$k. Hence, 
+
+to  expect  that  we  can  build  an  agent  that  always  knows  one  of  &, 
+suppose  our  agent  must  assemble 
+
+only 
+can  perform  Task;  this  is  the  essence  of  Theorem  3.17.  In  practice,  however, 
+unreasonable 
+For  example, 
+wrench.  A  high-level  protocol 
+for  this  task  would  probably 
+location  of  this  wrench.  The  agent  may  not  always  know 
+learn 
+can  always 
+generally, 
+although 
+to  learn  one  of  these  formulas. 
+
+that  there  is  an  SKBP 
+that  performs  Task using 
+if  an  agent  always  knows  one  of  f#~, , . . . , $k,  it 
+it  may  be 
+. . . , +k. 
+some  device  which  requires  using  a 
+call  for  knowledge  of  the 
+it 
+this  location.  However, 
+the  contents  of  the  tool  box  and  the  drawer.  More 
+. . , C$k, it  may  be  able 
+
+the  agent  may  not  always  know  one  of  41,. 
+
+it  by  examining 
+
+This  example 
+
+suggests  a  useful  methodology 
+
+try  to  un- 
+of  the  task.  Then,  see  if  you  can  build  an  agent 
+
+agents:  First, 
+
+for  designing 
+
+requirements 
+
+the  knowledge 
+
+derstand 
+th:tt  can  learn  these  requirements.  Roughly,  we  say  that  an  agent  can  learn  {C$I , . . . , C$k} 
+the  agent  knowing  one  of 
+if  it  can  execute  a  learning  protocol 
+to  have  no  side 
+these  formulas.  For  technical 
+so  that  if  the  agent  begins  execution  of  the  learning  program 
+effects  on  the  environment, 
+in  configuration 
+the  configuration  may 
+in  the  same  configuration 
+change  during 
+
+the  execution  of  the  learning  program). 
+
+that  terminates  with 
+
+the  learning  program 
+
+reasons,  we  require 
+
+c,  it  ends 
+
+(although 
+
+Definition  4.6.  Agent  A  =  (L,  Actions)  can  learn  (~$1, . . . , t,bk}  in  Z[  I,  A] 
+exist  a  set  LT  2  L  and  a  protocol  P  for  A such  that  for  all  runs  r  of  P, 
+some  m  E  N  such  that 
+(1)  proj,,,,,(r(m)) 
+(2)  projl,,,r(r(m)) 
+(3)  Z[I,dl,r,m  +  K&  V-.*V&bk; 
+(4) 
+
+for  all  m’  <  m,  we  have  that  projlOcaI( r(  m’)  )  $  LT. 
+
+=  projCO,fig(r(0)); 
+E  &-; 
+
+if  there 
+there  exists 
+
+Let  P( c, Z) = {(c, I’)  1 1’ E LT  and  there  exists  a  run  r  of  P  and  time  m  such  that 
+r(m)  =  (c,Z’),  and  for  all  m’  <  m  we  have  proj,O,,(r(m’)) 
+r(0)  =  (c,l), 
+
+$  LT}. 
+
+Hence, 
+
+in  order  to  be  able  to  learn  ($1,  . . . , +k}  in  Z[  I,  A],  agent  A needs  a  learning 
+
+program  P  and  a  termination 
+
+condition 
+
+such  that 
+
+( 1)  any  execution  of  P  eventually 
+(2)  upon  termination  A  knows  one  of  (#I,. 
+
+terminates, 
+
+to  its  initial  configuration. 
+
+and 
+
+. . , #k}  and  the  environment 
+
+is  restored 
+
+this  is  not  always 
+
+some  goal  configuration 
+
+It  may  seem 
+agent  A can  always 
+Unfortunately, 
+reaching 
+for  performing 
+in  time,  but  if  we  employ 
+be  able 
+to  meet 
+in  terms  of  execution 
+protocol. 
+
+lengthy 
+
+the  time  constraints 
+
+that  if  knowledge  of  one  of  $1,. 
+
+learn  one  of  these  formulas, 
+
+. . , +k  suffices 
+to  perform  Task,  and 
+then  A will  be  able  to  perform  Task. 
+
+this  task  that  requires  knowledge  of  one  of  41,. 
+
+the  case.  For  example,  consider  a  task  that  requires 
+in  a  bounded  period  of  time.  We  may  have  an  SKBP 
+. . , +k  at  each  point 
+these  formulas,  we  may  not 
+the  task  is  flexible 
+the  main 
+
+to  learn 
+of  the  task.  However,  when 
+the  learning 
+
+subroutines  with 
+
+subroutines 
+
+time,  we  can  combine 
+
+R.I.  Brajhan  et  al.  /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+337 
+
+Definitiorn  4.7.  Task is  said  to  be  elastic  if  for  every  Ci  and  Cz  (where  Ct  is  a  finite 
+sequence  of  configurations 
+such  that  Ci  . CZ E  Task, it  is  the  case 
+that  Ct  . c  . Cz E  Task as  well.  (Where  c  E  I  and  .  is  the  concatenation 
+
+and  CZ is  a  C-history) 
+
+operator.) 
+
+The  following 
+
+result 
+
+illustrates 
+
+the  role  we  envision 
+
+for  learning 
+
+results.  Whereas 
+
+in 
+
+Theorem  4.5  we  showed 
+that,  under  appropriate 
+of  {PO,.  . . , cpk} can  perform  O(  (~0,  . . . , pk}) 
+can  learn  {PO,.  . . , (pk}  can  perform  such  tasks. 
+
+conditions, 
+
+tasks,  we  now  show  that  an  agent 
+
+an  agent  that  is  K-capable 
+that 
+
+Theorem  4.8.  Zf Task =  O,(  (~0,  . . . , cpk}),  Task is  elastic,  and  A  =  (L, Actions)  can 
+f or  some  to-consistent I,  then  d+cm+t)  can  petform  Task 
+learn  (90,. 
+from ~+(m+l). 
+
+in z[Ldl 
+
+. . ,e} 
+
+Intuitively,  we  show  that  A  can  perform  Task  by  behaving 
+
+it  is  K- 
+it  reaches  a  state  in  which  it  does  not  have  sufficient 
+in 
+
+subroutine.  The  details  can  be  found 
+
+as  though 
+
+learning 
+
+Proof. 
+capable  of  (90,  . . . , pk}.  Whenever 
+information, 
+Appendix  A. 
+
+it  employs  an  appropriate 
+
+0 
+
+Roughly, 
+implementation 
+
+of  the  following  SKBP: 
+
+an  agent 
+
+that  employs  a  learning 
+
+subroutine 
+
+can  be  viewed  as  running 
+
+an 
+
+case  of 
+
+if  Kq 
+
+then  q  ; 
+
+if  KCYZ then  72; 
+
+. . 
+
+if  KAY, then  r,,; 
+
+eke  learn  one  of  Kay,  . . . , Ka,; 
+
+is  a  special  class  of  SKBPs 
+
+in  which  not  all  conditions 
+
+that  negated  knowledge  conditions  play  precisely 
+
+are  positive. 
+
+In  general, 
+this  role,  acting  as  learning 
+
+This 
+we  believe 
+subroutines. 
+
+The  concepts 
+and  4.8,  suggest 
+
+introduced 
+the  following  methodology 
+
+so  far,  together  with  results  such  as  Theorems  3.17,  4.5, 
+for  task  and  agent  analysis: 
+
+the  knowledge  complexity  of  a  task; 
+( 1)  characterize 
+(2)  characterize 
+the  knowledge 
+(3)  understand  what  the  agent 
+(4)  combine 
+
+capabilities  of  the  agent; 
+is  capable  of  learning; 
+
+these  results 
+
+to  understand  whether  an  agent  can  perform 
+
+to  the  first  question  provide  necessary 
+
+insight 
+
+the  task. 
+for  the  design  of 
+
+a  particular 
+
+task.  We  illustrate 
+
+these  ideas  in  the  following 
+
+In  additio’n,  answers 
+agents  capable  of  performing 
+example. 
+
+Example  4.9.  We  examine 
+received 
+considerable 
+use  of  our  formal 
+show  that  existing  work  in  this  area,  due  to  Blum  and  Kozen 
+
+the  problem  of  maze  searching.  This  domain,  which  has 
+the 
+importantly,  we  shall 
+[ 11,  can  be  best  under- 
+
+(e.g., 
+application.  More 
+
+in  the  past 
+in  a  nontrivial 
+
+[ 1,4]  ),  allows  us  to  illustrate 
+
+language 
+
+attention 
+
+338 
+
+R.I.  Brafman  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+Fig.  2.  A  maze. 
+
+the  above  methodology.  This  perspective  was  not  explicitly 
+
+to  adopt  such  an  information-analytic 
+
+a  knowledge-complexity 
+
+stood  as  performing 
+within 
+work.  The  first  author 
+Kozen’s  results  was  Donald 
+This  work, 
+ogy,  based  on  the  concept  of  knowledge, 
+analysis, 
+
+[7], 
+led  us  to  attempt 
+
+in  turn, 
+
+analysis  of  this  domain 
+
+in  the  context  of  his  theory  of  information 
+
+to  provide  a  general 
+for  capturing 
+
+such 
+
+that  naturally 
+fits 
+taken  by  the  original 
+perspective  of  Blum  and 
+invariants. 
+and  methodol- 
+complexity 
+
+information 
+
+language 
+
+two-dimensional, 
+
+A  maze  is  a  finite, 
+
+obstructed  checkerboard 
+
+(see  Fig.  2).  To  search 
+a  maze,  a  robot,  started  on  any  cell,  must  eventually  visit  every  reachable  cell  without 
+through  any  of  the  obstacles.  At  each  time  step,  the  robot  can  move  one  unit 
+passing 
+in  any  one  of  the  directions  north,  east,  south,  or  west,  as  long  as  the  target  cell 
+is 
+search 
+not  part  of  an  obstacle.  Budach 
+all  mazes.  Later,  Blum  and  Kozen  showed 
+robots  can  search  all 
+robot  with  a  counter  can  search  all  mazes  as  well.  We  shall 
+mazes,  and  that  a  single 
+show  that  Blum  and  Kozen’s  work  can  be  interpreted 
+the  knowledge 
+complexity  of  maze-searching 
+agents. 
+
+for  agents  and  the  knowledge  capabilities  of  a  number  of 
+
+that  two  finite-state 
+
+that  a  finite-state 
+
+as  characterizing 
+
+[4]  has  shown 
+
+robot  cannot 
+
+In  this  domain, 
+
+the  configuration 
+
+space  consists  of  pairs  of  the  form 
+
+(maze,  non-obstructed 
+
+cell  of  that  particular  maze). 
+
+Each  such  state  can  be  a  possible 
+in  any  maze.  The  physical  capabilities 
+non-obstructed 
+
+cell  to  its  immediate  north,  east,  south,  or  west. 
+
+initial 
+
+state, 
+
+of  the  robot  are  such  that  it  can  move 
+
+i.e.,  the  robot  may  start  at  any  cell 
+to  any 
+
+The  task  description 
+
+corresponds 
+
+to  the  set  of  trajectories 
+
+in  which  all  non-obstructed 
+
+cells  within 
+some  random 
+this  is  an  elastic 
+
+task. 
+
+the  maze  are  visited.  That  is,  the  robot  is  thrown 
+finite  maze  and  must  visit  all  non-obstructed 
+
+into  some  random  cell  in 
+cells  in  this  maze.  Clearly, 
+
+R. I.  hnfman 
+
+et  al. /Art$cial 
+
+Intelligence  98  (1998)  317-349 
+
+339 
+
+Fig.  3.  GREEN  and  Green. 
+
+cell 
+
+Assume 
+
+that  the  language  contains 
+
+is  obstructed.  A  state  satisfies 
+
+the  following  propositions:  b-north,  b-east,  b-south, 
+b-west,  Green,  and  GREEN.  A  state  satisfies  b-north,  b-east,  b-south,  or  b-west  when 
+the  proposition 
+the  adjacent  north/east/south/west 
+Green  when  one  or  more  of  the  four  vertices  of  the  cell  is  green.  A  vertex  is  green  if  it 
+(x0,  ya)  of  some  boundary  BDRY  (i.e.,  either  the  boundary  of  the 
+is  the  unique  point 
+whole  maze  or  the  boundary  of  one  of  the  obstacles) 
+such  that  for  all  (x,  y)  E  BDRY, 
+[ y.  <  y  clr  (ya  =  y  &  x0  <  x)  1. In  particular, 
+if  this  unique  point  lies  at  the  southwest 
+corner  of  the  cell,  GREEN 
+Blum  and  Kozen  prove 
+the  value  of  the  propositions 
+mazes.  What 
+proved. 
+
+that  always  knows 
+b-north,  b-east,  b-south,  and  b-west  can  search  all  finite 
+is 
+
+is  satisfied 
+that  a  robot  with  an  infinite 
+
+from  our  perspective 
+
+is  the  manner 
+
+(see  Fig.  3). 
+
+is  interesting 
+
+this  result 
+
+in  which 
+
+counter 
+
+First,  we  can  conclude 
+
+from  Blum  and  Kozen’s  work  that  maze  searching 
+
+is 
+
+03  (CON(  {GREEN,  Green,  b-north,  b-east,  b-south,  b-west}), 
+
+where  CtrN(  (EY~, . . . , ok))  consists  of  all  the  formulas  of  the  form  pr  A.  . . A &,  where 
+pi  is  either  cy; or  -LYE. That  is,  any  robot  that  always  knows  the  value  of  the  propositions 
+GREEN,  Green,  b-north,  b-east,  b-south,  b-west  can  search  all  finite  mazes.  In  fact,  Blum 
+the  only 
+and  Kozen  provide  a  conditional 
+plan  for  searching  all  finite  mazes 
+conditions 
+to  the  value  of  these  propositions.  Control  of  execution  of  this  plan 
+requires  no  more  than  three  extra  bits. 
+
+in  which 
+
+refer 
+
+Blum  and  Kozen  also  show  that  an  agent  with  an  infinite  counter 
+b-north,  b-east,  b-south,  b-west  can 
+
+that  always  knows 
+the  value  of 
+learn 
+these  results  can  be 
+to  Theorem  4.8  to  show  that  such  a  robot  can  search  all 
+
+is  an  elastic 
+
+the  value  of  the  propositions 
+Green  and  GREEN.  Because  maze  searching 
+combined 
+finite  mazes. 
+
+in  a  manner 
+
+similar 
+
+task, 
+
+340 
+
+R.I.  Brafinan  et  al.  /Artificial 
+
+Intelligence 
+
+98  (1998)  317-349 
+
+5.  Related  work 
+
+We  have  attempted  here  to  unify  work  on  knowledge 
+
+systems  community  with  work  on  information 
+
+earlier,  we  were  particularly 
+
+systems 
+in  the 
+in  the  robotics 
+by  the  earlier 
+[9]  on  the  robotics  side,  and  the  work  of  Fagin  et 
+the  connection  between  our 
+
+in  multi-agent 
+and  sensing 
+influenced 
+
+systems  side.  We  briefly  discuss 
+
+distributed 
+community.  As  we  mentioned 
+work  of  Donald 
+al.  [lo]  on  the  distributed 
+results  and  related  work  in  this  section. 
+
+[7]  and  Erdmann 
+
+5. I  Erdmann  ‘s abstract  sensors 
+
+In  [ 91,  Erdmann  argues  that  the  role  of  sensors 
+
+choose  “good”  actions,  and  that  they  should  be  constructed 
+is  good  if  it  makes  progress 
+measure.  Hence,  given  a  progress  measure,  we  can  assess  the  sensing 
+a  task  by  examining  which  actions  make  progress 
+we  can  obtain  a  progress  measure 
+
+for  a  task  from  an  algorithm 
+
+the  goal  state  according 
+
+towards  attaining 
+
+in  which  states.  Erdmann 
+
+for  that  task. 
+
+information 
+
+to 
+to  fulfill  this  task.  An  action 
+to  some  progress 
+of 
+requirements 
+shows  how 
+
+is  to  provide  sufficient 
+
+Erdmann’s  description  of  sensors 
+
+between.  Formulas, 
+they  hold.  An  abstract  sensor 
+
+can  distinguish 
+in  which 
+some  set  S.  This 
+states  in  which  5p holds  then  we  can  say  that,  given  the  sensor  reading, 
+(p. Hence,  we  see  that  the  semantics  of  Erdmann’s  abstract  sensors 
+the  semantics  of  knowledge. 
+
+is  abstract,  given  in  terms  of  the  sets  of  states  they 
+in  terms  of  the  set  of  states 
+too,  are  given  semantics 
+that  tells  the  agent  that  it  is  within 
+captured  by  our  concept  of  knowledge:  if  S  is  the  set  of 
+the  agent  knows 
+to 
+
+is  a  sensor 
+
+is  naturally 
+
+is  closely 
+
+related 
+
+Our  work  can  be  viewed  as  formalizing 
+
+some  of  Erdmann’s 
+
+ideas  using 
+to  those  discussed  by  Erdmann, 
+
+the  concept 
+it 
+
+similar 
+
+for  extending 
+
+to  develop  essentially 
+
+these  ideas  to  multi-agent 
+
+of  knowledge.  While  we  have  added  new  concepts 
+would  have  been  possible 
+framework,  as  in  Erdmann’s  work.  9  However,  the  logical  framework  we  provide 
+suitable 
+tion  requirements 
+context,  a  set-theoretic 
+opaque,  while  the  epistemic 
+Indeed,  we  believe 
+knowledge 
+such  as  the  notions  of  K-capability 
+
+ideas  using  a  purely  set-theoretic 
+is  more 
+in  which  the  issue  of  informa- 
+[ 81)  . In  this 
+and 
+and  intuitive. 
+
+this  is  true  even 
+suggests  other  tools  for  describing 
+
+the  use  of 
+the  capabilities  of  agents, 
+
+language  used  here  is  much  more  transparent 
+
+(e.g.,  in  the  problem  of  task  distribution 
+
+and  learning  we  have  introduced  here. 
+
+of  an  agent’s  information 
+
+is  quite  cumbersome 
+
+in  the  single-agent 
+
+case.  In  addition, 
+
+arises  naturally 
+
+and  analyzing 
+
+representation 
+
+systems 
+
+5.2.  Donald’s  capability  classes 
+
+the 
+into  capability 
+sensors 
+Donald 
+information 
+between 
+of  sensor  systems,  and  to  characterize 
+different  capability  classes.  This  work  motivated  many  of  the  questions  we  are  concerned 
+
+classes, 
+the  relationship 
+
+[7]  attempted 
+capabilities 
+
+to  quantify 
+
+to  classify 
+
+’  Indeed, 
+
+this  is  true  of  most  applications 
+
+of  knowledge 
+
+theoryr  More  generally,  one  could  do  away  with  any 
+
+formal 
+
+logical 
+
+language 
+
+(that  has  an  adequate 
+
+semantics), 
+
+and  reason  directly  with  its  semantic  models. 
+
+R.I.  Brafman  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+341 
+
+with,  leading  us  to  adopt  a  more  “complexity-theoretic” 
+of  K-capability. 
+
+approach,  as  well  as  our  notion 
+
+significant 
+
+differences 
+
+There  are,  however, 
+
+between  Donald’s 
+In  its  aim  and  its  semantics,  our  work  is  much  closer 
+
+framework. 
+Like  Erdmann,  we  emphasize 
+hand,  emphasizes 
+systems 
+abstract  and  more  geometric.  Because  his  concepts  are  defined  with  respect 
+more  detailed 
+framework. 
+
+framework 
+and  our 
+to  Erdmann’s  work. 
+of  tasks.  Donald,  on  the  other 
+requirements 
+of  system.  Donald’s  notion  of  capability  of 
+is  less 
+to  a  lower, 
+in  our 
+
+the  sensing 
+the  sensing  capabilities 
+
+than  ours,  many  of  them  have  no  analogues 
+
+than  our  notion  of  K-capability, 
+
+system  description 
+
+is  more  detailed 
+
+its  definition 
+
+and 
+
+5.3.  Knowledge  in  multi-agent  systems 
+
+Logics  of  knowledge  were  introduced 
+
+and  Moses 
+[ 111  and  into  artificial 
+The  semantics  of  knowledge  we  have  adopted 
+formal  development, 
+is  essentially 
+taken 
+earlier. 
+
+intelligence 
+
+[lo], 
+
+into  the  study  of  distributed 
+by  Moore 
+is  based  on 
+
+[ 151  and  Rosenschein 
+
+systems  by  Halpern 
+[ 191. 
+[ 11,191,  but  much  of  the 
+programs 
+as  we  discussed 
+
+e.g.,  the  concepts  of  runs,  systems,  and  knowledge-based 
+from 
+
+there  are  some  differences, 
+
+although 
+
+Previous  work 
+
+in  distributed 
+
+systems  has  used  knowledge 
+
+as  a  tool  for  analyzing 
+
+to  perform  coordinated 
+
+earlier,  Halpern  and  Moses 
+
+in  distributed 
+
+attack  and 
+
+of  tasks.  Lower  bounds  on  the  in- 
+systems  have  also  been 
+[ 111  show  that 
+that  it  cannot  be 
+a  system  of 
+to  some  criti- 
+on  this  system,  a 
+they  es- 
+
+the  critical  section.  Then 
+
+[6]  consider 
+
+and  Misra 
+
+it  enters 
+
+the  property  of  mutual  exclusion  with  respect 
+and  show  that  under  certain  assumptions 
+
+about 
+
+is  required 
+
+requirements 
+
+the  information 
+
+of  certain  basic 
+
+requirements 
+tasks 
+
+systems  of  interest.  Chandy 
+
+and  reasoning 
+formation 
+established.  For  example,  as  we  mentioned 
+common  knowledge 
+attained  m  many 
+n  processors 
+cal  section 
+process  must  have  certain  knowledge  when 
+tablish  a  lower  bound  on  the  number  of  messages 
+to  be  attained.  Consequently, 
+must  be  passed  among  processors 
+sults  provide 
+important  motivation 
+tasks. 
+
+in  which 
+is  maintained, 
+
+one  can  deduce 
+
+that  at  least 
+
+that  must  be  sent  for  this  knowledge 
+this  number  of  messages 
+is  to  be  maintained.  These  re- 
+to  the  analysis  of 
+
+if  the  critical  section 
+for  the  approach  we  have  taken 
+
+5.4.  Knowledge,  actions,  and plans 
+
+Epistemic 
+
+logic  has  played  an  important 
+
+role  in  formalizing 
+
+the  process  of  planning 
+
+appropriately 
+
+the  work  of  Moore 
+
+expressive  knowledge 
+
+[ 151  and  Morgenstern 
+
+that  must  reason  about  their  knowledge 
+
+[ 161  is 
+under  uncertainty.  Most  notably, 
+tools  for 
+concerned  with  supplying 
+activities. 
+agents 
+for  plans  and  the  conditions 
+Such  work  considers 
+that  last  term  is  quite 
+under  which  an  agent  knows  how  to  perform  an  action 
+broadly  defined).  While 
+the 
+concerns  of  our  paper,  they  differ  in  terms  of  their  goal  and  viewpoint.  Whereas  Moore 
+from  the  perspec- 
+and  Morgenstern 
+
+representation 
+in  the  course  of  their  planning 
+
+the  issue  of  knowledge  preconditions 
+
+are  concerned  with  formalizing 
+
+there  are  many  similarities 
+
+the  task  of  planning 
+
+these  concerns 
+
+between 
+
+(where 
+
+and 
+
+342 
+
+R.I.  Brafman  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+taking 
+
+is  internal, 
+
+is  external, 
+
+sensors  and  software 
+
+the  point  of  view  of  the  planning 
+
+come  different  assumptions.  We  assume 
+
+tools  to  designers  of  agents.  Hence, 
+tive  of  the  agent,  we  are  concerned  with  supplying 
+taking 
+agent,  and  our 
+their  perspective 
+the  point  of  view  of  an  external  analyst  or  designer.  With 
+perspective 
+that  our  designer  has 
+these  distinct  objectives 
+task  is  to 
+an  accurate  model  of  the  domain  and  of  the  robot’s  actuators.  The  designer’s 
+its  tasks. 
+that  will  allow  the  robot  to  perform 
+choose  appropriate 
+rather,  she  will 
+amount  of  knowledge; 
+She  is  not  constrained 
+for  performing 
+attempt 
+the  task.  Moore 
+agents  who  lack  knowledge  of 
+and  Morgenstern, 
+the  precise  effects  of  their  actions  and  may  need  to  actively  plan  in  order  to  learn 
+this 
+information.  Having 
+and  relying  on  an  accurate  model  of 
+the  need  for  greater  expressive  power  and  realistic  modeling  of  the  agent’s 
+the  domain, 
+is 
+that  motivates 
+knowledge 
+less  of  an  issue  for  us. 
+
+the  amount  of  knowledge  needed 
+on  the  other  hand,  consider  planning 
+
+of  Moore  and  of  Morgenstern 
+
+some  of  the  developments 
+
+to  have  some  particular 
+
+the  design  perspective 
+
+to  discover 
+
+taken 
+
+6.  Future  work 
+
+We  have  shown  how  formal  measures  of  informational 
+
+robotic  systems.  We  have  only  scratched 
+
+issues 
+
+that  are  worth  exploring 
+
+complexity 
+
+and  capability 
+
+can 
+the  surface  here.  There  are 
+list  a  few  of 
+
+further.  We  briefly 
+
+be  used  to  analyze 
+a  number  of  interesting 
+them  here: 
+
+l  We  have  focused  on  problems  where  we  can  discuss  what  must  be  known  at  every 
+there  are  times  when  we  are 
+to 
+so  that  they 
+this  would  mean  extending  our 
+to 
+temporal  connectives, 
+
+step  of  the  computation.  As  we  mentioned 
+interested  only 
+extend  our  notions  of  knowledge  complexity 
+can  deal  with  this.  Notice  that,  among  other  things, 
+notions 
+express  complexity 
+
+in  what  must  be  known  eventually. 
+
+so  that  we  can  use  a  richer 
+
+It  would  be  of  great  interest 
+
+and  knowledge  capability 
+
+and  capability. 
+
+language, 
+
+involving 
+
+earlier, 
+
+l  The  notion  of  K-complexity 
+
+differs  from 
+
+those  of  time  and  space  complexity 
+
+there  appears 
+
+between  K-complexity 
+
+values  are  not  totally  ordered.  However, 
+
+on  the  one  hand  and  time  and  space  complexity 
+
+that  K-complexity 
+interaction 
+on  the  other.  Intuitively,  while  a  robot  with  minimal  knowledge  might  be  able  to 
+the  task  more 
+perform  a  task,  with  more  knowledge 
+the 
+efficiently 
+It  would  be 
+agent  additional 
+interesting 
+and 
+K-complexity. 
+
+control  bits  can  enable 
+better 
+
+to  gain  knowledge. 
+time/space 
+
+time  or  space.  As  we  have  seen,  allowing 
+
+it  might  be  able  to  perform 
+
+in  terms  of  computation 
+
+the  tradeoffs  between 
+
+to  understand 
+
+complexity 
+
+the  agent 
+
+in 
+to  be  an 
+
+l  We  have  implicitly 
+
+assumed 
+
+that  an  agent  can  use  all  the  information 
+
+in 
+it  may  be  quite  difficult  for  an  agent  to  compute  what  it 
+there  may  be  a  great  deal  of 
+
+implicit 
+
+its  local  state.  In  general, 
+knows,  as  a  function  of  its  internal  state.  For  example, 
+information 
+encoded 
+notion  of  knowledge 
+problem 
+in  [lo]). 
+
+the  discussion 
+
+(see 
+
+in  the  local  state  of  a  vision  system.  Getting  a  computational 
+that  deals  with  this  information 
+of  logical  omniscience 
+
+is  an  interesting 
+and  algorithmic 
+
+and  difficult 
+knowledge 
+
+R.I.  Brafman  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+343 
+
+l Once  we  allow 
+
+the  agent 
+
+to  learn,  we  can  explore 
+
+the  possibility 
+
+of  knowledge 
+is 
+formulas 
+in 
+the  formulas 
+in  any 
+it  to  detect 
+
+tests. 
+
+lnear}, 
+
+adjacent 
+
+top-down, 
+
+the  formulas 
+
+that  can  move 
+
+to  the  boundary.  Hence, 
+
+interested 
+information 
+
+to  the  boundary.  Suppose 
+
+in  an  obstacle-free  maze 
+
+in  B  suffices  for  learning 
+
+to  {Side,  -Side}.  Using  K-reducibility 
+
+this  robot  is  K-capable  of  {Side,  +ide}, 
+
+the  robot  is  equipped  with  a  touch  sensor,  allowing 
+
+speaking,  we  can  say  that  a  set  A  of  propositional 
+
+reductions.  Roughly 
+reducible 
+to  B  if  knowing 
+A.  For  example,  consider  a  robot 
+direction.  Suppose 
+if  it  is  adjacent 
+where  Side  is  true  if  the  robot  is  immediately 
+the 
+proposition  near  is  true  if  the  robot  is  one  step  away  from  the  boundary.  The  robot 
+the  robot  can  learn  {near,  vzear} 
+but  clearly 
+of  {near, 
+is  not  K-capable 
+In  this  case,  we  can  say  that  near 
+(perhaps  with  the  aid  of  a  few  control  bits). 
+together  with  learning  could 
+is  K-reducible 
+enhance  our  general  methodology 
+starting  with 
+and  then  implementing 
+knowledge 
+
+of  designing  programs 
+the  knowledge 
+in  applying  our  ideas 
+l We  are  particularly 
+in  which 
+plays  a  crucial 
+for  the  system  must  be  replaced  by  a  set  of  distributed 
+
+to  the  problem  of  task  dis- 
+a  central 
+tribution, 
+In 
+controller 
+about 
+orde-r  to  succeed, 
+the  state  of  the  other  components 
+the  state  of  the 
+external  world.  However,  we  would  like  them  to  have  this  information  with  as  little 
+additional  overhead  of  communication. 
+in  this  paper  rests, 
+The  concept  of  knowledge,  on  which  the  formalism 
+settings.  Subscripted  knowledge  operators  can 
+to  such  multi-agent 
+extends  naturally 
+be  used  to  denote 
+of  a  particular  agent.  Intuitively,  K,qo says  that  agent 
+information 
+a  knows  40, and  Kbsp says  that  agent  b  knows  p.  Moreover,  using  nested  knowledge 
+oper.ators,  we  can  describe  knowledge  one  agent  has  about  another  agent’s  knowl- 
+edge.  For  example,  KbKacp says  that  agent  b knows  that  agent  a  knows  cp. 
+Conceptually, 
+distributed 
+tial.  An 
+controller,  or  SKBP,  for  a  task,  and  use  it  to  derive  a  distributed  SKBP; 
+tributed  SKBP  would 
+the  following  distributed  SKBP  performs 
+
+a  set  of 
+is  desirable  or  essen- 
+a  centralized 
+this  dis- 
+each  agent  requires.  For  example, 
+this  paper: 
+throughout 
+
+controller 
+a  distributed 
+approach  would  be  to  design,  or  synthesize, 
+
+a  centralized 
+controllers.  Yet  sometimes, 
+
+of  the  system  as  well  as  about 
+
+controllers  must  have  sufficient 
+
+role.  In  task  distribution, 
+
+tell  us  what  information 
+
+the  task  discussed 
+
+than  designing 
+
+the  distributed 
+
+intermediate 
+
+information 
+
+controllers. 
+
+introduced 
+
+designing 
+
+is  easier 
+
+solution 
+
+Pg(arml)  =  {(Klg,Stop),  (KIP  A +lg,Move)}, 
+Pg(am-u)  =  { (ZbKlg,  Move),  (KvKlg,  Stop)}. 
+
+the  first  arm  knows  g  or  not.  In  designing 
+
+of  this  SKBP  lo  shows  that  the  second  arm  is  always  required 
+
+An  examination 
+know  whether 
+for  this  system,  we  must  take  care  to  provide  such  knowledge 
+whether  directly,  via  communication, 
+gorithm 
+to  a  distributed  SKBP  was  presented 
+
+controller 
+to  the  second  arm, 
+or  indirectly,  via  some  observation.  An  al- 
+system 
+of  this  algo- 
+
+an  SKBP  for  a  centrally  controlled 
+
+for  automatically 
+
+the  applicability 
+
+in  [ 31.  While 
+
+a  distributed 
+
+transforming 
+
+to 
+
+lo This  is  a  more  general 
+
+form  of  SKESP in  which  a  negative  knowledge  condition  appears. 
+
+344 
+
+R.I.  Brafian 
+
+et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+rithm 
+understanding 
+l  Our  approach 
+
+is  still  unclear,  we  hope  that  pursuing 
+
+these 
+
+ideas  will 
+
+lead  us  to  a  better 
+
+of  decentralization. 
+(as  well  as  Donald’s  and  Erdmann’s) 
+
+of  the 
+fixed  and  measures  only  sensing  complexity.  However,  we  would  also  like 
+com- 
+
+to  combine  our  measure  of  informational 
+
+the  capabilities 
+
+it  is  possible 
+
+holds 
+
+robots 
+to  understand  whether 
+plexity  with  a  measure  of  actuation  complexity 
+of  the  information 
+
+complexity  of  tasks  and  capabilities  of  robots. 
+
+to  obtain  a  better  characterization 
+
+More  generally,  we  view  our  work  as  continuing 
+some  basic  and  difficult 
+quite  a  way  to  go  until  all  the  current 
+model.  We  believe 
+goal. 
+
+issues 
+
+in  the  design  of  situated 
+
+systems.  There  seems 
+
+ideas  in  this  area  converge 
+
+to  be 
+to  a  single  accepted 
+this 
+
+towards 
+
+that  the  framework  presented  here  makes  some  progress 
+
+a  tradition  of  attempting 
+
+to  understand 
+
+Acknowledgment 
+
+We  are  grateful 
+and 
+
+to  Bruce  Donald 
+to  Nir  Friedman 
+
+for  numerous 
+for  comments 
+
+insightful  discussions, 
+
+and 
+on  previous  drafts.  This  work  was 
+
+comments, 
+
+suggestions, 
+partially  supported  by  AFOSR  and  NSF  grants  AF  F49620-92-J-0547 
+IRIS  project 
+
+IC-7  and  NSERC  grants  OGP0044121 
+
+and  A9281. 
+
+and  IRI-9220645, 
+
+Appendix  A.  Proofs 
+
+Proposition  3.8.  If  A  3~  B,  Task is  O(A), 
+
+and 
+
+&  k  VdEB 
+
+q5,  then  Task is  O(B). 
+
+and  B  =  (1,191, .  . , em}.  Because  Task =  O(A), 
+
+. . . , &}, 
+Proof.  Suppose  A  =  (41, 
+there 
+exists  some  SKBP  Pg  =  {(Kpi, 
+that  performs  Task.  Because 
+:  { 1,.  . . , m}  -+  { 1,.  . . , k}  such  that  &  +  ljli  +  4f(i). 
+A  5~  B,  there  is  a  function 
+its  knowledge  conditions 
+Let  Pg’betheSKBP 
+are  {K$t  , . . . , K&,l}.  We  claim  that  it  performs  Task, and  that,  therefore,  Task =  O(B). 
+In  order  to  prove  this  claim, 
+
+1 ie  {l,...,  m}}.  Clearly 
+
+ri)  1 i  E  { 1,.  . . , k}} 
+
+to  show  that 
+
+{(Kgl/i,rf(i)) 
+
+it  suffices 
+
+f 
+
+of  Pg’  is  a  good  implementation 
+
+of  Pg  and 
+
+( 1)  any  good  implementation 
+(2) 
+To  prove 
+
+there  is  a  good  implementations 
+
+of  Pg’. 
+
+some  transition 
+
+is  a  good  implementation 
+
+that  P 
+to-consistent 
+
+( 1 ),  suppose 
+(L,  Actions)  from  some 
+some  action  ai  that  implements 
+Z[  Z, A, P] , 1 k K$i.  Since  E  k  $i  +  4Z(i), 
+that  Z[Z,  A,  PI, 
+some  action  al  that  implements 
+and  Z[  I,  A,  P] , 1 k  Kpf(i).  This 
+To  see  that  P 
+implementation 
+above,  it  follows 
+. ’  .  V  Kqbk,  as  desired. 
+
+of  Pg’  for  some  agent  A  = 
+I.  At  each  local  state  I  E  L,  agent  A  performs 
+rf(;)  such  that  (K#i,  7fCi))  E  Pg’  and 
+the  properties  of  the  K  operator  guarantee 
+I  k  K+;  =+ Kpf(i).  Thus,  at  each  local  state  I  E  L,  agent  A performs 
+that  (KpfCi),  Tf(i))  E  Pg 
+of  Pg  from  1. 
+that,  since  P  is  a  good 
+of  Pg  from  I,  notice 
+is  a  good  implementation 
+of  Pg’  from  I,  we  have  Z[  I,  A,  P]  k  KG, V.  . .VK$,.  By  the  arguments 
+b  Kq5, V 
+
+that  Z[  I,  A,  P]  b  Kc$~(~) V . .  . V  Kc#J~(,,*). Thus,  Z[  I,  A, P] 
+
+rZ(i)  such 
+is  an  implementation 
+
+transition 
+
+implies 
+
+that  P 
+
+some 
+
+R.I.  Brafman  et  al./Artijcial  Intelligence  98  (1998)  317-349 
+
+345 
+
+To  see  that  (2), 
+
+there  is  a  good  implementation 
+
+of  Pg’ starting  from  some  re-consistent 
+
+of  some  C-history 
+
+I,  let  A*  =  (L”,  Actions*)  be  the  agent, 
+that,  intuitively,  has  perfect 
+information.  More 
+precisely, 
+7,  let  a7  be  the  action  defined  by  u,(c,  c)  = 
+let  L*  =  E;  for  each  transition 
+({(d,  d)  1 d  E  T(C)}.  Let  Actions  =  {a,  1 T  E  A}.  Let  I*  =  {(c,  c)  ) c  is  the  initial 
+for  agent  A*  defined 
+configuration 
+th e  only  global  states  that  arise  in 
+via  P*(c) 
+runs 
+that  if  c  k  9 
+formula  c,  then  2[  I*,  A*,  P* 1, c  +  K$.  Since  we  have  assumed 
+for  some  propositional 
+that  &  k  $1  V  1. . V I++,,,, it  follows 
+It  is  also 
+easy  to  see  that  P* 
+of 
+Pg’  from  some  Q-consistent 
+
+in  Z[  I’,  A”,  P*]  have  the  form  (c,  c)  for  c  E  E.  It  easily  follows 
+
+Pg’  from  I*.  Thus, 
+set  of  initial  states.  Cl 
+
+=  {a,,,,,  1 c +  @iv  1  <  i  6  m}.  Clearly, 
+
+in  Task}.  Let  P*  be  the  protocol 
+
+there  is  a  good  implementation 
+
+/=  K&  V  . . . V K$,. 
+
+that  Z[  I*,  A*,  P*] 
+
+implements 
+
+Lemma  3.16.  Let  ~$1, . . . , qbk be  propositional  formulas.  Then  Z[  I, A]  k  Kqq  V  . . . V 
+K4pk ifT[Z,d,P] 
+
++  Kql  V...  V Kqk  for  every  protocol  P  for  agent  A. 
+
+follows 
+
+in  the  interpreted 
+
+that  for  every  propositional 
+
+system  Z [.  ..I.  By  definition,  S[Z,d,P] 
+
+that  Z[  I,  A]  b  Kq,  V  . . . V  KqJk.  Let  S[.  . .]  denote 
+
+Proof.  First,  suppose 
+states  appearing 
+It  easily 
+z]Z,  A,  PI, 
+27Z,d,Pl 
+the  protocol 
+that  is,  P(Z)  =  2Acrions \  8  for  each  1 E  L.  It  is  easy  to  see  that  z[Z,d,P*] 
+Hence, 
+
+in 
+if  Z[  I,  Al,  r, m  +  K+  then  Z[Z,  A,  P],  r, m  /=  Kc$.  Thus,  we  have  that 
+k  K4p1 v...  V &ok.  For  the  converse,  suppose  A  =  (L,  Actions).  Let  P*  be 
+the  agent  to  perform  every  possible  action  at  every  local  state; 
+that  allows 
+=  Z[Z,  A]. 
+0 
+
+P*]  k  K~J  V ..  . V Kq%, then  surely  z[  Z, A]  k  Kpl  V . . . V Kqk, 
+
+the  set  of 
+&  S[Z,d]. 
+(r,  m) 
+
+formula  4  and  every  point 
+
+if  z[Z,d, 
+
+The  foIllowing 
+
+lemma 
+
+is  used  in  the  proof  of  Theorem  3.17,  and  is  also  of  interest 
+is 
+to  exist.  By  way  of  contrast,  as  shown  in  [ 101,  there  may  not  be  a  protocol 
+
+special  case  where  an  implementation 
+
+it  shows  an  important 
+
+in  its  own  right,  since 
+guaranteed 
+that  represents  a  given  SKBP. 
+
+Lemma  Al. 
+A  is  K-capable  of  {PI,. 
+from  I. 
+
+Zf Pg is an  SKBP  with positive  knowledge  conditions  Kql,  . . . , Kpk,  and 
+. . , qk}  with respect  to  I,  then  Pg  has  a  good  implementation 
+
+to  show 
+
+this,  we  have 
+
+that  P  is  a  good  implementation 
+
+that  P(Z)  C  PgZt’,d*P1  (E),  and 
+
+of  Pg.  In  order 
+Proof.  Let  P  =  Pgzl~Al.  We  claim 
+that  Z[  I,  A,  P]  + 
+to  prove 
+from  Lemma  3.16,  since  A  is 
+Kc$~ v  ‘..  V  Z@k.  The  latter  fact  follows 
+to  I.  The  former  also  follows  along  much  the 
+K-capable  of  (41, 
+that 
+same 
+if  Z[  I,  A],  r, m  k  K4  then 
+for  every  propositional 
+Z[  I,  A,  P,]  , r, m  k  Kc$.  Thus,  every  knowledge  condition 
+that  holds  at  the  local  state  I 
+in  the  system  Pg’ [r,d*P]  also  holds  at  1 in  the  system  PgZl’,dl.  Thus,  P~[r~d~PI  (1)  > 
+Pg=[‘,“l(E)  =  P(Z). 
+
+lines  as  the  proof  of  Lemma  3.16.  Since  S[Z,  A,  P]  C  S[Z, A], 
+
+formula  4  and  run  r  in  Z[  I,  A,  PI, 
+
+. . . , +k}  with  respect 
+
+immediately 
+
+it  follows 
+
+cl 
+
+Theorem  3.17.  rf  Tusk =  0(  (4~1,.  . . , pk})  and  A  is  K-capable  of  (~1,  . . . , qk}  with 
+respect  to  I,  where  Z is  to-consistent with  Task,  then  A  can  pelform  Task from  I. 
+
+346 
+
+R.I.  Brafman  et  al. /Artijicial 
+
+Intelligence  98  (1998)  317-349 
+
+, pk}) 
+
+Proof.  If  Task=O({~i,... 
+ditions  Kqol, . . . , &Ok  that  performs  Tusk.  It  follows 
+good  implementation 
+by  definition, 
+A  can  perform  Tusk.  0 
+
+con- 
+from  Lemma  A.1  that  Pg  has  a 
+from  I.  Since  Pg  performs  Task and  I  is  to-consistent  with  Task, 
+that 
+
+then  there  exists  an  SKBP  Pg  with  knowledge 
+
+of  Pg  from  Z  performs  Tusk. This  implies 
+
+any  good  implementation 
+
+Theorem  3.19.  Suppose  that  (1)  for  all  I  to-consistent  with  Task,  if  agent  A  is  K- 
+. . , pk}  with  respect  to  I  then  A can  per$orm  Task from  I,  and  that 
+capable  of  (~1,. 
+(2)  some  agent  is K-capable  of  (~1,  . . . , pk}  from  some  Z to-consistent with Task. Then 
+
+Task=O({m,...,~k}). 
+
+Proof.  We  must  find  an  SKBP  Pg  with  conditions  K+,  , . . . , K+k  that  performs  Task. 
+agent  A  that  can  perform  Tusk. We 
+We  do  this  as  follows:  We  first  define  a  particular 
+‘pA  it  uses  to  perform  Task to  define  the  required  SKBP  Pg.  Then  we 
+use  the  program 
+show  that  any  execution  of  Pg  is  identical 
+to  an  execution  of 
+(when  projected 
+Pd.  Since  P-4  performs  Task,  all  of  its  executions 
+are  in  the  task,  and  hence,  we  will 
+have  shown 
+
+that  all  executions  of  Pg  are  in  the  task. 
+
+to  E) 
+
+Agent  A  =  (L,Actions) 
+
+is  constructed 
+
+c,  let  Holds(c)  =  {l,i  ( c  b  dj, 
+
+configuration 
+let  Holds(c)  =  {lo}  otherwise.  For  a  transition 
+a,(c,  Z) =  Uc’Er@) ({c’}  x  Z-Zolds(c’)).  We  define  Actions  =  {a,  1 T E  A}. 
+
+as  follows.  Let  L  =  {lo,.  . . , &}.  For  each 
+j  =  1, . . . , k}  if  c  k  41  V  . . .  V  +k,  and 
+r  E  A,  let  a7  be  an  action  defined  by 
+
+Let  Zd  be  {(C(O),  1)  1 C  E  Task,  I E  Zfolds( C(0)  )}.  We  claim 
+
+to  Zd.  It  is  easy  to  see  that  our  construction 
+
+that  A  is  K-capable 
+guarantees 
+it  suffices  to  show  that  the  local  state  lo  does  not  arise 
+
+, (ok}  with  respect 
+
+of  {sol,... 
+that  Z[  Zd,  A],  Z,j k  K4.i.  Thus, 
+in  z[Zd,  d]. 
+
+To  see  this,  first  notice 
+
+that  if  Z  and  I’  are  sets  of  initial  states 
+
+to-consistent  with 
+
+in  (E,  A), 
+
+initial  configurations 
+
+(given  our  assumption 
+
+is  an  action 
+to  configurations). 
+
+then  the  set  of  configurations 
+this  set  of  configurations 
+
+that  for  every 
+that  agrees 
+in  the 
+(2) 
+that  there  is  some  agent  A' and  some  initial  set  I’  of  global  states 
+to  I’. 
+.  . V  (bk.  Since  the 
+
+that  each  of  A  and  A’  can  perform 
+that  assumption 
+
+Tusk,  and  A  and  A’  are  two  agents  situated 
+that  arise  in  Z[  I,  A]  and  Z[  I’,  A’]  must  be  the  same,  since 
+depends  only  on  the  possible 
+r  E  A,  there 
+transition 
+with  r  when  projected 
+theorem  guarantees 
+to-consistent  with  Tusk  such  that  A' is  K-capable  of  (4,) 
+Thus,Z[Z’,d’] 
+same  configurations 
+formula  depends  only  on  the  configuration, 
+Thus,  Holds(c)  #  {lo}  for  any  configuration 
+state  ZO does  not  arise  in  z[  Zd,  A]. 
+desired. 
+
+arise  in  Z[  I’,  A’]  and  Z[  Zd,  A],  and  the  truth  of  a  propositional 
+that  I[  Zd,  A]  b  41  V  .  .  .  V  $k. 
+the  local 
+as 
+
+it  follows 
+c  that  arises  in  z[  Zd,  A].  Hence, 
+
+that  I[  Z’, A’]  b  $1  V. 
+
+. . . , C$k} with  respect 
+
+t=  Kq51 V  .  . .  V  K#k, 
+
+that  I[  Zd,  A] 
+
+Next,  observe 
+
+It  follows 
+
++  K&v.. 
+
+It  follows 
+
+. V  K$k. 
+
+It  now  follows 
+
+from  assumption 
+
+(1) 
+
+must  be  a  protocol  PA  for  A  that  performs  Tusk  from  Zd.  Define 
+{(Kpi,r) 
+to  prove 
+tion  of  Pg  from  some  set  of  initial  states 
+performs  Task  from  ZB.  Since  PO  is  a  good  implementation 
+
+i= 
+, }.  We  claim 
+that  if  Z3 is  an  agent  and  Pa 
+
+E  P 
+this,  we  must  show 
+
+implementa- 
+that  is  to-consistent  with  Task,  then  Pa 
+la,  we  have 
+
+that  A  can  perform  Tusk  from  Zd,  and  there 
+the  SKBP  Pg  = 
+that  Pg  performs  Tusk. In  order 
+
+I a7  E  Pd(l;), 
+
+of  Pg  from 
+
+is  a  good 
+
+I,... 
+
+la 
+
+R.I.  Brafman  et  al./Artificial  Intelligence  98  (1998)  317-349 
+
+347 
+
+that 
+
+k  Kqq  V  .+.  V  Kqk,  and 
+
+if  a  E  Pa(Z), 
+that  (KP,~,  7,)  E  P  and  Z[Zn,  Z?, PO],  I  k  Kpj.  Suppose 
+
+that  Z[Z~I,B,P~J] 
+is  some 
+then 
+j  such 
+that  r  is  an  execu- 
+tion  of  Pa  from 
+the  C-history  defined  by  r  (i.e.,  C  = 
+rccon$s (r)  ) . We  complete 
+that  there  is  an  execution  of  PA  from 
+the  same  C-history  C.  This  implies 
+some  glolbal  state  (c,  I’)  E  Zd  that  defines  precisely 
+that  C  E  Task,  because  P_4  performs  Task.  Therefore,  we  have  that  Pa  performs  Task 
+from  ZB. 
+
+(c,  Z)  E  la,  and  let  C  denote 
+this  proof  by  showing 
+
+there 
+
+Let  aB  aB 
+0, 
+
+,‘“’ 
+
+be  the  transitions 
+
+be  the  sequence  of  actions  performed  by  Z? along 
+
+(each  of  which  belongs 
+
+ro,r1,... 
+of  formulas 
+C(n)  k  +Q;,, . That  such  formulas  exists  follows  from  the  fact  that  Pa 
+definition, 
+by  P  to  some  knowledge 
+
+the  action  assigned  by  ‘PB  at  a  state  (c,  Z)  implements 
+
+the  run  r,  and  let 
+implement.  Let  qiO, rpi, , . . .  be  a  sequence 
+such  that  (Kg+,,, 7,)  E  ‘P  and 
+implements  P:  By 
+assigned 
+
+condition  Kq  that  holds  at  (c,  I);  thus,  c  b  4. 
+
+to  {VI,.  . . , pk}) 
+
+that  a:,  a* * ,*.. 
+
+a  transition 
+
+rd(n) 
+
+We  define 
+r), 
+
+rd  by  taking 
+It  remains 
+proj,,,,,( 
+we  have  to  show  that  for  all  n:  (1) 
+(where  a,,,  is  the  unique  action  of  A implementing 
+(c,Z,i)  l a,,,(C(n),Zi,,) 
+
+Proofc,f(l):Bydefinition, 
+
+to  show  that  rd 
+
+=  (C(n),  Z;,,) for  all  n.  Obviously, 
+is  an  execution  of  Pd. 
+
+rd(n  +  1)  E  a,,(rd(n)), 
+
+proj,@,( 
+
+rd)  = 
+In  order  to  prove 
+this 
+and  (2)  aTa =  Pd(li,S) 
+
+r,.) 
+
+iffcEr,(C(n+l)) 
+
+andpjholds 
+
+at  c.  But  by  construction,  C( n  +  1)  E  rrl (C(  n)  )  (since 
+
+this  configuration  was  obtained 
+
+rn 
+
+to  C(n)) 
+
+and  qi,,+l  holds  at  C(n + 1)).  Hence, 
+
+(C(n  +  l),Z;,,+,)  = 
+
+by  applymg 
+rd(nf 
+
+1) 6 &,,(C(n>,k,,>  =%(rd(n)). 
+
+Proof  of  (2)  : The  action 
+
+taken  at  time  n  by  A is  the  (only) 
+7,  that  B’s  action  at  time  n  implements.  Recall 
+to  Zj.  Hence, 
+
+the  transition 
+adding  a  pair  (pj,  r,)  whenever  a7,,  is  assigned 
+Pd  (h,,> q ' %,,, which  is  what  we  wanted 
+
+to  show. 
+
+0 
+
+action 
+
+that  implements 
+
+that  P  was  obtained  by 
+it  must  be  the  case  that 
+
+Theorem  4.5.  If  Task  =  O,(  {cpl , . . . ,4pk})  and  A = (L,  Actions) 
+
+.  *  3  pk} 
+
+in  Z[  I,  A]  for  Z  to-consistent  with  Task,  then  d+, 
+
+{PI,. 
+Z +nr. 
+
+is  K-capable 
+
+of 
+can  pelform  Task from 
+
+Proof.  With  slight  modification 
+of  Lemma  A. 1  and  Theorem  3.17  generalize 
+
+to  accommodate 
+
+to  this  case. 
+
+0 
+
+the  m  additional  control  bits,  the  proofs 
+
+Theorem  4.8.  Zf Task  =  O,(  {qq , . . . , pk}),  Task  is  elastic,  and  A = (L,  Actions) 
+learn  {q 
+
+, . . . , cppk} in  Z[  I,  A] for  some  to-consistent 
+
+I,  then  d+c,,,+l) 
+
+can 
+can  pe$orm  Task 
+
+from  Z+(,,+l). 
+
+recall 
+
+. . , cpk},  it  can 
+Proof.  First, 
+perform  T&k  with  the  aid  of  m  additional  bits  from  I+,.  Thus,  an  m-bit  SKBP  Pg  exists 
+that  performs  Task. 
+
+that  by  Theorem  4.5, 
+
+of  (~1,. 
+
+if  A is  K-capable 
+
+In  order 
+
+to  show  that  d+(nr+l) can  perform  Task,  we  must  provide  a  program 
+
+it  that  performs  Task.  Intuitively, 
+lar  to  A  that  is  K-capable 
+agent  has  an  implementation 
+
+for 
+this  is  done  as  follows:  we  describe  an  agent  simi- 
+that  this 
+P  of  Pg  that  performs  Task  from  I+,,.  We  let  A execute 
+
+of  (91,  . . . , (pk}  from  I.  Consequently,  we  know 
+
+348 
+
+R.I.  Brajhtan  et  al. /Art$cial 
+
+Intelligence  98  (1998)  317-349 
+
+However, 
+
+this  implementation 
+
+is  not  defined  on  all  states  of  A. 
+it  is  not  defined  on  those  state  in  which  A does  not  know  any  of  the 
+(~1,  . . . , pk}.  In  those  states,  we  let  A  learn  these  conditions.  After  learning 
+
+this  implementation. 
+In  particular, 
+conditions 
+one  of  these  conditions,  A will  reach  a  local  state  on  which  the  given 
+is  defined.  Notice 
+subroutines. 
+executed  or  the  learning  program, 
+self;  d+(n,+l) has  these  additional 
+because 
+cause. 
+
+requires  A  to  switch  between  P  and  the  learning 
+is  being 
+it- 
+take  a  while, 
+subroutine  may 
+
+and  m  additional 
+bits.  Finally, 
+
+the  task  is  elastic,  we  do  not  mind 
+
+learning  may 
+the  learning 
+
+although 
+the  detours 
+
+track  of  whether  P 
+
+Thus,  an  additional 
+
+that  this  approach 
+
+bits  are  needed 
+
+implementation 
+
+to  execute  P 
+
+bit  is  needed 
+
+to  keep 
+
+We  proceed  as  follows.  Let  Pr,  be  the  protocol 
+
+for  A  that  learns  {+I,. 
+
+. . , +k} 
+
+in 
+
+Z[  I,  A].  Let  A’  =  (L’,  Actions’),  where 
+
+l L'={Z~L~Z[Z,d],E~:~,v..~vK~~} 
+l Actions’  =  {u  o PL  1 a  E Actions}  where  a  o PL(c,  1)  =  PL(u(  c,  I)). 
+
+s).  (Here 
+
+the  same  transitions 
+
+is  where  we  are  using 
+
+that  A implements. 
+
+that  A' is  well  defined,  and  implements 
+
+for  A. Moreover,  A' is  K-capable  of  {pi, 
+
+Notice 
+from  the  fact  that  for  every  global  state  s  in  Z[  I,  A], it  is  the  case  that 
+This  follows 
+the  fact  that  a  learning  pro- 
+proj,,,figPL(  S)  =  proj,,,,( 
+gram  has  no  side  effects  on  the  configuration.)  Moreover,  we  know  that  projloca,PL (s)  E 
+. . . , qx} 
+L’,  since  PL  is  a  learning  program 
+in  Z[  I’,  d’],  where  I’  =  UsEI  PL ( S) .  (Notice 
+that  proj,,,frg  (Z)  =  proj,,frg  (I’),  and  so 
+I’  is  to-consistent  with  Task.)  In  order  to  see  this,  note  that  the  set  of  global  states  that 
+in  Z[Z,  A]. This  follows 
+arise 
+from 
+for  all  a’  E  Actions’  and 
+global  states  s  in  Z[  I,  A], we  have  a’(  S)  E  Z[  S, A]. Next,  we  note  that,  by  definition, 
+if  projlocal( s)  E  L’,  then  Z[  I,  d] , s  k  Ksp~  V  . 
+and  the  formulas  pj  are  propositional,  we  conclude 
+as  well. 
+
+in  Z[Z’,  A'] is  a  subset  of  the  global  states  that  arise 
+I’  E  Z[  Z, A],  and  (3) 
+the  fact  that  ( 1)  L’  G  L,  (2) 
+
+that  Z[  I’,  A'], s  k  Kcpl  V. 
+
+.  V  Kpk.  Because  Z[  I’,  A'] C Z[ I,  A] 
+
+.  . V  Kpk 
+
+We  have  shown 
+
+that  A' is  K-capable  of  (~1,  . . . , qk}.  Therefore,  d:,, has  an  imple- 
+
+mentation  P’  of  Pg  that  performs  Tusk  from  Z+,.  We  define  a  protocol  P  for  d+(nL+l) 
+that  acts  as  follows:  when 
+possible.  When 
+learning  program 
+finishes 
+resumes  emulation  of  P’: 
+
+the  behavior  of  P’  whenever 
+that  the 
+it 
+to  0  and 
+
+is  not  possible, 
+should  be  executed, 
+the  execution  of  the  learning  program, 
+
+the  first  bit  is  0,  it  emulates 
+
+the  learning  program.  Once 
+
+the  first  bit  to  1,  indicating 
+
+the  first  bit  back 
+
+it  executes 
+
+it  switches 
+
+it  switches 
+
+this 
+
+and 
+
+l If  E E  L’  and  di  =  0,  then  P(O,&, 
+l If  Z$  L’  and  di  =0, 
+then  P(O,&,...,d,+i,Z) 
+l If  ZE  LT  and  di  #  0,  then  P(l,&,...,&+i,Z) 
+l If  Z  $  LT  and  di 
+
+#  0,  then  P(l,&,...,d,,+i,Z) 
+
+. . . ,d,+t,Z) 
+
+=  P’(&, 
+=Set(di 
+
+. . . ,&+i,Z’). 
+=  I). 
+
+=Set(di 
+
+=O). 
+
+=  (PL(Z),Z&,+~), 
+
+where 
+
+( PL ( I),  Id,+1  > is  identical 
+on  dl,...,d,+l. 
+
+to  PL (1)  on  E  x  L,  and  Id,+, 
+
+is  the  identity  assignment 
+
+As  should  be  apparent 
+
+from 
+
+its  definition, 
+
+to  some  execution  of  P’ 
+
+to  the  (terminating) 
+
+responds 
+corresponding 
+P’  from  I+, 
+must  also  be  in  Tusk. 
+
+0 
+
+every  execution  of  P  from  Z+(,,+i)  cor- 
+are  inserted, 
+
+into  which  some  finite  subsequences 
+executions  of  PL.  We  know  that  every  execution  of 
+that  every  execution  of  P 
+
+is  in  Tusk  and  that  Tusk  is  elastic.  We  conclude 
+
+R.I.  Brafinan  et  al. /Artificial 
+
+Intelligence  98  (1998)  317-349 
+
+349 
+
+References 
+
+[ 1]  M. Blum  and D.  Kozen,  On the  power  of  the  compass  (or,  why mazes  are easier  to  search  than  graphs), 
+
+in:  Proceedings  19th  Symposium  on  Founaistions  of  Computer  Science  (1978)  132-142. 
+
+[2]  RI.  B,rafman, J.C.  Latombe,  Y. Moses  and  Y. Shoham,  Applications  of  a  logic  of  knowledge  to  motion 
+
+planni.ng under  uncertainty,  J.  ACM,  to  appear. 
+
+[3]  RI.  B&man  and  Y. Shoham,  Knowledge  considerations  in robotics  and distribution  of robotic  tasks,  in: 
+
+Proceedings 
+
+IJCAI-95,  Montreal,  Quebec  ( 1995). 
+
+[4]  L.  Budach,  On the  solution  of  the  labyrinth  problem  for  finite  automata,  EIK  11 ( 1975)  661-672. 
+[S]  J.F. Canny, On  computability  of  fine  motion  plans,  in: Proceedings  1989  IEEE  International  Conference 
+
+on  Robotics  and  Automation,  Scottsdale,  AZ  (1989)  177-182. 
+
+[6]  K.M.  Chandy  and  J.  Misra,  How  processes  learn,  Distributed  Comput.  1 (1)  (1986)  40-52. 
+[ 71  B.R.  Donald,  On  information  invariants  in  robotics,  Artificial  Intelligence  72  (1994)  217-304. 
+[8]  B.R.  Donald,  J.  Jennings  and  D. Rus,  Information  invariants  for  cooperating  autonomous  mobile  robots, 
+
+in:  Proceedings 
+
+International  Symposium  on  Robotics  Research 
+
+(1993). 
+
+[9]  M.  Erdmann,  Understanding  actions  and  sensing  by  designing  action-based  sensors,  in:  IEEE  ICRA 
+
+Workshop  on  Design  (1994). 
+
+[IO]  R. Fagin,  J.Y. Halpem,  Y. Moses  and  M.Y. Vardi, Reasoning  about  Knowledge 
+
+(MIT  Press,  Cambridge, 
+
+MA,  1995). 
+
+[ 111 J.Y. Halpem  and  Y. Moses,  Knowledge  and  common  knowledge  in  a  distributed  environment,  J.  ACM 
+
+37  (3) 
+
+(1990)  549-587. 
+
+[ 121  J.  Hintikka,  Knowledge  and  Belief  (Cornell  University  Press,  Ithaca, NY, 1962). 
+[ 131 G.E.  Hughes  and  M.J.  Cresswell,  An  Introduction 
+[ 141 J.C.  L.atombe, Robot  Motion  Phznning  (Kluwer  Academic  Publishers,  Boston,  MA,  1991). 
+[ 151 R.C.  Moore,  A  formal  theory  of knowledge  and  action,  in: Formal  Theories  of  the  Common  Sense  World 
+
+to  Modal  Logic  (Methuen,  London,  1968). 
+
+(1985). 
+
+[ 161  L.  Morgenstem,  Knowledge  preconditions  for  actions  and  plans,  in:  Proceedings 
+
+IJCAI-87,  Milan,  Italy 
+
+(1985). 
+
+[ 171 J.H. Reif,  Complexity  of the  mover’s problem  and generalizations,  in: Proceedings  20th  IEEE  Symposium 
+
+on  Founakions 
+
+of  Computer  Science  (1979)  421-427. 
+
+[ 181 J.H.  Reif  and  M.  Sharir,  Motion  planning  in  the  presence  of  moving  obstacles,  in:  Proceedings  25th 
+
+IEEE  Symposium  on  Foundations  of  Computer  Science,  Portland,  OR  (1985)  144-154. 
+
+[ 191 S.J.  Rosenschein,  Formal  theories  of  knowledge  in  AI  and robotics,  New Generation  Comput.  3  ( 1985) 
+
+345-357. 
+
+

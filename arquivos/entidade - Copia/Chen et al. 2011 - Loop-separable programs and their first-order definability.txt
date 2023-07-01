@@ -1,0 +1,3731 @@
+Artiﬁcial Intelligence 175 (2011) 890–913
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+
+www.elsevier.com/locate/artint
+
+Loop-separable programs and their ﬁrst-order deﬁnability
+Yin Chen a,∗
+
+, Fangzhen Lin b, Yan Zhang c, Yi Zhou c
+
+a Department of Computer Science, South China Normal University, Guangzhou, Guangdong, China
+b Department of Computer Science, Hong Kong University of Science and Technology, Clear Water Bay, Kowloon, Hong Kong
+c Intelligent Systems Lab, School of Computing and Mathematics, University of Western Sydney, Penrith South DC, NSW 1797, Australia
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+An answer set program with variables is ﬁrst-order deﬁnable on ﬁnite structures if the set
+of its ﬁnite answer sets can be captured by a ﬁrst-order sentence. Characterizing classes
+of programs that are ﬁrst-order deﬁnable on ﬁnite structures is theoretically challenging
+and of practical relevance to answer set programming. In this paper, we identify a non-
+trivial class of answer set programs called loop-separable programs and show that they are
+ﬁrst-order deﬁnable on ﬁnite structures.
+
+© 2010 Elsevier B.V. All rights reserved.
+
+Article history:
+Received 23 December 2009
+Received in revised form 18 December 2010
+Accepted 18 December 2010
+Available online 22 December 2010
+
+Keywords:
+Answer set programming
+First-order deﬁnability
+Knowledge representation
+Nonmonotonic reasoning
+
+1. Introduction
+
+This work is about answer set programming (ASP), a constraint-based programming paradigm that has been found
+applications in a wide range of areas including bioinformatics [9,12,29] and the semantic web [11,27]. Currently in ASP
+applications, a program normally has two parts: a ﬁnite set of rules with variables, and a ﬁnite set of ground facts. The
+former represents general domain knowledge and the latter the speciﬁc instance of the problem that one wants to solve.
+Since current ASP solvers can only deal with rules without variables [14,20,22,28], the latter is used to ground the former
+into a set of propositional rules, and together they are given to an ASP solver.
+
+Recently there has been work on extending answer set semantics to programs with variables [4,13,23,25], and to consider
+the possibility of constructing an ASP solver that can deal with rules with variables [4]. Against this backdrop, in this paper
+we consider the problem of ﬁrst-order deﬁnability of answer set programs with variables. This is a problem because in
+general, the answer sets of a program with variables correspond to a second-order sentence [13,23] or an inﬁnite set of
+ﬁrst-order sentences [4].
+
+The study on non-grounding based method for computing answer sets/stable models has been carried out by some
+researchers [10,16]. The motivation of developing this approach is to avoid large sets of facts after grounding a program
+containing variables. By introducing concepts such as constrained non-ground stables [10] and covers/anticovers [16], using
+this approach we can derive some kind of compact representations of the stable models of the original program, so that
+stable models may be partially pre-computed at compile-time.
+
+Although both the approach mentioned above and the ﬁrst-order deﬁnability of logic programs address non-grounding
+logic programs, the foundation of these two topics are actually quite different. In this paper, our study will be based on the
+ﬁrst-order stable model semantics and identify a class of programs that is ﬁrst-order deﬁnable on ﬁnite structures, while
+the non-ground approach only provided an alternative method to compute stable models of a propositional logic program.
+
+* Corresponding author.
+
+E-mail addresses: ychen@scnu.edu.cn (Y. Chen), ﬂin@cse.ust.hk (F. Lin), yan@scm.uws.edu.au (Y. Zhang), yzhou@scm.uws.edu.au (Y. Zhou).
+
+0004-3702/$ – see front matter © 2010 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2010.12.001
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+891
+
+While our work presented in this paper is the ﬁrst in-deep study on the ﬁrst-order deﬁnability of answer set programs
+with variables, we should mention that the related problem has been addressed in propositional case. In particular, Dung
+and Kanchanasut have shown that every propositional logic program Π can be transformed into a propositional theory T Π
+such that the set of stable models of Π is exactly the set of models of T Π [8]. More recently, Lin and Zhao proved a similar
+result by using loop-formulas [22].
+
+Studying the ﬁrst-order deﬁnability of answer set programs has both theoretical and practical values. Firstly, since the
+semantics of ﬁrst-order answer set programs is deﬁned based on second-order logic, it becomes an immediate issue to
+understand the expressive power of ﬁrst-order answer set programs. Results of the ﬁrst-order deﬁnability will provide
+partial answers to this issue and help us to achieve a better understanding on the difference between ﬁrst-order answer set
+programs and classical ﬁrst-order logic. Results in this aspect will provide an important theoretical foundation for ﬁrst-order
+answer set programming.
+
+Secondly, as evident from the work in Datalog and ﬁnite model theory, proving ﬁrst-order deﬁnability results are usually
+highly challenging. Very often, new proof techniques have to be developed, which may also be useful for other problem
+solving. For instance, as it will be shown in this paper, in order to prove our ﬁrst-order deﬁnability result, we extend the
+expansion tree concept in Datalog [3] to ASP and apply it to loop-separable programs. We believe that both the notion of
+loop-separable programs and the new expansion tree concept proposed in this paper may be useful for other related studies
+in ﬁrst-order answer set programming.
+
+Finally, knowing that a program is ﬁrst-order deﬁnable is certainly helpful if one wants to construct an ASP solver for
+ﬁrst-order answer set programs. It initiates the possibility of exploiting ﬁrst-order inference tools, e.g. model generators and
+theorem provers, to reason on programs that are ﬁrst-order reducible. Also, it can be helpful for SAT-based propositional
+ASP solvers. This is because current SAT-based ASP solvers compute loop formulas incrementally as needed. If we know that
+the given program can be captured by a ﬁrst-order sentence, then it may be more effective to bypass loop formulas and
+just instantiate the ﬁrst-order sentence on a given instance directly.
+
+In this paper, we show that if a program is so-called loop-separable, then it is ﬁrst-order deﬁnable on ﬁnite structures.
+Furthermore, it is decidable whether a program is loop-separable. As we shall see, the notion of loop-separable programs
+depends on a careful study of how rules interacts with ﬁrst-order loops introduced in [4]. It also includes all ﬁrst-order
+deﬁnable classes of programs that we knew of, like the class of program with ﬁnite set of complete loops.
+
+The rest of the paper is organized as follows. Section 2 presents basic logic concepts and notions which will be used
+in our following study. Section 3 introduces the notion of ﬁrst-order deﬁnability, and Section 4 deﬁnes a class of programs
+called loop-separable program. Section 5 contains the detailed proof that loop-separable programs are ﬁrst-order deﬁnable.
+Section 6 considers some special subclasses of loop-separable programs and discusses some related work. Finally, Section 7
+concludes this paper with some discussions.
+
+2. First-order answer set programs with extensional databases
+
+2.1. Preliminaries
+
+We consider a second-order language with equality but without function symbols. A vocabulary consists of a ﬁnite set
+of constant symbols and a ﬁnite non-empty set of relation symbols including equality =. Given a vocabulary τ , we denote by
+C(τ ) the sets of constant symbols in τ , and by P(τ ) the set of relation symbols. The notions of term, atom, (ﬁrst-order or
+second-order) formula and (ﬁrst-order or second-order) sentence are deﬁned as usual. An atom is called an equality atom
+if it is an atom of the form t1 = t2, and a proper atom otherwise. We use Var(O) to denote the set of variables occurring
+in O, which can be a term, atom, formula, sentence or other expressions. Given a vocabulary τ , the unique name assumption
+(or UNA for short) on τ , denoted by Σuna(τ ) (or Σuna when τ is obvious from the context), is the conjunction of ci (cid:3)= c j for
+any two different constant ci, c j in C(τ ).
+
+¬∀x(Q (x) ⊃ P (x)). For the given tuples of relation symbols P = (P 1, . . . , P k) and P (cid:7) = (P
+(1 (cid:2) i (cid:2) k) have the same arity, we use P < P (cid:7)
+
+Let P and Q be two relation symbols or variables of the same arity. P < Q stands for the formula ∀x(P (x) ⊃ Q (x)) ∧
+(cid:7)
+(cid:7)
+(cid:7)
+1, . . . , P
+k), where all P i and P
+(cid:2)
+i
+k
+i=1
+
+(cid:2)
+k
+i=1
+A
+A
+A
+n ), where A is a ﬁnite set called the domain of A,
+A ﬁnite structure A of vocabulary τ is a tuple ( A, c
+m , R
+1 , . . . , c
+A
+A
+(the interpretation of a k-ary relation symbol R i ) (1 (cid:2) i (cid:2) n),
+∈ A (the interpretation of constant ci ) (1 (cid:2) i (cid:2) m), and R
+c
+i
+i
+a k-ary relation on A. In the following, we use Dom(A) to denote the domain of structure A. Unless stated otherwise, the
+domains of all structures are assumed to be ﬁnite in this paper.
+
+(cid:7)
+i(x) ⊃ P i(x)).
+
+to denote the formula
+
+Given two tuples s = (s1, . . . , sn) and ¯t = (t1, . . . , tn) of the same length, we use s = ¯t to denote the formula
+
+i=1 si = ti ,
+and s (cid:3)= ¯t the formula ¬(s = ¯t). A binding is an expression of the form x/t, where x is a variable, and t a term, and a
+substitution is a set of bindings containing at most one binding for each variable. If ϕ is a ﬁrst-order formula (term, tuple of
+terms, etc.), and θ a substitution, we denote by ϕθ the result of replacing every free variable in ϕ according to θ .
+
+∀x(P i(x) ⊃ P
+
+(cid:7)
+i(x)) ∧ ¬
+
+A
+1 , . . . , R
+
+∀x(P
+
+Given a set of variables or relation variables V and a structure A, an assignment σ on V over A is function that assigns
+each variable in V to a domain element in Dom(A) and each n-ary relation variable in V to an n-ary relation on Dom(A).
+We write (A, σ ) |(cid:9) ϕ(x) to mean that ϕ is true in A under the assignment σ .
+
+(cid:2)
+n
+
+892
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+2.2. Syntax and semantics
+
+We introduce the syntax and semantics of ﬁrst-order answer set programs with extensional databases in this section.
+A rule is of the form:
+
+a ← b1, . . . , bk, not c1, . . . , not cl,
+
+(1)
+where a is either a proper atom or ⊥, and b1, . . . , bk, c1, . . . , cl (k, l (cid:3) 0) are atoms. A rule is called a constraint if a is ⊥.
+Given a rule r of form (1), we call a the head of r, denoted by Head(r), {b1, . . . , bk, not c1, . . . , not cl} the body of r, denoted
+by Body(r), {b1, . . . , bk} the positive body of r, and {not c1, . . . , not cl} the negative body of r. We also use Pos(r) and Neg(r) to
+denote the set of atoms {b1, . . . , bk} and the set of atoms {c1, . . . , cl}. A variable x in a rule r is called a local variable if it
+occurs in the body of r but not in the head of r.
+
+A ﬁrst-order answer set program with extensional database (or simply called program) is a ﬁnite set of rules. Given a pro-
+gram Π , we use τ (Π) to denote the vocabulary containing all the relation symbols and constants in Π . A relation symbol
+P in τ (Π) is called intensional predicate if it occurs in the head of some rules of Π , and extensional predicates otherwise. We
+use τext(Π) to denote the vocabulary containing all extensional predicates and constants in Π , and τint(Π) the vocabulary
+containing all intensional predicates in Π . We also use P(Π), Pint(Π) and Pext(Π) to denote the sets (tuples, if it is clear
+from the context) of all predicates, intensional predicates and extensional predicates in Π respectively. A proper atom P (¯t)
+is extensional (intensional) if P is extensional (intensional).
+
+Now we present the semantics of ﬁrst-order answer set programs with extensional databases. For each rule r of form (1),
+⊃ a), where y is the tuple of all local variables of r and x the rest of variables
+
+(cid:2)
+Bodyr
+
+we use (cid:3)r to denote the sentence ∀x(∃ y
+in r, and
+
+(cid:2)
+Bodyr the formula b1 ∧ · · · ∧ bk ∧ ¬c1 ∧ · · · ∧ ¬cl. By (cid:3)Π , we denote the sentence
+
+(cid:7)
+1, . . . , P
+
+Let P = (P 1, . . . , P k) and P (cid:7) = (P
+
+(cid:7)
+i (1 (cid:2)
+i (cid:2) k) are of the same arity. Given a rule r of form (1), by (cid:3)r [+P/P (cid:7)], we mean the formula that is obtained from (cid:3)r by
+replacing each relation symbol in P occurring in the head and positive body of r by the corresponding relation symbol in
+(cid:3)r [+P/P (cid:7)]. For instance, if r is the rule P (x) ← R(x), not Q (x), then
+P (cid:7)
+(cid:7)(x)). Note that here we do not replace the relation symbol Q in
+(cid:3)r [+{P , Q }/{P
+the negative body of r.
+
+(cid:7)
+k) be two tuples of relation symbols or relation variables where P i and P
+
+. We also use (cid:3)Π[+P/P (cid:7)] to denote the formula
+
+(cid:7)}] is the sentence ∀x(R(x) ∧ ¬Q (x) ⊃ P
+
+(cid:7), Q
+
+r∈Π
+
+(cid:2)
+
+(cid:2)
+
+(cid:3)r.
+
+r∈Π
+
+Deﬁnition 1 (Answer set). Let Π be a program. A structure A of τ (Π) is an answer set of Π if and only if A is a model of
+
+(cid:4)
+
+(cid:3)Π ∧ ¬∃P ∗
+
+P ∗
+
+< Pint(Π) ∧ (cid:3)Π
+
+(cid:5)
++Pint(Π)/P ∗
+
+(cid:6)(cid:7)
+
+.
+
+(2)
+
+Example 1. We consider a program Π1 consisting of the following rules:
+
+T (x, y) ← E(x, y), not E(x, x), not E( y, y),
+T (x, z) ← T (x, y), T ( y, z),
+
+A = {(a, a), (a, b), (b, c),
+where Pext(Π1) = {E} and Pint(Π1) = {T }. Let A = ( A, E
+A = {(b, c), (c, d), (b, d)}. According to Deﬁnition 1, A is an answer set of Π . If we view E as a graph, then T
+(c, d)} and T
+computed by program Π1 is the transitive closure of the induced subgraph of E on the set of nodes that do not have an
+edge going into themselves.
+
+A) be a structure of τ (Π), where E
+
+A, T
+
+Note that in Deﬁnition 1, minimization only applies on intensional predicates while extensional predicates are viewed
+as the initial input of the program. This is different from the previous ﬁrst-order answer set semantics such as Ferraris et
+al. [13] and Lin and Zhou’s semantics [23]. There are both theoretical and practical advantages by separating a program
+vocabulary into intensional and extensional. Firstly, by separating intensional and extensional predicates in a program, the
+program itself may be viewed as a generic description of certain system or agent’s behaviors, while the extensional pred-
+icates just provide various instantiations of the system or agent’s initial inputs. Consequently, the class of programs that
+contain the same rules but with different extensional predicate inputs share many essential properties so that our study
+on these properties such as ﬁrst-order deﬁnability and complexity may be simpliﬁed. Secondly, from a practical viewpoint,
+such separation will also simplify the underlying implementation for problem solving in various domains. This is the current
+practice in ASP anyway. For instance, we can easily write a generic program of computing Hamiltonian cycles for any ﬁnite
+graph without considering speciﬁc input graph – which will be represented by extensional predicate values.
+
+In fact, the semantics presented above is nothing new by a simpliﬁcation of the answer set (stable model) semantics
+recently presented by Ferraris et al. [13] and by Lin and Zhou [23]. The main differences are twofold. First, we distinguish
+between extensional and intensional predicates as discussed above. Second, here we only consider normal logic programs
+with constraints (i.e. programs without functions, disjunctions and nested expressions) rather than an arbitrary ﬁrst-order
+sentence. Also, this deﬁnition goes back to the early work of Lin [21] by relating normal logic program under the stable
+model semantics and circumscription. As we will show next, under the context of ﬁnite structures, it is the same as the
+standard Gelfond–Lifschitz transformation semantics when the program is “grounded” on ﬁnite domains.
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+893
+
+2.3. Relation to other answer set semantics
+
+Given a program Π and a structure A of τext(Π), we shall deﬁne the instantiation of Π on A as a propositional program
+
+over the following propositional language LA:
+
+LA =
+
+(cid:8)
+
+P (a)
+
+(cid:9)
+(cid:9) P ∈ Pint(Π) and a ∈ Dom(A)n
+
+(cid:10)
+
+.
+
+We begin with one more notation. Let α be an atom and σ an assignment over A. We denote by α[σ ] the result of
+
+replacing every constant c in α by domain element c
+
+and every variable x in α by σ (x).
+
+A
+
+Let r ∈ Π be a rule of form (1). We deﬁne the instantiation of r on A, written rA, to be the set of propositional rules
+
+obtained from
+
+R =
+
+(cid:8)
+a[σ ] ← b1[σ ], . . . , bk[σ ], not c1[σ ], . . . , not cl[σ ]
+
+(cid:9)
+(cid:10)
+(cid:9) σ is an assignment on Var(r) over A
+
+by the following transformations:
+
+• if the body of a rule in R contains either a = b for some distinct elements a, b ∈ Dom(A) or not a = a for some element
+
+• if the body of a rule in R contains either P (a) for extensional predicate P and a /∈ P
+
+A
+
+or not P (a) for extensional
+
+a ∈ Dom(A), then delete this rule;
+
+predicate P and a ∈ P
+
+A
+
+, then delete this rule;
+
+• delete a = a and not a = b for all elements a, b ∈ Dom(A) in the bodies of the remaining rules;
+• delete P (a) and not P (a) in the bodies of the remaining rules, where P is an extensional predicate.
+
+The instantiation of a program Π on A, written ΠA, is then the union of the instantiations of all the rules in Π on A.
+
+We also recall some deﬁnitions of answer set semantics for propositional program from [15]. Given a propositional
+
+language L, a propositional program π is a ﬁnite set of propositional rules of the form:
+
+pa ← pb1, . . . , pbk, not pc1, . . . , not pcl,
+
+(3)
+where pa is either ⊥ or a propositional atom in L, and pb1, . . . , pbk, pc1, . . . , pcl (k, l (cid:3) 0) are propositional atoms. A propo-
+sitional program π is called positive if l = 0 for all rules of form (3) in π . Given a set of propositional atoms M ⊆ L and a
+propositional program π , we use GLM (π ) to denote the propositional program obtained from π by the following transfor-
+mations:
+
+• if a rule of form (3) is in π and pci ∈ M for some i, 1 (cid:2) i (cid:2) l, then delete this rule;
+• delete not pci , 1 (cid:2) i (cid:2) l, in the bodies of the remaining rules.
+
+A set of propositional atoms M ⊆ L is an answer set of a propositional program π if it is the minimal set of propositional
+atoms that satisﬁes every rule in GLM (π ), where M satisﬁes a rule of form (3) if
+
+• either pa is ⊥, and {pb1, . . . , pbk} (cid:3) M or {pc1, . . . , pcl} ∩ M (cid:3)= ∅,
+• or pa is a propositional atom, and pa ∈ M whenever {pb1, . . . , pbk} ⊆ M and {pc1, . . . , pcl} ∩ M = ∅.
+
+Proposition 1. Given a program Π and a ﬁnite structure A of τext(Π), let A(cid:7)
+A(cid:7) = c
+c
+only if MA(cid:7) is an answer set of ΠA, where MA(cid:7) = {P (a) | P ∈ Pint(Π) and a ∈ P
+
+for every constant c, and a ∈ P
+
+if and only if a ∈ P
+
+A(cid:7)
+
+A
+
+A
+
+A(cid:7) }.
+
+for every extensional predicate P . A(cid:7)
+
+be a structure of τ (Π) such that Dom(A(cid:7)) = Dom(A),
+is an answer set of Π if and
+
+Proof. Assume that Pint(Π) = {P 1, . . . , Pn}, and let P ∗ = {P
+(1 (cid:2) i (cid:2) n) are of the same arity.
+
+∗
+1, . . . , P
+
+∗
+n
+
+} be a set of relation variables such that P i and P
+
+∗
+i
+
+“⇒”: A(cid:7)
+
+is an answer set of Π . By Deﬁnition 1, A(cid:7)
+
+is a model of (2), so it is a model of (cid:3)Π . By the deﬁnition of ΠA and
+MA(cid:7) , we can see that MA(cid:7) satisﬁes every rules in ΠA and GLMA(cid:7) (ΠA). We will show that MA(cid:7) is the minimal set which
+satisﬁes every rules in GLMA(cid:7) (ΠA).
+Otherwise, there is a set M
+
+(cid:7)(cid:7) ⊂ MA(cid:7) which also satisﬁes every rules in GLMA(cid:7) (ΠA). We can see that M
+
+(cid:7)(cid:7)
+
+∗
+i ) if and only if P i(a) ∈ M
+
+(cid:7)(cid:7)
+
+also satisﬁes
+, for every intensional
+
+every rules in Π(A). Let σ be an assignment on P ∗
+such that a ∈ σ (P
+predicate P i (1 (cid:2) i (cid:2) n). We will show that (A(cid:7), σ ) |(cid:9) (cid:3)Π [+Pint(Π)/P ∗].
+
+Let r ∈ Π be a rule of form (1), and σ (cid:7)
+(cid:5)
+σ (cid:7)
+
+(cid:6)
+, . . . , bk
+
+← b1
+
+(cid:6)
+, not c1
+
+(cid:5)
+σ (cid:7)
+
+(cid:5)
+σ (cid:7)
+
+(cid:7) : a
+
+(cid:6)
+
+r
+
+(cid:5)
+σ (cid:7)
+
+(cid:6)
+, . . . , not cl
+
+(cid:5)
+σ (cid:7)
+
+(cid:6)
+
+,
+
+an assignment on Var(r). Consider the propositional rule
+
+we can see that either
+
+• there is a = b for some distinct elements a, b ∈ Dom(A) or not a = a for some element a ∈ Dom(A) in r
+or not P (a) for extensional predicate P and a ∈ P
+• there is P (a) for extensional predicate P and a /∈ P
+
+A
+
+(cid:7)
+, or
+A
+,
+
+894
+
+or
+
+(cid:7)(cid:7)
+
+• M
+
+satisﬁes propositional rule r
+
+the body of r
+
+.
+
+(cid:7)
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+(cid:7)(cid:7)
+
+, where r
+
+(cid:7)(cid:7)
+
+is obtained by removing all the equality atoms and extensional atoms in
+
+By considering both cases, we have (A(cid:7), σ ) |(cid:9)(cid:3)r [+Pint(Π)/P ∗], and then (A(cid:7), σ ) |(cid:9) (cid:3)Π [+Pint(Π)/P ∗]. So, we have (A(cid:7), σ ) |(cid:9)
+(P ∗ < Pint(Π)) ∧(cid:3)r [+Pint(Π)/P ∗] by noticing that M
+is a model of (2).
+is a model of (cid:3)Π . It is suﬃcient
+
+“⇐”: MA(cid:7) is an answer set of ΠA. By the deﬁnitions of ΠA and MA(cid:7) , we can see that A(cid:7)
+
+(cid:7)(cid:7) ⊂ MA(cid:7) , which is a contradiction to the fact that A(cid:7)
+
+to show that there does not exist an assignment σ on P ∗
+
+such that (A(cid:7), σ ) |(cid:9) (P ∗ < Pint(Π)) ∧(cid:3)r [+Pint(Π)/P ∗].
+
+Otherwise, let σ be an assignment on P ∗
+(cid:7)(cid:7)
+
+if and only if a ∈ σ (P
+
+LA such that P i(a) ∈ M
+satisﬁes every rules in ΠA.
+
+such that (A(cid:7), σ ) |(cid:9) (P ∗ < Pint(Π)) ∧(cid:3)r [+Pint(Π)/P ∗]. Let M
+be a subset of
+∗
+(cid:7)(cid:7)
+i ), for every intensional predicate P i (1 (cid:2) i (cid:2) n). We will show next that M
+
+(cid:7)(cid:7)
+
+Let r
+
+(cid:7)(cid:7) ∈ ΠA be a propositional rule obtained from the propositional rule
+
+(cid:5)
+
+(cid:6)
+
+(cid:7) : a
+
+(cid:5)
+(cid:5)
+σ (cid:7)
+σ (cid:7)
+where there is a rule r of form (1) in Π , and σ (cid:7)
+
+(cid:6)
+, . . . , bk
+
+(cid:6)
+, not c1
+
+← b1
+
+(cid:5)
+σ (cid:7)
+
+σ (cid:7)
+
+r
+
+(cid:6)
+
+, . . . , not cl
+
+(cid:5)
+σ (cid:7)
+
+(cid:6)
+,
+
+is an assignment on Var(r). By the deﬁnition of ΠA,
+
+• each equality atom in the body of r
+• if P (a) ∈ Pos(r
+• if P (a) ∈ Neg(r
+
+A
+(cid:7)), then a ∈ P
+(cid:7)), then a /∈ P
+
+A
+
+, for extensional predicate P ,
+, for extensional predicate P .
+
+(cid:7)
+
+is of the form a = a or not a = b, where a and b are distinct elements in Dom(A),
+
+We already have (A(cid:7), σ ) |(cid:9)(cid:3)r [+Pint(Π)/P ∗]. So, by the deﬁnition of M
+by (A(cid:7), σ ) |(cid:9) P ∗ < Pint(Π), we can see that M
+MA(cid:7) satisﬁes every rules in ΠA. This is a contradiction to the fact that MA(cid:7) an answer set of ΠA. (cid:2)
+
+. Furthermore,
+also satisﬁes every rules in GLMA(cid:7) (ΠA) by noticing that
+
+(cid:7)(cid:7) ⊂ MA(cid:7) , and M
+
+, we can see that M
+
+satisﬁes rule r
+
+(cid:7)(cid:7)
+
+(cid:7)(cid:7)
+
+(cid:7)(cid:7)
+
+(cid:7)(cid:7)
+
+Proposition 1 indicates that Deﬁnition 1 coincides with the standard Gelfond–Lifschitz semantics but lifted to an arbitrary
+ﬁnite structures rather than only considering the Herbrand structure [15]. As a consequence, Deﬁnition 1 also coincides with
+Ferraris et al.’s recent semantics [13] restricted to normal logic programs with constraints on ﬁnite structures.
+
+Corollary 2. Let Π be a program such that all predicates in Π are intensional. A structure A is a stable model of (cid:3)Π under Ferraris
+et al.’s deﬁnition [13] iff it is an answer set of Π under Deﬁnition 1.
+
+Another issue is that we distinguish between intensional predicates and extensional predicates in this paper. In fact,
+the main purpose is conceptual but not technical. Also followed from Proposition 1, the following two properties show
+that programs with and without extensional predicates can be simply transformed from one another. More precisely, from
+programs without extensional predicates to those with, one can add “identity rules” of the form
+
+P (x) ← P (x)
+
+for every predicate P in Π . For the other way around, one can add “choice rules” of the form
+
+(cid:7)
+
+(x) ← not P (x),
+
+P
+P (x) ← not P
+
+(cid:7)
+
+(x)
+
+for every extensional predicate P , where P
+
+(cid:7)
+
+is a new predicate that has the same arity as P .
+
+Corollary 3. Let Π be a program. A structure A is a stable model of (cid:3)Π under Ferraris et al.’s deﬁnition [13] iff it is an answer set of
+Π ∪ ID(Π) under Deﬁnition 1, where ID(Π) is the set of all identity rules for all predicates in Π .
+
+Corollary 4. Let Π be a program. A structure A is an answer set of Π under Deﬁnition 1 iff A(cid:7)
+under Ferraris et al.’s deﬁnition [13], where A(cid:7)
+P ∈τ (Π)
+is the set of all choice rules for all extensional predicates in Π .
+
+is the conservative extension of A under
+
+(cid:2)
+
+is a stable model of (cid:3)Π ∧ (cid:4)
+∀x(P (x) ↔ ¬P
+
+Choice(Π)
+(cid:7)(x)), and Choice(Π)
+
+Recently, Pelov, Denecker and Bruynooghe also introduced an alternative ﬁrst-order extension of logic programs with
+aggregates under stable semantics [26]. In their formalism, a program is a (possibly inﬁnite) set of aggregate rules of the
+form A ← ϕ, where A is an atom and ϕ is a ﬁrst-order formula potentially including aggregate expressions. By deﬁning
+a three-value immediate consequence operator of an aggregate program, they deﬁned the extended stable semantics for
+such aggregate programs. Nevertheless, by ignoring the issue of aggregates, it is not diﬃcult to observe that their ﬁxpoint
+based extended stable semantics actually coincides with Gelfond–Lifschitz’s original stable model semantics on grounded
+programs [15].
+
+(cid:11)
+
+1(cid:2)i(cid:2)k
+
+where
+
+xθ = ¯t);
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+895
+
+2.4. Loops and loop formulas
+
+For ﬁnite domains, the answer set semantics of a ﬁrst-order logic program can also be captured by loop formulas [4]. In
+the following, we review some results about loops and loop formulas as they will be used in deﬁning a class of ﬁrst-order
+deﬁnable programs.1
+
+Given a program Π , the positive dependency graph of Π , denoted by GΠ , is the inﬁnite graph (V , E), where V is the set
+of atoms of τint(Π), and (α, β) is an edge in E if there is a rule r ∈ Π and a substitution θ , such that α = Head(rθ) and
+β ∈ Pos(rθ). A ﬁnite non-empty subset L of V is said to be a loop of Π if there exists a cycle in GΠ that goes through only
+and all the nodes in L. In particular, for each atom α ∈ V , we treat {α} as a special loop, in which there is a singleton. A rule
+r is said to be involved in a loop if there is a loop L and two atoms α and β in L such that α = Head(r) and β ∈ Pos(r).
+
+Let r be a rule of form (1), and suppose that a is P (t1, . . . , tn) for some predicate P and tuple (t1, . . . , tn) of terms. If
+
+x = (x1, . . . , xn) is a tuple of variables not in r, then the normal form of r on x is the following rule:
+
+P (x1, . . . , xn) ← x1 = t1, . . . , xn = tn, b1, . . . , bk, not c1, . . . , not cl.
+
+Given a loop L of a program Π and an atom P (¯t) in L, the external support formula of P (¯t) for Π with respect to L, denoted
+by ES(P (¯t), L, Π), is the following formula:
+
+(cid:12)
+
+∃ yi
+
+(cid:4)
+Bodyri θ
+
+∧
+
+(cid:13)
+
+Q (¯t(cid:7))∈L, Q (¯t)∈Pos(ri θ )
+
+(cid:14)
+
+¯t (cid:3)= ¯t
+
+(cid:7)
+
+,
+
+(4)
+
+• r1, . . . , rk are the normal forms on x of rules in Π whose head mention the predicate P ;
+• x is a tuple of variables that are not in Π , and if ¯t = (t1, . . . , tn) and x = (x1, . . . , xn), then θ = {x1/t1, . . . , xn/tn} (so that
+
+• yi (1 (cid:2) i (cid:2) k) is the tuple of local variables of ri .
+
+The loop formula of L in Π , denoted by LF(L, Π), is the universal closure of
+
+(cid:11)
+
+(cid:11)
+
+α ⊃
+
+ES(α, L, Π).
+
+(5)
+
+α∈L
+
+α∈L
+
+We use LF(Π) to denote the set of all loop formulas in Π .
+
+Theorem 1. (See [4].) Let Π be a program2 and A a ﬁnite structure of τ (Π), where A is a model of Σuna. A is an answer set of Π if
+and only if A is a model of { (cid:3)Π} ∪ LF(Π).
+
+In general case, a program may have inﬁnite many loops, and thus LF(Π) is an inﬁnite set of sentences (see programs
+Π4 and Π5 illustrated in next section). However, there are programs whose loop formulas can be captured by a ﬁnite set of
+formulas.
+
+A complete set of loops S of a program Π is a set of loops such that for every loop L of Π , there is a loop L
+(cid:2)
+
+(cid:7) ∈ S and a
+(cid:7)θ . If a program Π has a ﬁnite complete set of loops S, then a ﬁnite structure A is an answer
+
+substitution θ such that L = L
+set of Π if and only if A is a model of the sentence (cid:3)Π ∧
+
+L∈S LF(L, Π).
+
+Example 2. Consider the following program Π2:
+
+r1:
+P (x) ← Q (x), R1(x),
+r2: Q (x) ← P (x), R2(x),
+r3:
+P (x) ← R3(x),
+r4: Q (x) ← R4(x).
+
+(cid:4)
+
+One of the complete set of loops of Π2 is {{P ( y)}, {Q ( y)}, {P ( y), Q ( y)}}, and thus a structure A is an answer set of Π2 if
+and only if it is a model of the conjunction of (cid:15)Π2 and the following loop formulas:
+(cid:7)
+∨ R3( y)
+(cid:7)
+∨ R4( y)
+(cid:7)
+⊃ R3( y) ∨ R4( y)
+
+P ( y) ⊃
+Q ( y) ⊃
+(cid:4)(cid:4)
+(cid:7)
+P ( y) ∨ Q ( y)
+
+(cid:7)
+Q ( y) ∧ R1( y)
+(cid:7)
+(cid:4)
+P ( y) ∧ R2( y)
+
+∀ y
+∀ y
+∀ y
+
+(cid:4)
+
+(cid:4)
+
+,
+
+,
+
+.
+
+1 Some notions are a little bit different from [4] to ﬁt our context.
+2 The theorem in [4] consider only programs without constraint, while it is straightforward to extend it to arbitrary programs.
+
+896
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+3. First-order deﬁnable programs
+
+Now we present a formal deﬁnition of ﬁrst-order deﬁnability for answer set programs.
+
+Deﬁnition 2. A program Π is called ﬁrst-order deﬁnable on ﬁnite structures (under answer set semantics) if there is a ﬁrst-
+order sentence ψ on vocabulary τ (Π) such that for every ﬁnite structure A of τ (Π), A is a model of ψ if and only if A is
+an answer set of Π . In this case, we say that Π is deﬁned by ψ .
+
+This notion of ﬁrst-order deﬁnability for answer set programs is closely related to the well-studied deﬁnability problem
+of datalog queries in deductive database [1,6]. A datalog rule is a rule without negation, and a datalog program is a ﬁnite
+set of datalog rules, i.e., a program without negation. For any datalog program Π , it can be shown that given any database
+(structure) of extensional predicates, there is a unique answer set of Π based on the database. This unique answer set is
+what is computed by the datalog program from the given database of the extensional predicates.
+
+A datalog query (Q , Π) ( Q ∈ Pint(Π)) represents the intended value of Q on a given extensional database A of Π ,
+denoted as Q (A). (Q , Π) is explicitly ﬁrst-order deﬁnable if and only if there exists a ﬁrst-order formula φ(x) on τext(Π)
+such that for every extensional database A of Π , Q (A) is the same as the relation represented by φ(x) under A. (Q , Π)
+is implicitly ﬁrst-order deﬁnable if there is a ﬁrst-order sentence φ on τext(Π) ∪ {Q } such that for every extensional database
+A of Π and a relation R on A, φ is satisﬁed in the extension of A with R if and only if R = Q (A) [17]. It has been shown
+that explicit deﬁnability implies implicit deﬁnability, but the converse is not true in general on ﬁnite structures [1].
+
+Our deﬁnition of ﬁrst-order deﬁnability is similar to implicit ﬁrst-order deﬁnability in Datalog. One main difference is
+that the ﬁrst-order deﬁnability issue considered in ASP is about a program but not a query. Another difference is that in
+our deﬁnition we require a ﬁrst-order sentence to capture all answer sets and thus all intensional predicates, not just the
+single intensional predicate mentioned in the query.
+
+Example 3. Consider the following program Π3:
+
+P (x) ← Q (x), not R1(x),
+Q (x) ← R2(x).
+
+Π3 has two intensional predicates: P and Q . According to Deﬁnition 2, Π3 can be deﬁned by the sentence
+
+(cid:4)
+∀x
+
+P (x) ≡
+
+(cid:4)
+
+Q (x) ∧ ¬R1(x)
+
+(cid:7)(cid:7)
+
+(cid:4)
+∧ ∀x
+
+(cid:7)
+Q (x) ≡ R2(x)
+
+.
+
+From our remarks at the end of last section, we see that if a program has a ﬁnite complete set of loops, then it is
+
+ﬁrst-order deﬁnable. However, the converse is not true in general. As the following examples show.
+
+Example 4. Consider the program Π4:
+
+r1:
+r2:
+
+P (x) ← R(x),
+P (x) ← P ( y), S(x, u), not T ( y, v).
+
+(6)
+
+(7)
+
+For this program, P is the only intensional predicate. Clearly, Π4 does not have a ﬁnite complete set of loops: for each
+n > 0, {P (x1), . . . , P (xn)} is a loop.
+
+Now consider how P (x1) can be derived. There are two rules for it:
+
+P (x1) ← R(x1),
+P (x1) ← P (x2), S(x1, u1), not T (x2, v 1).
+
+(8)
+
+(9)
+
+The ﬁrst one is a base rule, where a rule is called a base rule if all predicates in the body of the rule are extensional. The
+second one has a recursive call to P (x2). Expanding the recursive call in the second rule produces two new rules for P (x1):
+
+P (x1) ← R(x2), S(x1, u1), not T (x2, v 1),
+P (x1) ← P (x3), S(x2, u2), not T (x3, v 2), S(x1, u1), not T (x2, v 1).
+
+(10)
+
+(11)
+
+Again, the ﬁrst one is a base rule, and the second one has a recursive call to P (x3) which can be further expanded to
+produce more rules about P (x1). However, these new rules are really redundant. For instance, expanding P (x3) in (11)
+using rule (6) produces the following rule:
+
+P (x1) ← R(x3), S(x2, u2), not T (x3, v 2), S(x1, u1), not T (x2, v 1).
+
+(12)
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+897
+
+But this rule is subsumed by (10). In fact, one can show that this program is equivalent to the program Π (cid:7)
+two rules (8) and (10). Π (cid:7)
+
+4 has no loops and is deﬁned by the conjunction of
+
+4 and
+
+(cid:15)
+Π (cid:7)
+
+4 which contains
+
+(cid:4)
+∀x
+
+P (x) ⊃ R(x) ∨ ∃ yuv
+
+R( y) ∧ S(x, u) ∧ ¬T ( y, v)
+
+.
+
+(cid:4)
+
+(cid:7)(cid:7)
+
+This is an example where recursive expansion terminates in one step. As we shall see, one reason is that the body of r2
+can be separated into two parts, Bh = {S(x, u)} and Bb = {P ( y), not T ( y, v)}, such that Bh and the head of rule r2 do not
+share any variables with Bb.
+
+Example 5. Consider another program Π5:
+
+r1:
+P (x) ← R1(x),
+r2: Q (x, y) ← R2(x, y),
+r3:
+r4: Q (x, y) ← P (x), S(x, u).
+
+P (x) ← Q (x, y), not T ( y, v),
+
+For this program, the intensional predicates are P and Q . We can see that Π5 does not have a ﬁnite complete set
+of loops either: for each n > 0, {P (x), Q (x, y1), . . . , Q (x, yn)} is a loop. Notice here that in every loop, all atoms share a
+common variable x.
+
+Just like Example 4, the recursive rules r3 and r4 only need to be expanded a ﬁnite number of times. For r3, expanding
+Q (x, y) in its body once produces one base rule and one recursive rule of the form P (x) ← P (x), . . . which can be discarded.
+For r4, expanding P (x) in its body once produces a base rule and the following recursive rule:
+
+Q (x, y) ← Q (x, y1), S(x, u), not T ( y1, v).
+Expanding Q (x, y1) in (13) using r2 produces a base rule:
+
+Q (x, y) ← R2(x, y1), S(x, u), not T ( y1, v).
+
+Expanding Q (x, y1) in (13) using r4 produces a recursive rule:
+
+Q (x, y) ← P (x), S(x, u1), S(x, u), not T ( y1, v).
+
+(13)
+
+(14)
+
+(14) is subsumed by r4. It is redundant, and do not need to be expanded.
+
+On further examination, we found that what makes this program ﬁrst-order deﬁnable is that in every loop that
+“uses” the recursive rule r3 (and similarly r4), the body of the rule can be separated into two parts, Bh = ∅ and
+Bb = {Q (x, y), not T ( y, v)}, such that the variables in both Bh ∪ {Head(r3)} and Bb are the same as the variables in all
+the atoms in this loop.
+
+4. Loop-separable programs
+
+We have seen two examples above that do not have ﬁnite complete sets of loops but are nonetheless ﬁrst-order deﬁnable.
+They are what we will call loop-separable programs. Our main result of this paper is in showing that all such programs are
+ﬁrst-order deﬁnable. To deﬁne these programs, we need to ﬁrst introduce some additional notions about loops.
+
+4.1. Loop patterns
+
+The two examples above suggest that when the variables in the rules involved in the loops of a program have some
+“patterns”, its loop formulas are then “well-behaved” in the sense that they do not grow inﬁnitely long. However, loops are
+sets of atoms, and the variables in a loop may not be the same as the variables occurring in the rules involved in the loop.
+This motivates our following deﬁnition of derivation paths, which extends the notion of path in the dependency graph of a
+program.
+
+Deﬁnition 3. A derivation path S of a program Π is a ﬁnite sequence of pairs of an atom and a rule:
+
+(α1, ρ1), . . . , (αn, ρn)
+
+where
+
+(15)
+
+• for 1 (cid:2) i (cid:2) n, there is a rule ri ∈ Π and a substitution (xi/ yi) such that ρi = ri(xi/ yi), where xi is the tuple of all the
+
+variables in ri and for any local variable xi j of ri , yi j is a new variable not in (αk, ρk) (1 (cid:2) k < i);
+
+• for 1 (cid:2) i (cid:2) n, αi = Head(ρi);
+• for 1 (cid:2) i < n, αi+1 ∈ Pos(ρi).
+
+898
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+If there is a path starting from an atom and ending at the same atom, then there is a loop. For derivation path, we also
+
+need to know when there is a cycle. In the following, we will deﬁne a relation between two pairs of an atom and a rule.
+
+Let ¯t1 = (t11, . . . , t1n) and ¯t2 = (t21, . . . , t2n) be two tuples of terms of the same length. We deﬁne ¯t1 ∼ ¯t2 if
+
+• for every i (1 (cid:2) i (cid:2) n) and constant c, t1i = c if and only if t2i = c;
+• for every i (1 (cid:2) i (cid:2) n) and variable x, if x ∈ ¯t1 and x ∈ ¯t2, then t1i = x if and only if t2i = x;
+• for every i (1 (cid:2) i (cid:2) n) and variable x, if x ∈ ¯t1 and x /∈ ¯t2, then there is a variable y such that y ∈ ¯t2 and y /∈ ¯t1, and
+
+• for every i (1 (cid:2) i (cid:2) n) and variable x, if x ∈ ¯t2 and x /∈ ¯t1, then there is a variable y such that y ∈ ¯t1 and y /∈ ¯t2, and
+
+t1i = x if and only if t2i = y;
+
+t2i = x if and only if t1i = y.
+
+We also use ¯t1 (cid:5) ¯t2 if it is not the case ¯t1 ∼ ¯t2. For example, we have (x, y, x, z) ∼ (x, u, x, w) and (x, y, z) (cid:5) ( y, x, u).
+Intuitively, ¯t1 ∼ ¯t2 represents a special mutual substitution relation between ¯t1 and ¯t2, where variables and their cor-
+responding positions occurring in ¯t1 and ¯t2 cannot be mixed. Precisely, these properties are presented in the following
+proposition.
+
+Proposition 5. Let ¯t1 and ¯t2 be two tuples of terms of length n, and ¯t1 ∼ ¯t2. Then, there is a substitution x/ y = {x1/ y1, . . . , xk/ yk},
+where xi and yi (1 (cid:2) i (cid:2) k) are variables, and
+
+• for any 1 (cid:2) i < j (cid:2) k, xi and x j are different variables;
+• for any 1 (cid:2) i < j (cid:2) k, yi and y j are different variables;
+• {x1, . . . , xk} ∩ Var(¯t2) = ∅ and { y1, . . . , yk} ∩ Var(¯t1) = ∅;
+• ¯t1(x/ y) = ¯t2 and ¯t2( y/x) = ¯t1.
+
+Proof. Let x1, . . . , xk be the variables only in ¯t1 and y1, . . . , yk the variables only in ¯t2, such that t1i = x j if and only if
+t2i = y j , 1 (cid:2) i, j (cid:2) k. (cid:2)
+
+In the following, we call the substitution (x/ y), as shown in Proposition 5, the witness of ¯t1 ∼ ¯t2. For example, { y/u, z/w}
+
+is the witness of (x, y, x, z) ∼ (x, u, x, w).
+
+We extend relation ∼ to atoms, rules and pairs of an atom and a rule. For two atoms α1 and α2, where α1 = P (¯t1) and
+α2 = P (¯t2), we use α1 ∼ α2 if ¯t1 ∼ ¯t2. For two rules ρ1 and ρ2, where ρ1 = r(x/ y1), ρ2 = r(x/ y2) and x is the tuple of all
+variables in r, we use ρ1 ∼ ρ2 if y1 ∼ y2. For two pairs (α1, ρ1) and (α2, ρ2), where α1, α2 are atoms, and ρ1, ρ2 are rules,
+we use (α1, ρ1) ∼ (α2, ρ2) if α1 ∼ α2 and ρ1 ∼ ρ2. We also use O1 (cid:5) O2, if it is not the case O1 ∼ O2, where O1 and O2
+can be two atoms, rules or pairs of an atom and a rule.
+
+Now we can give the deﬁnition of loop pattern.
+
+Deﬁnition 4. A derivation path of form (15) is called a loop pattern if n > 1, ρ1 ∼ ρn, and ρi (cid:5) ρ j for any other i,
+(1 (cid:2) i, j (cid:2) n).
+
+j
+
+Example 6. We continue with the program Π4 in Example 4 and Π5 in Example 5.
+
+For program Π4, its loop patterns are of the form:
+
+lp1:
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:7)
+P (x1), r2(x/x1, y/x2, u/u1, v/v 1)
+(cid:7)
+P (x2), r2(x/x2, y/x3, u/u2, v/v 2)
+(cid:7)
+P (x3), r2(x/x3, y/x4, u/u3, v/v 3)
+
+,
+
+,
+
+.
+
+Note that
+
+r2(x/x1, y/x2, u/u1, v/v 1) ∼ r2(x/x3, y/x4, u/u3, v/v 3),
+
+r2(x/x1, y/x2, u/u1, v/v 1) (cid:5) r2(x/x2, y/x3, u/u2, v/v 2)
+
+but
+
+and
+
+r2(x/x2, y/x3, u/u2, v/v 2) (cid:5) r2(x/x3, y/x4, u/u3, v/v 3).
+
+For program Π5, there are two forms of loop patterns:
+
+(16)
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+lp1:
+
+lp2:
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+,
+
+(cid:7)
+P (x1), r3(x/x1, y/x2, v/v 1)
+
+(cid:7)
+Q (x1, x2), r4(x/x1, y/x2, u/u1)
+
+(cid:7)
+P (x1), r3(x/x1, y/x3, v/v 2)
+
+(cid:7)
+Q (x1, x2), r4(x/x1, y/x2, u/u1)
+
+(cid:7)
+P (x1), r3(x/x1, y/x3, v/v 1)
+
+(cid:7)
+Q (x1, x3), r4(x/x1, y/x3, u/u2)
+
+,
+
+,
+
+,
+
+,
+
+.
+
+899
+
+(17)
+
+(18)
+
+The following proposition shows the relationship between loop patterns and loops.
+
+Proposition 6. If S is a loop pattern of form (15) of a program Π , then {α1( y/x), . . . , αn( y/x)} is a loop of Π , where (x/ y) is the
+witness of α1 ∼ αn.
+
+Proof. There is a path from α1( y/x) to αn( y/x), and α1( y/x) = αn( y/x). (cid:2)
+
+There are programs that do not have a ﬁnite complete set of loops, while the following proposition shows that every
+
+program has a ﬁnite complete set of loop patterns.
+
+Proposition 7. For every program Π , there is a ﬁnite set of loop patterns Sl such that for every loop pattern S of Π , there is a loop
+pattern S
+
+(cid:7)θ , where θ = (x/ y) is a substitution, and all variables in y are different.
+
+(cid:7) ∈ Sl and S = S
+
+Proof. Please see Section 5.1. (cid:2)
+
+4.2. Loop-separable program
+
+Now we present our main result.
+
+Deﬁnition 5 (Loop-separable programs). A program Π is loop-separable if for every loop pattern of form (15), one of the
+following cases holds:
+
+Case 1: there is a pair (αi, ρi), 1 (cid:2) i < n, such that Body(ρi) can be separated into two parts Bh and Bb and
+– Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(ρi),
+– αi+1 ∈ Bb,
+– Var({αi} ∪ Bh) ∩ Var(Bb) = ∅;
+Case 2: for every pair (αi, ρi), 1 (cid:2) i < n, Body(ρi) can be separated into two parts Bh and Bb and
+– Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(ρi),
+– αi+1 ∈ Bb,
+– Var({αi} ∪ Bh) ∩ Var(Bb) =
+
+(cid:16)
+n
+j=1 Var(α j).
+
+Example 7. Consider loop pattern lp1 of program Π4 and the pair (P (x1), r
+
+(cid:7)
+2), where r
+
+(cid:7)
+2 is
+
+r2(x/x1, y/x2, u/u1, v/v 1) : P (x1) ← P (x2), S(x1, u1), not T (x2, v 1).
+
+We can separate Body(r
+case 1 in Deﬁnition 5, and program Π4 is loop-separable.
+
+(cid:7)) into two parts: Bh = {S(x1, u1)} and Bb = {P (x2), not T (x2, v 1)}. So lp1 satisﬁes the condition of
+
+Consider loop patterns lp1 and lp2 of program Π5. We can see that both of them satisfy the condition of case 2 in
+
+Deﬁnition 5, so program Π5 is also loop-separable.
+
+Note that the two cases in Deﬁnition 5 are not exclusive. There are loop patterns that satisfy the conditions of both
+j=1 Var(α j) = ∅. Furthermore, given
+
+cases. For instance, a loop pattern of form (15) could be both of case 1 and case 2 if
+a program, it is possible that some of its loop patterns are of case 1 while others case 2.
+
+(cid:16)
+n
+
+Example 8. Consider the program Π6:
+
+r1:
+P (x) ← R1(x),
+r2: Q (x) ← R2(x),
+r3:
+
+P (x) ← Q (x), R3( y),
+
+900
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+r4: Q (x) ← P (x), R4( y),
+P (x) ← P ( y), R5( y).
+r5:
+
+There are four forms of loop patterns:
+
+lp1:
+
+lp2:
+
+lp3:
+
+lp4:
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+,
+
+,
+
+(cid:7)
+P (x1), r5(x/x1, y/x2)
+(cid:7)
+P (x2), r5(x/x2, y/x3)
+(cid:7)
+P (x3), r5(x/x3, y/x4)
+
+,
+(cid:7)
+P (x1), r3(x/x1, y/ y1)
+
+,
+(cid:7)
+Q (x1), r4(x/x1, y/ y1)
+(cid:7)
+P (x1), r3(x/x1, y/ y1)
+
+,
+(cid:7)
+Q (x1), r4(x/x1, y/ y1)
+(cid:7)
+P (x1), r3(x/x1, y/ y1)
+
+,
+(cid:7)
+Q (x1), r4(x/x1, y/ y1)
+(cid:7)
+Q (x1), r4(x/x1, y/ y1)
+(cid:7)
+P (x1), r3(x/x1, y/x2)
+
+,
+(cid:7)
+P (x2), r3(x/x2, y/ y2)
+
+,
+(cid:7)
+Q (x2), r4(x/x2, y/ y2)
+
+,
+
+,
+
+,
+
+,
+
+.
+
+(19)
+
+(20)
+
+(21)
+
+(22)
+
+As we can see that lp4 is a loop pattern of case 1, lp2 and lp3 are loop patterns of case 2, and lp1 is a loop pattern of both
+case 1 and case 2.
+
+Theorem 2. If a program is loop-separable, then it is ﬁrst-order deﬁnable.
+
+According to Theorem 2, programs Π4, Π5 and Π6 are ﬁrst-order deﬁnable.
+Furthermore, the problem of checking whether a given program is loop-separable is decidable, as indicated by the fol-
+
+lowing theorem.
+
+Theorem 3. It is decidable to check whether a program is loop-separable.
+
+5. Proofs of the main theorems
+
+The proofs of the main theorems (i.e. Theorems 2 and 3) are rather technical and tedious. However, the underlying
+ideas are simple. For Theorem 2, we ﬁrst prove that it holds with the restriction of the UNA, then extend this result to
+the general case. The ﬁrst step is of the most technically challenging. For this purpose, we need to relate the answer set
+semantics to so-called expansion tree, extended from the same technique in Datalog. Then, we show that for any loop-
+separable program, we can always pick up a ﬁnite set of expansion trees to capture all its answer sets. Based on these ﬁnite
+number of expansion trees, we can explicitly deﬁne a ﬁrst-order sentence that exactly captures the original program.
+
+Theorem 3 is a direct consequence of Proposition 7, which can be proven by showing that, under the operator ∼, there
+
+is a bound for the length of loop patterns of a given program.
+
+5.1. Proofs of Proposition 7 and Theorem 3
+
+We ﬁrst prove Proposition 7 and Theorem 3, as the proof techniques are needed in proving Theorem 2. We need the
+
+following lemma about the length of a derivation path.
+
+Lemma 1. Let Π be a program. There exists an natural number N such that for any derivation path of form (15), if n > N then there
+exists i, j (1 (cid:2) i < j (cid:2) n) such that (αi, ρi) ∼ (α j, ρ j).
+
+Proof. Note that Π has only ﬁnite many rules, so the original statement follows immediately from the following one:
+
+Let k be a natural number. There exists a natural number Nk such that for any set {¯t1, . . . , ¯tn} of tuples of length k, if n > Nk then
+there exists i, j (1 (cid:2) i < j (cid:2) n) such that ¯ti ∼ ¯t j .
+
+In other words, there exists a bound for a set of term tuples of ﬁxed length if there are no two similar term tuples in it.
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+901
+
+(cid:7)
+
+(cid:7)
+i
+
+= t
+
+We ﬁrst ignore all constants. Now we divide the set of term tuples into categories such that each category is a partition
+of the k terms. That is, for any two term tuples ¯t and ¯t
+j (1 (cid:2) i (cid:3)= j (cid:2) k), ti = t j
+(cid:7)
+j . The number of categories is ﬁnite since k is a ﬁxed number. More speciﬁcally, the number of all
+if and only if t
+categories is exactly Bk, the k-th Bell number, which can be understood as the number of equivalence relations on a set
+with k members. Clearly, two term tuples in different categories are not similar. We now prove that there exists a bound
+for any of the categories if there are no two similar term tuples in it. Without loss of generality, we only consider the case
+that all terms in the term tuple are distinct. The other cases can be obtained in a similar way.
+
+in the same category, for every pair i,
+
+In this category, for any term tuple ¯t, there does not exist ti and t j such that ti = t j . Let Tk be the maximal number of
+term tuples of length k in this category such that there are no two similar term tuples in it. Clearly, T 1 = 1. Now consider
+to calculate Tk for k > 1. Suppose there are no two term tuples that are similar in this category. Let ¯t = (x1, . . . , xk) be a
+is not similar to ¯t, then there must exist i (1 (cid:2) i (cid:2) k) such that
+term tuple and xi (cid:3)= x j (1 (cid:2) i (cid:3)= j (cid:2) k). If another tuple ¯t
+xi ∈ ¯t
+. Then,
+consider all the term tuples in this category such that x1 is in the k-th position. The number of such term tuples is less or
+equal than Tk−1. Otherwise, there exist two term tuples that are similar. Thus, we have
+
+. Without loss of generality, assume that x1 is in the k-th position of ¯t
+
+and xi is not in the i-th position in ¯t
+
+(cid:7)
+
+(cid:7)
+
+(cid:7)
+
+(cid:7)
+
+T 1 = 1,
+Tk (cid:2) k(k − 1)Tk−1 + 1,
+
+k > 1.
+
+Here, k in k(k − 1)Tk−1 means that there are k terms, k − 1 means that these variables must be in a different position, and
+Tk−1 means that, as discussed above, there are at most Tk−1 term tuples by ﬁxing a term in a particular position. Hence,
+Tk is bounded. In fact,
+
+Tk (cid:2) k!(k − 1)! ×
+
+(cid:17)
+
+1(cid:2)i(cid:2)k
+
+1
+i!(i − 1)!
+
+.
+
+The above proof shows that there exists a bound when ignoring all constants. When considering constants, this statement
+still holds since the set of constants is ﬁnite. In fact, we can divide the set of term tuples into m groups that contain m
+different constants, 0 (cid:2) m (cid:2) C , where C is the number of all constants. Then, each group has a bound if there does not exist
+two substations “similar”. The above case is for m = 0. The proof can be easily extended to an arbitrary m. (cid:2)
+
+Proof of Proposition 7. By Lemma 1, given a program Π , there are natural numbers N1 and N2, such that for every loop
+pattern S of Π , the length of S is less than N1, and thus, the number of variables in S is less than N2. Let v 1, . . . , v N2 be
+N2 variables not in Π , and Sl be all the possible loop patterns of Π using these variables.
+
+We can see that Sl is ﬁnite, and for every loop pattern S of Π , there is a loop pattern S
+
+(cid:7) ∈ S and S = S
+
+(cid:7)θ , where
+
+θ = (x/ y) is a substitution, and all variables in y are different. (cid:2)
+
+Proof of Theorem 3. The set of loop patterns in Sl as deﬁned in Proposition 7 is ﬁnite, and it is suﬃcient to check if the
+condition in Deﬁnition 5 holds for each loop pattern in Sl. (cid:2)
+
+5.2. Correspondence between answer set and expansion tree
+
+Now we extend the notion of expansion tree, introduced in Datalog [3], to ﬁrst-order answer set program with exten-
+sional database, and show how it is related to the answer set semantics. More precisely, we show that a structure A is an
+answer set of a given program Π if and only if A is supported by a set of expansion trees of Π . In this subsection and the
+next, unless stated otherwise, we assume that all the structures considered are models of Σuna.
+
+Deﬁnition 6. An expansion tree T of a program Π is a (ﬁnite) tree such that
+
+• the nodes of T are pairs of the form (α, ρ), where α is an atom and ρ = rθ such that r ∈ Π is a rule, θ a substitution,
+
+and α = Head(ρ);
+
+• for any node (α, ρ), let β1, . . . , βi be all the intensional atoms in Pos(ρ), then (α, ρ) has i children labeled with the
+
+atom β1, . . . , βi .
+
+In particular, a node (α, ρ) of an expansion tree T is a leaf of T if and only if all the atoms in Pos(ρ) are either equality
+
+or extensional atoms.
+
+Let T be an expansion tree of a program Π and w a node of T . We use αw and ρw to denote the atom and the rule
+of w, and T w the subtree of T whose root is w. Let θ be a substitution. We use wθ to denote the pair (αw θ, ρw θ), and T θ
+the expansion tree obtained from T by replace every node w in T by wθ . We also use dep(T ) to denote the depth of an
+expansion tree T , and tree(Π) the (inﬁnite) set of all expansion trees of Π .
+
+902
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+Given an expansion tree T of a program Π , without loss of generality, we assume that variables in T and variables in Π
+are disjoint, and that for any node w, the variables in the body of ρw either occur in the head of ρw or they do not occur
+in any nodes of T except T w . Note that every path in T is a derivation path of Π .
+
+Given an expansion tree T , we use rT to denote the rule whose head is the atom of the root of T , and the positive body
+
+and negative body are deﬁned by:
+
+(cid:18)(cid:8)
+
+(cid:18)(cid:8)
+
+Pos(rT ) =
+
+Pos(ρw )
+
+Neg(rT ) =
+
+Neg(ρw )
+
+(cid:10)
+
+(cid:9)
+(cid:9) w is a leaf of T
+,
+(cid:9)
+(cid:9) w is a node of T
+
+(cid:10)
+
+.
+
+Given two expansion trees T 1 and T 2, we say that T 1 is subsumed by T 2 (or T 2 subsumes T 1) if the roots of T 1 and T 2 are
+labeled by the same atom and Body(rT 2 ) ⊂ Body(rT 1 ).
+
+Deﬁnition 7. Let Π be a program, A a structure of τ (Π) and T a (possibly inﬁnite) set of expansion trees. We say that A
+is supported by T , if for every intensional predicate P and a ∈ P
+, there is an expansion tree T ∈ T and an assignment σ
+on Var(T ) over A such that σ (¯t) = a and (A, σ ) |(cid:9) (cid:4)
+
+BodyrT , where P (¯t) is the atom of the root of T .
+
+A
+
+The following two lemmas show the relationship between the answer sets and expansion trees.
+
+Lemma 2. Let Π be a program and A a structure of τ (Π) which is a model of (cid:3)Π . If A is an answer set of Π , then A is supported by
+tree(Π).
+
+Proof. Assume that A is an answer set of Π . Let Ae be the structure of τext(Π) such that Dom(Ae) = Dom(A) and P
+A
+for all extensional predicate P ∈ Pext(Π). Also, let M = {P (a) | P ∈ Pint(Π) and a ∈ P
+P
+answer set of the propositional program ΠAe , where ΠAe is the instantiation of Π on Ae .
+
+Ae =
+A}. By Proposition 1, M is an
+
+By Deﬁnition 7, it is suﬃcient to show that for every P (a) ∈ M, there is an expansion tree T ∈ tree(Π) and an assignment
+
+σ on Var(T ) over A such that P (a) = α[σ ] and (A, σ ) |(cid:9) (cid:4)
+
+BodyrT , where α is the atom of the root of T .
+
+From the deﬁnition of the answer set for propositional program, M is the minimal set which satisﬁes every rules in
+GLM (ΠAe ). We deﬁne M0 = ∅ and Mi = TP(Mi−1) for i > 0, where TP is a map from a subset of LA to a subset of LA
+deﬁned as following:
+(cid:9)
+(cid:9) there is a rule pa ← pb1, . . . , pbk in GLM (ΠAe ) such that {pb1, . . . , pbk} ⊆ S
+
+TP(S) =
+
+pa
+
+(cid:8)
+
+(cid:10)
+
+.
+
+GLM (ΠAe ) is positive, so there exists n such that Mn = Mn+1 = M [30]. We will show by induction that if P (a) ∈ Mi ,
+0 (cid:2) i (cid:2) n, then there is an expansion tree T ∈ tree(Π) and an assignment σ on Var(T ) over A such that P (a) = α[σ ] and
+(A, σ ) |(cid:9) (cid:4)
+
+BodyrT , where α is the atom of the root of T .
+
+For i = 0, the statement holds trivially. We assume that the statement holds for all i < j, and we will show next that it
+
+also holds for j.
+
+Let P (a) ∈ M j . By the deﬁnition of TP(M j), there is a rule
+
+P (a) ← pb1, . . . , pbk
+
+in GLM (ΠAe ) such that {pb1, . . . , pbk} ⊆ M j−1. By the deﬁnitions of ΠAe and GLM (ΠAe ), there is a rule
+
+P (a) ← pb1, . . . , pbk, not pc1, . . . , not pcl
+
+in ΠAe , and there is a rule r:
+
+P (¯t) ← b1, . . . , bk, bk+1, . . . , bk(cid:7) , not c1, . . . , not cl, not cl+1, . . . , not cl(cid:7)
+
+in Π and an assignment σr on Var(r) over A such that:
+
+• P (¯t)[σr] = P (a);
+• b1, . . . , bk are intensional atoms, and bm[σr] = pbm, 1 (cid:2) m (cid:2) k;
+• bk+1, . . . , bk(cid:7) are either extensional atoms or equality atoms, and (A, σr) |(cid:9) bm, k < m (cid:2) k
+• c1, . . . , cl are intensional atoms, and cm[σr] = pcm, 1 (cid:2) m (cid:2) l;
+• cl+1, . . . , cl(cid:7) are either extensional atoms or equality atoms;
+• (A, σr) (cid:3)|(cid:9) cm, 1 < m (cid:2) l
+
+.
+
+(cid:7)
+
+(cid:7)
+
+;
+
+By assumption, for every 1 (cid:2) m (cid:2) k, there is an expansion tree Tm ∈ tree(Π) and an assignment σm on Var(Tm) over A
+, where αm is the atom of the root of Tm. Without loss of generality, we
+
+such that pbm = αm[σm] and (A, σm) |(cid:9) (cid:4)
+BodyrTm
+assume Var(Tm1 ) ∩ Var(Tm2 ) = ∅, 1 (cid:2) m1 (cid:3)= m2 (cid:2) k.
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+903
+
+We introduce a new variable vc for each domain element c ∈ Dom(A), and deﬁne a substitution θm for each Tm, 1 (cid:2)
+
+m (cid:2) k, as following:
+(cid:9)
+(cid:9) x ∈ Var(Tm) and x is assigned to c in σm
+
+θm =
+
+x/vc
+
+(cid:8)
+
+(cid:10)
+
+.
+
+We can see that pbm = αm[σm] = αmθm[σ (cid:7)
+root of Tm and σ (cid:7)
+element c.
+
+, where αm is the
+m is the assignment on Var(Tmθm) over A which assign every variable of the form vc to the domain
+
+], and (A, σm) |(cid:9) (cid:4)
+BodyrTm
+
+if and only if (A, σ (cid:7)
+
+m) |(cid:9) (cid:4)
+BodyrTm θm
+
+m
+
+Let θ be the substitution
+
+(cid:8)
+
+θ =
+
+x/vc
+
+(cid:9)
+(cid:9) x ∈ Var(r) and x is assigned to c in σr
+
+(cid:10)
+
+.
+
+We then deﬁne an expansion tree T as following:
+
+• the root of T is (P (¯t)θ, rθ),
+• (P (¯t)θ, rθ) have k subtree: T 1θ1, . . . , Tkθk.
+
+We can see that b1θ, . . . , bkθ are all the intensional atoms in Pos(rθ). For 1 (cid:2) m (cid:2) k, the atom of the root of Tmθm is αmθm,
+] = pbm and pbm = bm[σr] = bmθ[σ (cid:7)
+and αmθm = bmθ by noticing that αmθm[σ (cid:7)
+
+]. So T is well deﬁned.
+
+m
+
+m
+
+All variables in T are of the form vc where c is a domain element of A. Let σ ∗
+every variable of the form vc in Var(T ) to the domain element c. We can see that:
+
+be the assignment on Var(T ) that assign
+
+• T θ is an expansion tree by noticing that T 1θ1, . . . , Tkθk are expansion trees and that (P (¯t)θ, rθ) has k children which
+
+are labeled with the atoms b1θ, . . . , bkθ ;
+
+• the root of T θ is labeled by atom P (¯t)θ and P (a) = P (¯t)θ[σ ∗] by noticing P (a) = P (¯t)[σr];
+• (A, σ ∗) |(cid:9) (cid:4)
+
+(1 (cid:2) m (cid:2) k), (A, σ ∗) |(cid:9) bm (k < m (cid:2) k
+
+BodyrT θ by noticing that (A, σm) |(cid:9) (cid:4)
+BodyrTm θm
+).
+
+(1 (cid:2) m (cid:2) l
+
+(cid:7)
+
+(cid:7)
+
+), and (A, σ ∗) (cid:3)|(cid:9) cm
+
+This completes the proof. (cid:2)
+
+Lemma 3. Let Π be a program and A be a structure of τ (Π) which is a model of (cid:3)Π . If A is supported by a set of expansion trees T ,
+then A is an answer set of Π .
+
+Proof. Assume that A is a model of (cid:3)Π , and is supported by a set of expansion trees T . By Theorem 1, it is suﬃcient to
+show that A is a model of LF(Π).
+
+Let L be a loop of Π The loop formula of L is the universal closure of
+
+(cid:11)
+
+(cid:11)
+
+α ⊃
+
+α∈L
+
+α∈L
+
+ES(α, L, Π).
+
+Let σ be an arbitrary assignment on Var(L) over A. If (A, σ ) (cid:3)|(cid:9)
+wise, there exists a ∈ P
+case.
+
+α∈L α, then (A, σ ) |(cid:9)
+such that P (¯t) ∈ L and a = σ (¯t). We will show that (A, σ ) |(cid:9)
+
+A
+
+(cid:19)
+
+(cid:19)
+(cid:19)
+
+(cid:19)
+
+α∈L α ⊃
+α∈L ES(α, L, Π). Other-
+α∈L ES(α, L, Π) also holds in this
+
+By assumption, A is supported by T . So there exists an expansion tree T ∈ T and an assignment δ on Var(T ) over
+∗) is the atom of the root of T . We will show by induction on the
+
+∗) = a, where P (¯t
+
+A such that (A, δ) |(cid:9) (cid:4)
+BodyrT and δ(¯t
+structure of the expansion tree T that for every node w = (P
+
+(cid:7)), ρ) of T ,
+
+(cid:7)(¯t
+
+• (A, δ) |(cid:9) P
+• for every loop L
+
+(cid:7)) and
+(cid:7)
+
+(cid:7)(¯t
+(cid:19)
+
+(A, σ (cid:7)) |(cid:9)
+
+α∈L(cid:7) ES(α, L
+
+, if there is an atom P
+
+(cid:7)
+(cid:7), Π). Without loss of generality, we assume Var(L
+
+and an assignment σ (cid:7)
+
+(cid:7)(cid:7)) ∈ L
+
+(cid:7)(¯t
+
+(cid:7)) ∩ Var(T ) = ∅.
+
+on Var(L
+
+(cid:7)) over A such that σ (cid:7)(¯t
+
+(cid:7)(cid:7)) = δ(¯t
+
+(cid:7)), then
+
+(cid:7)(¯t
+
+(cid:7)), ρ) is a leaf, then Body(ρ) ⊆ Body(rT ). We have (A, δ) |(cid:9) (cid:4)
+
+Bodyρ and (A, δ) |(cid:9) P
+
+(cid:7)(¯t
+
+(cid:7)) by noticing that A
+
+be a loop and x the tuple of variables in L
+and σ (cid:7)(¯t
+(cid:7)
+
+. Let σ (cid:7)
+(cid:7)). Also, let y be the tuple of the local variables of ρ, and σ (cid:7)(cid:7)
+
+be an assignment on x over A such that there is an atom
+be the assignment on x ∪ y over A
+
+(cid:7)(cid:7)) = δ(¯t
+
+(cid:7)
+
+(1) If w = (P
+is a model of (cid:3)Π .
+(cid:7)
+Let L
+(cid:7)(¯t
+(cid:7)(cid:7)) ∈ L
+
+P
+such that σ (cid:7)(cid:7)(x) = σ (cid:7)(x) and σ (cid:7)(cid:7)( y) = δ( y).
+
+We have
+(cid:4)
+
+A, σ (cid:7)(cid:7)
+
+(cid:7)
+
+|(cid:9) (cid:4)
+
+Bodyρ ∧
+
+(cid:13)
+
+s (cid:3)= s(cid:7)
+
+Q (s)∈L(cid:7), Q (s(cid:7))∈Pos(ρ)
+
+904
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+(cid:7)
+
+, and that the positive part of ρ are all extensional atoms. So, we
+
+by noticing that there are only intensional atoms in L
+have
+
+(cid:7)
+
+A, σ (cid:7)
+
+|(cid:9) ∃ y
+
+(cid:12)
+(cid:4)
+Bodyρ ∧
+
+(cid:14)
+
+(cid:13)
+
+s (cid:3)= s(cid:7)
+
+Q (s)∈L(cid:7), Q (s(cid:7))∈Pos(ρ)
+
+(cid:4)
+
+(cid:4)
+
+and
+
+(cid:7)
+
+|(cid:9)
+
+A, σ (cid:7)
+
+(cid:11)
+
+(cid:4)
+
+ES
+
+(cid:7)
+
+α, L
+
+(cid:7)
+
+, Π
+
+.
+
+α∈L(cid:7)
+(cid:7)), ρ) is not a leaf, then let w 1, . . . , wn be the children of w. Assume that for every child w i = (Q i(¯ti), ρi)
+(cid:7)(¯t
+
+(2) If w = (P
+of w, 1 (cid:2) i (cid:2) n,
+
+• (A, δ) |(cid:9) Q i(¯ti) and
+(cid:7)(cid:7)
+• for every loop L
+(cid:7)(cid:7), Π).
+α∈L(cid:7)(cid:7) ES(α, L
+
+(cid:19)
+
+, if there is an atom Q i(¯t
+
+(cid:7)
+i) ∈ L
+
+(cid:7)(cid:7)
+
+and an assignment σ (cid:7)(cid:7)
+
+such that σ (cid:7)(cid:7)(¯t
+
+(cid:7)
+
+i) = δ(¯ti), then (A, σ (cid:7)(cid:7)) |(cid:9)
+
+(cid:7)
+
+By the deﬁnition of rT , we have Neg(ρ) ⊆ Neg(rT ). We also have Pos(ρ) = {Q 1(¯t1), . . . , Q n(¯tn)}, and (A, δ) |(cid:9) Q i(¯ti),
+, if there is an atom
+
+1 (cid:2) i (cid:2) n. So, we have (A, δ) |(cid:9) (cid:4)
+(cid:7)(¯t
+(cid:7)(cid:7)) ∈ L
+on Var(L
+P
+If there is a child w i = (Q i(¯ti), ρi) of w, and there is an atom Q i(¯t
+α∈L(cid:7) ES(α, L
+
+(cid:7), Π) by induction hypotheses. Otherwise, for any two atoms Q (s) ∈ L
+
+(cid:7)). We still need to show that for every loop L
+(cid:7)
+(cid:7), Π).
+i) = δ(¯ti), then (A, σ (cid:7)) |(cid:9)
+and Q (s(cid:7)) ∈ Pos(ρ), we have σ (cid:7)(s) (cid:3)=
+be the assignment on x ∪ y over A such that
+
+(cid:7)), then (A, σ (cid:7)) |(cid:9)
+(cid:7)
+i) ∈ L
+
+α∈L(cid:7) ES(α, L
+such that σ (cid:7)(¯t
+(cid:7)
+
+Bodyρ and (A, δ) |(cid:9) P
+
+and an assignment σ (cid:7)
+
+(cid:7)) such that σ (cid:7)(¯t
+
+(cid:7)(cid:7)) = δ(¯t
+
+(cid:7)(¯t
+
+(cid:19)
+
+(cid:19)
+
+(cid:7)
+
+(cid:7)
+
+δ(s(cid:7)). Similarly to (1), let y be the tuple of the local variables of ρ, and σ (cid:7)(cid:7)
+σ (cid:7)(cid:7)(x) = σ (cid:7)(x) and σ (cid:7)(cid:7)( y) = δ( y). We have
+|(cid:9) (cid:4)
+
+(cid:13)
+
+(cid:4)
+
+(cid:7)
+
+s (cid:3)= s(cid:7).
+
+A, σ (cid:7)(cid:7)
+
+Bodyρ ∧
+
+So,
+
+and
+
+(cid:4)
+
+(cid:4)
+
+Q (s)∈L(cid:7), Q (s(cid:7))∈Pos(ρ)
+
+(cid:7)
+
+A, σ (cid:7)
+
+|(cid:9) ∃ y
+
+(cid:12)
+(cid:4)
+Bodyρ ∧
+
+(cid:13)
+
+(cid:14)
+
+s (cid:3)= s(cid:7)
+
+Q (s)∈L(cid:7), Q (s(cid:7))∈Pos(ρ)
+
+(cid:7)
+
+|(cid:9)
+
+A, σ (cid:7)
+
+(cid:11)
+
+α∈L(cid:7)
+
+(cid:4)
+
+ES
+
+(cid:7)
+
+α, L
+
+(cid:7)
+
+, Π
+
+.
+
+(cid:2)
+
+5.3. Finite set of expansion trees for loop-separable program
+
+From Lemmas 2 and 3, a program Π can be deﬁned by (cid:3)Π and all its expansion trees. However, there might exist inﬁnite
+number of expansion trees in general by even considering the equivalence under substitution. Fortunately, we can show
+that for loop-separable programs, we can always ﬁnd a ﬁnite set of expansion trees which is equivalent to tree(Π).
+
+The key idea is that for loop-separable programs, the depth of their expansion trees can be bounded to some extent. That
+is, for any loop-separable program, there exists a natural number k such that for any expansion tree of the program whose
+depth is greater than k, we can always construct another expansion tree, which subsumes the original one and whose depth
+is less than k. Roughly speaking, any large expansion tree of a loop-separable program can be unfolded into a smaller one.
+For this purpose, we need to show some propositions of derivation paths and loop patterns. A derivation path of form
+(15) is called a base pattern if atoms in Pos(ρn) are either equality or extensional atoms, and ρi (cid:5) ρ j (1 (cid:2) i < j (cid:2) n). In the
+following, we will deﬁne how a derivation path is extended by a loop pattern, and show the relationship between the loop
+patterns and the derivation paths in expansion trees.
+
+Deﬁnition 8. Let S = (w 1, . . . , wn) be a derivation path, S
+(cid:7)
+that S can be extended by S
+pairs:
+
+if there is a node w i (1 (cid:2) i (cid:2) n) such that w i ∼ w
+
+(cid:7) = (w
+
+(cid:7)
+1, . . . , w
+
+(cid:7)
+m) a loop pattern, and Var(S) ∩ Var(S
+
+(cid:7)
+1. An extension of S by S
+
+(cid:7)
+
+(cid:7)) = ∅. We say
+is a sequence of
+
+w 1, . . . , w i−1, w
+
+(cid:7)
+1θ1, . . . , w
+
+(cid:7)
+mθ1, w i+1θ2, . . . , wnθ2
+
+where
+
+(23)
+
+• (x/x(cid:7)) is the witness of w i ∼ w
+• ( y1/ ym) is the witness of w
+
+(cid:7)
+1;
+∼ w
+
+(cid:7)
+1
+
+(cid:7)
+m;
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+905
+
+• θ1 = x
+
+(cid:7)/x ∪ z
+
+(cid:7)/z, where z
+
+(cid:7)
+
+is the tuple of variables Var(S
+
+(cid:7)) \ x
+
+(cid:7)
+
+, z is a tuple of new variables not in Var(S) ∪ Var(S
+
+(cid:7)), and
+
+all variables in z are different;
+• θ2 = {u/v | there is a variable v
+
+(cid:7)
+
+such that u/v
+
+(cid:7) ∈ (x/x(cid:7)), v
+
+(cid:7)/v
+
+(cid:7)(cid:7) ∈ ( y1/ ym) and v
+
+(cid:7)(cid:7)/v ∈ θ1}.
+
+Proposition 8. Let S = (w 1, . . . , wn) be a derivation path and S
+If S
+, then S
+
+be an extension of S by S
+
+is also a derivation path, Var(S
+
+∗
+
+∗
+
+(cid:7)
+
+(cid:7) = (w
+
+(cid:7)
+1, . . . , w
+∗) ∩ Var(S
+
+(cid:7)
+m) a loop pattern such that Var(S) ∩ Var(S
+(cid:7)) = ∅ and the length of S
+
+is n + m − 1.
+
+∗
+
+(cid:7)) = ∅.
+
+Proof. Let S
+so S
+
+∗
+
+is also a derivation path.
+
+∗
+
+be an extension of S by S
+
+(cid:7)
+
+of form (23). By Deﬁnition 8, we have w i = w
+
+(cid:7)
+
+1(x(cid:7)/x) = w
+
+(cid:7)
+1θ1 and w
+
+(cid:7)
+mθ1 = w iθ2,
+
+Consider the substitution θ1. All variables in S
+
+are substitute to distinct new variables, so we have Var(S
+
+(cid:7)
+
+∗) ∩ Var(S
+
+(cid:7)) = ∅.
+
+It is obvious that the length of S
+
+∗
+
+is n + m − 1. (cid:2)
+
+Given a derivation path S and loop patterns S1, . . . , Sn. We also say a derivation path S
+
+if there exist derivation paths S
+
+(cid:7)
+0(= S), S
+
+(cid:7)
+1, . . . , S
+
+(cid:7)
+n(= S
+
+(cid:7)) such that for 1 (cid:2) i (cid:2) n, S
+
+(cid:7)
+
+(cid:7)
+i is an extension of S
+
+is an extension of S by S1, . . . , Sn
+(cid:7)
+i−1 by S i .
+
+Proposition 9. Let Π be a program and T an expansion tree of Π . Also, let Sl be the set of loop patterns as mentioned in Proposition 7
+and assume that Var(T ) ∩ Var(Sl) = ∅. If S = (w 1, . . . , wn) is a path in T such that w 1 is the root of T and wn a leaf, then S is either
+a base pattern or an extension of S0 by S1, . . . , Sm, where S0 is a base pattern and S1, . . . , Sm are loop patterns such that S i ∈ Sl,
+1 (cid:2) i (cid:2) m.
+
+Proof. If w i (cid:5) w j (1 (cid:2) i < j (cid:2) n), then S is a base pattern. Otherwise, there exists w i , w j (1 (cid:2) i < j (cid:2) n) in S such that
+w i ∼ w j .
+
+By Proposition 7, if there exists a base pattern S0 and loop patterns S
+
+(cid:7)
+m such that S is an extension of S0 by
+(cid:7)
+m, then there always exist loop patterns S1, . . . , Sm, such that S i ∈ Sl (1 (cid:2) i (cid:2) m) and S is an extension of S0 by
+∗
+1 and a loop
+
+(cid:7)
+1, . . . , S
+S
+S1, . . . , Sm. In the following, we will show that if S is not a base pattern, then there exists a derivation path S
+pattern S
+
+∗
+1 is less than the length of S and S is an extension of S
+
+∗
+2 such that the length of S
+
+Without loss of generality, we assume that w i(cid:7) (cid:5) w j(cid:7)
+
+=
+(w 1, . . . , w i, w j+1( y1/x1), . . . , wn( y1/x1)), where (x1/ y1) is the witness of w i ∼ w j . Also,
+= (w i(x2/ y2), . . . ,
+w j(x2/ y2)), where x2 is the tuple of all variables in {w i, . . . , w j}, y2 is a tuple of new variables not in T and all vari-
+ables in y2 are different.
+
+∗
+∗
+1 by S
+2.
+(cid:7)
+(cid:7) (cid:2) j unless i = i
+
+for every i (cid:2) i
+
+∗
+1 is a derivation path by noticing that w i = w j( y1/x1) and all variables in x1 do not occur in w j+1, . . . , wn. S
+
+∗
+2 is a
+∗
+2) = ∅ by noticing that y2 is a tuple of new variables. Furthermore, by Deﬁnition 8 and
+
+∗
+1) ∩ Var(S
+
+and j = j
+
+(cid:7)
+1, . . . , S
+
+(cid:7) < j
+
+. Let S
+
+let S
+
+∗
+1
+
+∗
+2
+
+S
+
+(cid:7)
+
+loop pattern and Var(S
+Proposition 8, S is an extension of S
+
+∗
+1 by S
+
+∗
+2, and the length of S
+
+∗
+1 is less than the length of S. (cid:2)
+
+In the following, we will show that some properties of a derivation path still keep unchanged when it is extended. We
+introduce one more notion here. Given a derivation path S of form (15), we use NS(S) to denote the number of pair (αi, ρi),
+1 (cid:2) i < n, such that Body(ρi) can be separated into two parts Bh and Bb and
+
+• Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(ρi),
+• αi+1 ∈ Bb,
+• Var({αi} ∪ Bh) ∩ Var(Bb) = ∅.
+
+Proposition 10. Let S = (w 1, . . . , wn) be a derivation path, S
+of form (23), then
+the extension of S by S
+
+(cid:7)
+
+(cid:7) = (w
+
+(cid:7)
+1, . . . , w
+
+(cid:7)
+m) a loop pattern and Var(S) ∩ Var(S
+
+(cid:7)) = ∅. Let S
+
+∗
+
+be
+
+(1) if (w
+
+(cid:7)
+1, . . . , w
+
+(cid:7)
+m) is a loop pattern of case 1 in Deﬁnition 5, and w
+
+(cid:7)
+j
+
+= (α(cid:7)
+
+j, ρ(cid:7)
+
+j) is the pair such that Body(ρ(cid:7)
+
+j) can be separated into
+
+∈ Bb,
+
+} ∪ Bh) ∩ Var(Bb) = ∅,
+
+two parts Bh and Bb and
+– Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(ρ(cid:7)
+j),
+– α(cid:7)
+j+1
+– Var({α(cid:7)
+j
+(cid:7)
+then (w
+1θ1, . . . , w
+– Bhθ1 ∩ Bbθ1 = ∅ and Bhθ1 ∪ Bbθ1 = Body(ρ j)θ1,
+– α(cid:7)
+– Var({α(cid:7)
+(cid:7)
+(cid:7)
+1, . . . , w
+m) is a loop pattern of case 2 in Deﬁnition 5, then (w
+∗) = NS(S) + NS(S
+
+(cid:7)
+mθ1) is also a loop pattern of case 1, and Body(w
+
+jθ1} ∪ Bhθ1) ∩ Var(Bbθ1) = ∅;
+
+j+1θ1 ∈ Bbθ1,
+
+(cid:7)).
+
+(2) if (w
+(3) NS(S
+
+(cid:7)
+j)θ1 can be separated into two parts Bhθ1 and Bbθ1 and
+
+(cid:7)
+1θ1, . . . , w
+
+(cid:7)
+mθ1) is also a loop pattern of case 2 in Deﬁnition 5;
+
+Proof. Statements (1) and (2) hold by noticing that a variable is always replaced by a distinct new one in substitutions θ1
+and θ2.
+
+906
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+For statement (3), we have w i = w
+
+NS(S) = NS
+= NS
+= NS
+
+(cid:4)(cid:4)
+
+(cid:4)
+
+(cid:7)
+(w 1, . . . , w i)
+(cid:4)(cid:4)
+
+w 1, . . . , w i−1, w
+
+w 1, . . . , w i−1, w
+
+(cid:7)
+mθ1 = w iθ2. So,
+
+(cid:7)
+
+1(x(cid:7)/x) = w
+(cid:4)
+
+(cid:7)
+1θ1 and w
+(cid:7)
+(w i, . . . , wn)
+(cid:7)(cid:7)
++ NS
++ NS
+
+(cid:7)(cid:7)
+
+w
+
+(cid:7)
+(cid:4)
+(w iθ2, . . . , wnθ2)
+(cid:4)(cid:4)
+
+(cid:7)
+mθ1, . . . , wnθ2
+
++ NS
+(cid:7)
+1θ1
+(cid:7)
+1θ1
+
+(cid:7)(cid:7)
+
+,
+
+(cid:7)(cid:7)
+
+(cid:4)
+
+(cid:7)
+
+(cid:7)
+
+S
+
+θ1
+
++ NS
+
+(cid:7)
+1θ1
+
+(cid:4)(cid:4)
+
++ NS
+
+w
+
+(cid:7)
+mθ1, . . . , wnθ2
+
+(cid:7)(cid:7)
+
+and
+
+(cid:4)
+
+NS
+
+S
+
+(cid:7)
+
+∗
+
+w 1, . . . , w i−1, w
+(cid:4)
+(cid:7)
+
+(cid:7)
+
+(cid:4)(cid:4)
+
+= NS
+= NS(S) + NS
+= NS(S) + NS
+
+(cid:4)
+
+S
+
+(cid:7)
+
+S
+
+θ1
+(cid:7)
+
+.
+
+(cid:2)
+
+∗
+
+In the following two propositions, we will show that for some large expansion tree T , we can always ﬁnd another smaller
+
+∗
+
+one T
+
+such that T is subsumed by T
+
+and the depth of T
+
+is less than T .
+
+∗
+
+Proposition 11. Given a program Π and an expansion tree T of Π , let S = (w 1, . . . , wn) be a path in T such that w 1 is the root of
+T and wn a leaf. If S is an extension of a base pattern S0 by loop patterns S1, . . . , Sm and there exists a loop pattern S
+of case 1 in
+∗
+occurs in S1, . . . , Sm more than once, then there is an expansion tree T
+Deﬁnition 5 such that S
+
+such that T is subsumed by T
+
+∗
+
+∗
+
+∗
+
+.
+
+∗
+
+is loop pattern of case 1 in Deﬁnition 5. Let w = (αk, ρk) be the pair in S
+
+∗
+
+such that Body(ρk) can be separated
+
+Proof. S
+into two parts Bh and Bb and
+
+• Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(ρk),
+• αk+1 ∈ Bb,
+• Var({αk} ∪ Bh) ∩ Var(Bb) = ∅.
+
+From (3) in Proposition 10, there exist two nodes w i, w j in S such that
+
+• w i = (αi, ρkθi) and w j = (α j, ρkθ j);
+• for two different variables x1, x2, x1/ y1 ∈ θi and x2/ y2 ∈ θi , then y1, y2 are two different variables;
+• for two different variables x1, x2, x1/ y1 ∈ θ j and x2/ y2 ∈ θ j , then y1, y2 are two different variables.
+
+So, Body(ρk)θi can be also separated into two parts Bhθi and Bbθi and
+
+• Bhθi ∩ Bbθi = ∅ and Bhθi ∪ Bbθi = Body(ρkθi),
+• αi+1θi ∈ Bbθi ,
+• Var({αiθi} ∪ Bhθi) ∩ Var(Bbθi) = ∅.
+
+Let θ ∗
+
+be the substitution:
+
+(cid:8)
+
+∗ =
+
+θ
+
+(cid:9)
+(cid:9) x ∈ V
+
+∗
+
+, x/t ∈ θ j
+
+x/t
+
+,
+is the set of variables in Bb. Consider the rule ρkθ ∗
+
+x/t
+
+, x/t ∈ θi
+
+∪
+
+(cid:10)
+
+(cid:8)
+
+(cid:9)
+(cid:9) x /∈ V
+
+∗
+
+(cid:10)
+
+where V
+
+∗
+
+, we have
+
+• Head(ρkθ ∗) = αi ;
+• for every literal l ∈ Body(ρk), if lθi ∈ Bhθi , then lθ ∗ = lθi ∈ Body(ρkθi);
+• for every literal l ∈ Body(ρk), if lθi ∈ Bbθi , then lθ ∗ = lθ j ∈ Body(ρkθ j).
+
+We can construct T
+
+∗
+
+as shown in Fig. 1. Let T
+
+∗
+
+be the expansion tree obtained from T by
+
+• keep the nodes not in the subtree of w the same as T ;
+• replace the node w by w
+• for every intensional atom β∗ ∈ Body(ρkθ ∗), if β ∈ Body(ρk) is the atom such that βθi = β∗ ∈ Bhθi then (αw , ρkθ ∗) has
+
+∗ = (αi, ρkθ ∗);
+
+a child labeled by atom β∗
+
+, and copy all the node in the subtree of βθi in T w i to T
+• for every intensional atom β∗ ∈ Body(rθ ∗), if β ∈ Body(ρk) is the atom such that βθi ∈ Bbθi and βθ j = β∗
+
+;
+
+, then
+
+∗
+
+(αw , ρkθ ∗) has a child labeled by atom β∗
+
+, and copy all the node in the subtree of βθ j in T w j to T
+
+∗
+
+.
+
+From the construction of T
+so T is subsumed by T
+
+∗
+
+∗
+. (cid:2)
+
+, we can see that the roots of T and T
+
+∗
+
+are labeled by the same atom, and Body(rT ∗ ) ⊂ Body(rT ),
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+907
+
+Fig. 1. The proof of Proposition 11.
+
+Proposition 12. Given a program Π and an expansion tree T of Π , let S = (w 1, . . . , wn) be a path in T such that w 1 is the root
+of T and wn a leaf. If there exist w i and w j in S such that (w i, . . . , w j) is a loop pattern of case 2 in Deﬁnition 5, then there is an
+expansion tree T
+
+such that T is subsumed by T
+
+∗
+
+∗
+
+.
+
+Proof. (w i, . . . , w j) is a loop pattern of case 2 in Deﬁnition 5. Let w i = (αi, r(x/¯ti)), w j = (α j, r(x/¯t j)). From case 2 of
+Deﬁnition 5, r(x/¯ti) can be separated into two parts Bh and Bb such that
+
+• Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(r(x/¯ti)),
+• αi+1 ∈ Bb,
+• Var({αi} ∪ Bh) ∩ Var(Bb) =
+
+k=i Var(αwk ).
+
+(cid:16)
+
+j
+
+Let θ ∗
+
+be the substitution:
+
+∗ =
+
+θ
+
+(cid:8)
+
+x/t
+
+(cid:9)
+(cid:9) x ∈ V
+
+∗
+
+, x/t ∈ x/¯t j
+
+(cid:10)
+
+(cid:8)
+
+∪
+
+x/t
+
+∗
+
+where V
+
+Consider the rule rθ ∗
+
+is the set of variables in Bb and not in
+, we have
+
+∗
+
+(cid:9)
+(cid:9) x /∈ V
+(cid:16)
+
+, x/t ∈ x/¯ti
+
+(cid:10)
+
+,
+
+j
+
+k=i Var(αwk ).
+
+• Head(rθ ∗) = αw i ;
+• for every literal l ∈ Body(r), if l(x/¯ti) ∈ Bh, then lθ ∗ = l(x/¯ti) ∈ Body(r(x/¯ti));
+• for every literal l ∈ Body(r), if l(x/¯ti) ∈ Bb, then lθ ∗ = l(x/¯t j) ∈ Body(r(x/¯t j)).
+
+We can construct T
+
+∗
+
+as shown in Fig. 2. Let T
+
+∗
+
+be the expansion tree obtained from T by
+
+• keep the nodes not in the subtree of w i the same as T ;
+• replace the node w i by (αw i , rθ ∗);
+• for every intensional atom β∗ ∈ Body(rθ ∗), if β ∈ Body(r) is the atom such that β(x/¯ti) = β∗ ∈ Bh then (αw i , rθ ∗) has a
+
+child labeled by atom β∗
+
+, and copy all the node in the subtree of β(x/¯ti) in T w i to T
+• for every intensional atom β∗ ∈ Body(rθ ∗), if β ∈ Body(r) is the atom such that β(x/ yi) ∈ Bb and β(x/¯t j) = β∗
+
+, then
+
+∗
+
+;
+
+(αw i , rθ ∗) has a child labeled by atom β∗
+
+, and copy all the node in the subtree of β(x/¯t j) in T w j to T
+
+∗
+
+.
+
+From the construction of T
+so T is subsumed by T
+
+∗
+
+∗
+. (cid:2)
+
+, we can see that the roots of T and T
+
+∗
+
+are labeled by the same atom, and Body(rT ∗ ) ⊂ Body(rT ),
+
+To end this section, we draw the conclusion that every loop-separable program can be captured by a ﬁnite set of its
+
+expansion trees.
+
+Lemma 4. Given a loop-separable program Π , there exists a ﬁnite set of expansion trees T such that for any structure A of τ (Π)
+which is a model of (cid:3)Π , if A is supported by tree(Π), then A is supported by T .
+
+908
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+Fig. 2. The proof of Proposition 12.
+
+Proof. Let Sl be the set of loop patterns as mentioned in Proposition 7. Let Sl = Sl1 ∪ Sl2, where Sl1 is the set of loop
+patterns of case 1 in Deﬁnition 5 and Sl2 is the set of loop patterns of case 2 and not case 1 in Deﬁnition 5. Let
+
+N1 = (numns + maxbn + 1) × (N + 1) + maxbl,
+
+where
+
+(cid:20)
+
+S∈Sl1
+
+• numns =
+NS(S),
+• N is the number mentioned in Lemma 1,
+• maxbl is the maximum length of base patterns of Π ,
+• maxbn is the maximum NS(Sb) when Sb is a base pattern.
+
+By Lemma 1, maxbl and maxbn always exist. Let N2 be the maximum number of variables in an expansion tree whose depth
+is less than or equal to N1. Let v 1, . . . , v N2 be N2 variables not in Π , and T be the set of all the expansion trees using
+these variables whose depth is less than or equal to N1.
+
+there is an expansion tree T
+
+It is obvious that T is ﬁnite, and for every expansion trees T such that T do not share variables with T and dep(T ) (cid:2) N1,
+(cid:7)
+.
+Let T ∈ tree(Π) be an expansion tree and dep(T ) > N1. It is suﬃcient to show that there exists an expansion tree T
+
+(cid:7)(x/ y), where x is the tuple of all variables in T
+
+(cid:7) ∈ T and a substitution x/ y such that T = T
+
+(cid:7)
+
+such that T is subsumed by T
+
+(cid:7)
+
+and dep(T
+
+(cid:7)) (cid:2) N1.
+
+Let S = (w 1, . . . , wn) be a path in T , where w 1 is the root of T , wn is a leaf of T , and n = dep(T ). We can see that
+
+(1) either NS(S) > numns + maxbn, or
+(2) there are wk1 , wk2 in S such that k2 − k1 > N and NS({wk1+1, . . . , wk2
+
+}) = 0.
+
+We will show that in both cases, there exists an expansion tree T
+
+∗
+
+such that T is subsumed by T
+
+∗
+
+.
+
+(1) By Proposition 9, assume that S is an extension of S0 by S1, . . . , Sm, where S0 is a base pattern and S1, . . . , Sm
+m
+k=0 NS(Sk). We already have NS(S) >
+occurs in
+.
+
+are loop patterns such that S i ∈ Sl, 1 (cid:2) i (cid:2) m. By Proposition 10, we have NS(S) =
+numns + maxbn. So there exists a loop pattern S
+S1, . . . , Sm more than once. By Proposition 11, we can construct an expansion tree T
+
+is a loop pattern of case 1 in Deﬁnition 5 and S
+
+such that T is subsumed by T
+
+(2) From Lemma 1, there are two nodes w i, w j ∈ S (k1 < i < j (cid:2) k2) such that w i ∼ w j and NS((w i, . . . , w j)) = 0.
+. We can see that (w i, . . . , w j) is
+such that such that T is
+
+Without loss of generality, assume that w i(cid:7) (cid:5) w j(cid:7) (i (cid:2) i
+a loop pattern of case 2 in Deﬁnition 5. By Proposition 12, we can construct an expansion tree T
+subsumed by T
+
+(cid:7) (cid:2) j) unless i = i
+
+and j = j
+
+such that S
+
+(cid:7) < j
+
+(cid:20)
+
+∗
+
+∗
+
+∗
+
+∗
+
+∗
+
+∗
+
+∗
+
+.
+
+(cid:7)
+
+(cid:7)
+
+(cid:7)
+
+such that T is subsumed by T
+
+(cid:7)
+
+and dep(T
+
+(cid:7)) (cid:2) N1. (cid:2)
+
+Repeat above construction. We can always ﬁnd an expansion tree T
+
+5.4. Proof of Theorem 2
+
+Now, we face to the proof of our main theorem, namely Theorem 2. We ﬁrst consider the case with the restriction of
+
+the UNA, and then release the condition to the general case.
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+909
+
+Lemma 5. If a program Π is loop-separable, then Π is ﬁrst-order deﬁnable under UNA. That is, there exists a ﬁrst-order sentence ψ
+on vocabulary τ (Π) such that for every structure A of τ (Π) which is a model of Σuna, it is an answer set of Π if and only if A is a
+model of ψ .
+
+Proof. Let T be the set of expansion trees mentioned in Lemma 4. From Lemmas 2, 3 and 4, Π is deﬁned by the conjunction
+of (cid:3)Π and the following sentences:
+
+(cid:12)
+
+∀x
+
+P (x) ⊃
+
+(cid:11)
+
+(cid:14)
+
+(cid:4)
+BodyrT
+
+∧ x = ¯t
+
+T ∈T ∗
+for every predicate P ∈ Pint(Π), where T ∗
+form P (¯t). (cid:2)
+
+is the set of expansion trees in T whose root is labeled by the atom of the
+
+Clearly, if a program is ﬁrst-order deﬁnable then it is ﬁrst-order deﬁnable under UNA. However, the converse does not
+
+hold in general.
+
+Example 9. We consider a program Π7 consisting of the following rules:
+
+T (x, y) ← E(x, y), not E(x, x), not E( y, y),
+T (x, z) ← T (x, y), T ( y, z),
+P (a, b) ← a = b,
+P (a, b) ← not P (a, b),
+
+(24)
+
+(25)
+
+where C(τ (Π7)) = {a, b}, Pext(Π7) = {E} and Pint(Π) = {T , P }.
+
+For any structure A which is a model of Σuna, we can see that A is not an answer set of Π by noticing that rule (24) is
+never triggered and rule (25) is a contradiction. Π has no answer set which is a model of Σuna, and is deﬁned by ⊥ under
+UNA.
+
+If we also consider structures where a and b are mapped to the same domain element, we can see that Π is not
+
+ﬁrst-order deﬁnable. Otherwise, the program Π1 in Example 1 would be ﬁrst-order deﬁnable.3
+
+Fortunately, for loop-separable programs, they are always ﬁrst-order deﬁnable even without the restriction of the UNA.
+Given a vocabulary τ , let Fτ be the set of all functions f , where
+
+• the domain of f
+• if c ∈ C(τ ) is in the range of f , then f (c) = c.
+
+is C(τ ), and the range of f
+
+is a subset of C(τ );
+
+Given a program Π and f ∈ Fτ (Π) a function, let Π f be the program obtained by replace each occurrence of c in Π by
+f (c) for all c ∈ C(τ (Π)). Note that the only difference between vocabularies τ (Π) and τ (Π f ) is the set of constants. The
+set of constants of τ (Π f ) is a subset of that of τ (Π).
+
+Proposition 13. Let Π be a program, and f ∈ Fτ (Π) a function. If Π is a loop-separable program, then Π f
+program.
+
+is a loop-separable
+
+Proof. Directly from the deﬁnition of loop-separable program. (cid:2)
+
+The following proposition explicitly deﬁnes a sentence that captures a loop-separable program without the restriction of
+
+the UNA.
+
+Proposition 14. Let Π be a loop-separable program. Π is deﬁned by
+
+(cid:12)
+
+(cid:11)
+
+f ∈Fτ (Π)
+
+ψΠ f
+
+∧ Σuna
+
+(cid:4)
+(cid:7)
+τ (Π f )
+
+∧
+
+(cid:13)
+
+(cid:4)
+
+f (c) = c
+
+c∈C(τ (Π ))
+
+(cid:14)
+(cid:7)
+
+,
+
+(26)
+
+where Π f is deﬁned by ψΠ f under UNA.
+
+Proof. Let A = ( A, c
+
+A
+1 , . . . , c
+
+A
+m , R
+
+A
+1 , . . . , R
+
+A
+n ) be a structure of τ (Π). It is suﬃcient to show that:
+
+3 For the proof of the indeﬁnability of Π1, please refer to Example 3 and Proposition 2 in [5]. The basic ideas of these two examples are quite similar.
+
+910
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+(i) if A is an answer set of Π , then there is a function f ∈ Fτ (Π) such that A is a model of ψΠ f
+
+(cid:2)
+
+∧ Σuna(τ (Π f )) ∧
+
+(ii) if there is a function f ∈ Fτ (Π) such that A is a model of ψΠ f
+
+∧ Σuna(τ (Π f )) ∧
+
+(cid:2)
+
+c∈C(τ (Π))( f (c) = c), then A is an
+
+c∈C(τ (Π))( f (c) = c);
+
+answer set of Π .
+
+A(cid:7)
+m(cid:7) , R
+
+A
+1 , . . . , R
+
+Let A(cid:7) = ( A, c
+, A(cid:7)
+f and A(cid:7)
+
+(i) Let f ∈ Fτ (Π) be a function such that f (c1) = f (c2) if and only if c
+A
+n ) be the structure of τ (Π f ), where c
+
+A(cid:7)
+1 , . . . , c
+is a model of Σuna(τ (Π f )).
+If A is an answer set of Π , then A(cid:7)
+by ψ f under UNA, so A(cid:7)
+(cid:2)
+∧ Σuna(τ (Π f )) ∧
+ψΠ f
+(cid:2)
+c∈τ (Π)( fA(c) = c).
+f ∈ Fτ (Π) be the function such that A is a model of ψΠ f
+(ii) Let
+A(cid:7)
+A(cid:7)
+A
+( A, c
+m(cid:7) , R
+1 , . . . , c
+1 , . . . , R
+We can see that A(cid:7)
+
+is an answer set of Π f . Π f
+
+is a model of ψΠ f
+
+∧ Σuna(τ (Π f )) by noticing that A(cid:7)
+c∈τ (Π)( f (c) = c) is also a formula of vocabulary of τ (Π), so A is a model of ψΠ f
+
+is also a loop-separable program, and is deﬁned
+is model of Σuna(τ (Π f )). Notice that
+∧ Σuna(τ (Π f )) ∧
+
+c∈τ (Π)( f (c) = c). Let A(cid:7) =
+for each constant ci in vocabulary τ (Π f ).
+is a model of Σuna(Π f ) and ψΠ f , so it is an answer set of Π f , and thus A is an answer set of Π . (cid:2)
+
+A
+n ) be the structure of τ (Π f ), where c
+
+∧ Σuna(τ (Π f )) ∧
+
+= f (ci)A(cid:7)
+
+A(cid:7)
+i
+
+(cid:2)
+
+A
+1
+A(cid:7)
+i
+
+A
+= c
+2 , where c1 and c2 are constants in τ (Π).
+= f (ci)A
+. From the deﬁnition of
+
+for 1 (cid:2) i (cid:2) m
+
+(cid:7)
+
+Finally, Theorem 2 follows from Lemma 5 and Proposition 14.
+
+Proof of Theorem 2. Lemma 5 shows that a loop-separable program is ﬁrst-order deﬁnable under UNA, and Proposition 14
+shows that it is also ﬁrst-order deﬁnable without the restriction of Σuna. (cid:2)
+
+6. Subclasses and related results
+
+We identify some interesting subclasses of loop-separable program, and show some related results.
+
+6.1. Programs with a ﬁnite complete set of loops
+
+We show here that the set of programs with a ﬁnite complete set of loops is a subset of loop-separable programs.
+
+Proposition 15. If program Π has a ﬁnite complete set of loops, then Π is a loop-separable program.
+
+Proof. By Theorem 2 in [4], a program Π has a ﬁnite complete set of loops, if and only if for every loop L and two atoms
+α, β ∈ L, Var(α) = Var(β).
+
+Let (α1, ρ1), . . . , (αm, ρm) be a loop pattern. We show ﬁrst that for every 1 (cid:2) i < j (cid:2) m, Var(αi) = Var(α j). Otherwise,
+assume that Var(αi) (cid:3)= Var(α j) for some 1 (cid:2) i < j (cid:2) m. Let x/ y be the witness of (α1, ρ1) ∼ (αm, ρm), θ = x/ y ∪ y/x, and
+L = {α1, . . . , αm} be a set of atoms. We can see that L ∪ Lθ is a loop of Π by noticing that αm = α1θ and α1 = αmθ . We still
+have {αi, α j} ⊆ L ∪ Lθ and Var(αi) (cid:3)= Var(α j), which contradicts to Theorem 2 in [4].
+
+Thus, for every rule ρi (1 (cid:2) i (cid:2) m), ρi can be separated into two parts: Bh = ∅ and Bb = Body(ρi). (cid:2)
+
+Example 10. We continue with the program Π2 in Example 2. Now we consider Π2 as a loop-separable program. For
+intensional predicate P , we need to consider the following two expansion trees:
+
+(cid:4)
+
+(cid:4)
+
+(cid:7)
+P ( y), r3(x/ y)
+(cid:7)
+P ( y), r1(x/ y)
+
+,
+
+−
+
+T 1:
+T 2:
+
+(cid:4)
+
+(cid:7)
+Q ( y), r4(x/ y)
+
+and for Q , the following two expansion trees:
+
+(cid:4)
+
+(cid:4)
+
+(cid:7)
+Q ( y), r4(x/ y)
+(cid:7)
+Q ( y), r2(x/ y)
+
+,
+
+−
+
+T 3:
+T 4:
+
+(cid:4)
+
+(cid:7)
+P ( y), r3(x/ y)
+
+.
+
+Thus, Π2 is deﬁned by the conjunction of (cid:15)Π2 and
+(cid:7)(cid:7)(cid:7)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+∀ y
+∀ y
+
+(cid:4)
+
+P ( y) ⊃
+Q ( y) ⊃
+
+R3( y) ∨
+(cid:4)
+R4( y) ∨
+
+R2( y) ∧ R4( y)
+(cid:4)
+R1( y) ∧ R3( y)
+
+,
+(cid:7)(cid:7)(cid:7)
+
+.
+
+As we can see, a program with a ﬁnite complete set of loops can be deﬁned by using loop formulas or by using expansion
+
+trees, and the formulas obtained by these two ways are quite different.
+
+6.2. Separable on rules
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+911
+
+It is obvious that “loop-separable” is not a modular property. Program Π ∪ Π (cid:7)
+
+is possibly not loop-separable program,
+are loop-separable programs. However, if we consider the “separable” property on each rule
+
+when both programs Π and Π (cid:7)
+of a program, we can specify a subclass of loop-separable programs.
+
+A program Π is rule-separable if for every rule r ∈ Π , Body(r) can be separated into two parts Bh and Bb such that
+
+Var(Bh) ⊆ Var(Head(r)) and Var(Bb) ∩ Var(Head(r)) = ∅.
+
+Proposition 16. A rule-separable program is loop-separable.
+
+Proof. Let Π be a rule-separable program, and S = (α1, ρ1), . . . , (αn, ρn) be a loop pattern of Π , then for every ρi
+(1 (cid:2) i (cid:2) n), Body(ρi) can be separated into two parts Bhi and Bbi such that Var(Bhi ) ⊆ Var(Head(ρi)) and Var(Bbi ) ∩
+Var(Head(ρi)) = ∅.
+
+If there exists 1 (cid:2) i < n such that αi+1 ∈ Bbi , then S is a loop pattern of case 1 in Deﬁnition 5.
+Otherwise, for 1 (cid:2) i < n, we have αi+1 ∈ Bhi . By the deﬁnition of rule-separable program, we have Var(αi+1) ⊂ Var(αi)
+for 1 (cid:2) i < n. By the deﬁnition of loop pattern, we have α1 ∼ αn, and Var(α1) = · · · = Var(αn). So, S is a loop pattern of
+case 2 in Deﬁnition 5. (cid:2)
+
+We can see that if Π and Π (cid:7)
+A program is called a unary program if it has only unary predicates and no equality (=). The program Π6 in Example 8
+
+are two rule-separable programs, then Π ∪ Π (cid:7)
+
+is also a rule-separable program.
+
+is a unary program.
+
+Proposition 17. If Π is a unary program, then Π is rule-separable.
+
+Proof. For every rule r ∈ Π , the body of r can be separated into two parts Bh and Bb, where
+(cid:4)
+
+(cid:8)
+
+(cid:9)
+(cid:9) α ∈ Body(r) and Var(α) = Var
+
+Head(r)
+
+(cid:7)(cid:10)
+,
+
+Bh =
+
+α
+
+and
+
+(cid:8)
+
+α
+
+(cid:9)
+(cid:9) α ∈ Body(r) and Var(α) (cid:3)= Var
+
+(cid:4)
+
+Bb =
+
+(cid:7)(cid:10)
+
+Head(r)
+
+.
+
+(cid:2)
+
+By Proposition 17, a unary program is ﬁrst-order deﬁnable. If we consider our deﬁnition of answer set as a second-order
+formula, then this result is a special case of Theorem 8 in [7] (also see [24]), which shows that any second-order sentence
+that only contains unary predicates is always ﬁrst-order deﬁnable.
+
+6.3. Separable on loops
+
+If we replace “loop patterns” by “loops” in Deﬁnition 5, we get another subclass of loop-separable program, as shown in
+
+the following proposition.
+
+Proposition 18. Let Π be a program. If for each loop L of Π , one of the following holds:
+
+(a) for every cycle α1, . . . , αn(= α1) such that {α1, . . . , αn} = L, there is αi (1 (cid:2) i < n) such that for any rule r ∈ Π and substitu-
+
+tion θ , if αi = Head(rθ) and αi+1 ∈ Body(rθ), then Body(rθ) can be separated into two parts Bh and Bb, such that:
+– Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(rθ);
+– αi+1 ∈ Bb;
+– Var({αi} ∪ Bh) ∩ Var(Bb) = ∅;
+
+(b) for any two atoms and α, β ∈ L, and any rule r ∈ Π and substitution θ , if α = Head(rθ) and β ∈ Body(rθ), then Body(rθ) can be
+
+separated into two parts Bh and Bb, such that:
+– Bh ∩ Bb = ∅ and Bh ∪ Bb = Body(rθ);
+– β ∈ Bb;
+– Var({α} ∪ Bh) ∩ Var(Bb) =
+
+α(cid:7)∈L Var(α(cid:7)),
+
+(cid:16)
+
+then Π is a loop-separable program.
+
+Proof. We show this by contradiction. Let Π be not a loop-separable program, and (α1, ρ1), . . . , (αn, ρn) be a loop pattern
+of neither case 1 nor case 2 in Deﬁnition 5.
+
+Let y/ y(cid:7) be the witness of α1 ∼ αn, and x the tuple of variables in Var(α1) ∩ V ar(αn). We can see that
+
+i=1 Var(αi) = x
+by noticing that we always use new variables for local variables of a rule in derivation path. Let θ = y/ y(cid:7) ∪ y(cid:7)/ y ∪ z/z(cid:7)
+where z is the tuple of all variables in (α1, ρ1), . . . , (αn, ρn) except variables in x ∪ y ∪ y(cid:7), and z(cid:7) a tuple of new variables.
+
+(cid:16)
+n
+
+912
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+We can see that (α1θ, ρ1θ), . . . , (αnθ, ρnθ) is also a loop pattern of neither case 1 nor case 2 in Deﬁnition 5. Consider
+the set of atoms L = {α1, . . . , αn, α1θ, . . . , αnθ}, we can see that L is a loop by noticing that α1θ = αn, and αnθ = α1.
+α(cid:7)∈L Var(α(cid:7)) = x, and thus α1, . . . , αn(= α1θ), . . . , αnθ(= α1) is a cycle of neither case (a) nor case (b) in
+We also have
+Proposition 18, which contradicts to the assumption of Π . (cid:2)
+
+(cid:16)
+
+However, there are loop-separable programs that are not covered by the conditions in Proposition 18.
+
+Example 11. Let Π7 be the program:
+
+P (x, y) ← Q (u, v),
+
+Q (x, y) ← P (u, v).
+
+There are two loop patterns of Π7:
+
+lp1:
+
+lp2:
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:4)
+
+(cid:7)
+P (x1, x2), P (x1, x2) ← Q (x3, x4)
+,
+(cid:7)
+Q (x3, x4), Q (x3, x4) ← P (x5, x6)
+(cid:7)
+P (x5, x6), P (x5, x6) ← Q (x7, x8)
+,
+(cid:7)
+Q (x1, x2), Q (x1, x2) ← P (x3, x4)
+(cid:7)
+P (x3, x4), P (x3, x4) ← Q (x5, x6)
+,
+(cid:7)
+Q (x5, x6), Q (x5, x6) ← P (x7, x8)
+
+,
+
+,
+
+.
+
+Both lp1 and lp2 are loop patterns of case 1 in Deﬁnition 5, but if we consider loop
+(cid:10)
+P (x1, x2), Q (x1, x2), P (x1, x3)
+
+L =
+
+(cid:8)
+
+of program Π7, we can see that L is neither a loop of (a) nor (b) in Proposition 18.
+
+Example 11 also shows the reason why we need the notion loop pattern to deﬁne the loop-separable program.
+
+6.4. Safe programs
+
+Lee and Meng recently also identiﬁed a subclass of ﬁrst-order deﬁnable programs named safe programs [19]. By restricting
+to our deﬁnition of program, a program Π is safe if for every rule r ∈ Π , every variable occurring in the rule also occurs in
+Pos(r). However, when extensional databases are taken into account, a safe program is not necessarily ﬁrst-order deﬁnable.
+For instance, the program Π1 in Example 1 is a safe program, and can be proved that it is not ﬁrst-order deﬁnable under
+our context [5].
+
+7. Concluding remarks
+
+In this paper, we have studied a notion of ﬁrst-order deﬁnability for ﬁrst-order answer set program with extensional
+database. Our main contribution is in identifying a non-trivial class of programs that are ﬁrst-order deﬁnable on ﬁnite
+structures. This class, what we called loop-separable programs, is deﬁned based on a detailed analysis of ﬁrst-order loops,
+and contains several other interesting classes of ﬁrst-order deﬁnable programs.
+
+As we have mentioned in Section 1, study on ﬁrst-order deﬁnability for answer set programs has an important appli-
+cation value. In another recent paper [2], we have proposed an approach to implement a ﬁrst-order ASP solver, where we
+have shown that under ﬁnite structures, every normal logic program can be translated to a ﬁrst-order sentence within a
+larger signature. By developing a proper ﬁrst-order grounder, we can then further implement an SAT based ASP solver. What
+makes our results presented in this paper useful is that for loop-separable programs, the translation from the program to a
+ﬁrst-order sentence could be much simpler.
+
+One future work is to discover more classes of ﬁrst-order deﬁnable programs, especially those that generalize our class
+of loop-separable programs. The notion of loops and loop formulas has been extended to disjunctive programs [18,19]. It
+could be interesting to consider whether our result can be extended to disjunctive programs. Another important future work
+is to study computational properties of loop-separable programs. We proved that the class of loop-separable programs is
+decidable. However, in general, deciding whether a program is loop-separable is expensive. It would be interesting to see
+whether a non-trivial tractable subclass can be identiﬁed.
+
+Y. Chen et al. / Artiﬁcial Intelligence 175 (2011) 890–913
+
+913
+
+Acknowledgements
+
+We thank the reviewers for their valuable comments which have helped us to improve this paper.
+The ﬁrst author is supported in part by China NSFC 60703095 and Guangdong GDSF 07300237. The second author is
+supported in part by China NSFC 60573009 and 60963009 and Hongkong RGC GRF 616909. The third and fourth authors
+are supported in part by an Australian Research Council Discovery Grant DP0988396.
+
+References
+
+[1] M. Ajtai, Y. Gurevich, Datalog vs ﬁrst-order logic, Journal of Computer and Systems Science 49 (1994) 562–588.
+[2] V. Asuncion, F. Lin, Y. Zhang, Y. Zhou, Ordered completion for ﬁrst-order logic programs on ﬁnite structures, in: Proceedings of AAAI-2010, 2010, pp.
+
+249–254.
+
+[3] S. Chaudhuri, M.Y. Vardi, On the equivalence of recursive and nonrecursive datalog programs, in: Proceedings of the 11th ACM SIGACT-SIGMOD-SIGART
+
+Symposium on PODS, 1992, pp. 55–66.
+
+[4] Y. Chen, F. Lin, Y. Wang, M. Zhang, First-order loop formulas for normal logic programs, in: Proceedings of the 10th International Conference on
+
+Principles of Knowledge Representation and Reasoning (KR-2006), 2006, pp. 298–307.
+
+[5] Y. Chen, Y. Zhang, Y. Zhou, First-order indeﬁnability of answer set programs on ﬁnite structures, in: Proceedings of the 24th AAAI Conference on
+
+Artiﬁcial Intelligence (AAAI-2010), 2010, pp. 285–290.
+
+[6] S.S. Cosmadakis, On the ﬁrst-order expressibility of recursive queries, in: Proceedings of the 8th ACM SIGACT-SIGMOD-SIGART Symposium on PODS,
+
+1989, pp. 311–323.
+
+[7] P. Doherty, W. Lukaszewicz, A. Szalas, Computing circumscription revisited: A reduction algorithm, Journal of Automated Reasoning 18 (1997) 297–336.
+[8] P.M. Dung, K. Kanchanasut, On the generalized predicate completion of non-Horn programs, in: Proceedings of NACLP’89, 1989, pp. 604–625.
+[9] S. Dworschak, S. Grell, V.J. Nikiforova, T. Schaub, J. Selbig, Modeling biological networks by action languages via answer set programming, Constraints 13
+
+(2008) 21–65.
+
+[10] T. Eiter, J. Lu, V.S. Subrahmanian, Computing non-ground representations of stable models, in: Proceedings of the 4th International Conference on Logic
+
+Programming and Nonmonotonic Reasoning (LPNMR-1997), 1997, pp. 198–217.
+
+[11] T. Eiter, G. Ianni, T. Lukasiewicz, R. Schindlauer, H. Tompits, Combining answer set programming with description logics for the semantic web, Artiﬁcial
+
+Intelligence 172 (2008) 1495–1539.
+
+[12] E. Erdem, O. Erdem, F. Türe, HAPLO-ASP: Haplotype inference using answer set programming, in: Proceedings of the 10th International Conference on
+
+Logic Programming and Nonmonotonic Reasoning (LPNMR-2009), 2009, pp. 573–578.
+
+[13] P. Ferraris, J. Lee, V. Lifschitz, A new perspective on stable models, in: Proceedings of the 20th International Joint Conference on Artiﬁcial Intelligence
+
+(IJCAI-2007), 2007, pp. 372–379.
+
+[14] M. Gebser, B. Kaufmann, A. Neumann, T. Schaub, Conﬂict-driven answer set solving, in: Proceedings of the 20th International Joint Conference on
+
+Artiﬁcial Intelligence (IJCAI-2007), 2007, pp. 386–392.
+
+[15] M. Gelfond, V. Lifschitz, The stable model semantics for logic programming, in: Proceedings of the 5th International Conference and Symposium on
+
+Logic Programming, 1988, pp. 1070–1080.
+
+[16] G. Gottlob, S. Marcus, A. Nerode, G. Salzer, V.S. Subrahmanian, A non-ground realization of the stable and well-founded semantics, Theoretical Com-
+
+puter Science 166 (1996) 221–262.
+
+[17] P.G. Kolaitis, Implicit deﬁnability on ﬁnite structures and unambiguous computations (preliminary report), in: Proceedings of the 5th Annual IEEE
+
+Symposium on Logic in Computer Science (LICS’90), 1990, pp. 168–180.
+
+[18] J. Lee, V. Lifschitz, Loop formulas for disjunctive logic programs, in: Proceedings of the 19th International Conference on Logic Programming (ICLP-
+
+2003), 2003, pp. 451–465.
+
+[19] J. Lee, Y. Meng, On loop formulas with variables, in: Proceedings of the 11th International Conference on Principles of Knowledge Representation and
+
+Reasoning (KR-2008), 2008, pp. 444–453.
+
+[20] N. Leone, G. Pfeifer, W. Faber, T. Eiter, G. Gottlob, S. Perri, F. Scarcello, The DLV system for knowledge representation and reasoning, ACM Transactions
+
+on Computational Logic 7 (2006) 499–562.
+
+[21] F. Lin, A study of nonmonotonic reasoning, PhD thesis, Stanford University, 1991.
+[22] F. Lin, Y. Zhao, ASSAT: Computing answer sets of a logic program by SAT solvers, Artiﬁcial Intelligence 157 (2004) 115–137.
+[23] F. Lin, Y. Zhou, From answer set logic programming to circumscription via logic of GK, in: Proceedings of the 20th International Joint Conference on
+
+Artiﬁcial Intelligence (IJCAI-2007), 2007, pp. 441–446.
+
+[24] L. Löwenheim, Über Möglichkeiten im Relativekalkül, Mathematische Annalen (1915) 137–148.
+[25] D. Pearce, A. Valverde, Quantiﬁed equilibrium logic and foundations for answer set programs, in: Proceedings of the 24th International Conference on
+
+Logic Programming (ICLP-2008), 2008, pp. 546–560.
+
+[26] N. Pelov, M. Denecker, M. Bruynooghe, Well-founded and stable semantics of logic programs with aggregates, Theory and Practice of Logic Program-
+
+ming 7 (2007) 301–353.
+
+[27] A. Polleres, From SPARQL to rules (and back), in: Proceedings of the 16th International Conference on World Wide Web (WWW-2007), 2007, pp.
+
+787–796.
+
+[28] T. Syrjänen, I. Niemelä, The smodels system, in: Proceedings of the 6th International Conference on Logic Programming and Nonmonotonic Reasoning
+
+(LPNMR-2001), 2001, pp. 434–438.
+
+[29] N. Tran, C. Baral, Hypothesizing about signaling networks, Journal of Applied Logic 7 (2009) 253–274.
+[30] M.H. van Emden, R.A. Kowalski, The semantics of predicate logic as a programming language, Journal of ACM 23 (1976) 733–742.
+
+

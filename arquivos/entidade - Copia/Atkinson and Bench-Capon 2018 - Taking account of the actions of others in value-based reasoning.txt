@@ -1,0 +1,1677 @@
+Artiﬁcial Intelligence 254 (2018) 1–20
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial  Intelligence
+
+www.elsevier.com/locate/artint
+
+Taking  account  of  the  actions  of  others  in  value-based 
+reasoning ✩
+
+Katie Atkinson,  Trevor Bench-Capon
+
+Department of Computer Science, University of Liverpool, Liverpool, L69 3BX, UK
+
+a  r  t  i  c  l  e 
+
+i  n  f  o
+
+a  b  s  t  r  a  c  t
+
+Article history:
+Received 5 January 2017
+Received in revised form 21 August 2017
+Accepted 1 September 2017
+Available online 28 September 2017
+
+Keywords:
+Value-based reasoning
+Practical reasoning
+Expected utility
+Argumentation schemes
+Ultimatum Game
+Prisoner’s Dilemma
+
+Practical reasoning, reasoning about what actions should be chosen, is highly dependent 
+both on the individual values of the agent concerned and on what others choose to do. 
+Hitherto, computational models of value-based argumentation for practical reasoning have 
+required assumptions to be made about the beliefs and preferences of other agents. Here 
+we  present  a  new  method  for  taking  the  actions  of  others  into  account  that  does  not 
+require  these  assumptions:  the  only  beliefs  and  preferences  considered  are  those  of  the 
+agent  engaged  in  the  reasoning.  Our  new  formalism  draws  on  utility-based  approaches 
+and  expresses  the  reasoning  in  the  form  of  arguments  and  objections,  to  enable  full 
+integration  with  value-based  practical  reasoning. We  illustrate  our  approach  by  showing 
+how value-based reasoning is modelled in two scenarios used in experimental economics, 
+the  Ultimatum  Game  and  the  Prisoner’s  Dilemma,  and  we  present  an  evaluation  of  our 
+approach in terms of these experiments. The evaluation demonstrates that our model is 
+able to reproduce computationally the results of ethnographic experiments, serving as an 
+encouraging validation exercise.
+
+© 2017 Elsevier B.V. All rights reserved.
+
+1.  Introduction
+
+The Ultimatum Game is widely used in experimental economics to explore interactions between people. In the Ultima-
+tum  Game,  one  person  is  given  a  sum  of  money  and  told  that  she  can  offer  as  much  of  it  as  she  wishes  to  her  partner. 
+That partner can accept the offer, in which case both keep the money offered, or the partner can reject the offer, in which 
+case neither gets any money at all. Classical game theory suggests that the offer should be as small as possible: it will be 
+accepted by a rationally self-interested person, since anything is better than nothing, and this will maximise what can be 
+kept. But in practice people do not offer the minimum: it seems that they take other factors into account, perhaps altruism, 
+perhaps a feeling that they are not comfortable with exploitation, or something else. Worse, minimum offers are very often 
+rejected: the partner cannot be relied on to act out of rational self interest either. Studies have shown that people rarely act 
+in conformity with the classical model, and have also shown that they exhibit a wide range of behaviours, with extensive 
+inter-cultural and intra-cultural variation. Since so many of the decisions we take in practical reasoning rely for their suc-
+cess on how other people respond and make their own choices, we have to take account of how other people will behave. 
+Since, however, reliable assumptions about others’ actions cannot be made, when choosing our actions we need to ﬁnd a 
+
+This article is a revised and extended version of [1], which was adjudged runner up for the best paper award at the Twenty Second European Conference 
+
+✩
+on Artiﬁcial Intelligence (ECAI 2016). This article also incorporates some material based on [2].
+
+E-mail address: katie@csc.liv.ac.uk (K. Atkinson).
+
+https://doi.org/10.1016/j.artint.2017.09.002
+0004-3702/© 2017 Elsevier B.V. All rights reserved.
+
+2
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+way  to  reduce  the  assumptions  we  make  about  how  other  people  will  react,  or  at  least  be  clear  about  the  extent  of  our 
+assumptions, and the consequences of them being mistaken. In this paper we will look at how we can take account of not 
+just particular actions that other people might do, but the whole set of actions that they might do. We begin with a general 
+consideration of practical reasoning.
+
+A  key  difference  between  theoretical  reasoning  (reasoning  about  what  is  the  case)  and  practical  reasoning  (reasoning 
+about what to do) [3] is the direction of ﬁt [4]. Whereas in theoretical reasoning an agent is trying to ﬁt its beliefs to the 
+world, in practical reasoning an agent is choosing an action intended to ﬁt the world to its desires. For theoretical reasoning, 
+there is only one, shared, world, and so if agents differ, one (or both) of them is wrong. In contrast, desires will legitimately 
+differ  from  agent  to  agent  and  so  conclusions  drawn  from  practical  reasoning  will  depend  on  the  subjective  aspirations 
+and desires of the individual agents. Agents may even be in conﬂict, so that they attempt to bring about different worlds. 
+The  conclusions  are  therefore  legitimately  subjective,  and  disagreement  is  both  rational  and  to  be  expected,  as  discussed 
+extensively  by  Searle  in  [4].  Acceptance  of  an  argument  as  to  what  to  do  depends  not  only  on  the  argument  itself  –  for 
+it must, of course, be a sound argument – but also on the audience to which it is addressed [5]. Capturing such rational 
+disagreement within a computational model of argument is one of the key motivations for our work, as we will discuss in 
+more detail in the next section. First we set out our main objectives for this paper, which are:
+
+• to take account of the effects on our actions of what others may do in the framework of value-based practical reasoning; 
+and do this without requiring assumptions about the beliefs and preferences of any agents other than the agent engaged 
+in the reasoning;
+
+• to do so in a manner compatible with the results of game theory and multi-criteria utility (e.g., [6], [7]) while explicitly 
+
+and transparently allowing for subjectivity and altruism;
+
+• to be able to express the reasoning in the form of arguments and objections so as to facilitate integration with value-
+
+based practical reasoning, and persuasion [8] and deliberation [9] dialogues based on this style of reasoning.
+
+The rest of the paper is structured as follows. In section 2 we provide some background discussion that motivates our 
+computational account of value-based reasoning and we also summarise prior work on the topic. In section 3 we provide 
+an  overview  of  the  games  we  use  from  experimental  economics  as  the  settings  for  exploring  our  computational  account. 
+Section 4 contains the main details of our account of justifying actions by relating arguments to reasoning about expected 
+utilities. In section 5 we show how the reasoning can be expressed in terms of argumentation schemes that can be used as 
+the basis of persuasion and deliberation dialogues within practical reasoning. Further, we demonstrate how the schemes can 
+be used in the Prisoner’s Dilemma scenario, before going on to demonstrate in section 6 how the account can be applied 
+in  the  Ultimatum  Game.  Section 7 offers  an  evaluation  of  the  approach  by  relating  it  back  to  our  original  objectives  and 
+also through consideration of how well our approach is able to reproduce the results of previous real world ethnographic 
+studies. Section 8 closes the paper with some concluding remarks.
+
+2.  Background
+
+In this section we provide some background motivation for the work that we present. We start by discussing Perelman’s 
+notion of an audience [5], then we summarise prior work that provides a computational realisation of this concept within 
+an argumentation-based account, and we follow this with a discussion on modelling the values of others.
+
+2.1.  Audiences
+
+Perelman’s  insight  that  we  draw  upon  in  our  work  is  that  for  an  argument  to  be  accepted,  it  has  to  be  accepted  by 
+someone, an argument is only convincing if it convinces people. There are a number of reasons why the audience should 
+fail to accept an argument that seems entirely convincing to the speaker.
+
+• The  audience  may  be  irrational,  or  use  some  different  kind  of  logic.  In  [10],  the  tortoise  accepts  both  p and  p → q, 
+but  refuses  to  accept  q.  No  efforts  on  the  part  of  Achilles  can  persuade  the  tortoise:  there  is  insuﬃcient  in  common 
+between them to enable any meaningful debate.
+
+• The audience may lack the capacity to follow the argument. While a watertight proof may appear to be a universally 
+acceptable argument, it may be that the audience cannot follow the proof and so are not convinced by it. If such an 
+audience accepts the conclusion it is on the basis of a kind of argument from authority, because they recognise that the 
+speaker is in a position to know and they trust the speaker, not on the basis of the proof they do not understand.
+
+• The audience and the speaker may have different Weltanschauungs. Thus for example, Christians often deploy arguments 
+about green issues based on a God-given duty of stewardship. Obviously such arguments will have no impact on secular 
+ecologists. The groups may be able to debate, but there will be some arguments that they are not able to share. In the 
+famous words of Karl Barth, “belief cannot argue with unbelief”.
+
+• Related,  but  more  tractable,  is  that  there  may  be  a  difference  in  conceptualisation.  This  may  well  lead  to  mutual 
+misunderstandings.  In  Computer  Science,  this  problem  is  addressed  by  the  use  of  ontologies  [11].  Once  the  different 
+conceptualisations have been made explicit it may be possible to align them [12], enabling fruitful debate.
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+3
+
+• The audience may differ from the speaker in beliefs. This is perhaps the most corrigible, since both should agree that 
+either  the  speaker  or  the  audience  is  right.  They  can  thus  use  mutually  acceptable  methods  to  resolve  the  factual 
+dispute, or appeal to an arbitration process, such as the use of a jury to establish the facts in legal cases.
+
+• Finally,  as  suggested  above,  in  practical  reasoning  the  audience  may  differ  in  aspirations,  interests,  values,  goals  and 
+preferences, so that they evaluate future states of affairs differently. While it is possible to argue for value preferences 
+[13], it may well be that the participants will agree to disagree [8]. Unlike the other disagreements, disagreements about 
+what to do are based on individual properties of the agents, and so agents should be expected to differ. For practical 
+reasoning, unlike the other cases, the disagreement is not a sign that something has gone wrong, and reconciliation is 
+not always achievable, or desirable.
+
+These are all interesting cases, and all need to be considered in argumentation, but it is only the last that we are concerned 
+with in this paper. Perelman summarises the situation with respect to practical reasoning in [14]:
+
+If  men  oppose  each  other  concerning  a  decision  to  be  taken,  it  is  not  because  they  commit  some  error  of  logic  or 
+calculation. They discuss apropos the applicable rule, the ends to be considered, the meaning to be given to values, the 
+interpretation and characterisation of facts.
+
+Searle expresses a similar view in [4]:
+
+Assume universally valid and accepted standards of rationality, assume perfectly rational agents operating with perfect 
+information, and you will ﬁnd that rational disagreement will still occur; because, for example, the rational agents are 
+likely to have different and inconsistent values and interests, each of which may be rationally acceptable.
+
+In what follows, to capture the required type of disagreement, we will consider an audience to be characterised by a set of 
+values, and a preference ordering on those values.
+
+This  notion  of  audience  was  computationally  modelled  in  [15] and  made  more  formal  in  Value-based  Argumentation 
+Frameworks (VAFs) [16]. VAFs are an extension of the abstract Argumentation Frameworks (AFs) introduced in the seminal 
+paper of Dung [17]. In a VAF arguments are associated with the social (i.e. not numeric) values1 their acceptance promotes 
+or demotes. Different audiences can now be characterised by the ordering they place on these values. Whereas in an AF an 
+argument is defeated by any attacking argument, in a VAF an argument is defeated for an audience by an attacker only if the 
+value associated with the attacking argument is ranked at least as highly by that audience. In this way different audiences 
+will accept different sets of arguments (preferred semantics [17] is used to determine acceptance), and, as is shown in [16], 
+provided the VAF contains no cycles in the same value, there will be a unique non-empty preferred extension. Thus, use of 
+VAFs provides a way of explaining (and computing) the different arguments accepted by different audiences. Value-based 
+Reasoning has been widely used as the basis of practical reasoning ([18], [19], [20], [21], [7], [22]) and applied in particular 
+areas such as law ([23], [24], [25]), e-democracy ([26], [27]), policy analysis ([28]), medicine, ([29]), experimental economics 
+([30]), rule compliance ([31]), decision support ([32]) and even ontology alignment ([33], [34]). Complexity results for VAFs 
+were established in [35] and [36].
+
+2.2.  An argumentation scheme for value-based practical reasoning
+
+The application of the preferences of an audience, expressed as an ordering on values, to practical reasoning requires the 
+generation of the arguments and identiﬁcation of the values associated with them. The proposal made in [37] was to use an 
+argumentation scheme (now included in the compendium of argumentation schemes collected in [38]) justifying an action 
+in terms of the values it promotes. The scheme appears in [37] as:
+
+In the current circumstances  R, I should perform action  A, to bring about new circumstances  S, which will achieve goal 
+G and promote value V .
+
+We  will  henceforth  refer  to  this  scheme  as  Practical Reasoning Argumentation Scheme (PRAS).  Like  all  argumentation 
+schemes,  PRAS  establishes  its  conclusion  only  presumptively  [39] and  can  be  challenged  using  what  [39] and  [38] call 
+critical questions. Thus an argument generated using PRAS can be challenged by claims against its soundness such as:
+
+• that the current state is different,
+• that the action is not possible,
+• that the action will reach a different state,
+• that the action will fail to achieve its goal, or
+• that the action will fail to promote its value.
+
+1 Values are the aspirations or the purposes an agent might pursue, such as liberty, equality, fraternity, wealth, health and happiness.
+
+4
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+It can also be challenged on the basis of the desirability of the action:
+
+• that it will also demote values and these values are more important, or
+• that alternative actions promote values that are more important.
+
+This second group of objections is what gives room for subjectivity arising from different value orderings so that we can 
+
+model the differences between audiences arising from differences in the states they wish to bring about.
+
+In [19] seventeen different critical questions were identiﬁed that could give rise to objections to, and counter-arguments 
+
+against, instantiations of PRAS.
+
+2.3.  Computational realisation of this scheme
+
+In order to make this approach computable, it is necessary to provide an underlying representation of relevant aspects 
+of  the  world  and  how  they  can  be  affected  by  the  actions  of  agents.  State  Transition  Diagrams  are  a  natural  choice  for 
+this purpose, since they can represent the world as a set of states, and actions as the transitions between them. In open 
+agent  systems,  however,  the  outcome  of  an  action  may  well  depend  on  what  the  other  agents  in  the  situation  choose  to 
+do.  Thus  an  individual’s  choice  does  not  necessarily  determine  the  state  that  will  be  reached.  To  account  for  this,  open 
+agent systems should model transitions as the joint actions2 composed of the individual actions of all the agents relevant 
+to  the  situation.3 A  suitable  variant  of  state  transition  diagrams  for  use  in  open  agent  systems  is  Action-based Alternating 
+Transition Systems (AATS), introduced in [41], since they do have joint actions as their transitions. AATSs are formally based 
+on  Alternating-time  Temporal  Logic  [40].  The  basic  AATS  was  augmented  in  [19] to  allow  the  labelling  of  the  transitions 
+with the values promoted and demoted by that transition. AATSs labelled in this way were termed Action-based Alternating 
+Transition Systems with Values (AATS + V) and AATS + Vs were used to provide the underpinning semantical structure for the 
+approach to practical reasoning set out in that paper.
+
+AATSs  are  particularly  concerned  with  the  joint  actions  of  the  set  of  agents  Ag.  jAg is  the  joint  action  of  the  set  of n
+agents  that  make  up  Ag,  and  is  a  tuple  (cid:3)α1, ..., αn(cid:4),  where  for  each  α j (where  j ≤ n)  there  is  some  agi
+∈ Ag such  that 
+α j ∈ Aci . Moreover, there are no two different actions α j and α j(cid:7) in  jAg that belong to the same Aci . That is, a joint action 
+contains  one,  and  only  one  action,  for  every  agent  in  Ag.  The  set  of  all  joint  actions  for  the  set  of  agents  Ag is  denoted 
+by  J Ag, so  J Ag =
+∈ Ag, agi ’s action in  j is denoted by  ji . Using this, the formal 
+deﬁnitions of an AATS are as follows:
+
+i∈Ag Aci . Given a  j ∈ J Ag and an agent agi
+
+(cid:2)
+
+Deﬁnition 1 (AATS [41]). An Action-based Alternating Transition System (AATS) is an (n + 7)-tuple  S = (cid:3)Q , q0, Ag, Ac1, ..., Acn,
+ρ, τ , (cid:5), π (cid:4), where:
+
+• Q is a ﬁnite, non-empty set of states;
+• q0 ∈ Q is the initial state;
+} is a ﬁnite, non-empty set of agents;
+• Ag = {ag1, ..., agn
+• Aci is a ﬁnite, non-empty set of actions, for each agi
+
+all actions {Ac1 ∪ ... ∪ Acn};
+
+which α may be executed;
+
+∈ Ag where Aci ∩ Ac j = ∅ for all agi
+
+(cid:10)= ag j
+
+∈ Ag; AcAg is the set of 
+
+• ρ : AcAg → 2Q is  an  action pre-condition function,  which  for  each  action  α ∈ Acag deﬁnes  the  set  of  states  ρ(α) from 
+
+• τ : Q × J Ag → Q is a partial system transition function, which deﬁnes the state τ (q, j) that would result by the perfor-
+
+mance of  j in state q. This function is partial as not all joint actions are possible in all states;
+
+• (cid:5) is a ﬁnite, non-empty set of atomic propositions; and
+• π : Q → 2(cid:5) is  an  interpretation  function,  which  gives  the  set  of  primitive  propositions  satisﬁed  in  each  state:  if  p ∈
+
+π (q), then this means that the propositional variable  p is satisﬁed (equivalently, true) in state q.
+
+This deﬁnition was extended in [19] to allow the transitions to be labelled with the values they promote.
+
+Deﬁnition 2 (AATS + V [19]). Given an AATS, an AATS + V is deﬁned by adding two additional elements as follows:
+
+• V is a ﬁnite, non-empty set of values.
+• δ : Q × Q × J × V → {+, −, =} is a valuation function which deﬁnes the status (promoted (+), demoted (−) or neutral 
+(=)) of a value v u ∈ V ascribed to the transition between two states made using a particular joint action: δ(qx, q y, ji, v u)
+labels the transition between qx and q y using  ji with one of {+, −, =} with respect to the value v u ∈ V .
+
+2 Here, as in [40] and [41], by joint action no implication of the agents acting together is intended. A joint action is simply an action composed of actions 
+performed by a set of agents at the same time, without any suggestion of coordination, or common purpose. This contrasts with the notion of joint action 
+in e.g. [42], which concerns acting in teams.
+3 This is an important difference from classic planning systems such as STRIPS [43], which focus on individual actions.
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+5
+
+This deﬁnition is an extension of [19] to allow for values to be promoted by the intrinsic worth of actions. Suppose Tom 
+enjoys ﬁshing while Dick does not. Now both the joint action where Tom ﬁshes and Dick does nothing and the joint action 
+where Dick ﬁshes and Tom does nothing will result in the pair having ﬁsh. But only the ﬁrst will promote pleasure, since 
+only Tom enjoys the activity of ﬁshing in itself. Thus there will be two different transitions, one for each of the joint actions, 
+and only one of them should return “+” with respect to the value pleasure.
+
+An Action-based Alternating Transition System with Values (AATS + V) is thus deﬁned as an (n + 9) tuple S = (cid:3)Q , q0, Ag, Ac1,
+..., Acn, ρ, τ , (cid:5), π , V , δ(cid:4). The values may be ascribed to transitions on the basis of the source and target states, or in virtue 
+of an action in the joint action, where that action has intrinsic value.
+
+Given  a  representation  of  the  problem  situation  as  an  AATS + V,  the  discovery  of  arguments,  counter  arguments  and 
+objections  can  be  implemented  in  several  ways,  including  that  used  in  [44].  In  [44] a  database  containing  tables  for  the 
+states, joint actions and transitions of the AATS + V is created to hold the problem information and then instantiations of 
+PRAS and challenges to those instantiations can be found by fairly simple queries to that database. For example there will 
+be an instantiation of PRAS if there is a transition from the current state which promotes a value.
+
+Three stages in practical reasoning are identiﬁed in [19]:
+
+• Problem formulation: essentially the construction of an AATS + V for the particular problem situation. The AATS + V 
+will reﬂect the views of the agent engaged in the reasoning, and so can be seen as embodying that agent’s causal model 
+(to determine the transitions) and its values (to enable the labelling of transitions), as is demonstrated in [45];
+
+• Epistemic stage: this involves determination of what the agent engaged in the reasoning believes (or chooses to assume) 
+about the current state and the joint action that will result from the choice of a particular individual action by the agent 
+concerned;
+
+• Option selection:  the  arguments  generated  from  the  AATS + V  are  formed  into  a  VAF  and  their  acceptability  status 
+
+determined according to the preferences of the agent engaged in the reasoning.
+
+While problem formulation and the identiﬁcation of the current state can be resolved using normal theoretical reasoning 
+techniques, and the option selection stage can be carried out using value-based reasoning based on VAFs as described in 
+[16], how the joint action should be determined in the epistemic stage is less obvious and is the topic of this paper. The 
+essential problem is that in order to know what it is best to do, it is necessary to anticipate what the other agents that can 
+inﬂuence the outcome of our action will do, since this may drastically affect what results from our own actions. But since 
+this reasoning will depend on the beliefs, aspirations and preferences of these other agents, a number of assumptions are 
+required to be made and these are often diﬃcult to justify. Agents who adopt the naive approach of assuming that others 
+will be like themselves, tend to perform badly in practice as is shown in work such as [46], but the agents may have no 
+knowledge at all of some or all the other agents involved, which could provide the basis of a different model. Even if they 
+do have knowledge of these other agents, predicting their behaviour is a highly uncertain matter. This variety of possible 
+behaviours should be expected since an important feature underlying practical reasoning is that agents are different, have 
+different desires and aspirations, and will rightly make different choices in similar situations.
+
+In [47] the argumentation was articulated into a set of argumentation schemes designed to justify each of the compo-
+nents in PRAS. In that paper the actions of others were seen to present a problem for the justiﬁcation of the claim that a 
+particular value would be promoted, since this required that a speciﬁc transition be followed. As noted in [47], the require-
+ment imposed by PRAS is rather weak: merely that there is some joint action containing the advocated action which gives 
+rise to a transition labelled with the value. But if this is challenged we need to show why we believe the other relevant 
+agents  will  act  so  that  this  is  indeed  the  joint  action  that  will  be  performed  and  that  this  is  the  transition  that  will  be 
+followed.  To  do  this  in  the  terms  of  PRAS  requires  that,  for  every  other  agent  modelled  in  the  AATS + V,  we  can  show 
+that  they  will  choose  the  appropriate  action  using  an  instantiation  of  PRAS  applicable  to  them  individually.  That  is,  they 
+use  an  AATS + V  embodying  their beliefs,  causal  model,  and  values  [45].  This,  in  turn, requires  us  to  consider  how  each 
+relevant agent will formulate the problem, the epistemic assumptions that each agent will make, and the value preferences 
+of each agent. Note that this will include the assumptions that the agents will make about each other. Given the number of 
+assumptions that need to be made, it is evident that some ﬁrmer basis for the choice of joint action is highly desirable.
+
+2.4.  Modelling the values of others
+
+One  approach,  common  in  classical  economics,  is  to  see  agents  as  consistently  rational  and  narrowly  self-interested 
+agents  who  can  be  expected  to  pursue  their  subjectively-deﬁned  ends  optimally.  John  Stuart  Mill  [48] put  it  thus  when 
+describing “economic man” (sometimes called homo economicus):
+
+[Economics] is concerned with him solely as a being who desires to possess wealth, and who is capable of judging the 
+comparative eﬃcacy of means for obtaining that end.
+
+Game Theory [49] also uses a single measure of utility expressed as a payoff matrix, and has become a very widespread 
+basis for the design of multi-agent systems [50]. This approach has led to some insights, and provided the foundation for 
+much  elegant  mathematics,  but  unfortunately  does  not  provide  a  satisfactory  explanation  of  the  way  in  which  humans 
+
+6
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+behave in practice. And of course, if we are deciding what to do, we cannot expect others to behave as they should, so even 
+if this were a good normative theory, we would still need an adequate descriptive theory.
+
+That  others  cannot  be  seen  in  this  way  is  well  demonstrated  by  a  number  of  experiments  carried  out  in  behavioural 
+economics. These experiments are carried out, using a variety of public goods games, to test the theory that behaviour can 
+be predicted using the assumptions of classical economics and game theory. There are valuable meta studies, in particular 
+for the Dictator Game [51] and the Ultimatum Game [52]. There is also a study comparing how ﬁfteen small scale societies 
+play the Ultimatum Game [53]. The ﬁndings suggest that the canonical model is followed only very rarely. Thus in [53] we 
+read:
+
+in addition to their own material payoffs, many experimental subjects appear to care about fairness and reciprocity, are 
+willing to change the distribution of material outcomes at personal cost, and are willing to reward those who act in a 
+cooperative manner while punishing those who do not even when these actions are costly to the individual.
+
+Even  in  the  Prisoner’s  Dilemma  [54],  where  defection  is  clearly  the  dominant  strategy,  we  ﬁnd  a  tendency  to  deviate 
+from it [55]. In [56], the emergence of norms and conventions is discussed in terms of the Prisoner’s Dilemma, and some of 
+the other characteristics inﬂuencing behaviour, such as empathy, trust and esprit de corps are cited as ways in which these 
+norms can be formed. The role of punishment is explored in [57]. What all these comparative studies show is that:
+
+• The canonical model used in classical economics, game theory and many multi agent systems is not adequate to explain 
+
+the behaviour encountered in experimental studies;
+
+• There  is  a  signiﬁcant  amount  of  inter-cultural  variation,  suggesting  that  the  established  values  of  subjects  is  carried 
+
+forward into these experiments;
+
+• There is also a signiﬁcant amount of intra-cultural variation, suggesting that the behaviour of individuals cannot reliably 
+
+be predicted solely on the basis of their cultural background.
+
+Our view is that by bringing the subjective ordering of values of agents to the fore, value-based reasoning can provide 
+a fruitful way of exploring these issues. This was borne out by the examination of the Dictator and Ultimatum Games in 
+[30].  There,  however,  like  all  approaches  based  on  [19],  the  reasoning  about  what  others  would  do  relied  too  heavily  on 
+unjustiﬁable  assumptions  about  the  values  they  would  use,  and  how  they  would  order  them,  which  is  an  issue  that  we 
+address in this paper.
+
+3.  The games
+
+In this section we describe two games from experimental economics that we use as the setting for exploring our compu-
+tational account. We will not consider the Dictator Game here, because although, as shown in [51] and [30], it is amenable 
+to analysis in terms of value-based reasoning, there is only one decision maker, and so the need to anticipate the actions of 
+others, which is the aspect in which we are interested here, does not arise. We will therefore only consider the Ultimatum 
+Game and the Prisoner’s Dilemma in this paper.
+
+3.1.  The Ultimatum Game
+
+In  the  Ultimatum  Game  [58] the  ﬁrst  player  is  given  a  sum  of  money  and  told  that  he  may  offer  some  (or  all)  of  it 
+to the second player. Once the proposer has made an offer the respondent may choose to accept the offer, or reject it, in 
+which  case  both  players  receive  nothing.  Whereas  traditional  game  theory  would  suggest  that  the  proposer  would  make 
+the  smallest  offer  possible  and  the  respondent  would  accept  it,  experiments  do  not  support  this.  The  meta-analysis  of 
+thirty-seven papers reported in [52] found
+
+that on average the proposer offers 40% of the pie to the responder. ... On average 16% of the offers is rejected. ... We 
+ﬁnd differences in behavior of responders (and not of proposers) across geographical regions.
+
+It  may  well  be  that  regions  (at  least  at  the  country  or  even  continent  level  used  in  [52])  do  not  provide  the  best 
+explanation for different behaviours, being themselves large and often culturally heterogeneous. Another study [53], based 
+on small-scale, homogeneous societies, found the different cultures more predictive:
+
+Among  the  Achuar,  Ache  and  Tsimane,  we  observe  zero  rejections  [...].  Moreover,  while  the  Ache  and  Achuar  made 
+fairly equitable offers, nearly 50 percent of Tsimane offers were at or below 30 percent, yet all were accepted. Similarly, 
+Machiguenga  responders  rejected  only  one  offer,  despite  the  fact  that  over  75  percent  of  their  offers  were  below  30 
+percent.  At  the  other  end  of  the  rejection  scale,  Hadza  responders  rejected  24  percent  of  all  proposer  offers  and  43 
+percent of offers at 20 percent and below. Unlike the Hadza, who preferentially rejected low offers, the Au and Gnau of 
+Papua New Guinea rejected both unfair and hyper-fair (greater than 50 percent).
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+7
+
+Fig. 1. AATS + V for Ultimatum Game from [30]. In this paper t (the threshold for fairness) will be taken as 35%.
+
+Two  aspects  of  the  societies  concerned,  namely  the  amount  of  cooperation  found  in  the  general  economic  activity  of  the 
+society and the extent to which market exchanges were a feature of daily life, were found to be explanatory in [53]:
+
+the Machiguenga and Tsimane rank the lowest; they are almost entirely economically independent at the family level and 
+engage rarely in productive activities involving more than members of a family. By contrast, the Lamelara whale-hunters 
+go to sea in large canoes manned by a dozen or more individuals. ... The Machiguenga show the lowest cooperation rates 
+in public-good games, reﬂecting ethnographic descriptions of Machiguenga life, which report little cooperation, exchange, 
+or sharing beyond the family unit.
+
+In  contrast,  the  Lamelara  have  the  highest  mean  offer  (58%)  and  a  zero  rejection  rate.  As  shown  in  [30],  this  can be 
+explained  by  differing  values  and  preferences  amongst  the  participants,  with  the  ordering  emerging  from  their  everyday 
+activities being applied in the games. The game was analysed in [30], with the following six values:
+
+• Proposer’s Money (M1): Promoted by acceptance of an offer to a degree inversely related to the size of the offer and 
+
+demoted if the offer is rejected;
+
+• Respondent’s Money (M2): Promoted by acceptance of an offer, to a degree related to the size of the offer;
+• Generosity (G): Promoted for the proposer by giving away a reasonable amount of money;
+• Equality (E): Promoted by both participants receiving the same amount;
+• Proposer’s Contentment (C1): Promoted by the acceptance of a low offer (did not offer too much) and demoted by the 
+rejection of a low offer (did not offer enough), or by the rejection of a good offer, since the respondent would then be 
+considered unreasonable;
+
+• Respondent’s Contentment (C2): Promoted by accepting a good offer and demoted by accepting a low offer.
+
+The transition diagram for the Ultimatum Game used in [30] is given in Fig. 1. This considers the actions as happening 
+serially,  so  that  the  joint  actions  have  two  stages.  Whilst  this  makes  the  interaction,  where  values  are  promoted  and  de-
+moted, more explicit, in this paper we prefer to combine the actions, so that our joint actions will comprise a proposal and a 
+response to it. The proposer may make a very high (vho) offer (more than 50%), an equal (eo) offer (= 50%), a fair (fo) offer 
+(35–50%), or a low (lo) offer (less than 35%). The respondent may accept or reject, giving 8 joint actions.  j1 is {vho, accept}, 
+j2 is {vho, reject} and so on. The AATS + V state records the money for each participant, and two ﬂags, indicating whether 
+the participants are content. Most important are the values promoted and demoted by the transitions determined by joint 
+actions. These are shown in Table 1.
+
+3.2.  Prisoner’s Dilemma
+
+In this very well known game [54], widely used in discussions of norm emergence such as [56] and [55], both players 
+may either cooperate or defect. Mutual cooperation results (for example) in a payoff of 3 to each player, mutual defection a 
+payoff of 1 to each player, and if one cooperates and the other defects the defector receives 5 and the cooperator receives 0 
+(though other payoffs are possible provided the order defect-cooperate, both cooperate, both defect and cooperate-defect is 
+maintained,  and  that  the  sum  for  mutual  cooperation  exceeds  the  sum  for  any  other  option).  The  “correct”  strategy  is  to 
+defect since that gives a better payoff whichever move the other makes (thus it is the dominant strategy). Note also it is not 
+a zero-sum game: collective utility is maximised by mutual cooperation. Here too, experiments ﬁnd that the game-theoretic 
+choice is not always made in practice. As explained in [56] conventions to encourage mutual cooperation often emerge or 
+
+8
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+Table 1
+Value promotion and demotion in the Ultimatum Game.
+
+Joint 
+action
+
+j1
+j2
+j3
+j4
+j5
+j6
+j7
+j8
+
+Proposal
+
+Response
+
+Promoted
+
+Demoted
+
+vho
+vho
+eo
+eo
+fo
+fo
+lo
+lo
+
+accept
+reject
+accept
+reject
+accept
+reject
+accept
+reject
+
+M1, M2, G, C2
+G
+M1, M2, G, C2
+G
+M1, M2
+
+M1, M2, C1
+
+E
+M1, C1
+
+M1, C1
+E
+M1
+E, C2
+M1, C1
+
+Table 2
+Value promotion and demotion in the Prisoner’s Dilemma.
+
+Joint 
+action
+
+j1
+j2
+j3
+j4
+
+Player 1
+
+Player 2
+
+Promoted
+
+Demoted
+
+C
+C
+D
+D
+
+C
+D
+C
+D
+
+M1, M2
+M2
+M1
+
+M1, S1, G2
+M2, S2, G1
+
+are  devised.  An  example  used  in  [56] is  a  military  situation  where  much  effort  is  made  to  build  up  trust  and  loyalty  to 
+create an esprit de corps in a regiment so that members will cooperate rather than defect, feeling that they are able to rely 
+on  their  comrades,  and  in  turn  reluctant  to  let  their  comrades  down.  The  conventions  are  often  reinforced  by  the  use  of 
+sanctions to punish defectors [57], [59]. Again there seem to be additional values considered by participants. Here we use 
+the following values:
+
+• Player Money (M1 and M2):  promoted  if  a  player’s  payoff  is  greater  than  1  (which  can  be  ensured  by  defection),  and 
+
+demoted if it is less than 1.
+
+• Player Guilt (G1 and G2): demoted if player defects and the other player cooperates.
+• Player Self-Esteem (S1 and S2): demoted if player 1 (or 2) cooperates and player 2 (or 1) defects: since the player may 
+
+feel that they should have known better.
+
+In  this  game  there  are  four  joint  actions  which  promote  and  demote  values  as  shown  in  Table 2.  Note  that  mutual 
+
+defection provides a baseline, neither promoting nor demoting any values, since it can always be achieved or bettered.
+
+4.  Justiﬁcation of actions
+
+The  currently  used  approach  to  value-based  reasoning  about  the  actions  of  others  follows  that  proposed  in  [19] and 
+
+applied in [30]. This approach is:
+
+1. Select a desirable transition based on the values it promotes and demotes.
+2. Argue for the individual action performed by the agent in the joint action corresponding to that transition.
+3. Consider  objections  based  on  the  other  agents  choosing  different  actions  and  so  causing  different  joint  actions  to  be 
+
+performed.
+
+4. Attempt to rebut these objections because:
+
+(a) The values promoted and demoted by the alternative transition are acceptable.
+(b) It is considered that the other agents will not act in this way.
+
+Whereas  4(a) can  be  resolved  on  the  basis  of  the  preferences  of  the  agent  at  whom  the  argument  is  directed,  4(b), 
+which  is  very  often  needed  since  the  alternative  choices  of  the  other  agents  may  lead  to  undesirable  situations,  requires 
+more assumptions about the other agents than can be really justiﬁed.
+
+In  previous  treatments  based  on  such  transition  diagrams  and  using  PRAS  (e.g.  [30])  we  would  get  arguments  such 
+as  we should cooperate to promote M1 which  would  be  challenged  with  objections  such  as  but player 2 might defect which 
+would demote M1. Now if M1 is the most important value for Player 1, then the objection will succeed, unless cooperation 
+can  be  assumed.  If  M1  is  the  only  value  considered,  defection  is  dominant,  giving  a  better  outcome  whatever  the  other 
+player  chooses.  Only  if  other  values  are  considered  will  Player 1  choose  cooperation.  For  example,  M2  might  be  rated 
+as  highly  as  M1  (perhaps  Player 2  is  Player 1’s  child,  or  a  close  colleague),  or  a  clear  conscience  is  regarded  as  more 
+important  than  money,  in  which  case  Guilt  must  be  considered.  The  arguments  as  modelled  in  [30] are,  however,  really 
+for a particular transition (joint action), with the agent’s own action justiﬁed in virtue of the appearance of that action in 
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+9
+
+Table 3
+Values promoted and demoted in the Ultimatum Game taking account of 
+probabilities of different joint actions.
+
+Proposer 
+action
+
+vho
+
+eo
+
+fo
+
+lo
+
+Promoted
+
+Demoted
+
+G, prob(j1)M1, 
+prob(j1)M2, prob(j1)C2
+G, prob(j3)M2, 
+prob(j3)C2, prob(j3)M1
+prob(j5)M1, prob(j5)M2
+prob(j7)M1, prob(j7)M2, 
+prob(j7)C1
+
+prob(j2)C1, prob(j2)M1, 
+prob(j1)E
+prob(j4)C1, prob(j4)M1
+
+prob(j6)M1, prob(j5)E
+prob(j7)C2, prob(j8)M1, 
+prob(j8)C1, prob(j7)E
+
+Table 4
+Values promoted and demoted in Prisoner’s Dilemma, taking ac-
+count of the probability of various joint actions.
+
+Proposer 
+action
+
+C
+
+D
+
+Promoted
+
+Demoted
+
+M2, prob(j1)M1,
+
+prob(j3)M1
+
+prob(j2)M1, probj(2)S1, 
+prob(j2)G2
+prob(j3)M2, probj(3)S2, 
+prob(j3)G1
+
+the  desired  transition:  the  objections  are  available  because  other  joint  actions  contain  the  same  individual  action  for  the 
+agent  concerned.  Better  would  be  an  argument  for  the  individual  action  itself,  not  the  joint  action  and  its  corresponding 
+transition.  This  will  require  us  to  look  at  the  set of  transitions  containing  the  action.  In  the  Ultimatum  Game  suppose 
+that prob(jointaction) is the probability of jointaction being performed when the agent making the argument chooses some 
+particular  individual  action.  Now  the  values  will  be  expected  to  be  promoted  and  demoted  according  to  the  probability 
+of the second player’s response, as shown in Table 3, and so the expected utility can be calculated, taking account of the 
+complete set of joint actions that include a particular individual action. This obviates the need to assume that the other will 
+perform a particular action, which would enable a particular joint action to be performed. The calculation can be made for 
+the whole range of probabilities: 0 ≤ prob(jointaction) ≤ 1.
+
+Now we can base arguments on the complete set of transitions containing an action, taking into account the likelihoods 
+of  all  possible  responses,  rather  than  having  to  assume  an  action  on  the  part  of  the  other  and  then  consider  objections 
+based  on  the  potential  performance  of  a  different  action.  Several  forms  of  argument  are  available:  our  examples  assume 
+the  context  of  a  persuasion  dialogue  [60] between  a  persuader  (who  may  be  an  advisor  or  the  proposer  engaged  in  an 
+internal dialogue, but cannot be the respondent, since the Ultimatum Game, in this form, allows no contact between the 
+two players) and the proposer:
+
+• Where an action is certain to promote a value. E.g. You should make a very high offer to promote G.
+• Where an action cannot promote a value. E.g. You should not make a very high offer as that cannot promote C1.
+• Where an action can promote a value. E.g. You should make a fair offer as this can promote M1.
+• Where an action can demote a value. E.g. You should not make a low offer as that will risk demoting C1.
+
+The third and fourth forms will have variants, if we can say something about the relative probabilities of acceptance and 
+rejection.  These  variants  will  replace  “can”  with  an  indicator  of  how  probable  promotion  is,  such  as  “very  likely”,  “more 
+likely than not”, “may possibly” etc. For example, we know from [52] that a fair offer is much more likely to be accepted 
+than rejected, and so we can say you should make a fair offer as that is likely to promote M1, or, since low offers are more likely 
+to be rejected, you should not make a low offer as there is a substantial risk of demoting M1.
+
+Similar arguments can be generated for the Prisoner’s Dilemma. Promotions and demotions of the extended set of values 
+for each action are shown in Table 4. From this table, arguments can be generated (using techniques from [27], for example), 
+as given below.
+
+• You should cooperate to promote M2
+• You should not cooperate as this risks demoting M1, S1 and G2
+• You should defect as this might promote M1
+• You should not defect as this risks demoting M2, G1 and S2.
+
+The real advance here over previous work such as [19] is that there is no longer any need to make assumptions about 
+what  the  other  believes  and  prefers:  the  agent  can  now  come  to  a  decision  using  its  own relative  preferences  between 
+
+10
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+values, its own beliefs and the degree of risk it is prepared to take, whilst requiring no additional machinery: it uses only 
+the AATS + V [19] based on its own beliefs, causal model and values [45]. This fulﬁls the ﬁrst of the objectives identiﬁed in 
+section 1.
+
+4.1.  More than one other agent
+
+The  games  discussed  above  have  only  one  other  agent.  Of  course,  in  practice  there  will  typically  be  several,  or  even 
+very many, agents that can have an inﬂuence. For example, we might extend the Ultimatum Game so that there are several 
+respondents and acceptance or rejection is determined by a majority, or acceptance may require unanimity. Or we might 
+want  to  look  at  a  problem  such  as  the  free-rider  problem,  whereby  defection  pays,  unless  some  proportion  of  the  popu-
+lation  defects.  For  example,  a  small  number  of  tax  avoiders  will  not  affect  services,  but  if  there  are  too  many,  the  state 
+infrastructure will collapse. In other situations there may be a number of agents with a range of, perhaps different, choices. 
+This might, at ﬁrst sight, present a problem, since the number of joint actions rises rapidly: n agents each with m actions 
+give rise to nm joint actions. But we are not especially interested in details of the joint actions: the point of our approach 
+here is to consider the set of joint actions in which the agent of concern performs a particular action, which limits what 
+we have to consider.
+
+In the standard value-based approach, as proposed in [19] the values promoted and demoted by a transition are deter-
+mined by the source and target states. Even where the action performed does affect values, as in [47], so that the intrinsic 
+value of an action can be taken into account, what matters for the agent concerned is its own individual action, and so all 
+transitions between the same pair of states containing that action will promote and demote the same values, as far as that 
+agent  is  concerned.  Thus,  for  our  current  purposes,  we  will  consider  all  joint  actions  with  the  same  action  by  the  agent 
+concerned leading to the same state to be equivalent, so that consideration can be limited to the different outcomes pos-
+sible for a given action of the agent engaged in the reasoning, irrespective of how many joint actions reach each outcome. 
+Effectively  all  the  other  agents  can  be  considered  together  as  a  single  other.  If  a  majority  is  required,  it  does  not  matter 
+which  agents  make  up  that  majority;  nor  does  it  matter  who  the  other  free  loaders  are  provided  that  there  are  not  too 
+many of them, and so on. Of course, what can be said about the probabilities may be affected: if we know that only one 
+agent  in  six  will  reject  a  fair  offer,  then  we  can  be  more  conﬁdent  that  the  larger  the  number  of  respondents  the  more 
+likely it is that there will be a majority for acceptance, but the less likely it is that the offer will be accepted if we require 
+unanimity.
+
+4.2.  Preferred values
+
+If only a single value is recognised as worthy of promotion, the choice is often unproblematic. In the Prisoner’s Dilemma, 
+M1 may be promoted and cannot be demoted by defection, M2 is only promoted by cooperation, C1 can only be demoted 
+by defection and S1 can only be demoted by cooperation. In some cases, however, whether a value is promoted or demoted 
+may depend on what the other agents choose to do (as is shown through the example presented in Tables 3 and 4). Similarly 
+some combinations of values are unproblematic, but hard choices arise when different values pull us in different directions, 
+because an action may promote one value and demote another, or because values are promoted and demoted to different 
+extents. In such cases we will need to express the subjective preferences of the agent engaged in the reasoning to establish 
+the outcome it prefers.4
+
+4.3.  Expected utilities
+
+We now turn to our second objective. In all value-based reasoning it is assumed that an agent is capable of expressing a 
+preference in terms of an ordering on values. However, sometimes quantiﬁcation of the degree of preference and the extent 
+of promotion is required (see e.g. [32]). In the Prisoner’s Dilemma the payoff matrix gives the extent of promotion e.g.  j1
+promotes M1 and M2 to extent 2 etc: (remember that we only count gains in excess of the baseline towards promoting M1 
+and M2), but to quantify the preference of combinations of values each value can conveniently be expressed in terms of a 
+single selected value (M1 is the obvious choice). The valuation is subjective to each agent, but requires reference only to its 
+own preferences. Agent Preferences are deﬁned below.
+
+Deﬁnition 3 (Agent preferences). The preferences of an agent ag ∈ Ag is the set O ag = {(cid:3)v 0, w 0(cid:4), (cid:3)v 1, w 1(cid:4), ..., (cid:3)vn, wn(cid:4)}, where 
+v 0...vn are values and  w 0...wn are weights associated with these values.
+
+Using these weights we can calculate the expected utility of agent  i performing α. We will assume that if the desired 
+joint action ( j0) does not result from the performance of α, the worst case alternative joint action ( j w ) will be the one that 
+does result (providing a lower bound). Informally the expected utility of performing α will be the utility of  j0 multiplied 
+by the probability of  j0 plus the utility of  j w (which will often be negative) multiplied by (1 minus the probability of  j0).
+
+4 A recent exploration of the relationship between quantitative and qualitative aspects of decision making can be found in [61].
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+11
+
+Fig. 2. Expected utilities for ag when ag values M1 only. Dark grey is ag cooperates, light grey is ag defects.
+
+Now, unlike previous work such as [19], there is no longer any need for the reasoning agent to make assumptions about 
+the others’ beliefs, domain conceptualisation and preferences that this other agent would use to choose a particular action: 
+the reasoning agent will then be able to decide using its own relative preferences between values, its own beliefs and, where 
+necessary, the particular degree of risk it is subjectively prepared to accept.
+
+Once  the  agent  preferences  have  been  established,  the  expected  utilities  can  be  calculated  as  shown  in  Deﬁnition 4
+
+below:
+
+Deﬁnition 4 (Expected utility of ag performing α in state qs).
+
+• Let  J α = { j0, j1... jn} be the set of joint actions in which ag performs α (i.e.  jag = α) available in the starting state, qs. 
+
+The action which ag wants to result from performing α is  j0.
+
+• Let  E
+
+ag
+jk
+
+= (cid:3)e0, e1, ..., em(cid:4) be the (m + 1)-tuple of the extents to which the values  v 0..vm are promoted (ei positive) or 
+
+demoted (ei negative) for ag by the performance of  jk ∈ J α in qs.
+• The utility for ag of the performance of  jk ∈ J α in qs, u(ag, jk), is 
+
+(cid:3)
+n
+
+ag
+α is the set of utilities for ag for all  ji ∈ J α . Let u w be the ui ∈ U
+
+Now U
+is the worst case for ag of performing α (and so represents the strongest of the possible objections).
+
+ag
+α , such that u w ≤ ui , for all ui ∈ U
+
+• Let prob( j0) be the probability of  j0 being the joint action performed when ag performs α in qs.
+• Now  the  expected  utility,  euag(α) for  ag of  performing α in qs is  (u(ag, j0) ∗ prob( j0)) + (u(ag, j w ) ∗ (1 − prob( j0))). 
+Note that we are assuming that if  j0 does not result from ag performing α, then  j w results, so that euag(α) is a lower 
+bound on the expected utility for ag of performing α.
+
+i=0(ei ∗ w i) for every ei in E ag
+jk
+
+where (cid:3)v i, w i(cid:4) ∈ O ag. 
+ag
+α . Thus  j w
+
+If we apply our machinery to the Prisoner’s Dilemma (PD), since there are only two joint actions containing cooperation 
+by a given agent, prob( j2) = 1 − prob( j1). In the traditional PD only the agent’s own payoff is recognised as having utility. 
+The utility is the actual payoff minus the guaranteed payoff (i.e. the payoff from mutual defection). For cooperation by an 
+agent the extent to which M1 is promoted for that agent is 2 when the other cooperates. M1 is demoted to extent 1 for 
+that  agent  when  the  other  defects.  For  defection  by  the  agent  it  is  promoted  to  extent  4  when  the  other  cooperates  and 
+neither promoted nor demoted when the other defects. The expected utilities for ag cooperating (dark grey) and defecting 
+(light grey) for the various probabilities of the other cooperating are shown in Fig. 2.
+
+Suppose,  however,  that  both  the  values  M1  and  M2  are  recognised  in  PD,  and  M2  is  weighted  by  the  agent  engaged 
+in  the  reasoning  at  0.5M1.  Now  the  utility  of  cooperating  when  the  other  also  cooperates  will  be  3M1,  and  the  utility 
+of  cooperating  when  the  other  defects  M1.  Similarly  we  can  calculate  the  expected  utility  of  defecting  for  the  various 
+probabilities of the other cooperating. Defecting when the other cooperates yields a utility of 3.5M1, and mutual defection 0 
+(since this is the baseline case, no values are considered promoted). Again the desired joint action is performed when the 
+other agent cooperates. This gives the graph shown as Fig. 3. The crossover is at prob( j0) = 0.67.
+
+If we now add in the value of Guilt (with a weight of 1), which gives a negative utility when an agent defects and the 
+
+other cooperates, we get the expected utilities shown in Fig. 4.
+
+These  three  ﬁgures  represent  the  three  possibilities.  In  Fig. 2,  which  shows  the  traditional  PD,  we  ﬁnd  that  defection 
+dominates cooperation: the expected utility is higher however likely it is that other defects or cooperates. Therefore defection 
+
+12
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+Fig. 3. Expected utilities for ag with M2 = 0.5M1. Dark grey is ag cooperates, light grey is ag defects.
+
+Fig. 4. Expected utilities for ag with M2 = 0.5M1 and G = M1. Dark grey is ag cooperates, light grey is ag defects.
+
+is the preferred action, whatever the probability of the other cooperating. In Fig. 4 the reverse is true: the inclusion of the 
+additional values means that cooperation dominates defection. In Fig. 3, there is a crossover, at prob( j0) = 0.67, so that for 
+high  probabilities  of  cooperation  by  the  other,  defection  is  preferred,  but  for  low  levels,  the  utility  afforded  to  the  payoff 
+received by the other makes cooperation preferred.
+
+4.4.  Arguments in Prisoner’s Dilemma using expected utilities
+
+Our third objective, to be able to express the reasoning in the form of arguments and objections, is addressed by pro-
+ducing arguments based on the expected utilities. These different possibilities mean that several types of argument can be 
+based on the expected utilities. Our examples are expressed in terms suitable for a persuasion dialogue (not between the 
+PD participants, but between a participant and advisor).
+
+1. With your value preferences, you should C (respectively, D) since the expected utility is always greater than any alter-
+
+native.
+
+2. With your value preferences, you should C (respectively, D) since the expected utility is always positive.
+3. With  your  value  preferences,  you  should  C  (respectively,  D)  since  the  expected  utility  is  greater  than  the  alternative 
+
+when the probability of cooperation is greater (less) than P.
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+13
+
+Of these (1) is appropriate when the action advocated is dominant, and is the strongest of the three. Argument (2) is 
+rather weak: although the expected utility is always positive, the proposed action may have a lower expected utility than 
+the alternative for some (or even all) values of prob( j1). It may, however, be useful if we wish to reach the target state in 
+order to enable some more beneﬁcial action, since it indicates that no harm is done, and so can be used to rebut objections. 
+The  argument  shows  that  we  suffer  no  loss,  although  there  may  be  an  opportunity  cost.  Argument  (3)  can  be  effective 
+provided we can give reasons to suppose that probability of cooperation is in the desired range.
+
+A natural dialogue arising from using (1) for cooperation might run:
+
+A: S ince you value M1 and M2 equally, you should C since the expected return is always greater than the alternative.
+B: T his overvalues M2.
+A: E ven if M2 is only worth 70% of M1, the expected utility is always greater than the alternative.
+A: B ut even 70% overvalues M2.
+B: E ven if M2 is only worth half M1, a less than 0.6 probability of cooperation by the other player will mean cooperation 
+
+has the higher expected utility. Moreover the expected utility of cooperation is still always positive.
+
+In the course of the dialogue, the very strong argument of type (1) has become untenable, but a combination of argu-
+ments  of  types  (2)  and  (3)  remain  potentially  persuasive.  Here  we  are  producing  argumentation  dialogues  (albeit  not  yet 
+expressed  in  a  computational  dialogue  model)  which  explore  the  sensitivity  to  the  assessment  of  the  relative  valuations, 
+and the sensitivity to the estimates of cooperation. These dialogues do not require knowledge about the other, but if such 
+information  is  available  these  dialogues  provide  a  context  in  which  the  information  can  be  deployed  by  constraining  the 
+range for the probability of cooperation by the other player. For an example based on (2):
+
+B: S ince you value M2 at 50% of M1, you should C since the expected return is always positive.
+A: B ut with these values, D gives a better return unless the probability of cooperation is worse than 0.6.
+
+This  objection  could  be  reinforced  with  reasons  to  suppose  it  likely  that  the  other  will  cooperate  (family  member,  team 
+member  or  similar,  or  experimental  results,  if  appropriate  results  are  available).  Note,  however,  that  these  may  also  be 
+reasons to increase the valuation of M2 relative to M1.
+
+5.  Expression as argumentation schemes
+
+The above arguments (1)–(3) for PD can be generalised and presented as argumentation schemes in the manner of [39]; 
+here we present one possible set of such schemes. Note that the users of these schemes are not to be identiﬁed with the 
+players in the PD. The dialogues below are supposed to represent one player being given advice (likely to be a persuasion 
+situation),  or  two  people  acting  as  a  team  in  the  PD  discussing  their  best  course  of  action  (likely  to  be  a  deliberation 
+situation).  The  schemes  have  a  number  of  premises,  and  the  conclusion  in  common.  These  are  the  premises  that  set  up 
+the  situation  and  identify  the  key  elements.  Then  additionally  there  is  one  key  premise  for  each  scheme,  which  will  be 
+characteristic of the scheme. All the schemes have
+
+• Conclusion: ag should perform α.
+
+5.1.  Common premises
+
+Each scheme will have four premises in common5:
+
+• Values Premise: V is the set of values considered to be relevant by ag.
+• Weighting Premise: The relative valuation of the members of V given by ag is a set of (cid:3)value, relative weight(cid:4) pairs.
+• Joint Action Premise: { j0, j1, ... jn} is the set of joint actions in which ag performs α.
+• Expected Utility Premise:  euag(α, prob( j0)) returns  the  expected  utilities  of  agent  ag performing  α for  values  of 
+
+prob( j0) where  j0 is the desired joint action.
+
+The ﬁrst premise identiﬁes the values that the agent will consider and the second weights them in terms of the most 
+important value. The joint actions containing the advocated action α as the action of ag are then taken from the AATS + V to 
+give the third premise. The fourth premise then establishes the expected utilities for the various probabilities of the desired 
+joint action,  j0, resulting from ag performing α.
+
+5 The extents to which values are promoted are not given as a premise here because they are part of the payoff matrix and are ﬁxed and common to all 
+agents.
+
+14
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+5.2.  Characteristic premises
+
+We have three schemes to express the arguments (1)–(3) of section 4. We will name these as follows:
+
+1. Argument from Dominance
+2. Argument from Positive Expected Utility
+3. Argument from Probability of Cooperation.6
+
+Each scheme has its own characteristic premises. For Argument from Dominance:
+
+• Dominance Premise:  euag(α, j0) ≥ euag(β, j0) for  any  alternative  action  β available  to  ag,  for  all  values  of  prob( j0); 
+
+where  j0 is the joint action compliant with the action of ag.
+
+For Argument from Positive Expected Utility:
+
+• Positive Utility Premise: euag(α, j0) ≥ 0 for all values of prob( j0).
+
+Finally, for Argument from Probability of Cooperation:
+
+• Probability Range Premise:  euag(α, j0) ≥ euag(β, j0) for  all  values  of  prob( j0) ≥ (respectively,  ≤)  crossover,  where 
+
+crossover is the point at which euag(α, j0) becomes greater (respectively, less) than euag(β, j0).
+
+Here  we  are  taking  the  joint  action  resulting  from  the  agent  engaged  in  the  reasoning  (ag)  performing  β to  be  the 
+best alternative, namely the joint action containing β is the one which yields ag the highest expected utility. Thus β will 
+represent  a  better  choice  for  ag for  some  probabilities  of  cooperation  (i.e.  there  is  a  cross  over  point).  When,  however, 
+we  are  considering  non-cooperation  we  use  the  worst  case  for  ag to  provide  a  lower  bound  on  the  expected  utility.  For 
+instance, suppose we are playing chess and there is a choice of three moves A, B and C. When considering alternatives to A, 
+we choose the better of B and C. However, when considering the opponent’s response to each of these moves, we consider 
+the  response  that  will  give  rise  to  the  desired  transition  and  the  response  that  will  produce  the  worst  outcome  for  our 
+agent. This will allow us to compare the joint actions using a lower bound on their expected utility.
+
+5.3.  Critical questions
+
+These schemes can be associated with critical questions, as in [39]. Some will be common to all three schemes, while 
+those  associated  with  the  characteristic  premises  will  be  applicable  only  to  the  particular  scheme.  We  begin  with  those 
+common to all schemes.
+
+5.3.1.  Critical questions applicable to all schemes
+
+• CQ1 Are all the members of V relevant?
+• CQ2 Are any other Values (i.e. values in the AATS + V, but not included in V for this argument) relevant?
+• CQ3 Are any members of V over weighted?
+• CQ4 Are any members of V under weighted?
+
+CQ1 and CQ2 are directed at the Values Premise and CQ3 and CQ4 at the Weighting premise. We have no CQs directed 
+at the other two premises, which are taken directly from the AATS + V and so considered beyond challenge at this stage. If 
+there are only two joint actions containing α, the Expected Utility Premise is fully determined by the labelling of transitions 
+in the AATS + V, together with the Values and Weighting premises. If there are more than two such joint actions, the worst 
+case should be used as the basis for comparison, as described above.
+
+Once  we  have  established  which  values  we  wish  to  consider,  we  can  only  challenge  the  characteristic  premise  of  the 
+Argument from Dominance by coming up with an alternative action γ for which euag(γ , j0) > euag(α, j0) for at least some 
+probabilities  of  compliance.  But  if  the  dominance  premise  is  correct  with  respect  to  the  AATS + V  it  follows  strictly,  and 
+so this would challenge the AATS + V, which is considered outside the scope of this stage of the argumentation. Therefore 
+there are no CQs peculiar to the Argument from Dominance. Similarly the Argument from Positive Expected Utility has no 
+individually applicable CQs. The Argument from Probability of Cooperation does, however, have its own CQ:
+
+• CQ5 Can prob( j0) be assumed to be ≥ (respectively, ≤) crossover?
+
+6 When other agents act so that  j0 results from ag performing α, we call, this cooperation.
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+15
+
+5.3.2.  Rebuttals
+
+These  critical  questions  will  have  their  own  typical  rebuttals,  but  these  may  depend  on  the  context  supplied  by  the 
+
+original scheme. For example CQ3 could be met by
+
+even if the relative weight of v is reduced to n%, euag(α, j0) remains greater than its alternatives for all values of prob( j0).
+
+in the context of the Argument from Dominance. In the context of Argument from Positive Expected Utility, however, we 
+
+would meet CQ3 with
+
+even if the relative weight of v is reduced to n%, euag(α, j0) remains ≥ 0 for all values of prob( j0).
+
+These  rebuttals  can  be  preempted  by  posing  a  more  speciﬁc  challenge:  for  example,  to  the  Argument  from Positive 
+
+Expected Utility:
+
+if the relative weight of v is reduced to n%, euag(α, j0) becomes < 0 for values of prob( j0) < p.
+
+Perhaps a more natural way of challenging a move in a dialogue is ﬁrst to pose the appropriate CQ and then to put for-
+ward an argument of ones own. Thus the last challenge would be made using both CQ3, and an Argument from Probability 
+of Cooperation for an alternative to α.
+
+5.3.3.  Dialogue based on these schemes
+
+These  schemes,  challenges  based  on  the  critical  questions  and  rebuttals  can  be  deployed  in  an  adversarial  discussion, 
+enabling  us  to  realise  dialogues  of  the  sort  sketched  in  section 4.4.  As  an  example  we  will  consider  a  dialogue  between 
+White and Black, concerning the action to take in the Prisoner’s Dilemma.
+
+In  the  dialogue,  we  will  take  it  that  the  participants  start  from  a  common  AATS + V,  so  that  the  schemes  can  be 
+
+summarised in the form
+
+Given ListOfValueWeightPairs, one should α because CharacteristicPremise.
+
+White, arguing for defection, begins the dialogue:
+
+W1 Given (cid:3)M1, 1(cid:4), one should defect because the expected value of defection is always greater than the expected value of 
+
+cooperation.
+
+Black,  arguing  for  cooperation,  can  now  challenge  this  using  CQ2.  As  M1  is  the  only  value  used  in  W1,  the  other  CQs 
+cannot be used against W1. Black needs to ﬁnd a value demoted by defection. As Table 2 shows, there are three possibilities: 
+the payoff of the other player, guilt, or the self-esteem of the other player. Black can make the challenge (here Black uses 
+the payoff of the other player) and then counter with an Argument from Probability of Cooperation:
+
+B1 You must take some account of the payoff to the other player.
+B2 Given (cid:3)M1, 1(cid:4), (cid:3)M2, 0.5(cid:4), one should cooperate since the expected utility is greater for probability of the other cooper-
+
+ating less than 0.67.
+
+At this point White has several possibilities:
+
+R1, based on CQ1: There is no reason to care about the payoff of the other. This simply refuses to modify the position of W1.
+R2, based on CQ2: Introduce another value, demoted by cooperation. Self Esteem is a possibility. A weight of 1 for  S1
+will restore Defection to dominance.
+R3, based on CQ3: Argue that M2 is overrated. For example, reducing the weight to 0.2 will restore defection to domi-
+nance. Any greater weight will give some value of prob( j0) at which cooperation is better.
+R4. Since B2 expresses an Argument from Probability of Cooperation, CQ5 is also available.
+
+How  Black responds  will  depend  on  the  particular  move  chosen  by  White.  For  R1,  much  will  depend  on  the  context. 
+If  White is  trying  to  persuade  Black,  Black gets  to  choose  the  weights  on  values  [8],7 and  so  the  move  is  not  available  to 
+White, since Black has, in B1, already shown that M2 is, in its opinion, something to care about. In other situations, such 
+as  deliberation,  they  are  in  a  different  dialogue  type,  and  a  nested  persuasion  dialogue  must  be  entered  in  which  Black
+will attempt to persuade White that the value should be given a positive weight. Unless Black is trying to persuade White
+
+7 Note that a weight of 0 indicates that the agent recognises the value (for example, realises that other agents may care about it), even though it does 
+not care about it itself.
+
+16
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+Table 5
+Effects of different value weights on choices in the Ultimatum Game.
+
+M1
+
+1
+1
+1
+1
+1
+1
+
+M2
+
+0
+0.3
+0.3
+1
+0.3
+0.6
+
+G
+
+0
+0
+0
+1
+0.7
+0.4
+
+E
+
+0
+0
+1
+0
+0
+0
+
+C1
+
+0
+0
+0
+0.5
+0
+0
+
+C2
+
+0
+1
+1
+0.5
+0.5
+0.5
+
+Low
+
+Crossover
+
+High
+
+lo
+fo
+eo
+vho
+eo
+vho
+
+dom
+dom
+dom
+dom
+0.5
+0.6
+
+lo
+fo
+eo
+vho
+lo
+fo
+
+(when White has the last word on what values should be considered), R1 is probably best avoided at this point. R2 similarly 
+depends on context. If it is Black being persuaded, Black can simply reject this challenge, but if White is being persuaded, 
+or in a deliberation, R2 may be an effective move, if arguments for why the additional value merits consideration can be 
+produced.
+
+Probably the best tactic for White is to use R3, since this explores the sensitivity of Black’s challenge to the weight used 
+and  so  can  establish  the  least  weight  that  may  be  accorded  to  the  payoff  of  the  other.  Even  if  White and  Black agree  to 
+compromise and accept a value for M2 between 0.2 and 0.5, then having made R3 means that R4 becomes more effective 
+because of the reduction in the crossover point. For example, splitting the difference at 0.35 will reduce the crossover to 
+0.29.
+
+Suppose, however, the dialogue in fact continues as follows (e.g. Black is the persuader, and so is able, in this context, to 
+
+have the ﬁnal say as to weights and values.)
+
+W2 You have overrated M2. At 0.5, you would be happy for the other to defect when you cooperate.8 Suppose we weight 
+
+it at no more than 0.25M1.
+
+W3 Given  (cid:3)M1, 1(cid:4) and  (cid:3)M2, 0.25(cid:4) one  should  defect  because  the  expected  value  of  defection  is  always  greater  than  the 
+
+expected value of cooperation.
+
+B3 I think that 0.5 is the correct weight for M2.
+
+Black may now introduce a third value, say Guilt, which will enable the Argument from Dominance:
+
+B4 Given  (cid:3)M1, 1(cid:4),  (cid:3)M2, 0.5(cid:4) and  (cid:3)G1, 0.5(cid:4),  one  should  cooperate  because  the  expected  value  of  cooperation  is  always 
+
+greater than the expected value of defection.
+
+This will work well if Black has the ﬁnal say as to the weights on values. But even if this is not so, Black may still defend 
+
+cooperation with the Argument from Positive Expected Utility:
+
+B4a Given (cid:3)M1, 1(cid:4) and (cid:3)M2, 0.5(cid:4), I can cooperate because the expected value of cooperation is always greater than zero.
+
+If White had responded to B2 using R4, arguing that there is no reason to think that the probability of cooperation will be 
+below 0.67, Black could try to argue that cooperation is unlikely (e.g. because of the game-theoretic dominance of defection) 
+or,  as  in  B4a,  reply  with  the  Argument  from Positive  Expected  Utility,  which  licenses  the  performance  of  the  action  as  a 
+non-harmful choice, while acknowledging that it may not be the best choice.
+
+6.  Application to the Ultimatum Game
+
+Similar  arguments  as  used  in  the  Prisoner’s  Dilemma  scenario  can  be  developed  for  the  Ultimatum  Game.  Different 
+weights  for  the  different  values  will  lead  to  different  arguments  being  dominant.  Also  the  different  actions  will  promote 
+M1 and M2 to varying degrees. M1 will be promoted most (if accepted) by lo, then fo then eo and least by vho, whereas 
+for M2 the reverse will be true. Some example value proﬁles and recommended actions corresponding to them are given 
+in  Table 5.  The  ﬁrst  six  columns  indicate  the  weights  for  each  value,  the  seventh  the  best  choice  for  low  probabilities  of 
+acceptance of offers made, the eighth whether the choice is dominant, or the particular crossover point for this proﬁle, and 
+the last column the best choice for high probabilities of acceptance of offers made. For example, in the penultimate row, at 
+low probabilities of acceptance the best choice is the equal offer: this promotes generosity and avoids angering the other, 
+without sacriﬁcing more money than is necessary to achieve these goals. When the probability of acceptance reaches 0.5 
+both the fair offer and the low offer take over, with the low offer being slightly preferred. In the ﬁnal row, the high weight 
+of M2 means that the very high offer is better than the equal offer for low probabilities of acceptance, but the fair offer 
+
+8 This could be so in many concrete situations, depending on the relationship between the two players. A parent will often give preference to the needs 
+of a child, or a cooperator may expect present (or future) compensation from others who defect. Normally, however, a player would be expected to wish 
+to avoid the situation in which he cooperates and the other defects.
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+17
+
+Table 6
+Actions for values relating to cooperation and exchange activities, and selected other proﬁles for societies discussed 
+in [53].
+
+Society
+
+Type
+
+M1
+
+M2
+
+Lamelara
+Orma
+Machiguenga
+Ache
+Hazda
+Gnau/Au
+
+coop
+exchange
+solitary
+willing sharers
+unwilling sharers
+giving adverse
+
+0.3
+0.3
+0.3
+1
+1
+0.5
+
+0
+0
+0
+0.8
+0.8
+0
+
+G
+
+1
+0
+0
+1
+0
+0
+
+E
+
+0
+0
+0
+0.5
+0.5
+0
+
+C1
+
+C2
+
+Low
+
+Crossover
+
+High
+
+0
+0
+0
+0
+0
+1
+
+0
+1
+0
+0
+0
+0
+
+eo
+eo
+lo
+eo
+eo
+fo
+
+dom
+dom
+dom
+dom
+0.4
+0.4
+
+eo
+eo
+lo
+eo
+lo
+lo
+
+becomes best for probabilities of acceptance greater than 0.6. When the probability exceeds 0.7, the low offer is also better 
+than the very high offer, but the fair offer remains better.
+
+7.  Evaluation
+
+We offer two aspects of evaluation. Technically, we can ask whether we achieved the objectives set out in section 2.4. 
+Practically, we can explore the extent to which our proposed approach is able to reproduce the results of empirical studies 
+such as [53].
+
+Three technical objectives were given in section 2. Our ﬁrst objective was to accommodate the need to take account of 
+the possible actions of others, while only considering the values, and preferences of the agent concerned, since modelling of 
+others is inevitably unreliable, given the extent of inter- and intra-cultural variation. We have achieved this, using only the 
+structure of the AATS + V applicable to the agent engaged in the reasoning, by considering all the joint actions containing 
+a  given  individual  action  as  a  set,  for  all  probabilities  of  compliance,  obviating  the  need  to  choose  the  speciﬁc  actions 
+performed  by  others.  The  second  objective  was  to  capture  this  reasoning  in  a  way  consistent  with  existing  game  and 
+multi-criteria  utility  theory.  We  have  achieved  this  by  relating  the  value-based  approach  to  expected  utilities.  The  key 
+notion of a dominant action remains, since, if there is a dominant action, the expected utility of the values promoted by 
+that action will always be greater than any alternative. Moreover where an action is not dominant for all probabilities of the 
+other behaving as required, the bounds can be identiﬁed, which allows for the sensitivity to the relative weighting of the 
+relevant values, and to the probability of the other cooperating, to be quantiﬁed. To fulﬁl the third objective, we have given 
+argumentation schemes grounded on the expected utilities. Objections can be based on adding, removing or re-weighting 
+values,  which  can  change  the  dominant  action,  or  restrict  its  dominance  to  a  certain  range  of  probabilities  of  the  other 
+agents allowing a particular outcome to be reached. The required degree of revaluation can be speciﬁed, allowing for the 
+degree of risk to be speciﬁed.
+
+The  payoffs  of  game  theory  are,  as  is  perfectly  correct  for  games  which  do  require  ﬁrm  rules,  ﬁxed  and  unchanging 
+and the same for all the agents. However, the utilities of these payoffs are subjective with respect to the individual goals 
+and  aspirations  of  the  agent  concerned,  and  so  can  be  individually  set  and  made  subject  to  change,  possibly  as  a  result 
+of persuasive argument, or of empirical evidence. This means that we can attempt a more practical evaluation in terms of 
+reproducing the results of studies such as [53].
+
+In [53], it was suggested that the different societies’ actions in the Ultimatum Game could be accounted for in terms of 
+the degree of cooperation, and degree of commercial exchange found in daily life. We can relate these characteristics to a 
+value proﬁle. Suppose we associate the value of generosity with the cooperative groups such as the whale hunting Lamelara, 
+and the recognition of C2 (the need to maintain good relations with the other) with commercial exchange. Those who do 
+not engage in cooperative or exchange activities, we term solitary. The results for three such proﬁles are shown in the ﬁrst 
+three rows of Table 6. These initial results do indeed support the hypothesis of [53], since they predict equal offers for the 
+cooperation and exchange based societies and low offers for the solitary one.
+
+These initial results show that these value proﬁles can be seen as predicting the action choices typical of corresponding 
+societies. Note that it is the equal offer rather than the very high offer that Table 6 predicts for cooperative societies and 
+those accustomed to commercial exchange. This coheres with the offers made in [53] where the mode offer for the most 
+cooperative society (the Lamelara from Indonesia) and the most exchange based society (the Orma of Kenya) were both 50%, 
+while the Machiguenga of Peru, which report little cooperation, exchange, or sharing beyond the family unit, and so can be 
+seen as solitary, have a mode of less than 25%.
+
+We can also look at some speciﬁc cases. Two societies seem to have a practice of sharing food, the Ache of Paraguay, 
+and Hadza of Tanzania. But although the hunters in both cases do practice sharing, the Ache seem to willingly embrace the 
+sharing culture, while the Hadza are more reluctant. Thus in [53] we read of the Ache that there are
+
+ethnographic  descriptions  indicating  widespread  meat-sharing  and  cooperation  in  community  projects  despite  the  ab-
+sence of a fear of punishment in Ache society. Ache hunters, returning home, quietly leave their kill at the edge of camp, 
+often claiming that the hunt was fruitless; their catch is later discovered and collected by others and then meticulously 
+shared among all in the camp. [53] (page 76).
+
+18
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+In contrast the Hadza are reluctant sharers:
+
+Hadza  appear  to  reﬂect  their  reluctant  process  of  sharing  (termed  “tolerated  theft”  by  a  leading  ethnographer  of  the 
+Hadza). While the Hadza extensively share meat, many hunters look for opportunities to avoid sharing and share only 
+because they fear the social consequences of not sharing. [53] (page 76).
+
+In Table 6 we reﬂect this in rows 4 and 5 by giving a weight to generosity of 1 for the Ache and 0 for the Hadza. This 
+results in equal offers dominating for the Ache, while the Hadza changes to a low offer when the probability of acceptance 
+increases above 0.4. The mode for the Ache is, as this would suggest, 50%. Interestingly there are two different experiments 
+featuring the Hadza, one from a small camp and one from a large camp. In the large camp, where there is a very high (80%) 
+rejection of low offers, the mode is an equal offer, whereas in the small camp, which has a much lower rate of rejection of 
+low offers (31%), the mode offer falls to only 20%. The behaviour of the Hadza thus supports the lack of a dominant action, 
+the ability of the proposer to gauge the likely response of the recipient, and the making of proposals that conform broadly 
+to our account of the reasoning.
+
+Another interesting case is the Gnau and Au of Papua New Guinea, shown in the sixth row of Table 6. There the culture 
+of  gift  giving  is  such  that  acceptance  places  the  recipient  under  an  obligation  to  the  giver,  which  may  be  called  in  at  a 
+certain date. Thus
+
+excessively large gifts, especially unsolicited ones, will frequently be refused because of the anxiety about the unspeciﬁc 
+strings attached. [53] (page 76).
+
+We represent this by giving a large weight to the value C1. The study shows that the Gnau have a very high rejection rate 
+of offers. Therefore we would expect the Gnau to choose an action reﬂecting this, which is, as Table 6 shows, the fair offer. 
+And indeed the Gnau have a mode offer of 40% and a mean of 38% which reﬂects both such a proﬁle and such expectations 
+of response. The Au, however, also from New Guinea and with a similar culture, have a lower rejection rate than the Gnau, 
+(27% as against 40%), and the mode offer from the Au falls to 30%. This reﬂects the shift from a fair offer to a low offer as 
+the probability of acceptance rises, shown in Table 6.
+
+We have produced some results which show that the cultural variations encountered in public goods game experiments 
+of the sort described in [53] can be reproduced in our computational account using suitable value proﬁles. Thus far we have 
+just looked at reproducing the results of studies such as [53] using proﬁles reﬂecting our opinions of the values associated 
+with  the  different  societies.  These  results  are  encouraging  and  suggest  that  we  are  thinking  along  the  right  lines,  but  to 
+conﬁrm  their  signiﬁcance  more  broadly  we  would  need  to  perform  our  own  experiments  in  which  the  value  preferences 
+of the subjects are established (e.g. through a preparatory questionnaire), and then the subsequent behaviour in the games 
+compared with what is predicted by the value proﬁle. Any large scale empirical study of this sort must, however, be left 
+as the subject of future work, and be properly designed and conducted, which will involve collaboration with experimental 
+economists or psychologists especially to determine how relative weights are to be elicited.
+
+8.  Concluding remarks
+
+Our previous work on practical reasoning using value-based argumentation has required assumptions about the values 
+and preferences of other agents intended to justify particular choices of actions on their part. These choices can affect the 
+outcome of an action performed by the reasoning agent. Justiﬁcation of these assumptions is always diﬃcult, particularly 
+when  several  other  agents  are  involved,  multiplying  the  alternative  actions  needing  consideration.  In  this  paper  we  have 
+described  an  approach  in  which  no  assumptions  need  be  made  about  the  values  and  preferences  of  others:  all  that  is 
+required is that the agent concerned can identify the values it recognises and indicate their relative worth to itself. In some 
+cases success may still depend on what the other does, but this can be assessed using bounds on the probabilities of the 
+alternatives available to the other. Note that when assessing probabilities we consider the whole range of actions available 
+to  the  other,  rather  than  the  probability  of  the  other  performing  a  speciﬁed  action.  In  this  way  we  are  able  to  achieve 
+our  objectives  of  allowing  arguments  which  consider  the  actions  of  others,  but  which  do  not  require  assumptions  about 
+the beliefs and preferences of the others, while remaining consistent with multi-criteria utility theories, and the dominant 
+actions of game theory. Thus we have shown how to:
+
+• Remove the need to speculate on the beliefs, assumptions and preferences of other agents;
+• Relate the value-based argumentation approach to approaches based on multi-criteria utility and game theory.
+• Express reasons based on utility and expected returns as arguments, and objections to them, so that the arguments are 
+genuinely for a particular action by the agent concerned rather than participation in a joint action, as was the case in 
+[19].
+
+• Express this reasoning in the form of argumentation schemes to facilitate integration with existing forms of practical 
+
+reasoning using a value-based approach.
+
+• Evaluate  our  approach  by  demonstrating  that  it  is  able  to  mirror  results  of  empirical  studies  that  model  different 
+
+societies’ values in scenarios from experimental economics.
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+19
+
+We  believe  that  these  ﬁve  points  together  provide  an  improvement  in  the  quality  of  value-based  argumentation  for 
+choosing particular actions. Note also that the dominance of an action is dominance for that agent: it depends on the subjec-
+tive values and aspirations of the individual agent. Which action is considered dominant by a particular agent or audience 
+will depend on the values recognised, and the relative importance assigned to them, rather than ﬁxed payoffs determined 
+by the game, allowing each agent to set its own objectives. In addition to providing some encouraging ﬁrst results that re-
+produce the results of ethnographic experiments, we have, for future work, set out how the approach can be more broadly 
+empirically tested using new experimental studies.
+
+Acknowledgements
+
+The authors would like to thank the anonymous reviewers of this paper and the earlier conference papers, published in 
+the proceedings of ECAI 2016 and COMMA 2016, for their detailed and helpful comments. We would also like to acknowl-
+edge helpful feedback we have received on those conference papers.
+
+References
+
+[1] K. Atkinson, T. Bench-Capon, Value based reasoning and the actions of others, in: Proceedings of 22nd European Conference on Artiﬁcial Intelligence, 
+
+[2] K. Atkinson, T. Bench-Capon, Argument schemes for reasoning about the actions of others, in: Computational Models of Argument – Proceedings of 
+
+2016, pp. 680–688.
+
+COMMA 2016, 2016, pp. 71–82.
+
+[3] J. Raz, Practical Reasoning, Oxford University Press, Oxford, 1979.
+[4] J.R. Searle, Rationality in Action, MIT Press, 2003.
+[5] C. Perelman, The New Rhetoric, Springer, 1971.
+[6] T.J. Stewart, A critical survey on the status of multiple criteria decision making theory and practice, Omega 20 (5) (1992) 569–586.
+[7] T.L. van der Weide, F. Dignum, J.-J.C. Meyer, H. Prakken, G. Vreeswijk, Multi-criteria argument selection in persuasion dialogues, in: Argumentation in 
+
+Multi-Agent Systems, Springer, 2011, pp. 136–153.
+
+[8] T. Bench-Capon, Agreeing to differ: modelling persuasive dialogue between parties with different values, Inf. Logic 22 (2002) 231–246.
+[9] K. Atkinson, T. Bench-Capon, D. Walton, Distinctive features of persuasion and deliberation dialogues, Arg. Comput. 4 (2) (2013) 105–127.
+[10] L. Carroll, What the tortoise said to Achilles, Mind 4 (14) (1895) 278–280.
+[11] T.R. Gruber, The role of common ontology in achieving sharable, reusable knowledge bases, in: Principles of Knowledge Representation and Reasoning: 
+
+Proceedings of the Second International Conference, vol. 91, Morgan Kaufmann, 1991, pp. 601–602.
+
+[12] P. Shvaiko, J. Euzenat, Ontology matching: state of the art and future challenges, IEEE Trans. Knowl. Data Eng. 25 (1) (2013) 158–176.
+[13] S. Modgil, Reasoning about preferences in argumentation frameworks, Artif. Intell. 173 (9) (2009) 901–934.
+[14] C. Perelman, Justice, Law, and Argument: Essays on Moral and Legal Reasoning, vol. 142, Springer Science & Business Media, 2012.
+[15] F. Grasso, A. Cawsey, R. Jones, Dialectical argumentation to solve conﬂicts in advice giving: a case study in the promotion of healthy nutrition, Int. J. 
+
+Hum.-Comput. Stud. 53 (6) (2000) 1077–1115.
+
+[16] T. Bench-Capon, Persuasion in practical argument using value-based argumentation frameworks, J. Log. Comput. 13 (3) (2003) 429–448.
+[17] P.M. Dung, On the acceptability of arguments and its fundamental role in nonmonotonic reasoning, logic programming and n-person games, Artif. 
+
+Intell. 77 (2) (1995) 321–357.
+
+[18] A.S.  Garcez,  D.M.  Gabbay,  L.C.  Lamb,  Value-based  argumentation  frameworks  as  neural-symbolic  learning  systems,  J.  Log.  Comput.  15 (6)  (2005) 
+
+1041–1058.
+
+(2007) 855–874.
+
+(2015) 28–63.
+
+[19] K. Atkinson, T. Bench-Capon, Practical reasoning as presumptive argumentation using action based alternating transition systems, Artif. Intell. 171 (10) 
+
+[20] S. Kaci, L. van der Torre, Preference-based argumentation: arguments supporting multiple values, Int. J. Approx. Reason. 48 (3) (2008) 730–751.
+[21] U. Egly, S. Alice Gaggl, S. Woltran, Answer-set programming encodings for argumentation frameworks, Arg. Comput. 1 (2) (2010) 147–177.
+[22] G. Charwat, W. Dvoˇrák, S. Gaggl, J. Wallner, S. Woltran, Methods for solving reasoning problems in abstract argumentation – a survey, Artif. Intell. 220 
+
+[23] T. Bench-Capon, K. Atkinson, A. Chorley, Persuasion and value in legal argument, J. Log. Comput. 15 (6) (2005) 1075–1097.
+[24] S. Modgil, T.J.M. Bench-Capon, Integrating object and meta-level value based argumentation, in: Proceedings of COMMA 2008, 2008, pp. 240–251.
+[25] M. Grabmair, K.D. Ashley, Facilitating case comparison using value judgments and intermediate legal concepts, in: Proceedings of the 13th International 
+
+Conference on Artiﬁcial Intelligence and Law, ACM, 2011, pp. 161–170.
+
+[26] D. Cartwright, K. Atkinson, Using computational argumentation to support e-participation, IEEE Intell. Syst. 24 (5) (2009) 42–52.
+[27] M. Wardeh, A. Wyner, K. Atkinson, T. Bench-Capon, Argumentation based tools for policy-making, in: Proceedings of the Fourteenth International 
+
+Conference on Artiﬁcial Intelligence and Law, ACM, 2013, pp. 249–250.
+
+[28] J. Tremblay, I. Abi-Zeid, Value-based argumentation for policy decision analysis: methodology and an exploratory case study of a hydroelectric project 
+
+in Québec, Ann. Oper. Res. 236 (1) (2016) 233–253.
+
+[29] K. Atkinson, T. Bench-Capon, S. Modgil, Argumentation for decision support, in: Database and Expert Systems Applications, Springer, 2006, pp. 822–831.
+[30] T. Bench-Capon, K. Atkinson, P. McBurney, Using argumentation to model agent decision making in economic experiments, Auton. Agents Multi-Agent 
+
+Syst. 25 (1) (2012) 183–208.
+
+[31] B. Burgemeestre, J. Hulstijn, Y.-H. Tan, Value-based argumentation for justifying compliance, Artif. Intell. Law 19 (2–3) (2011) 149–186.
+[32] F.S. Nawwab, T.J.M. Bench-Capon, P.E. Dunne, A methodology for action-selection using value-based argumentation, in: Computational Models of Argu-
+
+[33] C. Trojahn, P. Quaresma, R. Vieira, An extended value-based argumentation framework for ontology mapping with conﬁdence degrees, in: Argumenta-
+
+[34] T.R. Payne, V. Tamma, Using preferences in negotiations over ontological correspondences, in: PRIMA 2015: Principles and Practice of Multi-Agent 
+
+ment: Proceedings of COMMA 2008, 2008, pp. 264–275.
+
+tion in Multi-Agent Systems, Springer, 2007, pp. 132–144.
+
+Systems, Springer, 2015, pp. 319–334.
+
+[35] P.E. Dunne, Tractability in value-based argumentation, in: Proceedings of COMMA 2010, 2010, pp. 195–206.
+[36] S. Nofal, K. Atkinson, P.E. Dunne, Algorithms for decision problems in argument systems under preferred semantics, Artif. Intell. 207 (2014) 23–51.
+[37] K. Atkinson, T. Bench-Capon, P. McBurney, Computational representation of practical argument, Synthese 152 (2) (2006) 157–206.
+[38] D. Walton, C. Reed, F. Macagno, Argumentation Schemes, Cambridge University Press, 2008.
+[39] D. Walton, Argumentation Schemes for Presumptive Reasoning, Lawrence Erlbaum Associates, Mahwah, NJ, USA, 1996.
+
+20
+
+K. Atkinson, T. Bench-Capon / Artiﬁcial Intelligence 254 (2018) 1–20
+
+[40] R. Alur, T.A. Henzinger, O. Kupferman, Alternating-time temporal logic, J. ACM 49 (5) (2002) 672–713.
+[41] M. Wooldridge, W. van der Hoek, On obligations and normative ability: towards a logical analysis of the social contract, J. Appl. Log. 3 (3–4) (2005) 
+
+396–420.
+
+[42] H.J. Levesque, P.R. Cohen, J.H. Nunes, On acting together, in: Proceedings of the 8th National Conference on Artiﬁcial Intelligence, 1990, pp. 94–99.
+[43] R.E. Fikes, N.J. Nilsson, Strips: a new approach to the application of theorem proving to problem solving, Artif. Intell. 2 (3–4) (1971) 189–208.
+[44] A.  Wyner,  M.  Wardeh,  T.  Bench-Capon,  K.  Atkinson,  A  model-based  critique  tool  for  policy  deliberation,  in:  Proceedings  of  JURIX  2012,  2012, 
+
+pp. 167–176.
+
+[45] K. Atkinson, T. Bench-Capon, States, goals and values: revisiting practical reasoning, Arg. Comput. 7 (2–3) (2016) 135–154, http://dx.doi.org/10.3233/
+
+AAC-160011.
+
+[46] S.G. Ficici, A. Pfeffer, Simultaneously modeling humans’ preferences and their beliefs about others’ preferences, in: Proceedings of the 7th International 
+Joint Conference on Autonomous Agents and Multiagent Systems, vol. 1, International Foundation for Autonomous Agents and Multiagent Systems, 
+2008, pp. 323–330.
+
+[47] K. Atkinson, T. Bench-Capon, Taking the long view: looking ahead in practical reasoning, in: Computational Models of Argument – Proceedings of 
+
+COMMA 2014, 2014, pp. 109–120.
+
+Economy, 1844, p. 326.
+
+[48] J.S. Mill, On the deﬁnition of political economy, and on the method of investigation proper to it, in: Essays on Some Unsettled Questions of Political 
+
+[49] R.B. Myerson, Game Theory: Analysis of Conﬂict, Harvard University, Cambridge, MA, 1991.
+[50] S. Parsons, M. Wooldridge, Game theory and decision theory in multi-agent systems, Auton. Agents Multi-Agent Syst. 5 (3) (2002) 243–254.
+[51] C. Engel, Dictator games: a meta study, Exp. Econ. 14 (4) (2011) 583–610.
+[52] H. Oosterbeek, R. Sloof, G. Van De Kuilen, Cultural differences in ultimatum game experiments: evidence from a meta-analysis, Exp. Econ. 7 (2) (2004) 
+
+[53] J. Henrich, R. Boyd, S. Bowles, C. Camerer, E. Fehr, H. Gintis, R. McElreath, In search of homo economicus: behavioral experiments in 15 small-scale 
+
+171–188.
+
+societies, Am. Econ. Rev. 91 (2) (2001) 73–78.
+
+[54] A. Rapoport, A.M. Chammah, Prisoner’s Dilemma: A Study in Conﬂict and Cooperation, vol. 165, University of Michigan Press, 1965.
+[55] R. Axelrod, An evolutionary approach to norms, Am. Polit. Sci. Rev. 80 (04) (1986) 1095–1111.
+[56] E. Ullmann-Margalit, The Emergence of Norms, Clarendon Press, Oxford, 1977.
+[57] S. Mahmoud, N. Griﬃths, J. Keppens, A. Taweel, T.J. Bench-Capon, M. Luck, Establishing norms with metanorms in distributed computational systems, 
+
+Artif. Intell. Law 23 (4) (2015) 367–407.
+
+[58] W. Güth, R. Schmittberger, B. Schwarze, An experimental analysis of ultimatum bargaining, J. Econ. Behav. Organ. 3 (4) (1982) 367–388.
+[59] T. Bench-Capon, Transition systems for designing and reasoning about norms, Artif. Intell. Law 23 (4) (2015) 345–366.
+[60] D. Walton, E.C. Krabbe, Commitment in Dialogue: Basic Concepts of Interpersonal Reasoning, SUNY Press, 1995.
+[61] B. Verheij, Formalizing value-guided argumentation for ethical systems design, Artif. Intell. Law 24 (4) (2016) 387–407.
+
+

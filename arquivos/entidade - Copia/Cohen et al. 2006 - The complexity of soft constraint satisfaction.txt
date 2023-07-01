@@ -1,0 +1,3679 @@
+Artiﬁcial Intelligence 170 (2006) 983–1016
+
+www.elsevier.com/locate/artint
+
+The complexity of soft constraint satisfaction
+
+David A. Cohen a, Martin C. Cooper b, Peter G. Jeavons c,∗,
+Andrei A. Krokhin d
+
+a Department of Computer Science, Royal Holloway, University of London, UK
+b IRIT, University of Toulouse III, France
+c Computing Laboratory, University of Oxford, UK
+d Department of Computer Science, University of Durham, UK
+
+Received 4 October 2005; received in revised form 13 February 2006; accepted 13 April 2006
+
+Available online 5 June 2006
+
+Abstract
+
+Over the past few years there has been considerable progress in methods to systematically analyse the complexity of constraint
+satisfaction problems with speciﬁed constraint types. One very powerful theoretical development in this area links the complexity
+of a set of constraints to a corresponding set of algebraic operations, known as polymorphisms.
+
+In this paper we extend the analysis of complexity to the more general framework of combinatorial optimisation problems
+expressed using various forms of soft constraints. We launch a systematic investigation of the complexity of these problems by
+extending the notion of a polymorphism to a more general algebraic operation, which we call a multimorphism. We show that many
+tractable sets of soft constraints, both established and novel, can be characterised by the presence of particular multimorphisms. We
+also show that a simple set of NP-hard constraints has very restricted multimorphisms. Finally, we use the notion of multimorphism
+to give a complete classiﬁcation of complexity for the Boolean case which extends several earlier classiﬁcation results for particular
+special cases.
+© 2006 Elsevier B.V. All rights reserved.
+
+Keywords: Soft constraints; Valued constraint satisfaction; Combinatorial optimisation; Submodular functions; Tractability; Multimorphism
+
+1. Introduction
+
+In the standard constraint satisfaction framework [14,38] a constraint is understood to be a predicate, or relation,
+specifying the allowed combinations of values for some ﬁxed subset of variables: we will refer to such constraints
+here as crisp constraints. Problems with crisp constraints deal only with feasibility: no satisfying solution is considered
+better than any other.
+
+A number of authors have suggested that the usefulness of the constraint satisfaction framework could be greatly
+enhanced by extending the deﬁnition of a constraint to include also soft constraints, which allow different measures
+of desirability to be associated with different combinations of values [1,2,43]. In this extended framework a constraint
+
+* Corresponding author.
+
+E-mail addresses: d.cohen@rhul.ac.uk (D.A. Cohen), cooper@irit.fr (M.C. Cooper), peter.jeavons@comlab.ox.ac.uk (P.G. Jeavons),
+
+andrei.krokhin@durham.ac.uk (A.A. Krokhin).
+
+0004-3702/$ – see front matter © 2006 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2006.04.002
+
+984
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+can be seen as a cost function deﬁned on a ﬁxed subset of the variables which maps each possible combination of
+values for those variables to a measure of desirability or undesirability.
+
+Problems with soft constraints deal with optimisation as well as feasibility: the aim is to ﬁnd an assignment of
+values to all of the variables having the best possible overall combined measure of desirability. In this paper we
+examine how limiting the choice of cost functions affects the complexity of this optimisation problem.
+
+Example 1.1. Consider an optimisation problem where we have to choose sites for n service stations along a motorway
+of length L, subject to the following requirements:
+
+• There are r > n possible sites at distances d1, . . . , dr along the motorway.
+• Each pair of consecutive service stations must be separated by a distance which is no less than A and no more
+
+than B.
+
+• The service stations should be as equally spaced as possible.
+
+One possible way to model this situation is as follows:
+
+• Introduce variables v1, v2, . . . , vn to represent the position of each service station, where each variable must be
+
+• Impose a binary constraint on each pair vi, vi+1, i = 1, . . . , n − 1, with cost function δ, where δ(x, y) = 0 if
+
+assigned a value from the set {d1, . . . , dr }.
+
+A (cid:2) y − x (cid:2) B and ∞ otherwise.
+
+• Impose a binary constraint on each pair vi, vi+1, i = 1, . . . , n − 1, with cost function ζ , where ζ (x, y) = |x − y|2.
+Add a unary constraint on v1 with cost function ζ (0, x), and a unary constraint on vn, with cost function ζ (x, L).
+(Note that the sum of these functions is minimal when the values of these variables are equally spaced between 0
+and L.)
+
+We would then seek an assignment of values from the set D = {d1, . . . , dr }, to all of the variables, which minimises
+the sum of all these cost functions:
+
+n−1(cid:2)
+
+i=1
+
+δ(vi, vi+1) + ζ (0, v1) +
+
+n−1(cid:2)
+
+i=1
+
+ζ (vi, vi+1) + ζ (vn, L).
+
+The cost of allowing additional ﬂexibility in the speciﬁcation of constraints, in order to model optimisation criteria
+as well as feasibility, is generally an increase in computational difﬁculty. For example, we establish below that the
+class of problems containing only unary constraints and a soft version of the binary equality constraint is NP-hard
+(see Example 2.11).
+
+On the other hand, for certain types of soft constraint it is possible to solve the associated optimisation problems
+efﬁciently. For example, we establish below that optimisation problems of the form described in Example 1.1 can be
+solved in polynomial time (see Example 6.13).
+
+In the case of crisp constraints there has been considerable progress in analysing the complexity of problems
+involving different types of constraints. This work has led to the identiﬁcation of a number of classes of constraints
+which are tractable, in the sense that there exists a polynomial time algorithm to determine whether or not any
+collection of constraints from such a class can be simultaneously satisﬁed [15,26,33,40,42]. One powerful result in
+this area establishes that any tractable class of constraints over a ﬁnite domain must have relations which are all
+preserved by a non-trivial algebraic operation, known as a polymorphism [6,26].
+
+In the case of soft constraints there has been little detailed investigation of the tractable cases, except for certain
+special cases on a two-valued domain [10,30], and a special case involving simple temporal constraints [31]. In an
+earlier paper [7] we identiﬁed a particular tractable class of binary soft constraints, and showed that this class was
+maximal, in the sense that adding any other soft binary constraint which is not in the class gives rise to a class of
+problems which is NP-hard. This class has recently been used to study the complexity of the MINIMUM COST HO-
+MOMORPHISM problem [21], which has been used to model the “Level of Repair Analysis” problem from operations
+research [22] (see Example 2.7).
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+985
+
+In this paper we take the ﬁrst step towards a systematic analysis of the complexity of soft constraints of arbitrary
+arity over arbitrary ﬁnite domains. To do this we generalise the algebraic ideas used to study crisp constraints, and
+introduce a new algebraic operation which we call a multimorphism. Every cost function has an associated set of
+multimorphisms, and every multimorphism has an associated set of cost functions. We show that, for several different
+types of multimorphism, the associated collection of soft constraints is a maximal tractable class. In other words, we
+show that several maximal tractable classes of soft constraints can be precisely characterised as the collection of all
+soft constraints associated with a particular multimorphism. Furthermore, we show that a simple NP-hard class of soft
+constraints has very restricted multimorphisms.
+
+Finally, we apply the techniques developed in the paper to the two-valued domain, where we obtain a new di-
+chotomy theorem which classiﬁes the complexity of any set of soft constraints over this domain (Theorem 7.1). This
+dichotomy theorem generalises several earlier results concerning the complexity of particular Boolean constraint prob-
+lems, including the SATISFIABILITY problem [42], the MAX-SAT problem [9], the weighted MIN-ONES problem [10,
+30], and the weighted MAX-ONES problem [10,30] (see Corollary 7.12).
+
+The examples given throughout the paper demonstrate that the framework we introduce here can be used to unify
+isolated results about tractable problem classes from many different application areas, as well as prompting the
+discovery of new tractable classes. For example, the notion of a multimorphism generalises the notion of a poly-
+morphism (see Proposition 4.10), and so can be used to express earlier results concerning the characterisation of
+tractable subproblems of many different decision problems: in the case of the SATISFIABILITY problem these include
+the HORN-SAT and 2-SAT subproblems [19]; in the case of the standard crisp constraint satisfaction problem these
+include generalisations of HORN-SAT (such as the so-called ‘max-closed’ constraints [26,29]), generalisations of 2-
+SAT (such as the so-called ‘0/1/all’ or ‘implicative’ constraints [8,25,32]) and systems of linear equations [26]. The
+notion of a multimorphism can also be used to characterise tractable subproblems of optimisation problems: in the
+case of the optimisation problem MAX-SAT these include the ‘0-valid’, ‘1-valid’ and ‘2-monotone’ constraints [10];
+in the case of optimisation problems over sets these include the minimisation of submodular set functions [23,39] and
+bisubmodular set functions [18].
+
+2. Deﬁnitions
+
+Several alternative mathematical frameworks for soft constraints have been proposed in the literature, including
+the very general frameworks of ‘semi-ring based constraints’ and ‘valued constraints’ [1,2,43]. For simplicity, we
+shall adopt the valued constraint framework here (the relationship with the semi-ring framework is discussed brieﬂy
+in Section 8).
+
+In the valued constraint framework each constraint has an associated function which assigns a cost to each possible
+
+assignment of values. These costs are chosen from some valuation structure, satisfying the following deﬁnition.
+
+Deﬁnition 2.1. A valuation structure, Ω, is a totally ordered set, with a minimum and a maximum element (denoted 0
+and ∞), together with a commutative, associative binary aggregation operator (denoted ⊕), such that for all α, β, γ ∈
+Ω, α ⊕ 0 = α and α ⊕ γ (cid:3) β ⊕ γ whenever α (cid:3) β.
+
+Deﬁnition 2.2. An instance of the valued constraint satisfaction problem, VCSP, is a tuple P = (cid:6)V , D, C, Ω(cid:7)
+where:
+
+• V is a ﬁnite set of variables;
+• D is a ﬁnite set of possible values;
+• Ω is a valuation structure representing possible costs;
+• C is a set of constraints.
+
+Each element of C is a pair c = (cid:6)σ, φ(cid:7) where σ is a tuple of variables called the scope of c, and φ is a mapping
+from D|σ | to Ω, called the cost function of c.
+
+986
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+Deﬁnition 2.3. For any VCSP instance P = (cid:6)V , D, C, Ω(cid:7), an assignment for P is a mapping s : V → D. The cost
+of an assignment s, denoted CostP (s), is given by the aggregation of the costs for the restrictions of s onto each
+constraint scope, that is,
+CostP (s) def=
+
+(cid:5)
+.
+s(v1), s(v2), . . . , s(vm)
+
+(cid:3)
+
+φ
+
+(cid:4)
+
+(cid:6)(cid:6)v1,v2,...,vm(cid:7),φ(cid:7)∈C
+
+A solution to P is an assignment with minimal cost, and the question is to ﬁnd a solution.
+
+Our results in Sections 3 and 4 will apply to any valuation structure satisfying Deﬁnition 2.1. In Sections 5, 6 and 7,
+and in the examples of particular soft constraint problems given throughout the paper, we will focus on the valuation
+structure R+, consisting of the non-negative real numbers together with inﬁnity, with the usual ordering and the usual
+addition operation. (Possible extensions of our results to other valuation structures are discussed brieﬂy in Section 8.)
+The valuation structure R+ is sufﬁciently ﬂexible to allow us to express a wide range of problems as valued
+
+constraint satisfaction problems with costs in R+, as the following examples indicate.
+
+Example 2.4 (Standard CSP). In the standard constraint satisfaction problem with crisp constraints [14,36] each
+constraint c is speciﬁed by a pair, (cid:6)σ, R(cid:7), where σ is the scope of c and R is a relation specifying the allowed
+combinations of values for the variables in σ .
+
+For any standard constraint satisfaction problem instance P, we can deﬁne a corresponding valued constraint
+satisfaction problem instance (cid:6)P in which the range of the cost functions of all the constraints is the set {0, ∞} ⊆ R+.
+For each crisp constraint (cid:6)σ, R(cid:7) of P, we deﬁne a corresponding valued constraint (cid:6)σ, φR(cid:7) of (cid:6)P; the cost function
+φR maps each tuple allowed by R to 0, and each tuple disallowed by R to ∞. The cost of an assignment s for (cid:6)P
+is computed as in Deﬁnition 2.3, so it equals the minimal possible cost, 0, if and only if s satisﬁes all of the crisp
+constraints in P.
+
+Example 2.5 (Max-CSP). For any standard constraint satisfaction problem instance P with crisp constraints, we can
+deﬁne a corresponding valued constraint satisfaction problem instance P # in which the range of the cost functions
+of all the constraints is the set {0, 1} ⊆ R+. For each crisp constraint (cid:6)σ, R(cid:7) of P, we deﬁne a corresponding valued
+constraint (cid:6)σ, χR(cid:7) of P #; the cost function χR maps each tuple allowed by R to 0, and each tuple disallowed by R
+to 1.
+
+The cost of an assignment s for P # is again computed as in Deﬁnition 2.3, so in this case it equals the total
+number of crisp constraints in P which are violated by s. Hence a solution to P # corresponds to an assignment which
+violates the minimal number of constraints of P, and hence satisﬁes the maximal number of constraints of P. Finding
+assignments of this kind is generally referred to as solving the MAX-CSP problem [17,34].
+
+Example 2.6 (Minimum k-Terminal Cut and Min-Cut). Let G be an undirected graph with vertices V and edges
+E, and let {v1, v2, . . . , vk} ⊆ V be a set of k distinguished vertices. The problem of ﬁnding a smallest set of edges
+whose removal disconnects the distinguished vertices from each other is known as the MINIMUM k-TERMINAL CUT
+problem [12]; such a set of edges is called a minimum k-terminal cut. (In the special case when k = 2 this problem is
+known as the MIN-CUT problem [39].)
+
+Each instance of the MINIMUM k-TERMINAL CUT problem can be formulated as a VCSP instance PG with costs
+in R+. The instance PG is constructed as follows: the variables of PG are the vertices V of G, and they take values in
+the set D = {1, 2, . . . , k}. For each distinguished vertex vi ∈ {v1, v2, . . . , vk}, impose a unary constraint on the variable
+vi with cost function ψi : {0, 1} → R+, deﬁned as follows:
+
+(cid:7)
+
+ψi(x) =
+
+if x = i,
+0
+∞ otherwise.
+
+For each edge e ∈ E, impose a binary constraint with scope e and cost function φEQ : D2 → R+, deﬁned as follows
+
+φEQ(x, y) =
+
+(cid:7)
+
+0
+1
+
+if x = y,
+otherwise.
+
+It is straightforward to check that the number of edges in a minimum k-terminal cut of G is equal to the cost of a
+solution to PG.
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+987
+
+Example 2.7 (Level of Repair Analysis). Level of Repair Analysis (LORA) is a prescribed procedure for defence
+logistics support planning [22]. For a complex engineering system containing perhaps thousands of assemblies, sub-
+assemblies, modules and components, LORA seeks to determine an optimal provision of repair and maintenance
+facilities to minimise overall life-cycle costs.
+
+In the simple model of this problem presented in [22] the engineering system is modelled as a set of items V ,
+together with a binary relation E on V such that E(v, v(cid:10)) holds when item v is contained in item v(cid:10). Each item in
+V must be assigned a repair level (such as “central repair”, “local repair”, “discard”) chosen from some ﬁxed set of
+possible repair levels, D. There is a ﬁxed cost cdv associated with the assignment of repair level d ∈ D to item v ∈ V
+(which may be inﬁnite if that repair level is not available for that item). There are also some restrictions on the allowed
+assignments for pairs of items related by E: for example, if an item is assigned “discard”, then all items contained in
+that item must also be assigned this repair level. The question is to ﬁnd an assignment of repair levels to items which
+minimises the total cost.
+
+For any LORA instance of this kind, we can deﬁne a corresponding valued constraint satisfaction problem instance
+P with costs in R+. For each item v ∈ V we deﬁne a unary constraint (cid:6)(cid:6)v(cid:7), κv(cid:7) of P, where the cost function κv maps
+each element d ∈ D to cdv. For each pair (cid:6)v, v(cid:10)(cid:7) of items related by E, we deﬁne a valued constraint (cid:6)(cid:6)v, v(cid:10)(cid:7), φ(cid:7) of P,
+where the cost function φ maps each pair of allowed repair levels to 0, and each pair of disallowed repair levels to ∞.
+A solution to P corresponds to an assignment of repair levels which minimises the total cost.
+
+The problem of ﬁnding a solution to a valued constraint satisfaction problem is an NP-optimisation problem, that
+
+is, it lies in the complexity class NPO (see [10] for a formal deﬁnition of this class).
+
+For each valued constraint satisfaction problem there is a corresponding decision problem in which the question is
+to decide whether there is a solution with cost lower than some given threshold value. It is clear from Example 2.4
+that there is a polynomial-time reduction to this decision problem from the standard constraint satisfaction problem,
+which is known to be NP-complete [36], so the general VCSP is NP-hard. In this paper we will consider the effect of
+restricting the forms of cost function allowed in the constraints; we will show that in some cases this results in more
+tractable versions of the VCSP.
+
+Deﬁnition 2.8. Let D be a set and Ω a valuation structure. A valued constraint language over D with costs in Ω is
+deﬁned to be a set, Γ , such that each φ ∈ Γ is a function from Dm to Ω, for some m ∈ N, where m is called the arity
+of φ. The class VCSP(Γ ) is deﬁned to be the class of all VCSP instances where the cost functions of all constraints
+lie in Γ .
+
+We will say that a ﬁnite valued constraint language Γ is tractable if every instance in VCSP(Γ ) can be solved
+in polynomial time. We will say that an inﬁnite valued constraint language is tractable if every ﬁnite subset1 of it is
+tractable. Finally, we will say that a valued constraint language Γ is NP-hard if the decision problem corresponding
+to VCSP(Γ (cid:10)) is NP-complete, for some ﬁnite Γ (cid:10) ⊆ Γ .
+
+Example 2.9 (SAT and Max-SAT). Let Γ be any valued constraint language over a set D, where |D| = 2. In this case
+VCSP(Γ ) is called a Boolean valued constraint satisfaction problem.
+
+If we restrict Γ even further, by only allowing cost functions with range {0, ∞} ⊆ R+, as in Example 2.4, then each
+VCSP(Γ ) corresponds precisely to a standard Boolean constraint satisfaction problem with crisp constraints. Such
+problems are sometimes known as GENERALISED SATISFIABILITY problems [19,42]. The complexity of VCSP(Γ )
+for such restricted sets Γ has been completely characterised, and the six tractable cases have been identiﬁed [10,19,
+42].
+
+Alternatively, if we restrict Γ by only allowing functions with range {0, 1} ⊆ R+, as in Example 2.5, then each
+VCSP(Γ ) corresponds precisely to a standard Boolean maximum satisﬁability problem, in which the aim is to satisfy
+the maximum number of crisp constraints. Such problems are sometimes known as MAX-SAT problems [10]. The
+complexity of VCSP(Γ ) for such restricted sets Γ has been completely characterised, and the three tractable cases
+have been identiﬁed (see Theorem 7.6 of [10]).
+
+1 Deﬁning tractability in terms of ﬁnite subsets ensures that the tractability of a valued constraint language is independent of whether the cost
+functions are represented explicitly (via tables of values) or implicitly (via oracles).
+
+988
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+The next two examples indicate that generalising the constraint satisfaction framework to include valued constraints
+can indeed increase the computational complexity. For example, the standard 2-SATISFIABILITY problem is well-
+known to be tractable [19], but the valued constraint satisfaction problem involving only the single binary Boolean
+function, φXOR, deﬁned in Example 2.10, is NP-hard.
+
+Example 2.10. Let ΓXOR be the Boolean valued constraint language over D = {0, 1} which contains just the single
+binary function φXOR : D2 → R+ deﬁned by
+(cid:7)
+
+φXOR(x, y) =
+
+0 if x (cid:11)= y,
+1 otherwise.
+
+The problem VCSP(ΓXOR) corresponds to the MAX-SAT problem for the exclusive-or predicate, which is known to
+be NP-hard (see Lemma 7.4 of [10]), so ΓXOR is NP-hard.
+
+Similarly, the standard constraint satisfaction problem involving only crisp unary constraints and equality con-
+straints is clearly trivial, but the valued constraint satisfaction problem involving only unary valued constraints and a
+soft version of the equality constraint, speciﬁed by the function φEQ deﬁned in Example 2.6, is NP-hard.
+
+Example 2.11. Let Γ3 be the valued constraint language over D = {0, 1, 2} consisting of the set of all unary functions
+with costs in R+ together with the single binary function φEQ : D2 → R+, deﬁned in Example 2.6.
+
+Even though Γ3 is apparently simple, it can be shown that VCSP(Γ3) is NP-hard, by reduction from the MINIMUM
+3-TERMINAL CUT problem deﬁned in Example 2.6, which is known to be NP-hard [12]. To obtain the reduction,
+we use the construction described in Example 2.6 to transform each instance of MINIMUM 3-TERMINAL CUT to an
+instance of VCSP(Γ3) in polynomial time.
+
+In order to allow us to translate easily between relations and functions, as described in Example 2.4, we make the
+
+following deﬁnitions.
+
+Deﬁnition 2.12. Any function φ which only takes values in the set {0, ∞} ⊆ Ω will be called a crisp function.
+
+For any relation R, with arity m, we deﬁne an associated crisp function known as the feasibility function of R, and
+
+denoted φR, as follows:
+
+φR(x1, x2, . . . , xm) =
+
+(cid:7)
+
+if (cid:6)x1, x2, . . . , xm(cid:7) ∈ R,
+
+0
+∞ otherwise.
+
+For any m-ary function φ into any valuation structure Ω, we deﬁne a relation known as the feasibility relation of φ,
+and denoted Feas(φ), as follows:
+
+(cid:6)x1, x2, . . . , xm(cid:7) ∈ Feas(φ) ⇔ φ(x1, x2, . . . , xm) < ∞.
+
+A function φ will be called essentially crisp if φ takes at most one ﬁnite value, that is, there is some value α such
+that φ(x) = β < ∞ ⇒ β = α. Any valued constraint language Γ containing essentially crisp functions only will be
+called an essentially crisp language.
+
+Note that when Γ is an essentially crisp language any assignment with ﬁnite cost has the same cost as any other
+assignment with ﬁnite cost. Hence we can solve any instance of VCSP(Γ ) for such languages by solving the cor-
+responding standard constraint satisfaction problem in which each valued constraint (cid:6)σ, φ(cid:7) is replaced by the crisp
+constraint (cid:6)σ, Feas(φ)(cid:7) (see Deﬁnition 2.12). We will use this observation a number of times in establishing the re-
+sults below.
+
+3. Expressibility
+
+Let Γ be a valued constraint language, and consider an arbitrary instance P in VCSP(Γ ). The variables in the scope
+of any constraint of P are explicitly constrained. What is more, any subset of the variables of P may be constrained
+implicitly, due to the combined effect of the constraints of P. The cost function which describes this implicit constraint
+may or may not be an element of Γ , but can, in a sense, be expressed using elements of Γ .
+
+The next two deﬁnitions formalise this idea of a function being expressible over a valued constraint language.
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+989
+
+Deﬁnition 3.1. For any VCSP instance P = (cid:6)V , D, C, Ω(cid:7), and any tuple of distinct variables W = (cid:6)v1, . . . , vk(cid:7), the
+cost function of P on W , denoted ΦW
+
+P , is deﬁned as follows:
+
+ΦW
+
+P (d1, . . . , dk) def=
+
+min
+{s : V →D|(cid:6)s(v1),...,s(vk)(cid:7)=(cid:6)d1,...,dk(cid:7)}
+
+CostP (s).
+
+Note that the cost function of P on W is a kind of projection of the overall cost function onto a speciﬁed subset of
+
+the variables.
+
+Deﬁnition 3.2. A function φ is expressible over a valued constraint language Γ if there exists an instance P =
+(cid:6)V , D, C, Ω(cid:7) in VCSP(Γ ) and a list W of variables from V such that φ = ΦW
+P .
+
+The set of all functions expressible over Γ will be denoted Γ ∗.
+
+In all cases Γ ∗ ⊇ Γ , but it is often the case that Γ ∗ contains many more functions than Γ , as the next example
+
+illustrates.
+
+Example 3.3. Let D = {0, 1, 2, . . . , |D| − 1} be a subset of the integers, and let Γ1 = { φ0, φ1} be the valued constraint
+language over D consisting of the constant unary cost function φ0 : D → R+ deﬁned by φ0(x) = 1 and the unary cost
+function φ1 : D → R+ deﬁned by φ1(x) = x.
+
+In this case the language (Γ1)∗ also contains all cost functions deﬁned by linear expressions with non-negative
+
+integer coefﬁcients, since for any such cost function φ we have
+
+φ(x1, x2, . . . , xm) = a0φ0(x1) +
+
+m(cid:2)
+
+i=1
+
+aiφ1(xi)
+
+for some set of non-negative integers a0, a1, . . . , am, and hence φ = Φ
+This much larger valued constraint language will be denoted ΓLIN.
+
+(cid:6)x1,...,xm(cid:7)
+P
+
+for some instance P of VCSP(Γ1).
+
+The notion of expressibility is a key tool in analysing the complexity of valued constraint languages, as the next
+
+result shows.
+
+Theorem 3.4. Let Γ and Γ (cid:10) be valued constraint languages with Γ (cid:10) ⊆ Γ ∗.
+
+• If Γ is tractable, then Γ (cid:10) is also tractable.
+• If Γ (cid:10) is NP-hard, then Γ is also NP-hard.
+
+Proof. Let Γ0 be a ﬁnite subset of Γ (cid:10), let P = (cid:6)V , D, C, Ω(cid:7) be any instance in VCSP(Γ0), and let c = (cid:6)σ, φ(cid:7) be a
+constraint in C.
+
+Since Γ (cid:10) ⊆ Γ ∗ we know that φ is expressible over Γ , so there exists an instance Pφ in VCSP(Γ ), and a list of
+variables W of Pφ, such that ΦW
+= φ. Hence we can replace the constraint c in P with a copy of Pφ (where the
+Pφ
+variables in the scope σ are identiﬁed with the list of variables W , and the remaining variables of Pφ are disjoint from
+V ) to obtain a new problem instance P (cid:10). Note that the solutions to P (cid:10), when restricted to V , correspond precisely to
+the original solutions to P and have the same costs.
+
+By repeating this construction for each constraint c of P, we can obtain an instance P (cid:10)(cid:10) of VCSP(Γ ) whose
+solutions, when restricted to V , correspond precisely to the original solutions to P and have the same costs. Since Γ0
+is ﬁnite, there is a bound on the size of the instances Pφ used in the construction, and so the size of P (cid:10)(cid:10) is bounded by
+a constant multiple of the size of P.
+
+If Γ is tractable, then we can solve P in polynomial time by carrying out this construction, using a polynomial
+time algorithm for VCSP(Γ ), and then restricting the solutions obtained to the original variables V . This is sufﬁcient
+to establish that Γ (cid:10) is tractable.
+
+If Γ (cid:10) is NP-hard, then this construction establishes that Γ is also NP-hard. (cid:2)
+
+Example 3.5. Consider the languages Γ1 and ΓLIN deﬁned in Example 3.3. Since Γ1 contains only unary cost func-
+tions it is clearly tractable. Since ΓLIN ⊆ (Γ1)∗, it follows from Theorem 3.4 that ΓLIN is tractable.
+
+990
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+4. Multimorphisms
+
+For crisp constraints, it has been shown that the expressive power of a set of relations is determined by certain
+
+algebraic invariance properties of those relations, known as polymorphisms [6,26–28,41,46].
+Throughout the rest of this paper, the ith component of a tuple t will be denoted t[i].
+
+Deﬁnition 4.1. A polymorphism of a relation R ⊆ Dm is a function f : Dk → D, for some k, such that whenever
+t1, . . . , tk are elements of R then so is (cid:6)f (t1[1], . . . , tk[1]), . . . , f (t1[m], . . . , tk[m])(cid:7).
+
+Example 4.2. Let D = {0, 1, 2, . . . , |D|−1} be a subset of the integers, and let R be the ternary relation over D deﬁned
+by R = {(cid:6)x, y, z(cid:7) | ax + by (cid:2) cz}, where a, b, c are positive constants. Consider the function f : D2 → D deﬁned by
+f (x, y) = Min(x, y). For any elements, t1, t2, of R we have that at1[1] + bt1[2] (cid:2) ct1[3] and at2[1] + bt2[2] (cid:2) ct2[3],
+which together imply that
+(cid:5)
+(cid:4)
+t1[1], t2[1]
+
+(cid:5)
+(cid:4)
+t1[3], t2[3]
+.
+
+(cid:5)
+(cid:4)
+t1[2], t2[2]
+
++ b Min
+
+(cid:2) c Min
+
+a Min
+
+Hence f is a polymorphism of R, and we will say that R has the polymorphism Min.
+
+The concept of a polymorphism is speciﬁc to relations, and cannot be applied directly to the functions of a valued
+constraint language. However, we now introduce a more general notion, which we call a multimorphism, which does
+apply directly to functions (see Fig. 1 for a concrete example).
+
+Deﬁnition 4.3. Let D be a set, Ω a valuation structure, and φ : Dm → Ω a function.
+
+We say that F : Dk → Dk is a multimorphism of φ if, for any list of k-tuples t1, t2, . . . , tm over D we have
+(cid:5)
+(cid:4)
+t1[i], t2[i], . . . , tm[i]
+
+(cid:5)
+(cid:4)
+F (t1)[i], F (t2)[i], . . . , F (tm)[i]
+
+k(cid:3)
+
+k(cid:3)
+
+(cid:2)
+
+φ
+
+φ
+
+.
+
+(1)
+
+i=1
+
+i=1
+
+If F is a multimorphism of every function in a language Γ , then we will say that F is a multimorphism of Γ , and that
+Γ has the multimorphism F . The largest such language, consisting of all functions φ with costs in Ω which have F
+as a multimorphism, will be denoted ImpΩ (F ).
+
+The notation ImpΩ (F ) is an abbreviation for “Improved by F ”; this term was chosen because the functions for
+which F is a multimorphism are precisely those functions whose aggregated value is “improved” (i.e., lowered, or
+left unchanged) by applying the function F (coordinatewise) to any suitable collection of argument vectors, to obtain
+a new collection of argument vectors (Eq. (1)).
+
+Fig. 1. An example of the form of inequality that shows that the function φ : {0, 1}3 → R+ deﬁned by φ(x, y, z) = 3x + 2y + z has the multimor-
+phism F = (cid:6)Min, Max(cid:7). (See Example 4.4.)
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+991
+
+It will often be convenient to describe a multimorphism F : Dk → Dk by listing its k separate component functions,
+
+Fi : Dk → D, deﬁned by Fi(x1, . . . , xk) = F (x1, . . . , xk)[i].
+
+Example 4.4. Let D = {0, 1, 2, . . . , |D| − 1} be a subset of the integers, and let φ : D3 → R+ be the linear function
+deﬁned by φ(x, y, z) = ax + by + cz, where a, b, c are positive constants.
+
+Consider the function F : D2 → D2 deﬁned by F (x, y) = (cid:6)Min(x, y), Max(x, y)(cid:7).
+For any list of pairs, t1, t2, t3, over D we have:
+
+(cid:5)
+(cid:4)
+F (t1)[i], F (t2)[i], F (t3)[i]
+
+φ
+
+2(cid:3)
+
+i=1
+
+(cid:5)
+t3[1], t3[2]
+, Max
+
+(cid:4)
+t3[1], t3[2]
+
+(cid:5)(cid:9)
+
+(cid:5)
+[i]
+
+=
+
+= φ
+
+⊕ φ
+= a Min
+
+2(cid:3)
+
+(cid:8)
+
+φ
+
+(cid:5)(cid:9)
+
+(cid:4)(cid:8)
+
+(cid:5)(cid:5)
+
+(cid:4)
+Min
+
+[i], . . . ,
+(cid:4)
+t3[1], t3[2]
+
+(cid:5)
+(cid:4)
+t1[1], t1[2]
+, Max
+Min
+(cid:5)
+(cid:4)
+t1[1], t1[2]
+
+i=1
+(cid:4)
+(cid:4)
+, Min
+Min
+(cid:5)
+(cid:4)
+(cid:4)
+t1[1], t1[2]
+Max
+(cid:5)
+(cid:4)
+t1[1], t1[2]
+
+(cid:4)
+t1[1], t1[2]
+(cid:5)
+t2[1], t2[2]
+, Min
+(cid:5)
+(cid:4)
+(cid:4)
+t3[1], t3[2]
+t2[1], t2[2]
+, Max
+, Max
+(cid:5)
+(cid:4)
+(cid:5)
+(cid:4)
+t3[1], t3[2]
++ c Min
+t2[1], t2[2]
++ b Min
+(cid:5)
+(cid:5)
+(cid:4)
+(cid:4)
+t1[1], t1[2]
+t2[1], t2[2]
++ b Max
++ a Max
+(cid:5)
+(cid:4)
+(cid:5)
+(cid:4)
++ c
+t2[1] + t2[2]
++ b
+t1[1] + t1[2]
+(cid:5)
+(cid:4)
+t1[i], t2[i], t3[i]
+
+(cid:5)
+(cid:4)
+t3[1], t3[2]
++ c Max
+(cid:5)
+(cid:4)
+t3[1] + t3[2]
+
+2(cid:3)
+
+(cid:5)(cid:5)
+
+φ
+
+.
+
+= a
+
+=
+
+i=1
+
+(A particular concrete example is illustrated in Fig. 1.)
+Hence F is a multimorphism of φ, and we will say that φ has the multimorphism (cid:6)Min, Max(cid:7).
+
+The next result establishes that multimorphisms have the key property that they extend to all functions expressible
+
+over a given language.
+
+Theorem 4.5. If F is a multimorphism of a valued constraint language Γ , then F is also a multimorphism of Γ ∗.
+
+Proof. Let F be a multimorphism of Γ , and let φ1, φ2 be arbitrary elements of Γ . By Deﬁnition 4.3, F is a multi-
+morphism of φ1 ⊕ φ2. Similarly, since Eq. (1) holds for all choices of tuples t, F is a multimorphism of the function
+obtained by minimising φ1 over any subset of its arguments. Hence, by Deﬁnition 3.2, F is a multimorphism of any
+function in Γ ∗. (cid:2)
+
+We now show that some important classes of functions are characterised by the property of having a particular
+
+form of multimorphism.
+
+Example 4.6. For any ﬁnite set V , a real-valued function ψ deﬁned on subsets of V is called a submodular func-
+tion [39] if, for all subsets S and T of V ,
+
+ψ(S ∩ T ) + ψ(S ∪ T ) (cid:2) ψ(S) + ψ(T ).
+
+(2)
+
+The problem of SUBMODULAR FUNCTION MINIMISATION consists in ﬁnding a subset S of V for which the value of
+ψ(S) is minimal. Such problems arise in a number of different contexts [39]. For example, Cunningham [11] showed
+that ﬁnding the maximum ﬂow in a network can be viewed as a special case of the general problem of submodular
+function minimisation.
+
+It has been known for a long time that submodular functions can be minimised in polynomial time using the
+ellipsoid method [20]. Recently, several different strongly polynomial, combinatorial algorithms have been proposed
+for this problem [16,23,44].
+
+Any function ψ deﬁned on subsets of a set V = {v1, . . . , vn} can be associated with a function φ : {0, 1}n → R+
+
+deﬁned as follows: for each tuple t ∈ D|V |, set φ(t) = ψ(T ), where T = {vi | t[i] = 1}.
+
+992
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+For any tuples s, t over {0, 1}, if we set S = {vi | s[i] = 1} and T = {vi | t[i] = 1}, then S ∩ T = {vi |
+Min(s[i], t[i]) = 1}, where Min is the function returning the minimum of its two arguments. Similarly, S ∪ T =
+{vi | Max(s[i], t[i]) = 1}, where Max is the function returning the maximum of its two arguments. Hence, comparing
+Eq. (2) and Eq. (1) (Deﬁnition 4.3), it follows that ψ is submodular if and only if the corresponding cost function φ
+has the multimorphism (cid:6)Min, Max(cid:7).
+
+Example 4.7. For any ﬁnite set V , a real-valued function ψ deﬁned on pairs of disjoint subsets of V is called a
+bisubmodular function [18] if for all pairs (cid:6)S1, S2(cid:7) and (cid:6)T1, T2(cid:7) of disjoint subsets of V ,
+(cid:5)
+(cid:4)
+(cid:6)S1, S2(cid:7) (cid:18) (cid:6)T1, T2(cid:7)
+
+(cid:5)
+(cid:4)
+(cid:6)S1, S2(cid:7) (cid:17) (cid:6)T1, T2(cid:7)
+
+(cid:5)
+(cid:4)
+(cid:6)T1, T2(cid:7)
+
+(cid:5)
+(cid:4)
+(cid:6)S1, S2(cid:7)
+
+(cid:2) ψ
+
++ ψ
+
++ ψ
+
+(3)
+
+ψ
+
+where
+
+(cid:6)S1, S2(cid:7) (cid:17) (cid:6)T1, T2(cid:7) = (cid:6)S1 ∩ T1, S2 ∩ T2(cid:7),
+(cid:8)
+(cid:6)S1, S2(cid:7) (cid:18) (cid:6)T1, T2(cid:7) =
+
+(S1 ∪ T1) \ (S2 ∪ T2), (S2 ∪ T2) \ (S1 ∪ T1)
+
+(cid:9)
+
+.
+
+It is known [18] that a bisubmodular function ψ which takes integer values only can be minimised in O(|V |5 log M)
+time, where M designates the maximum value of the function ψ.
+
+Any function ψ deﬁned on pairs of disjoint subsets of a set V = {v1, . . . , vn} can be associated with a function
+φ : {0, 1, 2}n → R+ deﬁned as follows: for each tuple t ∈ D|V |, set φ(t) = ψ((cid:6)T1, T2(cid:7)), where T1 = {vi | t[i] = 1} and
+T2 = {vi | t[i] = 2}.
+
+Arguing as in Example 4.6, if follows from Eq. (3) that ψ is bisubmodular if and only if the corresponding cost
+
+function φ has the multimorphism (cid:6)min0(x, y), max0(x, y)(cid:7), where
+
+(cid:10)
+
+min0(x, y) =
+
+max0(x, y) =
+
+(cid:7)
+
+Min(x, y)
+0
+Max(x, y)
+0
+
+if {x, y} (cid:11)= {1, 2},
+otherwise,
+if {x, y} (cid:11)= {1, 2},
+otherwise.
+
+In Section 6 we will show that a wide range of tractable optimisation problems with costs in R+ are characterised
+by the presence of certain forms of multimorphism. In Section 7 we will show that in the Boolean case every such
+tractable optimisation problem of the form VCSP(Γ ) is characterised by the presence of a particular multimorphism.
+A function F : k → Dk is called conservative if, for each possible choice of x1, x2, . . . , xk, the tuple F (x1, x2, . . . ,
+
+xk) contains the same multi-set of values x1, x2, . . . , xk (in some order).
+
+Example 4.8. For any totally ordered set D, the function F : Dk → Dk which returns its arguments in sorted order is
+conservative. For example, the function F : D2 → D2 deﬁned by F (x, y) = (cid:6)Min(x, y), Max(x, y)(cid:7) is conservative.
+On the other hand, the function F : D2 → D2 deﬁned by F (x, y) = (cid:6)Max(x, y), Max(x, y)(cid:7) is not conservative.
+
+Lemma 4.9. Any conservative function F : Dk → Dk is a multimorphism of all unary cost functions.
+
+Proof. If F is conservative, then Eq. (1) of Deﬁnition 4.3 holds (with equality) for any unary function φ, so F is a
+multimorphism of any unary function. (cid:2)
+
+There is a close relationship between the polymorphisms of a relation R and the multimorphisms of the correspond-
+
+ing feasibility function φR, as the next result makes clear.
+
+Proposition 4.10. Let R be a relation of arity m, and let φR be the corresponding feasibility function with range
+{0, ∞} deﬁned in Deﬁnition 2.12.
+
+For any collection of polymorphisms f1, f2, . . . , fk : Dk → D of R, the function F : Dk → Dk is a multimorphism
+
+of φR, where
+
+F (x1, x2, . . . , xk) =
+
+(cid:8)
+
+(cid:9)
+f1(x1, x2, . . . , xk), f2(x1, x2, . . . , xk), . . . , fk(x1, x2, . . . , xk)
+
+.
+
+Furthermore, if F : Dk → Dk is a multimorphism of a function φ : Dm → R+, then each of the k component
+
+functions of F is a polymorphism of the relation Feas(φ).
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+993
+
+Proof. Follows immediately from Deﬁnitions 4.1 and 4.3 restricted to the special case of crisp functions. (cid:2)
+
+Proposition 4.10 shows that, in the special case of crisp cost functions, a multimorphism can be seen as simply a
+collection of polymorphisms (which need not be distinct), and a polymorphism can be seen as simply a component
+function of a multimorphism. Hence the notion of a multimorphism can be viewed as an extension and generalisation
+of the notion of a polymorphism.
+
+5. A family of NP-hard languages
+
+In the remainder of the paper we will use the results obtained above to classify the complexity of a wide range of
+valued constraint languages with costs in R+. We start by establishing a sufﬁcient condition for such a language to be
+NP-hard.
+
+Proposition 5.1. Let Γ be a valued constraint language over a set D, with costs in R+. If there exist d, d (cid:10) ∈ D, and
+α, β ∈ R+, with α < β < ∞, such that the binary function φ
+
+given by
+
+XORβ
+α
+
+φ
+
+XORβ
+α
+
+(x, y) =
+
+(cid:11)
+
+if x (cid:11)= y ∧ x, y ∈ {d, d (cid:10)},
+if x = y ∧ x, y ∈ {d, d (cid:10)},
+
+α
+β
+∞ otherwise
+
+is expressible over Γ , then VCSP(Γ ) is NP-hard.
+
+}) has ﬁnite cost if and only if it assigns one of the two values
+Proof. An assignment to an instance of VCSP({φ
+d and d (cid:10) to all (constrained) variables. Hence we may restrict all variables to these two values. Lemma 7.4 of [10]
+states that the two-valued problem VCSP({φXOR}) is NP-hard, where φXOR is the Boolean exclusive-or function, as
+deﬁned in Example 2.10. Since adding a constant to all cost functions, and scaling all costs by a constant factor, does
+})
+not affect the difﬁculty of solving a VCSP instance over the valuation structure R+, we conclude that VCSP({φ
+is also NP-hard. Hence, by Theorem 3.4, VCSP(Γ ) is NP-hard. (cid:2)
+
+XORβ
+α
+
+XORβ
+α
+
+Next we show that the set of multimorphisms of any Boolean language which is shown to be NP-hard using
+
+Proposition 5.1 must be very restricted.
+
+Deﬁnition 5.2. A function f : Dk → D is called essentially unary if there exists a non-constant unary function
+g : D → D and an index i ∈ {1, 2, . . . , k} such that f (d1, d2, . . . , dk) = g(di) for all choices of d1, d2, . . . , dk.
+
+Deﬁnition 5.3. An injective multimorphism in which every component function is essentially unary will be called
+trivial.
+
+Theorem 5.4. A function F : {0, 1}k → {0, 1}k is a multimorphism of the valued Boolean constraint language ΓXOR
+deﬁned in Example 2.10 if and only if F is trivial.
+
+Proof. It is straightforward to check that any injective function F : {0, 1}2 → {0, 1}2 where each component function
+is essentially unary is a multimorphism of ΓXOR = {φXOR}.
+
+To establish the converse, let D = {0, 1} and let F : Dk → Dk be any multimorphism of φXOR. By Deﬁnition 4.3
+
+we have
+
+∀s, t ∈ Dk,
+
+k(cid:2)
+
+i=1
+
+(cid:4)
+
+(cid:5)
+F (s)[i], F (t)[i]
+
+(cid:2)
+
+φXOR
+
+(cid:5)
+(cid:4)
+s[i], t[i]
+
+.
+
+φXOR
+
+k(cid:2)
+
+i=1
+
+For any pair of tuples s and t, we deﬁne the Hamming distance between s and t, denoted H (s, t), to be the number of
+coordinate positions at which they differ. We can rewrite the above inequality using Hamming distances to obtain
+
+∀s, t ∈ Dk,
+
+k − H
+
+(cid:5)
+(cid:4)
+F (s), F (t)
+
+(cid:2) k − H (s, t),
+
+994
+
+and so
+
+∀s, t ∈ Dk, H
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+(cid:5)
+(cid:4)
+F (s), F (t)
+
+(cid:3) H (s, t).
+
+(4)
+
+This implies that F is injective, and hence a bijection from Dk to Dk, so by summing over all elements of Dk we
+obtain
+
+(cid:2)
+
+H
+
+s,t∈Dk
+
+(cid:5)
+(cid:4)
+F (s), F (t)
+
+=
+
+(cid:2)
+
+H (s, t).
+
+s,t∈Dk
+
+From Eqs. (4) and (5) it follows that
+(cid:5)
+(cid:4)
+F (s), F (t)
+
+∀s, t ∈ Dk, H
+
+= H (s, t)
+
+Now let 0 be the all zero k-tuple and deﬁne the function PF : Dk → Dk by setting
+
+(cid:10)
+
+PF (s)[i] =
+
+1 − s[i]
+s[i]
+
+if F (0)[i] = 1,
+otherwise.
+
+(5)
+
+(6)
+
+Since φXOR(a, b) = φXOR(1 − a, 1 − b), we have that
+
+(cid:4)
+PF
+
+(cid:5)
+(cid:4)
+F (s)
+
+[i], PF
+
+(cid:5)
+(cid:4)
+F (t)
+
+(cid:5)
+[i]
+
+=
+
+φXOR
+
+k(cid:2)
+
+i=1
+
+(cid:5)
+(cid:4)
+F (s)[i], F (t)[i]
+
+,
+
+φXOR
+
+k(cid:2)
+
+i=1
+
+so F ◦ PF is a multimorphism of φXOR. By construction, PF (F (0)) = 0, and it follows from Eq. (6) (by setting t = 0)
+that F ◦ PF is conservative.
+
+Let ti be the k-tuple which is zero except at position i. We can re-order the components of the conservative function
+F ◦ PF to obtain the function F (cid:10) which ﬁxes each ti . Now consider a k-tuple s. The function F (cid:10) is conservative, and
+by Eq. (6) we have that H (F (cid:10)(s), ti) = H (s, ti), for each ti . It follows that F (cid:10)(s) has ones exactly where s does, and
+so F (cid:10) is the identity function. Hence F ◦ PF simply returns its list of arguments in some ﬁxed order.
+
+Finally, since F = (F ◦ PF ) ◦ PF , it follows that each component function of F is essentially unary. (cid:2)
+
+Corollary 5.5. Let Γ be a valued constraint language over {0, 1}, with costs in R+.
+
+deﬁned in Proposition 5.1 is expressible in Γ for some α, β ∈ R+, with α < β < ∞,
+
+If the cost function φ
+
+XORβ
+α
+
+then every multimorphism of Γ is trivial.
+
+Proof. Follows immediately from Theorems 5.4, 4.5, and the fact that the set of multimorphisms of any cost function
+with costs in R+ is unchanged by adding a constant and scaling all values by a constant factor. (cid:2)
+
+6. Multimorphisms and tractable languages
+
+In this section we will present several maximal tractable valued constraint languages with costs in R+. Some
+of these are translations of known tractable optimisation problems into the VCSP framework, and others are novel
+tractable classes. In all cases we are able to give a characterisation of the tractable language in terms of a single
+multimorphism. Hence, in all cases we show that the presence of a certain kind of multimorphism is sufﬁcient to
+guarantee tractability.
+
+We ﬁrst make the following observations:
+
+• If Γ is a tractable valued constraint language with costs in R+, then the set of relations {Feas(φ) | φ ∈ Γ } must
+be a tractable crisp constraint language. By the results of [6,26,28], this implies that each relation Feas(φ) must
+have some ﬁxed set of polymorphisms which guarantees the tractability of this set of relations.
+
+• By Proposition 4.10, we know that if F : Dk → Dk is a multimorphism of a function φ, then each of the k
+
+component functions of F is a polymorphism of the relation Feas(φ).
+
+Hence, in our search for tractable valued constraint languages with costs in R+ a sensible place to start is by consid-
+ering those multimorphisms whose component functions are polymorphisms which guarantee tractability. The most
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+995
+
+straightforward examples of such polymorphisms are constant functions, maximum and minimum functions on or-
+dered sets, majority functions and minority functions [26]; the examples we give in this section are all obtained by
+combining these simple functions in various ways.
+
+We will show in Section 7 that the examples considered in this section are sufﬁcient to obtain a complete charac-
+
+terisation of the complexity of all valued Boolean constraint languages with costs in R+.
+
+6.1. Constant multimorphisms
+
+The ﬁrst example we consider is a rather straightforward family of tractable languages, characterised by the pres-
+
+ence of a single unary multimorphism with a constant value.
+
+Lemma 6.1. A cost function φ has a unary multimorphism with constant value d if and only if the value of
+φ(d, d, . . . , d) is the smallest value in the range of φ.
+
+Example 6.2. A constant cost function has all possible constant unary multimorphisms.
+
+Example 6.3. The valued constraint language ΓLIN deﬁned in Example 3.3 has the constant unary multimorphism
+with value 0.
+
+Although the proof of tractability for this case is trivial, the proof that every language characterised by a constant
+multimorphism is a maximal tractable language is more interesting, and provides a simple example of the techniques
+we shall use for other cases.
+
+Theorem 6.4. Let D be a set, and let F : D → D be a constant function.
+
+1. The set of functions ImpR+(F ) is a tractable valued constraint language.
+2. Any valued constraint language Γ such that Γ ⊃ ImpR+ (F ) is NP-hard.
+
+Proof. Let dF be the (constant) value of F .
+
+1. Let φ be any function in ImpR+ (F ), and let m be the arity of φ. Since F is a multimorphism of φ, we have that,
+
+for all d1, d2, . . . , dm ∈ D,
+
+φ(dF , dF , . . . , dF ) (cid:2) φ(d1, d2, . . . , dm).
+
+Hence any instance P in VCSP(ImpR+ (F )) has a solution which assigns the value dF to every variable, so
+VCSP(ImpR+ (F )) is tractable.
+
+2. Now assume that Γ ⊃ ImpR+(F ), and hence Γ contains a function φ of some arity m such that F is not a
+
+multimorphism of φ. Hence there exist d1, d2, . . . , dm ∈ D such that φ(dF , dF , . . . , dF ) > φ(d1, d2, . . . , dm).
+
+If φ(dF , . . . , dF ) < ∞, then set μ = (φ(dF , . . . , dF ) − φ(d1, . . . , dm))/2, otherwise set μ = 1. Choose some i0
+
+such that di0
+
+(cid:11)= dF . Now deﬁne the functions δ and ψ as follows:
+
+(cid:10)
+
+if (cid:6)x1, . . . , xm(cid:7) ∈ {(cid:6)d1, . . . , dm(cid:7), (cid:6)dF , . . . , dF (cid:7)},
+
+δ(x1, . . . , xm) =
+(cid:7)
+
+ψ(x1, x2, x3) =
+
+0
+∞ otherwise,
+μ if (cid:6)x1, x2, x3(cid:7) ∈ {(cid:6)di0, di0, di0
+0
+
+otherwise.
+
+(cid:7), (cid:6)di0, dF , dF (cid:7)},
+
+Note that δ, ψ ∈ ImpR+(F ) ⊂ Γ .
+
+We can now construct the instance P ∈ VCSP(Γ ) with variables
+
+{X1, . . . , Xm, Y1, . . . , Ym, Z1, . . . , Zm}
+
+and constraints
+(cid:8)
+
+(cid:6)X1, . . . , Xm(cid:7), φ
+(cid:9)
+(cid:8)
+(cid:6)Y1, . . . , Ym(cid:7), δ
+,
+(cid:7), ψ
+(cid:6)Xi0, Yi0 , Zi0
+
+(cid:8)
+
+,
+
+(cid:9)
+
+.
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+(cid:6)X1, . . . , Xm(cid:7), δ
+(cid:9)
+(cid:8)
+(cid:6)Z1, . . . , Zm(cid:7), δ
+
+,
+
+,
+
+996
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+If we set W = (cid:6)Yi0, Zi0
+
+(cid:7), then it is straightforward to check that
+
+(cid:11)
+
+ΦW
+
+P (x, y) =
+
+φ(d1, d2, . . . , dm)
+μ + φ(d1, d2, . . . , dm)
+∞
+
+if x (cid:11)= y ∧ x, y ∈ {dF , di0
+if x = y ∧ x, y ∈ {dF , di0
+otherwise.
+
+},
+},
+
+Hence, by Proposition 5.1, VCSP(Γ ) is NP-hard. (cid:2)
+
+Example 6.5. Recall from Example 2.9 that the MAX-SAT optimisation problem has just three maximal tractable
+classes, which are identiﬁed in [10]. Two of these can be characterised by having a constant function as a multimor-
+phism; these are referred to in [10] as ‘0-valid’ relations, and ‘1-valid’ relations.2
+
+6.2. The multimorphism (cid:6)Min, Max(cid:7)
+
+The next example we consider is the family of valued constraint languages over a set D characterised by the pres-
+ence of a single binary multimorphism, (cid:6)Min, Max(cid:7), where the binary operations Min and Max return the minimum
+and maximum values with respect to some ﬁxed total ordering of D. These languages include the class of submodular
+set functions used in economics and operations research [39] (see Example 4.6).
+
+Lemma 6.6. Let D be a ﬁnite totally ordered set. A function φ : Dm → R+ has the multimorphism (cid:6)Min, Max(cid:7) if and
+only if it satisﬁes the following two conditions:
+
+• φ is ﬁnitely submodular, that is, for all m-tuples s, t, such that φ(s), φ(t) < ∞, we have that
+
+(cid:5)
+(cid:4)
+Min(s, t)
+
+φ
+
+(cid:5)
+(cid:4)
+Max(s, t)
+
++ φ
+
+(cid:2) φ(s) + φ(t),
+
+where the operations Min and Max are applied coordinatewise.
+
+• Feas(φ) has the polymorphisms Min and Max.
+
+Proof. If φ has the multimorphism (cid:6)Min, Max(cid:7), then these two properties follow immediately from Deﬁnition 4.3
+and Proposition 4.10.
+
+Conversely, if φ is ﬁnitely submodular, then it satisﬁes Eq. (1) of Deﬁnition 4.3 for all choices of t1 and t2. (cid:2)
+
+The second condition in Lemma 6.6 implies that the set of m-tuples on which φ is ﬁnite is a sublattice of the set
+of all m-tuples, where the lattice operations are the operations Min and Max applied coordinatewise. Theorem 49.2
+of [45] implies that any real-valued submodular function deﬁned on such a sublattice can be extended to a submodular
+function on the full lattice. Hence, by Lemma 6.6, any function with the multimorphism (cid:6)Min, Max(cid:7) can be expressed
+as the sum of a ﬁnite-valued submodular function, and a crisp function φR associated with a relation R which has the
+polymorphisms Min and Max.
+
+Theorem 6.7. Let D be a ﬁnite totally ordered set, and let F : D2 → D2 be the function deﬁned by F (d, d (cid:10)) =
+(cid:6)Min(d, d(cid:10)), Max(d, d (cid:10))(cid:7).
+
+1. The set of functions ImpR+(F ) is a tractable valued constraint language.
+2. Any valued constraint language Γ such that Γ ⊃ ImpR+(F ) is NP-hard.
+
+Proof. Assume for simplicity that D = {0, 1, 2, . . . , |D| − 1} with the usual ordering.
+
+1. To establish the tractability of the set of functions in ImpR+ (F ), we show that this problem can be reduced to
+the problem of minimising a real-valued submodular set function [39] over a special family of sets known as a ring
+family [44]. This problem can then be solved in polynomial time using an algorithm due to Schrijver [44].
+
+Let P = (V , D, C, R+) be any instance of VCSP(ImpR+ (F )). By Lemma 6.6, the feasibility relation corresponding
+to each constraint in P has the polymorphisms Min and Max. Hence the standard constraint satisfaction problem
+
+2 The third tractable class for the MAX-SAT problem is discussed in Example 6.8, below.
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+997
+
+instance with these relations as crisp constraints can be solved in polynomial time, using the results of [29]. But this
+means that we can determine in polynomial-time whether or not there is an assignment for P with ﬁnite cost.
+
+If every assignment for P has inﬁnite cost, then we can return an arbitrary assignment as a solution, and we are
+
+done.
+
+Otherwise, we deﬁne the set Q = D × V , and associate each assignment s for P that has ﬁnite cost with a subset
+
+Qs of Q, deﬁned as follows:
+
+(cid:13)
+(cid:12)
+(cid:6)d, v(cid:7) ∈ Q | v ∈ V ∧ d (cid:2) s(v)
+
+.
+
+Qs =
+
+Now, it is straightforward to check that for any pair of assignments s and t with ﬁnite cost we have
+
+Qs ∪ Qt = QMax(s,t),
+Qs ∩ Qt = QMin(s,t).
+
+Hence the subsets of Q associated with the assignments of ﬁnite cost form a collection C which is closed under union
+and intersection. Such a collection is referred to in [44] as a ring family.
+
+Finally, we deﬁne the real-valued function ψ on C, by setting
+
+ψ(Qs) = CostP (s).
+
+Note that, since F is a multimorphism of every cost function in P, for all S, T ∈ C we have
+
+ψ(S ∪ T ) + ψ(S ∩ T ) (cid:2) ψ(S) + ψ(T ).
+
+Hence, ψ is a real-valued submodular set function deﬁned on the ﬁnite ring family C, and so can be minimised in
+polynomial-time, using the algorithm described in [44]. The output of this algorithm is an element Qs of C corre-
+sponding to a solution s to P, so the problem is tractable.
+
+2. Now assume that Γ ⊃ ImpR+(F ), and hence Γ contains a function φ of some arity m such that F is not a
+
+multimorphism of φ. Hence, there exist s, s(cid:10) ∈ Dm such that
+
+(cid:4)
+Min(s, s
+
+(cid:10)
+
+(cid:5)
+)
+
+φ
+
+(cid:4)
+
++ φ
+
+Max(s, s
+
+(cid:10)
+
+> φ(s) + φ(s
+
+(cid:10)
+
+),
+
+(cid:5)
+)
+
+where the operators Min and Max are applied coordinatewise to the tuples s and s(cid:10).
+It follows that we can ﬁnd indexes i and j for which s[i] > s(cid:10)[i] and s[j ] < s(cid:10)[j ].
+We deﬁne an m-ary function δ which takes the value 0 on the tuples s, s(cid:10), Max(s, s(cid:10)) and Min(s, s(cid:10)), and ∞ in all
+
+other cases. Note that δ ∈ ImpR+ (F ) ⊂ Γ .
+
+Deﬁne λ and μ as follows:
+(cid:4)
+(cid:5)
+Min(s, s
+)
+(cid:4)
+(cid:10)
+Max(s, s
+
+(cid:4)
+λ = min
+φ
+(cid:4)
+μ = min
+φ
+
+(cid:10)
+
+, φ(s) + φ(s
+(cid:5)
+, φ(s) + φ(s
+)
+
+(cid:10)
+
+(cid:5)
+,
+(cid:5)
+.
+
+) + 1
+(cid:10)
+) + 1
+
+It is straightforward to check that φ(s) + φ(s(cid:10)) < λ + μ < ∞.
+
+Now deﬁne the binary functions
+
+ζ (x, y) =
+
+κ(x, y) =
+
+(cid:11)
+
+⎧
+⎪⎪⎪⎨
+⎪⎪⎪⎩
+
+μ if (x, y) = (0, s(cid:10)[i]),
+if (x, y) = (1, s[i]),
+λ
+∞ otherwise,
+0
+φ(s(cid:10)) + 1
+φ(s) + 1
+0
+∞
+
+if (x, y) = (s[j ], 0),
+if (x, y) = (s[j ], 1),
+if (x, y) = (s(cid:10)[j ], 0),
+if (x, y) = (s(cid:10)[j ], 1),
+otherwise.
+
+Note that ζ, κ ∈ ImpR+(F ) ⊂ Γ .
+
+We can now construct the instance P ∈ VCSP(Γ ) with variables
+
+{X, Y, V1, . . . , Vm, W1, . . . , Wm, }
+
+998
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+and constraints
+(cid:8)
+
+(cid:9)
+
+,
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:6)V1, . . . , Vm(cid:7), δ
+(cid:8)
+(cid:6)V1, . . . , Vm(cid:7), φ
+(cid:6)Wi, X(cid:7), κ
+(cid:9)
+(cid:6)X, Vi(cid:7), ζ
+
+,
+
+,
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+,
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:6)W1, . . . , Wm(cid:7), δ
+(cid:8)
+(cid:6)W1, . . . , Wm(cid:7), φ
+(cid:8)
+(cid:6)Vj , Y (cid:7), κ
+(cid:6)Y, Wj (cid:7), ζ
+
+,
+(cid:9)
+
+.
+
+(cid:9)
+
+(cid:8)
+
+If we set W = (cid:6)X, Y (cid:7), then it is straightforward to check that
+λ + μ + φ(s) + φ(s(cid:10))
+λ + μ + λ + μ
+∞
+
+if x (cid:11)= y ∧ x, y ∈ {0, 1},
+if x = y ∧ x, y ∈ {0, 1},
+otherwise.
+
+P (x, y) =
+
+ΦW
+
+(cid:11)
+
+Hence, by Proposition 5.1, VCSP(Γ ) is NP-hard. (cid:2)
+
+Example 6.8. Recall from Example 2.9 that the MAX-SAT optimisation problem has just three maximal tractable
+classes, which are identiﬁed in [10]. Two of these can be characterised by having a constant multimorphism (see
+Example 6.5). The third can be characterised by having the multimorphism (cid:6)Min, Max(cid:7); this class is referred to in [10]
+as the class of ‘2-monotone’ relations, where it is deﬁned as the class of relations deﬁnable by a logical expression of
+the form (x1 ∧ x2 ∧ · · · ∧ xp) ∨ (y1 ∧ y2 ∧ · · · ∧ yq ) (where the x and y variables are not necessarily distinct).
+
+Example 6.9. It follows from Lemma 4.9 and Example 4.8 that every unary function has the multimorphism
+(cid:6)Min, Max(cid:7).
+
+Example 6.10. Let D = {0, 1, . . . , M} be a set of integers. It follows from Example 6.9 and Theorem 4.5 that the
+language ΓLIN deﬁned in Example 3.3, consisting of all functions on D deﬁned by linear expressions with positive
+integer coefﬁcients, also has the multimorphism (cid:6)Min, Max(cid:7).
+
+Example 6.11. A function φ : {0, 1}m → R is called a pseudo-Boolean function [3]. It is straightforward to check from
+the table of values that the function φ deﬁned by φ(x, y) = x(1 − y) has the multimorphism (cid:6)Min, Max(cid:7). It follows
+from Example 6.10 and Theorem 4.5 that the language Γ consisting of non-negative functions on {0, 1} deﬁned by
+expressions of the form a0 +
+i,j aij xixj , where the ai and aij are non-negative integers, also has the
+multimorphism (cid:6)Min, Max(cid:7), and so is tractable by Theorem 6.7.
+
+i aixi −
+
+(cid:18)
+
+(cid:18)
+
+Example 6.12. It was shown in Example 2.6 that the MINIMUM k-TERMINAL CUT problem can be formu-
+lated as an instance of VCSP(Γk) for a language Γk consisting of crisp unary constraints and the cost function
+φEQ : {0, 1, . . . , k}2 → R+ deﬁned in Example 2.6.
+
+In the special case when k = 2, it is straightforward to verify that the cost function φEQ has the multimorphism
+(cid:6)Min, Max(cid:7). Using this fact, and Example 6.9, Theorem 6.7 implies that the MIN-CUT problem can be solved in
+polynomial time. (Compare with Example 2.11.)
+
+Example 6.13. It follows immediately from Deﬁnition 4.3 that a binary function φ : D2 → R+ has the multimorphism
+(cid:6)Min, Max(cid:7) if and only if, for all u, v, x, y ∈ D, with u < x and v < y, we have φ(u, v) + φ(x, y) (cid:2) φ(u, y) + φ(x, v).
+Using this observation, it is straightforward to check that for any ﬁnite set of real values D the following binary
+functions all have the multimorphism (cid:6)Min, Max(cid:7), and hence any VCSP instance involving constraints with cost
+functions of these forms is tractable.
+(cid:10)
+
+if ax (cid:2) by + c (for constants a, b, c with a, b > 0),
+
+δ(x, y) =
+
+0
+∞ otherwise,
+
+(cid:19)
+
+x2 + y2,
+
+η(x, y) =
+ζ (x, y) = |x − y|r
+
+(for r (cid:3) 1).
+
+Using these observations, and Example 6.9, we conclude that the discrete optimisation problem described in Exam-
+ple 1.1 can be solved in polynomial time. (A more specialised algorithm for binary soft constraints of these kinds,
+which runs in cubic time, is given in our previous paper [7].)
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+999
+
+6.3. The multimorphism (cid:6)Max, Max(cid:7)
+
+The next example we consider is the family of valued constraint languages over a set D characterised by the
+presence of a single binary multimorphism, (cid:6)Max, Max(cid:7), where the binary operation Max returns the maximum value
+with respect to some ﬁxed total ordering of D. These languages generalise the crisp “max-closed” constraint languages
+introduced and shown to be tractable in [29].
+
+We ﬁrst show that any function with values in R+ which has the multimorphism (cid:6)Max, Max(cid:7) satisﬁes some simple
+conditions. For any tuples u, v over an ordered set D, we will write u (cid:2) v if and only if u[i] (cid:2) v[i] for each coordinate
+position i.
+
+Lemma 6.14. A function φ : Dk → R+ has the multimorphism F : D2 → D2, where F (d, d (cid:10)) = (cid:6)Max(d, d (cid:10)),
+Max(d, d (cid:10))(cid:7) if and only if it satisﬁes the following two conditions:
+
+• φ is ﬁnitely antitone, that is, for all tuples u, v with φ(u), φ(v) < ∞,
+
+u (cid:2) v ⇒ φ(u) (cid:3) φ(v).
+• Feas(φ) has the polymorphism Max.
+
+Proof. If φ has the multimorphism F , then for all tuples u, v we have φ(u) + φ(v) (cid:3) 2φ(Max(u, v)), which implies
+that both conditions hold.
+
+Conversely, if φ does not have the multimorphism F , then there exist tuples u, w such that φ(u) + φ(w) <
+2φ(Max(u, w)). Hence, without loss of generality, we may assume that φ(u) < φ(Max(u, w)). Setting v = Max(u, w)
+we get u < v and φ(u) < φ(v). If φ(v) < ∞ then the ﬁrst condition in the lemma does not hold, and if φ(v) = ∞,
+then the second condition fails to hold. (cid:2)
+
+By Lemma 6.14, any function with the multimorphism (cid:6)Max, Max(cid:7) can be expressed as the sum of a ﬁnite-valued
+
+antitone function, and a crisp function φR associated with a relation R which has the polymorphism Max.
+
+Theorem 6.15. Let D be a totally ordered ﬁnite set, and let F : D2 → D2 be the function deﬁned by F (d, d (cid:10)) =
+(cid:6)Max(d, d(cid:10)), Max(d, d (cid:10))(cid:7).
+
+1. The set of functions ImpR+(F ) is a tractable valued constraint language.
+2. Any valued constraint language Γ such that Γ ⊃ ImpR+ (F ) is NP-hard.
+
+Proof. Assume for simplicity that D = {0, 1, 2, . . . , |D| − 1} with the usual ordering.
+
+1. To establish the tractability of ImpR+(F ), we will give an explicit polynomial-time algorithm for VCSP(Γ ) for
+
+any ﬁxed ﬁnite subset of ImpR+ (F ).
+
+Let Γ be a ﬁnite subset of ImpR+(F ), and let P = (V , D, C, R+) be any instance of VCSP(Γ ). To each constraint
+c = (cid:6)σ, φ(cid:7) ∈ C we can associate a crisp constraint ¯c = (cid:6)σ, Feas(φ)(cid:7) which allows precisely those tuples of values t for
+which φ(t) < ∞. We can then establish arc consistency [37] in the constraint satisfaction problem formed by these
+associated crisp constraints. This is done by successively removing values from the domain of each variable if they
+are unsupported, that is, they cannot be extended to compatible values for all the other variables in the scope of each
+constraint containing v. Since Γ is ﬁnite, the arity of the constraint relations is bounded, so arc-consistency can be
+achieved in polynomial time [37].
+
+For each variable v, let Dv be the domain of v after establishing arc consistency. If any of these domains are empty,
+then any assignment for P has cost ∞, and so any assignment is a solution. Otherwise, let ¯dv be the largest supported
+value for variable v. These values can be computed in polynomial time
+
+By Lemma 6.14, each constraint of P is ﬁnitely antitone, so assigning ¯dv to each variable v is an optimal solution
+
+to P.
+
+2. Now assume that Γ ⊃ ImpR+(F ), and hence Γ contains a function φ of some arity m such that F is not a
+
+multimorphism of φ. Hence, there exist s, s(cid:10) ∈ Dm such that
+> φ(s) + φ(s
+
+(cid:4)
+Max(s, s
+
+(cid:5)
+)
+
+2φ
+
+),
+
+(cid:10)
+
+(cid:10)
+
+1000
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+which s[i0] < s(cid:10)(cid:10)[i0].
+
+δ ∈ ImpR+ (F ) ⊂ Γ .
+
+(cid:11)
+
+ψ(x, y) =
+
+where the operator Max is applied coordinatewise to the tuples s and s(cid:10).
+
+Set s(cid:10)(cid:10) = Max(s, s(cid:10)). We have to consider two cases depending on whether or not φ(s(cid:10)(cid:10)) has cost ∞.
+Case 1: φ(s(cid:10)(cid:10)) < ∞.
+Without loss of generality we may assume that φ(s(cid:10)(cid:10)) > φ(s). In this case there must be at least one index i0 for
+
+We deﬁne an m-ary function δ which takes the value 0 on the tuples s and s(cid:10)(cid:10), and ∞ in all other cases. Note that
+
+We also deﬁne the binary function ψ as follows
+
+2φ(s(cid:10)(cid:10))
+2φ(s)
+∞
+
+if (cid:6)x, y(cid:7) = (cid:6)s[i0], s[i0](cid:7),
+if (cid:6)x, y(cid:7) ∈ {(cid:6)s[i0], s(cid:10)(cid:10)[i0](cid:7), (cid:6)s(cid:10)(cid:10)[i0], s[i0](cid:7), (cid:6)s(cid:10)(cid:10)[i0], s(cid:10)(cid:10)[i0](cid:7)},
+otherwise.
+
+Note that ψ ∈ ImpR+ (F ) ⊂ Γ .
+
+We can now construct the instance P ∈ VCSP(Γ ) with variables
+
+{X1, . . . , Xm, Y1, . . . , Ym}
+
+(cid:9)
+
+(cid:8)
+
+,
+
+,
+
+(cid:8)
+
+(cid:6)Y1, . . . , Ym(cid:7), φ
+(cid:9)
+(cid:6)Y1, . . . , Ym(cid:7), δ
+
+,
+
+,
+
+(cid:9)
+
+and constraints
+(cid:8)
+
+(cid:6)X1, . . . , Xm(cid:7), φ
+(cid:8)
+(cid:9)
+(cid:6)X1, . . . , Xm(cid:7), δ
+(cid:8)
+(cid:6)Xi0, Yi0
+If we set W = (cid:6)Xi0, Yi0
+
+(cid:7), ψ
+
+.
+
+(cid:9)
+
+(cid:11)
+
+(cid:7), then it is straightforward to check that
+
+ΦW
+
+P (x, y) =
+
+if x (cid:11)= y ∧ x, y ∈ {s[i0], s(cid:10)(cid:10)[i0]},
+if x = y ∧ x, y ∈ {s[i0], s(cid:10)(cid:10)[i0]},
+otherwise.
+Hence, by Proposition 5.1, VCSP(Γ ) is NP-hard.
+
+φ(s(cid:10)(cid:10)) + 3φ(s)
+2(φ(s(cid:10)(cid:10)) + φ(s))
+∞
+
+Case 2: φ(s(cid:10)(cid:10)) = ∞.
+Consider the relation Feas(φ) containing precisely those tuples for which the value of φ is ﬁnite. Since, by hypoth-
+esis, φ(s), φ(s(cid:10)) < ∞ and φ(s(cid:10)(cid:10)) = ∞, we have s, s(cid:10) ∈ Feas(φ) and s(cid:10)(cid:10) = Max(s, s(cid:10)) (cid:11)∈ Feas(φ). That is, the relation
+Feas(φ) does not have the polymorphism Max.
+
+Now let LMax be the crisp constraint language over D consisting of all relations which do have the polymorphism
+Max. It was shown in [29] that LMax is a maximal tractable language, and hence the class of crisp constraint sat-
+isfaction problems with constraint relations chosen from LMax ∪ {Feas(φ)} is NP-complete. By representing these
+crisp constraints as valued constraints with the corresponding feasibility functions as cost functions, as described in
+Example 2.4, we can obtain a polynomial-time reduction from this problem to the decision problem associated with
+VCSP(Γ ). Hence VCSP(Γ ) is NP-hard. (cid:2)
+
+Example 6.16. Let D = {0, 1, 2, . . . , M} be a subset of the integers, and let ΓAT be the set of all antitone cost functions
+over D with costs in R+ \ {∞}. These cost functions can be used to express a preference for larger values of their
+x2 + y2 + z2, can be used to select
+arguments. For example, the ternary function φ, deﬁned by φ(x, y, z) = 3M −
+a point in D3 which is as far as possible from the origin. By Lemma 6.14, ΓAT has the multimorphism (cid:6)Max, Max(cid:7),
+and hence is tractable by Theorem 6.15
+
+(cid:20)
+
+Example 6.17. The constraint programming language CHIP [47] incorporates a number of constraint solving tech-
+niques for arithmetic and other constraints. In particular it provides a constraint solver for a restricted class of crisp
+constraints over natural numbers, referred to as basic constraints. These basic constraints are of two kinds which are
+referred to as “domain constraints” and “arithmetic constraints”. The domain constraints are unary constraints which
+restrict the value of a variable to some speciﬁed ﬁnite subset of the natural numbers. The arithmetic constraints are
+unary or binary constraints which have one of the following forms:
+
+aX (cid:11)= b,
+aX = bY + c,
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1001
+
+aX (cid:2) bY + c,
+aX (cid:3) bY + c,
+
+where variables are represented by upper-case letters, and constants by lower case letters. All constants are non-
+negative, and a is non-zero.
+
+If we represent these crisp constraints as valued constraints with the corresponding feasibility functions as cost
+functions, as described in Example 2.4, then it is easy to verify that they all have the multimorphism (cid:6)Max, Max(cid:7), and
+hence form a tractable valued constraint language, by Theorem 6.15.
+
+Moreover, this tractable language can be extended, as shown in [29], to also include the feasibility functions of the
+
+following non-binary relations, which also have the multimorphism (cid:6)Max, Max(cid:7).
+
+a1X1 + a2X2 + · · · + ar Xr (cid:3) bY + c,
+aX1X2 . . . Xr (cid:3) bY + c,
+(a1X1 (cid:3) b1) ∨ (a2X2 (cid:3) b2) ∨ · · · ∨ (ar Xr (cid:3) br ) ∨ (aY (cid:2) b).
+
+The tractable language consisting of all crisp constraint functions with the multimorphism (cid:6)Max, Max(cid:7) will be
+
+denoted ΓMC.
+
+Example 6.18. By Lemma 6.14 and Theorem 3.4, we can combine the tractable languages ΓAT (deﬁned in Exam-
+ple 6.16) and ΓMC (deﬁned in Example 6.17) to obtain the much larger tractable language (ΓAT ∪ ΓMC)∗. In fact, we
+have ImpR+ ((cid:6)Max, Max(cid:7)) = (ΓAT ∪ ΓMC)∗.
+
+This larger tractable language includes functions such as the binary function φ : D2 → R+ deﬁned by
+
+(cid:10)
+
+φ(x, y) =
+
+(M − x)(M − y)
+∞
+
+if x < y,
+if x (cid:3) y.
+
+This function can be expressed as the sum of the antitone function ψ(x, y) = (M − x)(M − y), and the function φR< ,
+where R< = {(cid:6)x, y(cid:7) | x < y}. It can be used to express a preference for larger values for x, y provided x < y.
+
+6.4. Majority and minority multimorphisms
+
+The next example we consider is the family of valued constraint languages over a set D characterised by the
+presence of a single ternary multimorphism, (cid:6)F1, F2, F3(cid:7), where each component function Fi is a majority operation,
+deﬁned as follows.
+
+Deﬁnition 6.19. A function f : D3 → D is called a majority operation if, for all x, y ∈ D,
+
+f (x, x, y) = f (x, y, x) = f (y, x, x) = x.
+
+Languages with a multimorphism of this kind can be shown to be essentially crisp, and hence their complexity can be
+determined by using techniques developed for the standard constraint satisfaction problem with crisp constraints. In
+fact, problems involving such languages can be viewed as a generalisation of the standard tractable 2-SATISFIABILITY
+problem to larger ﬁnite domains.
+
+Proposition 6.20. Any valued constraint language with costs in R+ which has a multimorphism (cid:6)F1, F2, F3(cid:7), where
+each Fi is a majority operation, is an essentially crisp language, and is tractable.
+
+Proof. Let Γ be a valued constraint language which has the multimorphism (cid:6)F1, F2, F3(cid:7), and let φ be a k-ary cost
+function in Γ .
+
+If each Fi is a majority operation, then it follows from Deﬁnitions 6.19 and 4.3 that for all x, y ∈ Dk, 3φ(x) (cid:2)
+φ(x) + φ(x) + φ(y) and 3φ(y) (cid:2) φ(y) + φ(y) + φ(x). Hence, if both φ(x) and φ(y) are ﬁnite, then we have
+φ(x) (cid:2) φ(y) and φ(y) (cid:2) φ(x), so they must be equal, which means that φ is essentially crisp.
+
+Furthermore, for each φ ∈ Γ , the relation Feas(φ) has the polymorphism F1, which is a majority operation, so it
+
+follows from Theorem 5.7 of [26] that VCSP(Γ ) is tractable. (cid:2)
+
+1002
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+Similar arguments can be used for minority operations, deﬁned as follows:
+
+Deﬁnition 6.21. A function f : D3 → D is called a minority operation if, for all x, y ∈ D,
+
+f (x, x, y) = f (x, y, x) = f (y, x, x) = y.
+
+Proposition 6.22. Any valued constraint language with costs in R+ which has a multimorphism (cid:6)F1, F2, F3(cid:7), where
+each Fi is a minority operation, is an essentially crisp language, and is tractable.
+
+Proof. Let Γ be a valued constraint language which has the multimorphism (cid:6)F1, F2, F3(cid:7), and let φ be a k-ary cost
+function in Γ .
+
+If each Fi is a minority operation, then for all x, y ∈ Dk, we have 3φ(x) (cid:2) φ(x) + φ(y) + φ(y) and 3φ(y) (cid:2)
+φ(y) + φ(x) + φ(x). Hence, if both φ(x) and φ(y) are ﬁnite, then we have φ(x) (cid:2) φ(y) and φ(y) (cid:2) φ(x), so they
+must be equal, which means that φ is essentially crisp.
+
+Furthermore, for each φ ∈ Γ , the relation Feas(φ) has the polymorphism F1, which is a minority operation, and
+
+hence a Mal’tsev operation (see [13]), so it follows from Theorem 1 of [13] that VCSP(Γ ) is tractable. (cid:2)
+
+6.5. The multimorphism (cid:6)Mjrty1, Mjrty2, Mnrty3
+
+(cid:7)
+
+The ﬁnal example we consider is the valued constraint language with costs in R+ which is characterised by the
+
+(cid:7), where
+
+(cid:10)
+
+y
+x
+
+Mjrty1(x, y, z) =
+
+presence of the single ternary multimorphism (cid:6)Mjrty1, Mjrty2, Mnrty3
+if y = z,
+otherwise,
+if x = z,
+otherwise,
+if y = z ∧ z (cid:11)= x,
+if x = z ∧ z (cid:11)= y,
+otherwise.
+
+Mnrty3(x, y, z) =
+
+Mjrty2(x, y, z) =
+
+x
+y
+(cid:11)
+x
+y
+z
+
+(cid:10)
+
+Note that Mjrty1 and Mjrty2 are both majority operations3 and Mnrty3 is a minority operation (see Deﬁnitions 6.19
+and 6.21).
+
+We will show in this section that any function taking values in R+ which has this multimorphism has a very simple
+form. The proof of this fact is rather involved, but we include it here largely because the result turns out to be essential
+for the complete classiﬁcation of the Boolean case in Section 7. Despite the simplicity of the associated constraint
+language, we will show that this multimorphism again deﬁnes a maximal tractable class.
+
+We ﬁrst need a technical lemma. For any m-tuple s over a set D, we will write s[i ← d] to denote the tuple with
+d ∈ D substituted at position i. In other words, s[i ← d] is the m-tuple which is identical to s except (possibly) at
+position i, where it is equal to d.
+
+Lemma 6.23. A function φ : Dm → R+ can be expressed as a sum of unary functions if and only if, for all tuples
+s, t ∈ Dm, and all i = 1, . . . , m we have that
+(cid:21)
+(cid:4)
+i ← s[i]
+s
+
+φ(s) + φ(t) = φ
+
+i ← t[i]
+
+(cid:22)(cid:5)
+.
+
++ φ
+
+(cid:4)
+t
+
+(cid:22)(cid:5)
+
+(7)
+
+(cid:21)
+
+Proof. Suppose that φ can be expressed as a sum of unary functions. This means there exist φ1, . . . , φm such that, for
+all tuples s = (cid:6)s1, . . . , sm(cid:7) and t = (cid:6)t1, . . . , tm(cid:7),
+m(cid:2)
+(cid:4)
+(cid:5)
+φi(si) + φi(ti)
+
+φ(s) + φ(t) =
+
+.
+
+i=1
+
+By rearranging the terms in the summation we get Eq. (7).
+
+3 The operation Mjrty1 is sometimes known as the dual discriminator operation [46].
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1003
+
+Conversely, suppose that φ satisﬁes Eq. (7). We will now show that this implies that φ can be expressed as a sum
+
+of unary functions.
+
+Let s0 = (cid:6)s01, . . . , s0m(cid:7) be an m-tuple on which φ achieves its minimum cost, that is
+
+∀s ∈ Dm, φ(s0) (cid:2) φ(s).
+
+If φ(s0) = ∞ then φ never takes a ﬁnite value so φ(x1, . . . , xm) =
+So we may assume that φ(s0) < ∞.
+
+For i = 1, . . . , m, let μi be the unary cost function deﬁned by
+
+(cid:12)
+φ(x1, . . . , xm) | xi = x
+μi(x) = min
+
+(cid:13)
+
+(cid:18)
+
+(8)
+m
+i=1 ζ (xi) where ζ (x) = ∞ and the result holds.
+
+and for each x ∈ D choose a witness wx
+i
+
+∈ Dm such that wx
+i
+Note that for all tuples (cid:6)x1, . . . , xm(cid:7) with xi = x, we have
+
+[i] = x, and φ(wx
+
+i ) = μi(x).
+
+μi(x) (cid:2) φ(x1, . . . , xm).
+We now have, for all x ∈ D,
+μi(x) + φ(s0) = φ(wx
+(cid:4)
+wx
+= φ
+i
+(cid:4)
+wx
+= φ
+i
+(cid:3) φ(s0) + φ
+
+so μi(x) (cid:3) φ
+but μi(x) (cid:2) φ
+and so μi(x) = φ
+
+i ) + φ(s0)
+(cid:21)
+(cid:5)
+(cid:4)
+i ← wx
+[i ← s0i]
++ φ
+s0
+i
+(cid:5)
+(cid:5)
+(cid:4)
+s0[i ← x]
++ φ
+[i ← s0i]
+(cid:5)
+(cid:4)
+s0[i ← x]
+(cid:5)
+(cid:4)
+s0[i ← x]
+(cid:5)
+(cid:4)
+s0[i ← x]
+(cid:5)
+(cid:4)
+s0[i ← x]
+
+.
+
+(9)
+
+(cid:22)(cid:5)
+
+[i]
+
+by choice of wx
+i
+by Eq. (7)
+by choice of wx
+i
+by Eq. (8)
+cancelling φ(s0) < ∞
+by Eq. (9)
+
+Now consider an arbitrary tuple s = (cid:6)x1, . . . , xm(cid:7). By applying Eq. (7) m − 1 times we obtain:
+(cid:5)
+(cid:4)
+s0[i ← xi]
+
+φ(s) + (m − 1)φ(s0) =
+
+μi(xi).
+
+m(cid:2)
+
+m(cid:2)
+
+=
+
+φ
+
+i=1
+
+i=1
+
+Eq. (8) ensures that choosing φi(x) = μi(x) − φ(s0), i = 2, . . . , m, is well deﬁned. Finally, choosing φ1(x) = μ1(x)
+gives the result. (cid:2)
+
+Using this result we now show that any function which has the multimorphism (cid:6)Mjrty1, Mjrty2, Mnrty3
+
+expressed as a sum of unary functions and binary functions of the following kind.
+
+(cid:7) can be
+
+Deﬁnition 6.24. Let D be a set, and Ω a valuation structure. A crisp binary function φ : D2 → Ω will be called a
+permutation restriction if
+
+∀x ∈ D,
+
+y | φ(x, y) = 0
+
+(cid:23)
+(cid:12)
+(cid:23)
+
+(cid:13)(cid:23)
+(cid:23) (cid:2) 1 and
+
+(cid:23)
+(cid:23)
+
+(cid:12)
+y | φ(y, x) = 0
+
+(cid:13)(cid:23)
+(cid:23) (cid:2) 1.
+
+Theorem 6.25. Let D be a ﬁnite set, and let F : D3 → D3 be the function deﬁned by F (x, y, z) = (cid:6)Mjrty1(x, y, z),
+Mjrty2(x, y, z), Mnrty3(x, y, z)(cid:7).
+
+A k-ary function φ belongs to the set ImpR+ (F ) if and only if it can be expressed as a sum of unary functions and
+
+permutation restrictions.
+
+Proof. By Theorem 4.5, to show that any function which can be expressed as the sum of unary functions and permu-
+tation restrictions is in ImpR+(F ) it is sufﬁcient to show that all unary functions and all permutation restrictions are
+in ImpR+ (F ).
+
+Since F is conservative, we know by Lemma 4.9 that F is a multimorphism of all unary functions.
+Now let π be an arbitrary permutation restriction, and consider the arbitrary triples t1, t2 ∈ D3. If any
+(cid:24)
+(cid:24)
+3
+3
+π(t1[i], t2[i]) = ∞ then F trivially satisﬁes the inequality
+i=1 π(t1[i], t2[i]), so con-
+i=1 π(F (t1)[i], F (t2)[i]) (cid:2)
+sider the case where each π(t1[i], t2[i]) < ∞. In this case each t2[i] is determined by the corresponding t1[i], because
+
+1004
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+π is a permutation restriction. Suppose that two of the pairs (cid:6)t1[i], t2[i](cid:7) are equal, say they are both (cid:6)p, q(cid:7), and
+that the third pair is (cid:6)r, s(cid:7). Then, by the deﬁnition of F , we have that (cid:6)F (t1)[1], F (t2)[1](cid:7) = (cid:6)F (t1)[2], F (t2)[2](cid:7) =
+3
+(cid:6)p, q(cid:7) and that (cid:6)F (t1)[3], F (t2)[3](cid:7) = (cid:6)r, s(cid:7), so F again satisﬁes the inequality
+i=1 π(F (t1)[i], F (t2)[i]) (cid:2)
+(cid:24)
+3
+i=1 π(t1[i], t2[i]) (with equality). The only remaining case to consider is when each pair (cid:6)t1[i], t2[i](cid:7) is dis-
+in this case the deﬁnition of F gives (cid:6)F (t1)[i], F (t2)[i](cid:7) = (cid:6)t1[i], t2[i](cid:7), i = 1, 2, 3, and so again
+
+tinct, but
+(cid:24)
+3
+i=1 π(F (t1)[i], F (t2)[i]) = π(t1[i], t2[i]). Hence F is a multimorphism of any permutation restriction.
+Conversely, suppose that φ is a k-ary function in ImpR+(F ). In the remainder of the proof we shall establish that
+
+(cid:24)
+
+φ can be expressed as a sum of unary functions and permutation restrictions.
+
+Consider the k-ary relation Feas(φ). It follows from Proposition 4.10 that Feas(φ) must have the three polymor-
+phisms Mjrty1, Mjrty2 and Mnrty3. Any relation with a majority operation (such as Mjrty1) as a polymorphism is
+known to be decomposable into its binary projections [25,46]. This means that (cid:6)x1, . . . , xk(cid:7) ∈ Feas(φ) exactly when
+
+∀i, j ∈ {1, . . . , k},
+
+(cid:6)xi, xj (cid:7) ∈ Rij ,
+
+where
+
+Rij =
+
+(cid:12)
+
+(cid:13)
+(cid:6)xi, xj (cid:7) | ∃(cid:6)x1, x2, . . . , xk(cid:7) ∈ Feas(φ)
+
+.
+
+Furthermore, polymorphisms are preserved under taking projections [26], so each of the binary relations Rij also
+
+has the three polymorphisms Mjrty1, Mjrty2 and Mnrty3.
+
+Binary relations with the polymorphism Mjrty1 have previously been characterised [46], and any such relation is
+
+known to have one of the following forms:
+
+• Feas(μ1 + μ2), where μ1, μ2 are unary functions;
+• Feas(π), where π is a permutation restriction;
+• {(cid:6)x, y(cid:7) ∈ D1 × D2 | (x = d1) ∨ (y = d2)}, for some d1, d2 ∈ D, and some D1, D2 ⊆ D with |D1| > 1 and |D2| > 1.
+
+Of these three, it is straightforward to check that only the ﬁrst two have Mnrty3 as a polymorphism. Therefore φ can
+be expressed as a sum of functions of the following form:
+
+(cid:2)
+
+(cid:2)
+
+φ(x1, . . . , xk) = ψ(x1, . . . , xk) +
+
+πi(xai , xbi ) +
+
+μj (xcj ),
+
+(10)
+
+i∈I
+
+j ∈J
+
+where ψ is a cost function taking only ﬁnite values, each πi is a permutation restriction, and each μj is a crisp unary
+function.
+
+Let G be the graph with vertices {1, . . . , k} and edges {(cid:6)ai, bi(cid:7) | i ∈ I }. Choose a set M = {m1, . . . , mr } containing
+
+one representative from each connected component of G, and deﬁne the function η as follows:
+
+(cid:12)
+η(y1, . . . , yr ) def= min
+φ(x1, . . . , xk) | xmi
+
+(11)
+By the choice of M, every vertex 1, . . . , k is connected in G to exactly one mi . Hence, for any (cid:6)y1, . . . , yr (cid:7) ∈ Dr , we
+have
+
+.
+
+= yi, i = 1, . . . , r
+
+(cid:13)
+
+(cid:12)
+
+(cid:23)
+(cid:23)
+
+(cid:6)x1, . . . , xk(cid:7) | φ(x1, . . . , xk) < ∞ and xmi
+Let (cid:6)x1, . . . , xk(cid:7) ∈ Dk, and set (cid:6)y1, . . . , yr (cid:7) = (cid:6)xm1, . . . , xmr
+with equality if φ(x1, . . . , xk) is ﬁnite.
+
+= yi, i = 1, . . . , r
+
+(cid:13)(cid:23)
+(cid:23) (cid:2) 1.
+
+(cid:7). We have, by Eq. (12), that η(y1, . . . , yr ) (cid:2) φ(x1, . . . , xk),
+
+(12)
+
+It only remains to prove that η can be expressed as a sum of unary functions. Let 1 (cid:2) j (cid:2) r and s = (cid:6)s1, . . . , sr (cid:7), t =
+
+(cid:6)t1, . . . , tr (cid:7) ∈ Dr .
+
+First suppose that η(s), η(t) < ∞. Since φ ∈ ImpR+(F ), and η is expressible over {φ}, we know by Theorem 4.5
+
+that η ∈ ImpR+ (F ), and hence
+(cid:5)
+(cid:4)
++ η
+t[j ← sj ]
+
+η(s) + η
+
+(cid:5)
+(cid:4)
+s[j ← tj ]
+
+(cid:3) η(s) + η(s) + η(t).
+
+Cancelling η(s) < ∞, and using symmetry, we obtain,
+
+(cid:5)
+(cid:4)
+s[j ← tj ]
+
+η
+
+(cid:5)
+(cid:4)
+t[j ← sj ]
+
++ η
+
+= η(s) + η(t).
+
+(13)
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1005
+
+Otherwise, without loss of generality we may assume that η(s) = ∞, and hence φ(x1, . . . , xk) = ∞ for
+(cid:7) = s. Using Eq. (10), this implies there is some single index i such that
+= si . Hence Eq. (13) holds in this case also, since both sides equal ∞.
+
+all x1, . . . , xk with (cid:6)xm1, . . . , xmr
+φ(x1, . . . , xk) = ∞ for all x1, . . . , xk with xmi
+
+Hence, in all cases, by Lemma 6.23, η can be expressed as a sum of unary functions. (cid:2)
+
+Corollary 6.26. A function φ : Dm → R+ has the multimorphism (cid:6)Mjrty1, Mjrty2, Mnrty3
+the following two conditions:
+
+(cid:7) if and only if it satisﬁes
+
+• φ is ﬁnitely modular, that is, for all m-tuples s, t, and all i = 1, . . . , m such that φ(s), φ(t), φ(s[i ← t[i]]),
+
+φ(t[i ← s[i]]) < ∞, we have that
+i ← t[i]
+
+(cid:21)
+(cid:4)
+i ← s[i]
+s
+• Feas(φ) has the polymorphisms Mjrty1 and Mnrty3.
+
+φ(s) + φ(t) = φ
+
++ φ
+
+(cid:4)
+t
+
+(cid:22)(cid:5)
+
+(cid:21)
+
+(cid:22)(cid:5)
+.
+
+We will now prove that the set of all functions with the multimorphism (cid:6)Mjrty1, Mjrty2, Mnrty3
+
+tractable valued constraint language.
+
+(cid:7) is a maximal
+
+Theorem 6.27. Let D be a ﬁnite set, and let F : D3 → D3 be the function deﬁned by F (x, y, z) = (cid:6)Mjrty1(x, y, z),
+Mjrty2(x, y, z), Mnrty3(x, y, z)(cid:7).
+
+1. The set ImpR+(F ) is a tractable valued constraint language.
+2. Any valued constraint language Γ such that Γ ⊃ ImpR+ (F ) is NP-hard.
+
+Proof. 1. This is a straightforward application of Theorem 6.25. To solve any instance of VCSP(ImpR+(F )) we
+can simply merge each pair of variables constrained by a permutation restriction (combining the associated unary
+constraints appropriately). The resulting VCSP instance has only unary constraints and so can be solved trivially.
+
+2. Now assume that Γ ⊃ ImpR+(F ), and hence Γ contains a function φ of some arity m such that F is not a
+
+multimorphism of φ. By Corollary 6.26, there are 3 cases to consider.
+
+Case 1: φ is not ﬁnitely modular.
+In this case, there exist j ∈ {1, . . . , m}, s = (cid:6)s1, . . . , sm(cid:7), and t = (cid:6)t1, . . . , tm(cid:7) ∈ Dm such that
+(cid:5)
+(cid:4)
+t[j ← sj ]
+
+(cid:5)
+(cid:4)
+s[j ← tj ]
+
+φ(s) + φ(t) < φ
+
++ φ
+
+and all values in the inequality are ﬁnite.
+
+For i = 1, 2, . . . , m, we deﬁne the following permutation restrictions:
+
+(cid:11)
+
+ζi(x, y) =
+
+if x = s1, y = si,
+if x = t1, y = ti,
+
+0
+0
+∞ otherwise,
+
+κi(x, y) =
+
+if x = s1, y = ti,
+if x = t1, y = si,
+
+0
+0
+∞ otherwise.
+
+(cid:11)
+
+Note that each ζi and each κi ∈ ImpR+(F ) ⊂ Γ .
+
+We can now construct the instance P ∈ VCSP(Γ ) with variables
+
+{X1, . . . , Xm, Y1, . . . , Ym, Z}
+
+and constraints
+(cid:8)
+
+(cid:9)
+
+(cid:9)
+
+,
+
+(cid:6)X1, Y1(cid:7), κ1
+(cid:8)
+(cid:6)X1, . . . , Xm(cid:7), φ
+(cid:8)
+(cid:6)Z, Xj (cid:7), κj
+(cid:8)
+(cid:6)X1, Xi(cid:7), ζi
+(cid:8)
+(cid:9)
+(cid:6)Y1, Yi(cid:7), ζi
+
+,
+(cid:9)
+
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:9)
+
+(cid:9)
+
+,
+
+(cid:6)Y1, . . . , Ym(cid:7), φ
+(cid:8)
+(cid:6)Z, Yj (cid:7), ζj
+(i = 1, 2, . . . , j − 1, j + 1, . . . , m),
+(i = 1, 2, . . . , j − 1, j + 1, . . . , m).
+
+,
+
+If we set W = (cid:6)X1, Z(cid:7), then it is straightforward to check that
+
+(cid:11)
+
+ΦW
+
+P (x, y) =
+
+φ(s) + φ(t)
+φ(s[j ← tj ]) + φ(t[j ← sj ])
+∞
+
+if x (cid:11)= y ∧ x, y ∈ {s1, t1},
+if x = y ∧ x, y ∈ {s1, t1},
+otherwise.
+
+1006
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+Hence, by Proposition 5.1, VCSP(Γ ) is NP-hard.
+
+Case 2: Feas(φ) does not have the polymorphism Mjrty1.
+Let Feas(Γ ) = {Feas(ψ) | ψ ∈ Γ }, and let P be the set of all polymorphisms of Feas(Γ ). Since Γ contains all
+permutation restrictions, the algebra whose set of operations is P is homogeneous, as deﬁned in [46]. A complete
+description of all homogeneous ﬁnite algebras is given in Chapter 5 of [46] and it is straightforward to verify4 from
+this that if P does not contain the operation Mjrty1, then every element of P is a polymorphism of the relation
+R = {(cid:6)d0, d0, d0(cid:7), (cid:6)d0, d1, d1(cid:7), (cid:6)d1, d0, d1(cid:7), (cid:6)d1, d1, d0(cid:7)}, for some d0, d1 ∈ D.
+
+Hence, by Theorem 4.10 of [24], the relation R can be expressed using some ﬁnite combination of relations from
+
+Feas(Γ ). This implies that Γ ∗ contains a function φ such that φ(s) < ∞ exactly when s ∈ R.
+
+Now set
+
+α = ψ(d0, d1, d1) + ψ(d1, d0, d1) < ∞,
+β = ψ(d1, d1, d0) + ψ(d0, d0, d0) < ∞.
+
+We deﬁne the binary permutation restriction π and the unary function μ as follows:
+
+if x = d0, y = d1 or x = d1, y = d0,
+
+(cid:10)
+
+π(x, y) =
+(cid:11)
+
+μ(x) =
+
+0
+∞ otherwise,
+α + 1 if x = d0,
+if x = d1,
+0
+∞
+otherwise.
+
+We can now construct the instance P ∈ VCSP(Γ ) with variables
+
+{X, Y, Z, X
+
+(cid:10)
+
+, Y
+
+(cid:10)}
+
+and constraints
+(cid:8)
+
+(cid:6)X, Y, Z(cid:7), ψ
+(cid:8)
+(cid:9)
+(cid:6)X, X(cid:10)(cid:7), π
+,
+(cid:6)Z(cid:7), μ
+
+.
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:8)
+
+(cid:6)X(cid:10), Y (cid:10), Z(cid:7), ψ
+(cid:6)Y, Y (cid:10)(cid:7), π
+
+,
+
+(cid:9)
+
+(cid:9)
+
+,
+
+If we set W = (cid:6)X, Y (cid:7), then it is straightforward to check that
+if x (cid:11)= y ∧ x, y ∈ {d0, d1},
+if x = y ∧ x, y ∈ {d0, d1},
+otherwise.
+
+α
+α + β + 1
+∞
+
+P (x, y) =
+
+ΦW
+
+(cid:11)
+
+Hence, by Proposition 5.1, VCSP(Γ ) is NP-hard.
+
+Case 3: Feas(φ) has the polymorphism Mjrty1, but not Mnrty3.
+As indicated in the proof of Theorem 6.25, relations with the polymorphism Mjrty1 are known to be decomposable
+into binary relations of 3 distinct types [46], and the only one of these types which does not have the polymorphism
+Mnrty3 is the set of relations of the form {(cid:6)x, y(cid:7) ∈ D1 × D2 | (x = d1) ∨ (y = d2)}, for some d1, d2 ∈ D, and some
+D1, D2 ⊆ D with |D1| > 1 and |D2| > 1.
+
+Now deﬁne the binary relation Rij = {(cid:6)xi, xj (cid:7) | ∃(cid:6)x1, x2, . . . , xm(cid:7) ∈ Feas(φ)}. It follows from the observations just
+made that we can choose a pair of indices i and j and a, b, c, d ∈ D with a (cid:11)= b, c (cid:11)= d, such that (cid:6)a, c(cid:7), (cid:6)b, d(cid:7), (cid:6)b, c(cid:7) ∈
+Rij , and (cid:6)a, d(cid:7) (cid:11)∈ Rij . Hence, if we deﬁne the function φ(cid:10) by setting
+
+(cid:12)
+φ(z1, . . . , zm) | x = zi, y = zj
+(x, y) = min
+
+(cid:10)
+
+φ
+
+(cid:13)
+
+then we have φ(cid:10)(a, c), φ(cid:10)(b, d), φ(cid:10)(b, c) < ∞, and φ(cid:10)(a, d) = ∞.
+
+Now deﬁne the functions:
+
+(cid:11)
+
+ζ (x) =
+
+φ(cid:10)(b, d)
+if x = a,
+φ(cid:10)(a, c) + φ(cid:10)(b, d) + 1 if x = b,
+∞
+
+otherwise,
+
+4 This is stated explicitly in Lemma 5.6 of [46] for the case when |D| (cid:3) 5; the remaining 3 cases can be checked individually.
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1007
+
+(cid:11)
+
+κ(x) =
+
+2(φ(cid:10)(b, d) + 1)
+0
+∞
+(cid:7)
+0
+∞ otherwise.
+Note that τ, κ, ζ ∈ ImpR+(F ) ⊂ Γ and φ(cid:10) ∈ Γ ∗.
+
+if x = c,
+if x = d,
+otherwise,
+
+if {x, y} = {a, b},
+
+τ (x, y) =
+
+We can now construct the instance P ∈ VCSP(Γ ∗) with variables
+
+{X, Y, Z, Z}
+
+(cid:9)
+
+,
+
+and constraints
+(cid:8)
+
+(cid:9)
+
+(cid:6)X, Y (cid:7), φ(cid:10)
+(cid:8)
+(cid:6)X(cid:7), ζ
+(cid:8)
+(cid:6)Y (cid:7), κ
+
+,
+
+,
+
+(cid:9)
+
+(cid:8)
+
+(cid:6)Z, Y (cid:7), φ(cid:10)
+(cid:9)
+(cid:8)
+(cid:6)Z(cid:7), ζ
+,
+(cid:8)
+(cid:6)Z, Z(cid:7), τ
+
+(cid:9)
+
+(cid:9)
+
+,
+
+.
+
+If we set W = (cid:6)X, Z(cid:7), then it is straightforward to check that
+
+(cid:11)
+
+ΦW
+
+P (x, y) =
+
+2φ(cid:10)(a, c) + 4φ(cid:10)(b, d) + 2
+if x (cid:11)= y, x, y ∈ {a, b},
+2φ(cid:10)(a, c) + 4φ(cid:10)(b, d) + φ(cid:10)(b, c) + 3 if x = y, x, y ∈ {a, b},
+∞
+
+otherwise.
+
+Hence, by Proposition 5.1, VCSP(Γ ) is NP-hard. (cid:2)
+
+7. The Boolean case
+
+Recall from Example 2.9 that a valued constraint language over the set {0, 1} is called a valued Boolean constraint
+language. In this section we will show that every tractable valued Boolean constraint language with costs in R+ is
+characterised by the presence of a certain form of multimorphism. In fact we establish a dichotomy result: if a valued
+Boolean constraint language with costs in R+ has one of eight speciﬁed multimorphisms then it is tractable, otherwise
+it is NP-hard.
+
+Theorem 7.1. Let Γ be a valued Boolean constraint language with costs in R+.
+If Γ has one of the following multimorphisms then VCSP(Γ ) is tractable:
+
+1. (cid:6)0(cid:7), where 0 is the constant unary function returning the value 0;
+2. (cid:6)1(cid:7), where 1 is the constant unary function returning the value 1;
+3. (cid:6)Max, Max(cid:7), where Max is the binary function returning the maximum of its arguments (i.e., Max(x, y) = x ∨ y);
+4. (cid:6)Min, Min(cid:7), where Min is the binary function returning the minimum of its arguments (i.e., Min(x, y) = x ∧ y);
+5. (cid:6)Min, Max(cid:7);
+6. (cid:6)Mjrty, Mjrty, Mjrty(cid:7), where Mjrty is the unique ternary majority function on the set {0, 1};
+7. (cid:6)Mnrty, Mnrty, Mnrty(cid:7), where Mnrty is the unique ternary minority function on the set {0, 1};
+8. (cid:6)Mjrty, Mjrty, Mnrty(cid:7).
+
+In all other cases VCSP(Γ ) is NP-hard.
+
+To establish the ﬁrst part of Theorem 7.1, we must show that a valued Boolean constraint language which has one
+
+of the eight types of multimorphisms listed in the theorem is tractable.
+
+The tractability of any valued constraint language which has the multimorphism (cid:6)0(cid:7) or (cid:6)1(cid:7) was established in Theo-
+rem 6.4. Furthermore, the tractability of any valued constraint language which has the multimorphism (cid:6)Max, Max(cid:7) was
+established in Theorem 6.15, and a symmetric argument (with the domain ordering reversed) establishes the tractabil-
+ity of any valued constraint language with the multimorphism (cid:6)Min, Min(cid:7). The tractability of any valued constraint
+language which has the multimorphism (cid:6)Min, Max(cid:7) was established in Theorem 6.7. The tractability of any valued
+constraint language which has the multimorphism (cid:6)Mjrty, Mjrty, Mjrty(cid:7) was established in Proposition 6.20, and the
+tractability of any valued constraint language which has the multimorphism (cid:6)Mnrty, Mnrty, Mnrty(cid:7) was established
+
+1008
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+in Proposition 6.22. Finally, the tractability of any valued Boolean constraint language which has the multimorphism
+(cid:6)Mjrty, Mjrty, Mnrty(cid:7) follows immediately from Theorem 6.27.
+
+To establish the remaining part of Theorem 7.1, we must show that a valued Boolean constraint language with costs
+in R+ which does not have any of the types of multimorphisms listed in the theorem is NP-hard. We ﬁrst deal with
+essentially crisp languages.
+
+Lemma 7.2. Any valued Boolean constraint language which is essentially crisp and does not have any of the multi-
+morphisms listed in Theorem 7.1 is NP-hard.
+
+Proof. If we replace each cost function φ in Γ with the relation Feas(φ) then we obtain a crisp Boolean constraint
+language Γ (cid:10) which does not have any of the polymorphisms 0, 1, Min, Max, Mjrty or Mnrty.
+
+By Schaefer’s Dichotomy Theorem [26,42], Γ (cid:10) is NP-complete, and hence Γ is NP-hard. (cid:2)
+
+For the remaining languages, our strategy will be to show that any language which does not have one of the
+
+multimorphisms listed in Theorem 7.1 can express certain special functions, which we now deﬁne.
+
+Deﬁnition 7.3.
+
+• A unary function σ on the set {0, 1} is a 0-selector if
+
+σ (0) < σ (1)
+
+and it is a ﬁnite 0-selector if, in addition, σ (1) < ∞.
+A (ﬁnite) 1-selector is deﬁned analogously. A selector is either a 1-selector or a 0-selector.
+
+• A binary function φ on the set {0, 1} is a NEQ function if
+φ(0, 1) = φ(1, 0) < φ(1, 1) = φ(0, 0) = ∞.
+• A binary function φ on the set {0, 1} is an XOR function if
+φ(0, 1) = φ(1, 0) < φ(1, 1) = φ(0, 0) < ∞.
+
+Lemma 7.4. Let Γ be a valued Boolean constraint language with costs in R+ which is not essentially crisp.
+
+If Γ ∗ contains a NEQ function, then either Γ ∗ contains both a ﬁnite 0-selector and a ﬁnite 1-selector, or else Γ ∗
+
+contains an XOR function.
+
+Proof. Let ν ∈ Γ ∗ be a NEQ function.
+
+First we show that if Γ ∗ contains a ﬁnite 0-selector σ0, then it also contains a ﬁnite 1-selector. To see this, simply
+is a ﬁnite
+
+construct the instance P0 with variables {x, y} and constraints {(cid:6)(cid:6)x(cid:7), σ0(cid:7), (cid:6)(cid:6)x, y(cid:7), ν(cid:7)}, and note that Φ
+1-selector. Similarly, if Γ ∗ contains a ﬁnite 1-selector, then it also contains a ﬁnite 0-selector.
+
+(cid:6)y(cid:7)
+P0
+
+Now let ζ ∈ Γ be a cost function of arity m which is not essentially crisp. Choose tuples u, v such that ζ (u) and ζ (v)
+are as small as possible with ζ (u) < ζ (v) < ∞. Let P be the VCSP instance with four variables: {x00, x01, x10, x11},
+and three constraints:
+
+(cid:8)
+
+(cid:6)xu[1]v[1], . . . , xu[m]v[m](cid:7), ζ
+Let W = (cid:6)x01, x11(cid:7), and ψ = ΦW
+P .
+
+,
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+(cid:6)x00, x11(cid:7), ν
+
+,
+
+(cid:6)x01, x10(cid:7), ν
+
+.
+
+Note that the arity-m cost function ζ is applied to only four variables by repeating arguments. Note also that
+ψ(0, 1) = ζ (u) + 2ν(0, 1) and ψ(1, 1) = ζ (v) + 2ν(0, 1). If ψ(0, 1) (cid:11)= ψ(1, 0), then, by the choice of u, ψ(0, 1) <
+(cid:6)x01(cid:7)
+ψ(1, 0), and ψ(0, 1) < ψ(1, 1) < ∞, so Φ
+is a ﬁnite 0-selector.
+P
+
+Hence we may assume that ψ(0, 1) = ψ(1, 0). If ψ(0, 0) (cid:11)= ψ(1, 1), then if ψ(0, 0) < ∞ the function ψ(x, x) is a
+ﬁnite selector, and hence Γ ∗ contains both a ﬁnite 0-selector and a ﬁnite 1-selector. On the other hand, if ψ(0, 0) = ∞
+then construct the instance P2 with variables {x, y} and constraints {(cid:6)(cid:6)x, x(cid:7), ψ(cid:7), (cid:6)(cid:6)x, y(cid:7), ψ(cid:7)}. In this case Φ
+is a
+ﬁnite 0-selector, and hence Γ ∗ again contains both a ﬁnite 0-selector and a ﬁnite 1-selector.
+
+(cid:6)y(cid:7)
+P2
+
+Otherwise we may assume that ψ(0, 1) = ψ(1, 0) and ψ(0, 0) = ψ(1, 1). By construction, we have ψ(0, 1) =
+
+ζ (u) + 2ν(0, 1) < ζ (v) + 2ν(0, 1) = ψ(1, 1) < ∞. So in this case ψ is an XOR function. (cid:2)
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1009
+
+Lemma 7.5. Let Γ be a valued Boolean constraint language with costs in R+ which is not essentially crisp, and does
+not have either of the multimorphisms (cid:6)0(cid:7) or (cid:6)1(cid:7).
+
+Either Γ ∗ contains a 0-selector and a 1-selector, or else Γ ∗ contains an XOR function.
+
+Proof. Let φ0 ∈ Γ be a function which does not have the multimorphism (cid:6)0(cid:7), and φ1 ∈ Γ be a function which does
+not have the multimorphism (cid:6)1(cid:7), and let m be the arity of φ0. Choose a tuple r such that φ0(r) is the minimal value of
+φ0. By the choice of φ0, we have φ0(r) < φ0(0, 0, . . . , 0).
+
+Suppose ﬁrst that Γ ∗ contains a 0-selector σ0. Let M be a ﬁnite natural number which is larger than all ﬁnite
+values in the range of φ0. We construct the instance P ∈ VCSP(Γ ) with two variables {x0, x1}, and two constraints
+(cid:6)(cid:6)xr[1], . . . , xr[m](cid:7), φ0(cid:7) and (cid:6)(cid:6)x0(cid:7), Mσ0(cid:7). (The cost function Mσ0 is simply equivalent to taking M copies of a con-
+(cid:6)x1(cid:7)
+P (0), and so in this case Γ ∗ contains
+straint with cost function σ0.) It is straightforward to check that Φ
+a 1-selector. A similar argument, using φ1, shows that if Γ ∗ contains a 1-selector, then it also contains a 0-selector.
+
+Hence, we need to show that either Γ ∗ contains a selector, or it contains an XOR function. If φ0(0, . . . , 0) (cid:11)=
+
+(cid:6)x1(cid:7)
+P (1) < Φ
+
+φ0(1, . . . , 1) then the unary function σ (x) = φ0(x, . . . , x) in Γ ∗ is clearly a selector, and the result holds.
+
+Otherwise, we construct the instance P (cid:10) ∈ VCSP(Γ ) with two variables {x0, x1} and the single constraint
+(cid:6)x0(cid:7)
+P (cid:10)
+
+(cid:6)(cid:6)xr[1], . . . , xr[m](cid:7), φ0(cid:7). Now, by considering the costs of all four possible assignments, we can verify that either Φ
+or Φ
+
+is either an XOR function, or a NEQ function.
+
+is a selector, or else ν = Φ
+
+(cid:6)x0,x1(cid:7)
+P (cid:10)
+
+(cid:6)x1(cid:7)
+P (cid:10)
+
+If ν is an XOR function we are done, otherwise we appeal to Lemma 7.4 to complete the proof. (cid:2)
+
+Many of the remaining lemmas in this section use the following construction which combines a given function φ
+
+of arbitrary arity with a pair of selectors, in order to express a binary function with some similar properties.
+
+Construction 7.6. Let φ : Dm → R+ be an m-ary function which is not identically inﬁnite, and let σ0 be a 0-selector
+and σ1 a 1-selector. Let u, v be two m-tuples, and let M be a natural number larger than all ﬁnite values in the range
+of φ.
+
+Let P be a VCSP instance with variables {x00, x01, x10, x11}, and constraints:
+(cid:8)
+
+(cid:9)
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+(cid:8)
+
+(cid:6)xu[1]v[1], . . . , xu[m]v[m](cid:7), φ
+
+,
+
+(cid:6)x00(cid:7), Mσ0
+
+,
+
+(cid:6)x11(cid:7), Mσ1
+
+.
+
+The binary function φ2
+
+def= Φ
+
+(cid:6)x01,x10(cid:7)
+P
+
+will be called a compression of φ by u and v.
+
+Lemma 7.7. Let Γ be a valued Boolean constraint language with costs in R+ which is not essentially crisp, and does
+not have any of the multimorphisms (cid:6)0(cid:7) or (cid:6)1(cid:7) or (cid:6)Max, Max(cid:7) or (cid:6)Min, Min(cid:7).
+
+Either Γ ∗ contains a ﬁnite 0-selector and a ﬁnite 1-selector, or else Γ ∗ contains an XOR function.
+
+Proof. Let φ be a function in Γ which does not have a (cid:6)Max, Max(cid:7) multimorphism, and let ψ be a function in Γ
+which does not have a (cid:6)Min, Min(cid:7) multimorphism.
+
+By Lemma 7.5, either Γ ∗ contains an XOR function and we have nothing to prove, or else Γ ∗ contains a 0-selector,
+
+σ0, and a 1-selector, σ1.
+
+Since φ does not have a (cid:6)Max, Max(cid:7) multimorphism, it follows from Lemma 6.14 that either φ is not ﬁnitely
+
+antitone, or else the relation Feas(φ) does not have the polymorphism Max.
+
+For the ﬁrst case, choose two tuples u and v, with u < v with φ(u) < φ(v) < ∞, and let φ2 be a compression of
+φ by u and v (see Construction 7.6). It is straightforward to check that φ2(0, 0) < φ2(1, 1) < ∞, which means that
+φ2(x, x) is a ﬁnite 0-selector belonging to Γ ∗.
+
+On the other hand suppose that φ is ﬁnitely antitone, and that Γ ∗ contains a ﬁnite 1-selector τ . In this case we
+know that Feas(φ) does not have the polymorphism Max, so we can choose u, v such that φ(u), φ(v) < ∞ and
+φ(Max(u, v)) = ∞. Let φ2 be a compression of φ by u and v, and construct the instance P ∈ VCSP Γ ∗ with variables
+{x, y}, and constraints:
+(cid:6)x, y(cid:7), φ2
+
+(cid:6)y, x(cid:7), φ2
+
+(cid:6)y(cid:7), τ
+
+,
+
+,
+
+.
+
+(cid:8)
+
+(cid:8)
+
+(cid:9)
+
+(cid:9)
+
+(cid:9)
+
+(cid:8)
+
+The fact that φ is ﬁnitely antitone gives φ(u), φ(v) (cid:2) φ(Min(u, v)). This, together with the fact that φ(u) and φ(v)
+are ﬁnite whilst φ(Max(u, v)) is inﬁnite, is enough to show that Φ
+
+(cid:6)x(cid:7)
+P is a ﬁnite 0-selector.
+
+1010
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+So, we have shown that if Γ ∗ contains a ﬁnite 1-selector, then it contains a ﬁnite 0-selector whether or not φ is
+ﬁnitely antitone. A symmetric argument, exchanging 0 and 1, Max and Min, and φ and ψ, shows that if Γ ∗ contains
+a ﬁnite 0-selector, then it contains a ﬁnite 1-selector.
+
+Hence, to complete the proof we may assume that Γ ∗ contains no ﬁnite selectors. In this case we know that
+Feas(φ) does not have the polymorphism Max and Feas(ψ) does not have the polymorphism Min, so we may choose
+tuples u, v, w, z such that φ(u), φ(v), ψ(w) and ψ(z) are all ﬁnite, but φ(Max(u, v)) and ψ(Min(w, z)) are both
+inﬁnite. Now let φ2 be a compression of φ by u and v, and ψ2 a compression of ψ by w and z We then have that
+ρ(x, y) def= φ2(x, y) + φ2(y, x) + ψ2(x, y) + ψ2(y, x) is a NEQ function which is contained in Γ ∗. We can now appeal
+to Lemma 7.4 to show that Γ ∗ contains an XOR function, and we are done. (cid:2)
+
+Lemma 7.8. Let Γ be a valued Boolean constraint language with costs in R+ which does not have the multimorphism
+(cid:6)Min, Max(cid:7).
+
+If Γ ∗ contains both a ﬁnite 0-selector and a ﬁnite 1-selector, then Γ ∗ contains a NEQ function or an XOR function.
+
+Proof. Let φ be a function in Γ that does not have the multimorphism (cid:6)Min, Max(cid:7). Choose u, v such that
+φ(Min(u, v)) + φ(Max(u, v)) > φ(u) + φ(v). Let φ2 be a compression of φ by u and v. It is straightforward to
+check that the binary function φ2 also does not have the multimorphism (cid:6)Min, Max(cid:7).
+
+It follows that
+
+φ2(0, 0) + φ2(1, 1) > φ2(0, 1) + φ2(1, 0).
+
+(14)
+
+Without loss of generality, suppose that φ2(0, 0) (cid:3) φ2(1, 1). (The proof for the case φ2(0, 0) > φ2(1, 1) is symmetri-
+cally equivalent.)
+
+From Eq. (14), we have
+
+2φ2(0, 0) −
+
+(cid:22)
+(cid:21)
+φ2(0, 1) + φ2(1, 0)
+
+(cid:22)
+(cid:21)
+φ2(0, 1) + φ2(1, 0)
+
+>
+
+− 2φ2(1, 1)
+
+with 2φ2(0, 0) − [φ2(0, 1) + φ2(1, 0)] > 0.
+
+negative rational number N
+
+M such that
+
+Now let σ0 ∈ Γ ∗ be a ﬁnite 0-selector, and set λ = σ0(1) − σ0(0). Since λ > 0, it is possible to choose a non-
+
+2φ2(0, 0) −
+
+(cid:22)
+(cid:21)
+φ2(0, 1) + φ2(1, 0)
+
+>
+
+N
+M
+
+(cid:21)
+(cid:22)
+φ2(0, 1) + φ2(1, 0)
+
+λ >
+
+− 2φ2(1, 1).
+
+Construct an instance P ∈ VCSP (Γ ∗) with variables {x, u, v, y}, and constraints
+(cid:9)
+
+(cid:9)
+
+(cid:8)
+
+(cid:8)
+
+,
+
+(cid:9)
+
+,
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:6)x, u(cid:7), Mφ2
+(cid:8)
+(cid:6)u, v(cid:7), Mφ2
+(cid:6)v, y(cid:7), Mφ2
+(cid:8)
+(cid:6)x(cid:7), N σ0
+,
+(cid:9)
+(cid:6)v(cid:7), 2N σ0
+
+,
+
+(cid:9)
+
+(cid:8)
+
+,
+
+(cid:9)
+
+,
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:6)u, x(cid:7), Mφ2
+(cid:6)v, u(cid:7), Mφ2
+(cid:8)
+(cid:6)y, v(cid:7), Mφ2
+(cid:9)
+(cid:8)
+(cid:6)u(cid:7), 2Nσ0
+,
+(cid:9)
+(cid:6)y(cid:7), N σ0
+.
+
+(cid:8)
+
+If we set W = (cid:6)x, y(cid:7), and η = ΦW
+P , then it is straightforward to verify that η(0, 1) = η(1, 0), η(0, 0) = η(1, 1), and
+(cid:10)
+2φ2(0, 0) −
+
+(cid:21)
+(cid:22)
+φ2(0, 1) + φ2(1, 0)
+
+(cid:22)
+(cid:21)
+φ2(0, 1) + φ2(1, 0)
+
+η(0, 0) = η(0, 1) + M min
+
+(cid:25)
+− 2φ2(1, 1)
+
+λ −
+
+λ,
+
+− N
+M
+
+N
+M
+
+> η(0, 1).
+
+If φ2(1, 1) = ∞, then η(0, 0) = ∞ and hence η is a NEQ function. If φ2(1, 1) < ∞, then η(0, 0) < ∞ and hence η is
+an XOR function. (cid:2)
+
+Lemma 7.9. Let Γ be a valued Boolean constraint language with costs in R+ which does not have the multimorphism
+(cid:6)Mjrty, Mjrty, Mnrty(cid:7).
+
+If Γ ∗ contains a ﬁnite 0-selector, a ﬁnite 1-selector, and a NEQ function, then Γ ∗ contains an XOR function.
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1011
+
+Proof. Suppose that σ0 ∈ Γ ∗ is a ﬁnite 0-selector, σ1 ∈ Γ ∗ is a ﬁnite 1-selector, ν ∈ Γ ∗ is a NEQ function, and φ ∈ Γ
+does not have the multimorphism (cid:6)Mjrty, Mjrty, Mnrty(cid:7). We have to show that Γ ∗ also contains an XOR function.
+
+By Corollary 6.26 there are 2 cases: either φ is not ﬁnitely modular, or Feas(φ) does not have both polymorphisms
+
+Mjrty and Mnrty.
+
+In the ﬁrst case, choose tuples u, v such that φ(u) + φ(v) (cid:11)= φ(Min(u, v)) + φ(Max(u, v)). Let φ2 be a compression
+of φ by u and v. It is straightforward to check that φ2 is also not ﬁnitely modular. Now construct the instance P with
+variables {w, x, y, z}, and constraints
+
+(cid:8)
+
+(cid:9)
+
+(cid:8)
+
+(cid:9)
+
+(cid:8)
+
+(cid:6)x, w(cid:7), ν
+
+,
+
+(cid:6)z, y(cid:7), ν
+
+,
+
+(cid:8)
+
+(cid:9)
+
+(cid:6)w, y(cid:7), φ2
+
+.
+
+It is straightforward to check that either Φ
+
+or Φ
+
+(cid:6)w,y(cid:7)
+P
+
+is an XOR function.
+
+(cid:9)
+
+,
+
+(cid:6)x, z(cid:7), φ2
+(cid:6)x,y(cid:7)
+P
+
+Next, suppose that Feas(φ) has the polymorphism Mjrty but not Mnrty. In this case, by Theorem 3.5 of [25],
+Feas(φ) is decomposable into binary relations (in other words, it is equal to the relational join of its binary projections).
+Since Feas(φ) does not have the Mnrty polymorphism, this implies that one of its binary projections does not have the
+Mnrty polymorphism. The only binary Boolean relations which do not have the Mnrty polymorphism have exactly
+three tuples. Therefore, by projection, it is possible to construct from φ a binary function ψ such that exactly three of
+ψ(0, 0), ψ(0, 1), ψ(1, 0), ψ(1, 1) are ﬁnite. If ψ(0, 1) or ψ(1, 0) is inﬁnite, then let η be the projection onto variables
+x, y of ψ(x, v) + ν(v, y), otherwise let η = ψ. The function η does not have the multimorphism (cid:6)Min, Max(cid:7), and
+exactly one of η(0, 0) and η(1, 1) are inﬁnite, and so, by the construction in the proof of Lemma 7.8, Γ ∗ contains an
+XOR function.
+
+Suppose now that Feas(φ) has the polymorphism Mnrty but not Mjrty. Since Feas(φ) has the polymorphism
+Mnrty, it is an afﬁne relation [10] over the ﬁnite ﬁeld with 2 elements, GF(2), and can be expressed as a system of
+linear equations over GF(2). Creignou et al. deﬁne a Boolean relation to be afﬁne with width 2 if it can be expressed
+as a system of linear equations over GF(2), with at most two variables per equation [10]. In fact, linear equations
+over GF(2) with one variable correspond to the unary relations, and linear equations over GF(2) with two variables
+correspond to the binary equality and disequality relations. The unary relations, and the binary equality and disequality
+relations all have both the Mjrty and Mnrty polymorphisms. Thus Feas(φ) is afﬁne but not of width 2. Hence, by
+Lemma 5.34 of [10], Feas(φ) can be used to construct the 4-ary afﬁne constraint w + x + y + z = 0. In other words,
+there is some ψ ∈ Γ ∗ such that ψ(w, x, y, z) < ∞ iff w + x + y + z = 0.
+
+Now set λ = ψ(0, 0, 1, 1) + ψ(0, 1, 0, 1) + 1 and construct the VCSP instance P with variables {w, x, y, z}, and
+
+constraints
+(cid:8)
+
+(cid:6)w, x, y, z(cid:7), ψ
+
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:6)w(cid:7), 3Mσ0
+
+(cid:9)
+
+,
+
+(cid:8)
+
+(cid:6)z(cid:7), λσ1
+
+(cid:9)
+
+where M is a natural number larger than the square of any ﬁnite value in the range of ψ or σ1. Let η = Φ
+. It
+is straightforward to verify that η is a binary function where both η(0, 0) and η(1, 1) are ﬁnite, and it does not have
+the multimorphism (cid:6)Min, Max(cid:7). Hence, by the construction in the proof of Lemma 7.8, the result follows in this case
+also.
+
+Finally, if Feas(φ) has neither the polymorphism Mnrty nor Mjrty, then the set of Boolean relations {Feas(φ),
+Feas(ν)} can be shown to have essentially unary polymorphisms only (see Theorem 4.12 of [24]). By Theorem 4.10
+of [24], this implies that in this case Feas(φ) can again be used to construct the 4-ary afﬁne constraint w + x + y + z =
+0, and we can proceed as above. (cid:2)
+
+(cid:6)x,y(cid:7)
+P
+
+Lemma 7.10. Let Γ be a valued Boolean constraint language with costs in R+ which does not have any of the
+multimorphisms listed in Theorem 7.1.
+
+Either Γ is essentially crisp, or else Γ ∗ contains an XOR function.
+
+Proof. Suppose that Γ is not essentially crisp and has none of the multimorphisms listed in Theorem 7.1. By Lem-
+mas 7.8 and 7.7, either Γ ∗ contains an XOR function, or else Γ ∗ contains a NEQ function and a ﬁnite 0-selector and
+a ﬁnite 1-selector. In the latter case, by Lemma 7.9 we know that Γ ∗ contains an XOR function. (cid:2)
+
+Combining Lemmas 7.2 and 7.10, together with Proposition 5.1, establishes the NP-hardness of any valued Boolean
+constraint language having none of the multimorphisms listed in Theorem 7.1, and so completes the proof of Theo-
+rem 7.1.
+
+1012
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+For valued Boolean constraint languages taking ﬁnite values only, some of the tractable cases identiﬁed in Theo-
+
+rem 7.1 coincide, as the next result indicates.
+
+Corollary 7.11. Let Γ be a valued Boolean constraint language where all costs are ﬁnite real values. If Γ has one of
+the multimorphisms (cid:6)0(cid:7), (cid:6)1(cid:7), or (cid:6)Min, Max(cid:7), then VCSP(Γ ) is tractable. In all other cases VCSP(Γ ) is NP-hard.
+
+Proof. Let φ be a function taking ﬁnite values in R+ only. By Lemma 6.14, if φ has the multimorphism (cid:6)Max, Max(cid:7),
+then φ is antitone, and hence has the multimorphism (cid:6)1(cid:7). By a symmetric argument, if φ has the multimorphism
+(cid:6)Min, Min(cid:7), then φ is monotone, and hence has the multimorphism (cid:6)0(cid:7). By Proposition 6.20, if φ has the multimor-
+phism (cid:6)Mjrty, Mjrty, Mjrty(cid:7), then φ is constant, and hence has the multimorphism (cid:6)0(cid:7). Similarly, by Proposition 6.22,
+if φ has the multimorphism (cid:6)Mnrty, Mnrty, Mnrty(cid:7), then φ is again constant, and hence has the multimorphism (cid:6)0(cid:7).
+By Corollary 6.26, if φ has the multimorphism (cid:6)Mjrty, Mjrty, Mnrty(cid:7), then φ is modular, and hence it has the multi-
+morphism (cid:6)Min, Max(cid:7). The result now follows from Theorem 7.1. (cid:2)
+
+We now show that Theorem 7.1 generalises a number of earlier dichotomy results for particular Boolean prob-
+lems [10,30,42]. Let S be a set of Boolean relations: the problem SAT(S) is the problem of deciding whether there
+exists an assignment s : V → {0, 1} which satisﬁes a given collection of crisp constraints with relations chosen from S.
+The problem MAX-SAT(S) is the problem of ﬁnding an assignment which maximises the number of constraints from
+such a collection which are simultaneously satisﬁed. The problem MIN-ONES(S) is the problem of deciding whether
+there exists an assignment which satisﬁes a given collection of crisp constraints with relations chosen from S, and if so
+ﬁnding such an assignment which minimises the number of variables taking the value 1. In the slightly more general
+weighted MIN-ONES(S) problem the aim is to minimise a speciﬁed weighted sum,
+v∈V wvs(v), where the wv are
+non-negative integers [10,30]. Similarly, the problem MAX-ONES(S) is the problem of deciding whether there exists
+an assignment which satisﬁes a given collection of crisp constraints with relations chosen from S, and if so ﬁnding
+such an assignment which maximises the number of variables taking the value 1. In the weighted MAX-ONES(S)
+(cid:18)
+v∈V wvs(v), where the wv are non-negative integers [10,
+problem the aim is to maximise a speciﬁed weighted sum,
+30].
+
+(cid:18)
+
+Corollary 7.12. Let S be a set of Boolean relations and let ΓS = {φR | R ∈ S} be the corresponding crisp valued
+constraint language over {0, 1}.
+
+1. SAT(S) can be solved in polynomial time if S has one of the polymorphisms 0, 1, Min, Max, Mnrty, or Mjrty.
+
+Otherwise it is NP-complete.
+
+2. MAX-SAT(S) can be solved in polynomial time if ΓS has one of the multimorphisms (cid:6)0(cid:7), (cid:6)1(cid:7), or (cid:6)Min, Max(cid:7).
+
+Otherwise it is NP-hard.
+
+3. Weighted MIN-ONES(S) can be solved in polynomial time if ΓS has one of the multimorphisms (cid:6)0(cid:7), (cid:6)Min, Min(cid:7),
+
+or (cid:6)Mjrty, Mjrty, Mnrty(cid:7). Otherwise it is NP-hard.
+
+4. Weighted MAX-ONES(S) can be solved in polynomial time if ΓS has one of the multimorphisms (cid:6)1(cid:7), (cid:6)Max, Max(cid:7),
+
+or (cid:6)Mjrty, Mjrty, Mnrty(cid:7). Otherwise it is NP-hard.
+
+Proof. 1. Follows immediately from Theorem 7.1 and Proposition 4.10.
+
+2. Follows from Corollary 7.11 and Example 2.9.
+3. Let φ1 : {0, 1} → R+ be the function deﬁned by φ1(x) = x. By Example 3.3, the problem VCSP({φ1}) is equiv-
+v∈V wvs(v), where the wv are non-negative
+alent to the problem of minimising a linear expression of the form
+integers. Hence, weighted MIN-ONES(S) can be expressed as VCSP(ΓS ∪ {φ1}). The function φ1 is contained in
+exactly 4 of the tractable classes identiﬁed in Theorem 7.1 (cases 1, 4, 5 and 8), so the problem VCSP(ΓS ∪ {φ1}) is
+tractable when ΓS has one of the multimorphisms (cid:6)0(cid:7), (cid:6)Min, Min(cid:7), (cid:6)Min, Max(cid:7), or (cid:6)Mjrty, Mjrty, Mnrty(cid:7), and NP-
+hard otherwise. Finally, by Proposition 4.10, if a crisp language has the multimorphism (cid:6)Min, Max(cid:7) then it also has
+the multimorphism (cid:6)Min, Min(cid:7).
+
+(cid:18)
+
+4. Similar to (3), but using the function φ(cid:10)
+
+1 deﬁned by φ(cid:10)
+
+1(x) = 1 − x. (cid:2)
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1013
+
+Corollary 7.12 gives an alternative and more uniﬁed description of the tractable cases for these problems to the
+
+ones given previously in [10,30,42].
+
+Finally, we note that the dichotomy described in Theorem 7.1 can be expressed in a more concise form using earlier
+
+results about crisp Boolean constraints and Theorem 5.4.
+
+Corollary 7.13. Let Γ be a valued Boolean constraint language with costs in R+. If Γ has a non-trivial multimor-
+phism then it is tractable. Otherwise it is NP-hard.
+
+Proof. Earlier results about crisp Boolean constraint languages show that a crisp Boolean language is tractable if
+it has a polymorphism which is not essentially unary, and NP-complete otherwise (see, for example, Corollary 2.29
+of [6]). Using the relationship between polymorphisms and multimorphisms set out in Proposition 4.10, and the fact
+that multimorphisms are preserved by addition of a constant, this implies that the result holds when Γ is essentially
+crisp.
+
+If Γ is not essentially crisp, then by Lemma 7.10, either Γ has a non-trivial multimorphism, and is tractable for
+
+one of the reasons described earlier, or else Γ ∗ contains an XOR function.
+
+If Γ ∗ contains an XOR function, then by Corollary 5.5, every multimorphism of Γ is trivial. (cid:2)
+
+8. Conclusions and future work
+
+In this paper we have begun a systematic investigation of the complexity of the optimisation problems resulting
+from different forms of soft constraint. Since soft constraints are speciﬁed by functions, we have introduced an alge-
+braic property of a function, which we call a multimorphism, and shown that in a range of cases the presence of such
+a property is sufﬁcient to ensure tractability.
+
+Moreover, we have shown that the presence of a multimorphism precisely characterises a number of tractable prob-
+lem classes that appear on the surface to be very different. These tractable classes are listed in Section 6; as indicated
+by the examples given in that section, they are overlapping, but incomparable, in the sense that none is contained in
+any of the others (see Fig. 2). In the Boolean case, when the costs are real-valued or inﬁnite, we have shown that
+the presence of one of eight forms of multimorphism characterises each of the possible tractable cases, and that all
+other cases are NP-hard. This result generalises earlier complexity classiﬁcations for the SATISFIABILITY, MAX-SAT,
+MIN-ONES and MAX-ONES problems.
+
+On the basis of the results presented here, we conjecture that the multimorphisms of a valued constraint language
+over a ﬁnite set completely determine its expressive power, and hence its complexity. If this is true, then multimor-
+
+Fig. 2. The tractable classes identiﬁed in Section 6.
+
+1014
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+phisms are likely to play a central role in the analysis of complexity for soft constraints, just as the related notion of a
+polymorphism does in the analysis of complexity for crisp constraints [4–6,26–28].
+
+To deﬁne any form of soft constraint we must specify the set of possible values for the costs, and the way in which
+these are combined. In this paper we have adopted the valued constraint framework [1,43], where the costs are chosen
+from some totally ordered set. For our concrete classiﬁcation results in Sections 5, 6 and 7 we have ﬁxed this set to
+be R+, the set of non-negative real numbers together with inﬁnity, combined using standard addition. One possible
+direction in which to extend our results would be to investigate the complexity of valued constraint languages with
+other valuation structures.
+
+Example 8.1. Consider the set of integers {0, 1, . . . , M} for some ﬁxed M (cid:3) 1. We can deﬁne a valuation structure,
+ΩM , on this set by taking the standard ordering, and deﬁning the aggregation operation to be the addition-with-ceiling
+operation +M , deﬁned as follows:
+∀a, b ∈ {0, 1, . . . , M}
+
+a +M b = min{a + b, M}.
+
+This valuation structure has been shown to be useful to express problems where all solutions which violate M or more
+constraints are considered equally bad [35].
+
+Changing the valuation structure can change the set of multimorphisms associated with a set of functions, as the
+
+next example indicates.
+
+Example 8.2. Let Γ be a valued constraint language over a ﬁnite set D containing all unary cost functions with range
+{0, 1}. For each d ∈ D, Γ contains the unary cost function χd , deﬁned as follows:
+
+χd (x) =
+
+(cid:7)
+
+1 if x = d,
+0 otherwise.
+
+Hence if F : Dk → Dk is a multimorphism of Γ , then
+
+∀x1, . . . , xk ∈ D,
+
+(cid:4)
+(cid:5)
+F (x1, . . . , xk)[i]
+
+χd
+
+(cid:2)
+
+k(cid:3)
+
+i=1
+
+k(cid:3)
+
+i=1
+
+χd (xi).
+
+(15)
+
+It was shown in Lemma 4.9 that every conservative function is a multimorphism of Γ . If the costs taken by the
+functions in Γ are deﬁned to be elements of R+, then the converse result also holds: every multimorphism of Γ is
+conservative. To see this, note that in this case Eq. (15) implies that for each d ∈ D, the k-tuple F (x1, . . . , xk) contains
+at most as many coordinate positions equal to d as the tuple (cid:6)x1, . . . , xk(cid:7). Since this is true for each d ∈ D, it follows
+that we have equality for each d ∈ D, which means that F is conservative.
+
+However, if the costs are deﬁned to be elements of the valuation structure ΩM deﬁned in Example 8.1 then this
+argument no longer holds when k > M. For example, when M = 1, Γ is the language containing all crisp unary cost
+functions, which has the multimorphism (cid:6)Max, Max(cid:7), which is not conservative.
+
+Another possible extension of the results obtained here would be to allow the costs to be chosen from a partially
+ordered set. This additional ﬂexibility is allowed by the semiring-based framework for soft constraints [1,2]. This
+framework also allows for other operations to be used in deﬁning what constitutes the preferred cost, rather than
+simply the minimum. Further investigation is needed to determine whether the notion of a multimorphism can be used
+to characterise interesting tractable constraint languages in this more general framework.
+
+Other future developments to this work could include the study of approximability properties for optimisation prob-
+lems involving soft constraints over arbitrary ﬁnite sets. This would build on and extend the detailed and successful
+investigation of approximability properties which has already been completed for MAX-SAT and related problems in
+the Boolean case [10,30].
+
+References
+
+[1] S. Bistarelli, H. Fargier, U. Montanari, F. Rossi, T. Schiex, G. Verfaillie, Semiring-based CSPs and valued CSPs: Frameworks, properties, and
+
+comparison, Constraints 4 (1999) 199–240.
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+1015
+
+[2] S. Bistarelli, U. Montanari, F. Rossi, Constraint solving over semirings, in: Proceedings of the 14th International Joint Conference on Artiﬁcial
+
+Intelligence (IJCAI’95), Montreal, Canada, 1995, pp. 624–630.
+
+[3] E. Boros, P.L. Hammer, Pseudo-boolean optimization, Discrete Applied Mathematics 123 (2002) 155–225.
+[4] A.A. Bulatov, A dichotomy theorem for constraint satisfaction problems on a 3-element set, Journal of the ACM 53 (2006) 66–120.
+[5] A.A. Bulatov, A.A. Krokhin, P.G. Jeavons, The complexity of maximal constraint languages, in: Proceedings 33rd ACM Symposium on
+
+Theory of Computing, STOC’01, 2001, pp. 667–674.
+
+[6] A.A. Bulatov, P.G. Jeavons, A.A. Krokhin, Classifying the complexity of constraints using ﬁnite algebras, SIAM Journal on Computing 34
+
+(2005) 720–742.
+
+[7] D. Cohen, M. Cooper, P. Jeavons, A. Krokhin, A maximal tractable class of soft constraints, Journal of Artiﬁcial Intelligence Research 22
+
+(2004) 1–22.
+
+[8] M.C. Cooper, D.A. Cohen, P.G. Jeavons, Characterising tractable constraints, Artiﬁcial Intelligence 65 (1994) 347–361.
+[9] N. Creignou, A dichotomy theorem for maximum generalized satisﬁability problems, Journal of Computer and System Sciences 51 (1995)
+
+511–522.
+
+[10] N. Creignou, S. Khanna, M. Sudan, Complexity Classiﬁcation of Boolean Constraint Satisfaction Problems, SIAM Monographs on Discrete
+
+Mathematics and Applications, vol. 7, Society for Industrial and Applied Mathematics, 2001.
+
+[11] W.H. Cunningham, Minimum cuts, modular functions, and matroid polyhedra, Networks 15 (2) (1985) 205–215.
+[12] E. Dahlhaus, D.S. Johnson, C.H. Papadimitriou, P.D. Seymour, M. Yannakakis, The complexity of multiterminal cuts, SIAM Journal on
+
+Computing 23 (4) (1994) 864–894.
+
+[13] V. Dalmau, Generalized majority–minority operations are tractable, in: Proceedings 20th IEEE Symposium on Logic in Computer Science
+
+(LICS 2005), IEEE Computer Society, 2005, pp. 438–447.
+
+[14] R. Dechter, Constraint Processing, Morgan Kaufmann, 2003.
+[15] T. Feder, M.Y. Vardi, The computational structure of monotone monadic SNP and constraint satisfaction: A study through Datalog and group
+
+theory, SIAM Journal on Computing 28 (1998) 57–104.
+
+[16] L. Fleischer, S. Iwata, Improved algorithms for submodular function minimization and submodular ﬂow, in: Proceedings of the 32th Annual
+
+ACM Symposium on Theory of Computing, 2000, pp. 107–116.
+
+[17] E.C. Freuder, R. Wallace, Partial constraint satisfaction, Artiﬁcial Intelligence 58 (1992) 21–70.
+[18] S. Fujishige, S. Iwata, Bisubmodular function minimization, in: Integer Programming and Combinatorial Optimization: 8th International IPCO
+
+Conference, in: Lecture Notes in Computer Science, vol. 2081, Springer, Berlin, 2001, pp. 160–169.
+
+[19] M. Garey, D.S. Johnson, Computers and Intractability: A Guide to the Theory of NP-Completeness, Freeman, San Francisco, CA, 1979.
+[20] M. Grötschel, L. Lovasz, A. Schrijver, The ellipsoid method and its consequences in combinatorial optimization, Combinatorica 1 (1981)
+
+169–198.
+
+[21] G. Gutin, A. Raﬁey, A. Yeo, Minimum cost and list homomorphisms to semicomplete digraphs, Discrete Applied Mathematics 154 (2006)
+
+890–897.
+
+[22] G. Gutin, A. Raﬁey, A. Yeo, Level of repair analysis and minimum cost homomorphisms of graphs, Discrete Applied Mathematics 154 (2006)
+
+881–889.
+
+[23] S. Iwata, L. Fleischer, S. Fujishige, A combinatorial strongly polynomial algorithm for minimizing submodular functions, Journal of the
+
+ACM 48 (4) (2001) 761–777.
+
+[24] P.G. Jeavons, On the algebraic structure of combinatorial problems, Theoretical Computer Science 200 (1998) 185–204.
+[25] P.G. Jeavons, D.A. Cohen, M.C. Cooper, Constraints, consistency and closure, Artiﬁcial Intelligence 101 (1–2) (1998) 251–265.
+[26] P.G. Jeavons, D.A. Cohen, M. Gyssens, Closure properties of constraints, Journal of the ACM 44 (1997) 527–548.
+[27] P.G. Jeavons, D.A. Cohen, M. Gyssens, How to determine the expressive power of constraints, Constraints 4 (1999) 113–131.
+[28] P.G. Jeavons, D.A. Cohen, J.K. Pearson, Constraints and universal algebra, Annals of Mathematics and Artiﬁcial Intelligence 24 (1998) 51–67.
+[29] P.G. Jeavons, M.C. Cooper, Tractable constraints on ordered domains, Artiﬁcial Intelligence 79 (2) (1995) 327–339.
+[30] S. Khanna, M. Sudan, L. Trevisan, D. Williamson, The approximability of constraint satisfaction problems, SIAM Journal on Computing 30 (6)
+
+(2001) 1863–1920.
+
+[31] L. Khatib, P.H. Morris, R.A. Morris, F. Rossi, Temporal constraint reasoning with preferences, in: Proceedings of the 17th International Joint
+
+Conference on Artiﬁcial Intelligence (IJCAI-01), Seattle, US, 2001, pp. 322–327.
+
+[32] L. Kirousis, Fast parallel constraint satisfaction, Artiﬁcial Intelligence 64 (1993) 147–160.
+[33] A. Krokhin, A. Bulatov, P. Jeavons, The complexity of constraint satisfaction: An algebraic approach, in: Proceedings of the NATO Advanced
+Study Institute on Structural Theory of Automata, Semigroups and Universal Algebra, in: NATO Science Series II: Mathematics, Physics and
+Chemistry, vol. 207, Springer, Berlin, 2005, pp. 181–213.
+
+[34] J. Larrosa, P. Meseguer, T. Schiex, Maintaining reversible DAC for Max-CSP, Artiﬁcial Intelligence 107 (1999) 149–163.
+[35] J. Larrosa, T. Schiex, Solving weighted CSP by maintaining arc consistency, Artiﬁcial Intelligence 159 (2004) 1–26.
+[36] A.K. Mackworth, E.C. Freuder, The complexity of constraint satisfaction revisited, Artiﬁcial Intelligence 59 (1993) 57–62.
+[37] R. Mohr, G. Masini, Good old discrete relaxation, in: Y. Kodratoff (Ed.), Proceedings 8th European Conference on Artiﬁcial Intelligence—
+
+ECAI’88, Pitman, 1988, pp. 651–656.
+
+[38] U. Montanari, Networks of constraints: Fundamental properties and applications to picture processing, Information Sciences 7 (1974) 95–132.
+[39] G.L. Nemhauser, L.A. Wolsey, Integer and Combinatorial Optimization, John Wiley & Sons, 1988.
+[40] J.K. Pearson, P.G. Jeavons, A survey of tractable constraint satisfaction problems, Technical Report CSD-TR-97-15, Royal Holloway, Univer-
+
+sity of London, July 1997.
+
+[41] R. Pöschel, L.A. Kalužnin, Funktionen- und Relationenalgebren, DVW, Berlin, 1979.
+[42] T.J. Schaefer, The complexity of satisﬁability problems, in: Proceedings 10th ACM Symposium on Theory of Computing, STOC’78, 1978,
+
+pp. 216–226.
+
+1016
+
+D.A. Cohen et al. / Artiﬁcial Intelligence 170 (2006) 983–1016
+
+[43] T. Schiex, H. Fargier, G. Verfaillie, Valued constraint satisfaction problems: hard and easy problems, in: Proceedings of the 14th International
+
+Joint Conference on Artiﬁcial Intelligence (IJCAI’95), Montreal, Canada, 1995, pp. 631–637.
+
+[44] A. Schrijver, A combinatorial algorithm minimizing submodular functions in strongly polynomial time, JCTB: Journal of Combinatorial
+
+Theory, Series B 80 (2000) 346–355.
+
+[45] A. Schrijver, Combinatorial Optimization: Polyhedra and Efﬁciency, Algorithms and Combinatorics, vol. 24, Springer, Berlin, 2003.
+[46] A. Szendrei, Clones in Universal Algebra, Seminaires de Mathematiques Superieures, vol. 99, University of Montreal, Montreal, 1986.
+[47] P. van Hentenryck, Y. Deville, A generic arc-consistency algorithm and its specializations, Artiﬁcial Intelligence 57 (1992) 291–321.
+
+

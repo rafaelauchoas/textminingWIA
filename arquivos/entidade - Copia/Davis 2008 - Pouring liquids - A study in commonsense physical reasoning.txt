@@ -1,0 +1,2832 @@
+Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+
+www.elsevier.com/locate/artint
+
+Pouring liquids: A study in commonsense physical reasoning
+
+Ernest Davis 1
+
+Department of Computer Science, New York University, USA
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+This paper presents a theory that supports commonsense, qualitative reasoning about the
+ﬂow of liquid around slowly moving solid objects; speciﬁcally, inferring that liquid can be
+poured from one container to another, given only qualitative information about the shapes
+and motions of the containers. It shows how the theory and the problem speciﬁcation
+can be expressed in a ﬁrst-order language; and demonstrates that this inference and
+other similar inferences can be justiﬁed as deductive conclusions from the theory and the
+problem speciﬁcation.
+
+© 2008 Elsevier B.V. All rights reserved.
+
+Article history:
+Received 7 August 2007
+Received in revised form 20 April 2008
+Accepted 22 April 2008
+Available online 30 April 2008
+
+Keywords:
+Liquids
+Qualitative physical reasoning
+Naive physics
+Qualitative spatial reasoning
+
+1. Introduction
+
+Carrying liquids in containers and pouring or ladling liquids from one container to another are among the most common
+ways in which people interact with liquids in daily life. People are very familiar with these phenomena and can reason
+about them easily. In particular, people understand how the physical behavior of the liquids is largely determined by the
+geometrical characteristics of the liquid, the containers, and the motions involved; they can reason about physical behavior
+using only partial knowledge of the geometry, without full geometric speciﬁcations; and they can use the same knowledge
+in multiple inferential directions.
+
+For instance, people know that, if a cup has a small hole through the bottom, then liquid in the cup will leak out
+through the hole, but that a dent in the bottom will not cause the liquid to leak. They can use this knowledge in many
+ways: prediction—given that there is a hole, predict that the liquid will leak; explanation—given that the liquid is leaking
+from the bottom, deduce that there is a hole; design—if you want the liquid to drain (e.g. you are designing a colander), put
+a hole in the bottom; and so on. These various forms of reasoning can be carried out without knowing or positing a precise
+shape description for the cup or the hole.
+
+It is very desirable that an automated reasoner likewise be able to deal with partial geometric information. Precise
+geometric information may be unavailable for a number of different reasons. It may not be possible for the agent to perceive
+or measure the features accurately. The features may be inferred rather than perceived. The object may be in a preliminary
+state of design, and the precise geometry may not yet have been speciﬁed. The features may be a result of a future event
+which is not yet fully known; for instance, a reasoner may be concerned that an object may spring a leak and worry about
+the effect on the liquid inside, without knowing where exactly the leak will be or what its shape will be. A reasoner may
+need to reason generically about classes of similar objects and similar actions rather than about a single manipulation of a
+single object.
+
+The theory of ﬂuid dynamics, of course, contains a very large body of mathematics, mathematical physics, and scientiﬁc
+software devoted to the question of predicting the ﬂow of ﬂuids; and these computations can now be done with very great
+
+E-mail address: davise@cs.nyu.edu.
+
+1 I am grateful to the reviewers for many helpful suggestions. This research was supported in part by NSF grant IIS-0534809.
+
+0004-3702/$ – see front matter © 2008 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2008.04.003
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1541
+
+Fig. 1. Pouring from pitcher to pail.
+
+accuracy and speed. However, these techniques all work, either by using a ﬁne-grained division of space and time, and by
+calculating the force and ﬂow of each small piece of liquid at small step of time; or, if the PDE’s are solved or analyzed
+exactly, by calculating the force and ﬂow at literally every point and instant. The techniques deliver extremely precise
+predictions of ﬂuid ﬂow, but they require correspondingly precise speciﬁcation of the boundary conditions (the shapes of
+the solid objects in contact the liquid).
+
+As the evolution of forces and ﬂows may be extremely variable over a range of circumstances where the overall qual-
+itative behavior is quite stable, there is an inherent mismatch between these techniques and the objectives of qualitative
+reasoning. In AI applications, precise boundary conditions are generally not known and detailed predictions are not neces-
+sary. Different ways of pouring from a pitcher to a pail, or different shapes of the pitcher and the pail, may give rise to ﬂow
+and force patterns that are completely different; but the commonsensically important inference, that the liquid pours from
+the pitcher to the pail, remains stable.
+
+For this reason, we are looking for a characterization of the behavior of liquids that does not require calculating of
+velocity, acceleration, momentum and forces. Not that these concepts lie outside a commonsense understanding of physics—
+on the contrary these, or something similar, are part of a commonsense understanding—but it must often be possible for a
+qualitative reasoner to reason about the large scale behavior of liquids without invoking these concepts.
+
+The objective of this paper is to characterize some cases of commonsense reasoning about liquids at the knowledge
+level [28]; that is, to demonstrate that, for some types of simple qualitative reasoning about liquids, one can develop a
+representation language and a theory such that the knowledge used in the reasoning and the speciﬁcations of particular
+problems can be (approximately) expressed in the language and the reasoning itself can be carried out as inference from the
+general theory and speciﬁcations. This paper is thus part of the general programme proposed by Hayes and by McCarthy [18,
+24,25] of developing automated commonsense reasoners by representing commonsense knowledge in logic-based languages.
+(We will discuss the goals of the representation in more detail in Section 1.1.)
+
+In this paper we develop a large part, though not all, of a commonsense theory of liquid ﬂowing around slowly moving
+solid objects. We illustrate the adequacy of the theory by showing that it suﬃces for correct prediction in a number of
+scenarios, including carrying a liquid in a closed container or in an open container, pouring a liquid from one container to
+another, or ladling liquid out of a container using a spoon.
+
+The primary example we will use here is pouring from one container to another. Speciﬁcally, we consider the following
+scenario (Fig. 1): There is a pitcher, partly full of liquid, and an empty pail. Both of these “hold water”. The pail remains
+in a ﬁxed position throughout the scenario. The pitcher is lifted, keeping it suﬃciently upright that the liquid inside does
+not reach its spout. Once it is in position, with the spout (though not necessarily all of the pitcher) centered over the pail,
+the pitcher is tilted until the capacity of the part of the inside of the pitcher lower than the spout is less than the volume
+of the liquid. At this point, the liquid pours out of the pitcher, and falls downward into the pail, where it remains. At the
+end of the scenario, the liquid is divided into a section that remains in the pitcher and a section that is in the pail. We
+demonstrate that, given qualitative characterizations of the shapes of the pitcher and the pail and of the motion of the
+pitcher, our theory allows us to infer the behavior of the liquid.
+
+(Note: all of the ﬁgures in this paper are cross-sections in the x–z plane. Throughout this paper, solid objects are indi-
+cated with diagonal lines, and liquid is indicated in grey. The fact that the pictures show liquid ﬂowing in polygonal patterns
+reﬂects my personal limitations in using the drawing software; it is not at all a requirement of the theory.)
+
+Many aspects of the commonsense understanding of liquids are omitted from our analysis here. Some of the most
+
+important of these are:
+
+• Liquids in modes that are not “bulk”, in Hayes’ [19] terminology, such as mists, wettings of surfaces, liquids absorbed in
+
+sponges, and so on.
+
+• Liquids in energetic modes, again in Hayes’ terminology, such as fountains or even splashes.
+• Mixtures or solutions of any kind.
+• Interactions of liquids with the atmosphere or other gasses.
+
+1542
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+• The effect of liquids on the solids with which they are in contact. We assume that the motion of the solids is given by
+external constraints. Thus, our theory does not include waterwheels or other mechanisms controlled by hydraulics, solid
+objects ﬂoating on liquids, swimming, and so on. (The theory may be capable in such cases of predicting the liquid ﬂow
+given the motion of the solid objects, but it certainly cannot predict the motion of the solid objects.)
+
+• Pressure and any consequences of pressure differences. In particular, we assume that all parts of the top surface of a
+
+liquid meet the open atmosphere and are therefore at equal height.
+
+• Viscosity, surface tension, cohesion, adhesion, absorption, and so on. We deal only with “dry water”, in von Neumann’s
+
+sardonic phrase.
+
+• Any consideration of heat, temperature, and phase transitions, such as evaporation and freezing.
+• The feasibility of actions by an agent. The theory developed for physical feasibility of actions on solid objects in [11]
+
+can be extended to this domain, but we will not discuss this in this paper.
+
+• The theory yields incorrect predictions for liquids ﬂowing down a channel (Section 6). This is probably the most impor-
+
+tant gap in the theory.
+
+The paper is organized as follows. Section 1.1 discusses the various goals of this representational work in more detail.
+Section 2 reviews previous relevant work. Section 3 gives a pre-formal account of the physical theory that we develop
+here. Section 4 shows how the theory can be formalized; it presents the ontology, the formal language, and the axioms.
+Section 5 describes a problem speciﬁcation for a scenario of carrying a liquid in a pitcher and pouring it into a pail;
+sketches the structure of the formal inference; and demonstrates that the axioms and speciﬁcations are consistent by
+exhibiting a speciﬁc model satisfying them. (A complete formal proof of the inference is given in the online appendix
+http://www.cs.nyu.edu/faculty/davise/papers/liqAppa.pdf.) Section 6 discusses the problem of ﬂow in a channel, which is a
+major gap in this theory. Section 7 presents the conclusion and discusses possible next steps for research.
+
+1.1. Objectives
+
+This paper undertakes a representational project with the following parts:
+
+• We deﬁne a microworld of solid objects and liquids, which includes many of the basic large-scale behaviors of liquids
+carried in solid containers, poured out of and into solid containers, and ﬂowing over solids. We state a number of
+physical laws that govern the behavior of liquid in the microworld.
+
+• We develop a formal ontology and a ﬁrst-order representation language in which we can formally state these laws.
+• Extending this representation language with some additional geometric predicates, we construct a speciﬁcation of a
+scenario of a pitcher pouring liquid into a pail with incomplete geometric speciﬁcations of the shapes and motions of
+the pitcher and the pail. We demonstrate that, from the rules and the speciﬁcations, we can infer that some of the
+liquid pours from the pitcher.
+
+Of course, the physical theory is not intended to apply only to this particular speciﬁcation; it should apply to many dif-
+ferent speciﬁcations and different directions of inference within this microworld, and we are quite conﬁdent that it does
+(Section 5.3).
+
+There are many ways in which such a representational project could be carried out, and numerous different desiderata
+
+for the theory and for the problem speciﬁcation:
+
+1. The theory and speciﬁcations should be logically suﬃcient. The conclusion must be provable from the speciﬁcations
+
+and the physical theory.
+
+2. The speciﬁcations should be qualitative. It would be (comparatively) easy to give geometrically precise descriptions of
+shape and motion that would suﬃce to justify the conclusion. But that kind of inference can be done much better—
+more precisely, robustly, and generally—by conventional simulation methods. The whole point of the theory we have
+developed is that it supports reasoning from incomplete speciﬁcations. Other things being equal, the more general the
+speciﬁcations the better.
+
+3. The theory should be general. The theory should not apply only to the problem in question but to a wide range
+of problems in the microworld. It should be usable not only for prediction but also for other directions of inference
+(postdiction, planning, design, etc.).
+
+4. The speciﬁcations for a prediction problem should be geometric. A well-formed prediction problem should consist of
+speciﬁcations of the shape of the objects; the initial state of the liquid; constraints on the motion of the objects; and
+isolation conditions excluding outside interference (no other object or liquid comes close to the scene of the action).
+This is essentially the “No function in structure” rule of [15].
+
+5. Speciﬁcations should be logically simple and use a ﬁxed geometric vocabulary. In a knowledge base that uses this
+representation, the general theory corresponds to the ﬁxed knowledge base whereas the speciﬁcation corresponds to
+the run-time query. Therefore, complex logical form or specialized predicates may be tolerable in the theory, since these
+can be incorporated off-line into workable algorithms, but it is important that queries in the speciﬁcation language be
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1543
+
+logically simple combinations of known predicates (e.g. conjunction of ground formulas) if there is to be any hope of
+achieving run-time eﬃciency.
+
+6. The speciﬁcations should be ecologically valid. The constraints should correspond to the kinds of partial information
+
+that are available in actual applications, or should be easily derivable from that information.
+
+7. The theory and speciﬁcations should be computationally tractable. It should be possible for a program to draw the
+desired inferences from the speciﬁcations in reasonable time. Until there is a corpus of examples and a proposal on the
+table for an inference algorithm, there is no way to evaluate this. The theoretical worst-case results are all discouraging;
+spatial languages much more restricted than this one are intractable or undecidable [2].
+
+8. The theory should bear some relation to physical reality. The theory should be approximately correct, or correct in the
+limit in some sense, or correct as an average in some sense, or in one way or another correspond to the physical reality.
+A theory with physically very unrealistic assumptions is likely to go very badly wrong sooner or later.
+
+9. The theory should be plausible as a cognitive model. To the extent that this can be judged reliably, it should be plausible
+that the predicates correspond to concepts available to naive human reasoners. It should be noted that almost nothing
+is known about what concepts are used for qualitative physical reasoning by human reasoners, so it would be a mistake
+to let one’s own guesses on the subject dictate the form of one’s theory.
+
+10. It is desirable that the predicates should be standard in computational geometry. It would be helpful, though it is
+not critical, if the geometric predicates used were well-known and well-understood in the literatures of computational
+geometry, graphics, CAD, physics, scientiﬁc computing etc. so that we could draw on methods from those disciplines
+and interface easily with them.
+
+The theory and problem speciﬁcations developed in this paper presented below certainly satisfy conditions 1–4 and, in
+their current form, certainly do not satisfy condition 7. On the whole we have very much favored achieving the generality
+advocated in condition 3 over conditions 6–10. In most respects, the theory is approximately physically correct (condition 8);
+in some aspects, which we will point out, the approximation is quite crude. Condition 5 is hard to evaluate until many
+different types of problems have been formalized, which we have not yet done. Some of the predicates in our representation
+are standard (condition 10); many as far as I know as new here and of very limited applicability.
+
+As regards cognitive plausibility (condition 9): At ﬁrst blush it would seem absurd to claim any degree of cognitive
+plausibility for a theory with concepts like “continuity relative to the Hausdorff distance” (Section 3.7) or “bubble-free at-
+tachment” (Section 5). But the truth is that the commonsensical human reasoner has some conceptualization of the fact
+that liquids move continuously and of the geometric relation between a container and an opening. The formal deﬁnitions
+here are intended as mathematical deﬁnitions that idealize or approximate the intuitive conception, and though the formal
+deﬁnition is not very readable, I would argue that the actual concept is reasonably close. That is, this jargon is just a trans-
+lation of the intuitive conceptualization of “continuous liquid motion” into “math-talk”, and, it seems to me, a reasonably
+close translation. The major physical rules that are developed in this paper (Section 3.1) are, I would argue, quite reasonable
+candidates for a cognitive model, though the details are designed in part to avoid the need for plausible reasoning, which a
+true cognitive model would, of course, deal with. At minimum, it seems to me that the concepts and rules here constitute a
+worthwhile ﬁrst stab at a cognitive theory of the domain. I do not claim that the cognitive processes involved at all resemble
+the formal proofs in the appendix.
+
+The important sticking point here is condition 6. As argued at length in [8], though it is clear that many AI applications
+require reasoning from partial information, it is not at all easy to know, for a given application, exactly what kinds of partial
+information are involved; and it is often very hard, for a given domain of interest, to ﬁnd an application that naturally
+generates a collection of inferences from partial information to satisfy the requirements of condition 4. It is obvious that
+people can reason about pouring liquid from a pitcher without knowing the precise shape of the pitcher; it is much harder
+to say what it is they do know about the pitcher. Moreover, in realistic applications, some of the information that is available
+may not satisfy either condition 1 or condition 3 above. For instance, one may know “I have often poured liquid from this
+pitcher without trouble” or “The text refers to this object as a ‘pitcher’; hence, it is presumably possible to pour from it”.
+But clearly neither of these facts support very strong deductive conclusions, nor are they geometric.
+
+2. Related work
+
+It is unusual, particularly in a fast-moving ﬁeld like AI, for a survey of previous related work to be dominated by a
+single paper—Pat Hayes’ “Ontology for Liquids” [19], a companion paper to Hayes’ “Naive Physics Manifesto” [18]—which
+was written almost thirty years ago,2 immediately became very famous, and has barely been touched from then to now.
+
+Besides proposing liquids as a challenging and fruitful domain for research in automated commonsense physical reason-
+ing, and proposing as an initial step the axiomatization of the domain in a ﬁrst-order language, “Ontology for Liquids” made
+a number of critical contributions. The most important of these (certainly in terms of its inﬂuence on this paper) was to
+show that a critical category in reasoning about liquids is that of a region of space that evolves over time, and that such an
+
+2 “Ontology for Liquids” was written as a working paper in 1979 and circulated in photocopies for six years before it was published in 1985.
+
+1544
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+evolving region should be considered as an entity in the domain of discourse. (Hayes calls this a “history”, whereas in this
+paper it is called a “region-valued ﬂuent”.) Other important contributions of Hayes’ paper include:
+
+• The categorization of different modes of liquids, in a commonsense understanding, along four, largely independent,
+dimensions: bulk vs. divided, still vs. moving and lazy vs. energetic, unsupported vs. supported, in an extended space
+vs. close to a surface. (Of the 24 logical combinations, Hayes claims that 15 are physically possible.)
+
+• The development of a qualitative language of geometry guided by the demands of a physical theory. This is one of
+the earliest works in AI on qualitative geometry, and, despite all the subsequent work in this area [2], still one of
+comparatively few that is designed to ﬁt with a physical theory. (DeKleer’s NEWTON [14] predates it in both respects,
+but is much more limited in both the geometry and the physics.)
+
+Moreover, the discussion in “Ontology for Liquids” is in many respects broader than this paper. Hayes touches on such
+subjects as the ﬁfteen modes of liquids mentioned above, liquids adhering to surfaces, solid objects ﬂoating on liquids, and
+others, which we do not consider here.
+
+However, the logic presented in “Ontology for Liquids” has substantial gaps and ﬂaws. The most serious of these is that,
+in developing his representation, Hayes assumes that “Almost all the histories we consider in this paper . . . consist[] of a
+certain piece of space in which something happens for a certain length of time; they are rectangular” ([19], p. 90). Both the
+representation and the axiomatization depend strongly on this assumption. But the two examples he considers (a bathtub
+overﬂowing, a liquid ﬂowing from a tilted container onto a surface) do not at all correspond to this assumption; almost
+none of the signiﬁcant histories involved are rectangular. For that reason, it is actually impossible to ﬁll in the details of
+the logical analysis of these examples given in Section 9 of “Ontology for Liquids”. This gap is very much obscured for the
+reader (and, probably, for Hayes himself) by the fact that Hayes does not give a logical statement of the speciﬁcation of the
+problems being addressed in Section 9.3
+
+Rectangular histories are the norm only when the system is in the steady-state, and over the class of steady-state
+histories, Hayes’ theory is indeed often adequate. But pouring is not a steady-state system, and rectangular histories do not
+come close to dealing adequately with it.
+
+Another problem, which as we shall see arises also with theories of very different kinds, has to do with the physics
+of overﬂowing. As we shall discuss in more detail in Section 3, when an open container overﬂows at the top, the liquid
+necessarily rises somewhat above the top of the container and spills out some horizontal distance beyond the edge of the
+container. Neither of these is consistent with Hayes’ theory. In particular, as soon as a liquid goes beyond the edge of the
+container, then it must fall straight down; therefore, it cannot travel outward any ﬁnite distance.
+
+2.1. Other AI theories of liquids
+
+A number of other AI theories have dealt with geometrically and physically rich models of liquids. Gardin and Meltzer
+[17] simulate liquids in terms of particles interacting in a two-dimensional space (one vertical and one horizontal). They also
+simulate rigid objects, ﬂexible objects, and strings in the same way. Obviously, no such representation can deal adequately
+with qualitative spatial reasoning. Less obviously, the rules of physical interaction they propose lead to a system whose
+behavior is determined by the grain-size of the discretization of time and space. (In standard scientiﬁc computation, as the
+grain-size becomes increasingly ﬁne, the predictions hopefully converge on the actual behavior.) Speciﬁcally, in the “pouring”
+scenario, once a particle of water has gone past the lip of the pitcher, it is unsupported, and therefore must fall straight
+down. The result is that the liquid pours out of the pitcher in a column one molecule thick. (This is quite clearly illustrated
+in [17] p. 679, Fig. 19.10.)
+
+DeCuyper et al. [13] point out, correctly, some of the limitations of Hayes’ analysis, particularly in terms of the spatial
+language, and propose a hybrid architecture for reasoning about liquids combining three representations: a particle-based
+representation which tracks the movement of particles of liquid; a ﬁxed grid partition of space which tracks the occupancy
+of each voxel of space, and a qualitative representation similar to Hayes’. They do not give the details, and, frankly, it seems
+unlikely that this was ever worked out in detail. It is not diﬃcult to imagine a system that can compute a simulation and
+abstract a qualitative representation, though this is certainly a non-trivial challenge; but it is very diﬃcult to devise a system
+in which there is signiﬁcant information ﬂow in the opposite direction, from the qualitative analysis to the simulation.
+
+Kim [21] developed a system that carried out qualitative predictions of the motions of liquids in response to the motions
+of pistons. She also included in her model a special case of solids being acted on by liquids, namely the opening and closing
+of one-way valves. Both the geometric and physical language of this system were quite limited.
+
+Many AI physical reasoning systems have used a geometry-free model of liquids, characterizing the state of liquid purely
+in terms of the quantity of liquid contained in speciﬁed containers, and characterizing ﬂow just as a process that decreases
+the quantity in the source and increases the quantity in the destination. For instance Forbus [16] uses this as an example
+
+3 This gap was also critical to the debate over Hayes’ argument between McDermott in his “Critique of Pure Reason” [26] and Hayes in his response [20].
+McDermott claimed that Hayes’ bathtub examples required non-monotonic reasoning; Hayes claimed that they required only modus tollens. The truth is
+that, in the absence of a speciﬁc problem speciﬁcation, there is no way to know which closed world assumptions are to be considered part of the problem
+speciﬁcation, and which are to be considered as deduced using non-monotonic principles.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1545
+
+for qualitative prediction; Shin and Davis [34] use it as an example for planning with quantities that are linear functions of
+time (the system assume that all ﬂows are constant-rate). Collins and Forbus [3] combine this with a model of liquids in
+terms of collections of molecules, which supports some more sophisticated inferences.
+
+2.2. Logical theories of commonsense physical domains
+
+The work described in this paper is part of an ongoing project to develop formal theories of commonsense physical
+
+domains. This work is mostly presented in three previous papers.
+
+In [4] I presented a formal theory of a very small part of solid object dynamics, capable of supporting the inference that
+a marble dropped inside a funnel would come out the bottom. The most signiﬁcant technical innovation here is the concept
+of a “pseudo-object”, a geometric entity that “moves around” with a rigid object, such as the hole of a doughnut or the
+center of mass of an object (Section 4.5). This theory has been very much extended in [11], which supports the conclusion
+that a collection of objects can be loaded into a box and then carried in the box. That paper, unlike this one, includes an
+explicit theory of manipulation by an agent.
+
+An axiomatization of a kinematic model of one solid object cutting another is given in [7]. Two theories are presented.
+The “object” theory views the process of a blade cutting a target object as involving a continuous change in the shape
+of the target until it splits, when it becomes two objects. The “chunk” theory views the same process in terms of the
+chunks of solid material contained in the target. (Every separate region deﬁnes a separate chunk.) A chunk persists until
+it is penetrated by the blade, at which point it ceases to exist. These chunks are closely analogous to the “liquid chunks”
+studied in this paper.
+
+All of these theories are mutually compatible, and I hope to present them in an integrated form in a monograph currently
+
+under preparation [12].
+
+I have also done other, more minor and less well integrated, work on the formalization of physical reasoning.
+Chapter 7 of [5] gives preliminary axiomatizations for a number of physical domains, including liquids. An axiomatization
+
+of qualitative process theory is given in [6]. The main issue here is to formulate the closed world assumptions correctly.
+
+The methodological paper [8] advocates structuring domain theories around microworlds rather than clusters, as pro-
+
+posed in Hayes’ “Naive Physics Manifesto” [18].
+
+Other than the above, there has been little work on logical formalizations of physical domains since Hayes’ original
+papers, despite their fame and popularity. Schmolze [32] presents an axiomatization for a domain that includes actions,
+events, processes, liquids, solid containers, and faucets. A liquid is modelled as a collection of “granules”.
+
+Sandewall [31] developed a logical description of a microworld of points objects moving along surfaces. The chief focus of
+this work was integrating non-monotonic logic with a continuous model of time. Fluents were assumed non-monotonically
+to be continuous at each point in time; thus a model with a minimal class of discontinuities was preferred.
+
+Three parallel papers by Lifschitz, Morgenstern, and Shanahan [23,27,33] axiomatize various aspects of the process of
+
+cracking an egg into a bowl.
+
+Bennett et al. [1] present an axiomatization of solid object kinematics built up from geometrical primitives.
+
+2.3. Fluid dynamics
+
+The elephant in the room here, which I can neither ignore nor adequately deal with, is the immense, deep, and sophisti-
+cated mathematical and computational theory of ﬂuid dynamics. It would require years of study to gain a suﬃcient mastery
+of this ﬁeld to be conﬁdent that the problems I am studying cannot be solved by existing techniques; or that an expert in
+the ﬁeld could not develop a theory of power comparable to the one here, but grounded in standard ﬂuid dynamics. Such
+a theory would by deﬁnition be more physically correct than the one here; it would almost certainly be easier to integrate
+with standard methods of physical calculation; it might well be more extensible, easily to validate for consistency, perhaps
+even a more plausible cognitive model. All I can say is that I have not found any evidence that the kind of reasoning studied
+in this paper has been addressed in the existing theory of ﬂuid dynamics, or indeed is of any interest to researchers in ﬂuid
+dynamics. As far as I have been able to determine, none of the techniques that have been developed in ﬂuid dynamics can
+be applied at all directly to the kinds of qualitative information that we are considering here.
+
+3. The physical theory
+
+The physical theory developed in this paper deals with the motion of liquid around slowly moving solid objects. We
+begin with a high-level sketch of the theory (Section 3.1); we then work through a detailed formulation of our proposed
+physical rules, (Sections 3.2–3.5). Section 3.6 discusses the ontology of liquids. Section 3.7 discusses the constraint that
+liquids move continuously.
+
+3.1. The physical theory: High-level view
+
+Our ontology, like Hayes’, has two dual categories that we use to characterize the motion of liquids. The ﬁrst category
+is region-valued ﬂuents (Hayes calls these “histories”): ﬂuents whose value at each time is a region, such as “the region
+
+1546
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Fig. 2. Region R is cupped.
+
+contained inside pitcher P1”. Many aspects of liquid motion can be characterized in terms of the quantity of liquid contained
+in signiﬁcant region-valued ﬂuents, but some aspects, such as steady-state ﬂow or cyclic ﬂow, cannot. The second category
+is bodies or pieces or chunks of liquid (we will use these terms interchangeably). A piece of liquid is a particular collection
+of matter; a set of molecules, if you like, though our theory is not based on molecules. Thus we can say, “Some of the piece
+of liquid that was in the pitcher at the start of the scenario is in the pail at the end of the scenario”. By contrast, in the
+language of region-based ﬂuents all that we can say is that at the end of the scenario there is less liquid in the pitcher
+and more liquid in the pail than at the beginning. To say that the liquid that is in the pail at the end is the same as the
+liquid that was in the pitcher at the start and is no longer in the pitcher requires an identity criterion on liquid over time,
+and thus requires the category of pieces of liquid. Hayes prefers using histories to using pieces of liquids; we use the two
+concepts about equally.
+
+Essentially, our theory of liquids consists of the following rules:
+
+Rule 1. Liquids cannot penetrate solid objects.
+
+Rule 2. The volume of a particular body of liquid is constant (incompressibility).
+
+Rule 3. The motion of liquid through space is continuous over time (we will deﬁne the sense of “continuity” required here
+in Section 3.7).
+
+Rule 4. A connected region R is said to be “cupped” at a given time if the outside of the boundary of R consists of solid
+objects everywhere except at a top, horizontal surface (Fig. 2). If a region (more precisely, a region-valued ﬂuent) R is
+cupped over a period of time and is never full of liquid, then no liquid ﬂows out of R.
+
+Rule 5. If a body of liquid can ﬂow straight down without encountering a solid object or a cupped liquid, then it does ﬂow
+straight down.
+
+Rule 6. If a body of liquid is in contact with a solid or cupped liquid but can ﬂow downward around it, then it does ﬂow
+downward around it.
+
+Given these rules, one can (informally) justify the analysis of the pouring scenario as follows: By Rule 4, the liquid
+remains in the pitcher as the pitcher is lifted into position. By Rule 2, once the volume inside the pitcher below the spout
+falls below the volume of the liquid, the liquid can no longer be held in the pitcher; since the pitcher prevents it from
+ﬂowing out the bottom or out the sides (Rule 1), it ﬂows out the top. At this point, the part of the liquid above the top of
+the spout cannot ﬂow straight downward because of the cupped liquid underneath it, but it can ﬂow at an angle downward
+over the spout following Rule 6. Once it has cleared the spout, it can ﬂow straight downward, so it does so by Rule 5. This
+brings it inside the pail. Once it is inside the pail, it cannot escape by Rule 4.
+
+The objective here is to formulate these rules in a way that they are mutually consistent, strong enough to predict the
+
+result of the pouring scenario, and ﬂexible enough to be usable with qualitative spatial information.
+
+The ﬁrst problem is that the overﬂow of the pitcher in the pouring scenario necessarily contradicts Rules 5 and 6. If
+liquid pours out of a spout, then it must necessarily ﬂow up somewhat higher than the level of the spout and ﬂow out
+horizontally somewhat beyond the spout (Fig. 3). Suppose that the liquid rises to height D H over the top of the spout and
+ﬂows out to a distance D W beyond the spout. Then at the earlier time when it had only ﬂowed out to distance D W /2
+beyond the spout it could have ﬂowed straight down, and should have, if Rule 5 applied. Likewise, at the time when the
+liquid had risen to height D H/2 above the spout, it should have started to ﬂow downward over the spout if Rule 6 applied,
+and not have continued to ﬂow upward.
+
+In a continuous model, such as we will use here, this leads to a Zeno-like paradox. In a molecular theory, it leads to the
+conclusion that the liquid rises one molecule about the level of the spout and then pours out in a column one molecule
+thick. As mentioned above, this is exactly the conclusion that Gardin and Meltzer’s program does come to [17].
+
+The same problem can arise in any situation where a ﬂow over an object turns into free ﬂow. If a liquid has been ﬂowing
+down a slanted surface, and then comes to a precipice (Fig. 4) then it must ﬂow some distance beyond the edge before
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1547
+
+Fig. 3. Flowing over and past of the spout.
+
+Fig. 4. Overﬂow past a precipice.
+
+falling straight down, but, again, if it does ﬂow a ﬁnite distance beyond the edge, then it is violating Rule 5 by not starting
+to ﬂow straight down sooner.
+
+Finally, the problem arises, though in a less clear-cut form, when a downward ﬂow terminates in an object. If a vertical
+column of liquid is ﬂowing downward and hits a surface, then any part of the liquid above the object can ﬂow downward
+and by Rule 5 must do so; but it is not possible that the horizontal ﬂow of the liquid begins exactly at the surface.
+
+The true explanation here, of course, involves the momentum of the liquid; but as we have discussed, we wish if possible
+to avoid reasoning paths that require reasoning about momentum. Instead, what we will do here is to posit that these kinds
+of scenarios generate exceptions to Rules 5 and 6.
+
+This solution in turn raises two further diﬃculties. The ﬁrst is that, in a monotonic logic such as we use here, if one has
+stated that a rule has exceptions, then ever after, in order to apply the rule, one must ascertain that the exception does not
+hold. As we shall see, this places demands both on the domain axiomatization and on the problem speciﬁcation.
+
+The second, more important, problem is that some limits must be given on how far, spatially, these exceptions extend:
+How far can liquid rise above the wall of a cup before it is required to ﬂow down, and how far horizontally can it ﬂow
+out beyond the rim of a cup before it is required to ﬂow straight down? These are necessary, ﬁrst because it is obviously
+the case that liquid in this scenario cannot ﬂow indeﬁnitely far up or out, and more speciﬁcally because this conclusion is
+necessary to carry out the desired inference. If we cannot bound how far the liquid ﬂows beyond the spout of the pitcher,
+then we cannot predict that it will ﬂow into the pail; it may overshoot the pail.
+
+In this paper, we kludge the problem for the sake of simplicity. We deﬁne a characteristic distance maxOutﬂow, and
+we posit that liquid overﬂowing from a cup rises at most maxOutﬂow above the top of the cup and ﬂows out at most
+maxOutﬂow beyond the rim.4 This is a very crude approximation, and commonsense understanding is actually substantially
+richer, but for our purposes here it will suﬃce. The actual distance followed up and out by liquid overﬂowing from a cup
+is a complex function of the shapes and motions involved. My guess is that what a human commonsense reasoner actually
+knows, and what an automated commonsense reasoner should know consists of three parts:
+
+4 There is no physical reason that these should be the same constant; but there is nothing at all to be gained from splitting it into two separate constants.
+
+1548
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Fig. 5. Thickly connected regions.
+
+1. A rather sketchy knowledge of the absolute quantities involved. One does know that in pouring liquid at a normal rate
+from a dining room pitcher, the distance of the overﬂow and the outﬂow are somewhere between a substantial fraction
+of an inch and a couple of inches, not millimeters and not feet. One knows that the outﬂow pouring liquid out of a
+10 gallon pail is larger, perhaps several inches, but still not feet; and so on. This knowledge is presumably gotten by
+interpolating from observed instances using instance-based learning of the conventional kind. Even so, the choice of the
+features to use presumably rests on an domain understanding of the kind we are studying here.
+
+2. A more precise knowledge of the signs of the inﬂuences involved, in the sense of the classic qualitative calculus of signs
+[15,16]. In particular, the reasoner knows that the more rapidly a pitcher is tipped, the thicker the stream comes out of
+the spout.
+
+3. Most importantly, the ability to use the knowledge in (2) in control regimes for pouring liquid to a targeted region
+without spilling. The reasoner, now an agent, knows that if the liquid is not yet pouring or pouring too slowly, he
+should increase the angle, and if it is pouring too fast or too far out, he should decrease the angle.
+
+Unfortunately, expressing the control strategy described in (3), which involves feedback from perception to manipulation,
+requires theories of perception, manipulation, planning, and control which are substantially beyond the scope of this paper.
+It would not be diﬃcult to extend the theory in this paper to represent knowledge of the kind in (1) and (2), but it would
+not lead to any very interesting new inferences.
+
+3.2. Rule 4: Cupped liquids
+
+We now proceed to a detailed account of our theory. Rules 1, 2, and 3 are correct as formulated on page 1546. As we
+have discussed above, Rules 4, 5, and 6 interact in rather intricate ways, and stating them correctly requires some care. In
+formulating these rules, it will be helpful to go through a series of approximations; that is, we will ﬁrst state the rule in
+a form that is nearly correct, explain the cases in which it works, explain the cases it doesn’t work, revise the rule, and if
+necessary iterate.
+
+We begin our formulation of Rule 4 with a few basic deﬁnitions,
+
+Deﬁnition 3.2.1. A region is a topologically regular5 set of points in (cid:2)3, not necessarily either connected or bounded.
+A region-valued ﬂuent is a function from time to regions.
+
+Deﬁnition 3.2.2. A region R is thickly connected if the interior of R is connected (Fig. 5).
+
+Deﬁnition 3.2.3. A region R is cupped at time T if:
+
+1. R is thickly connected;
+2. No solid object overlaps R;
+3. Any boundary point of R that is lower than the highest point in R is a boundary point of some solid object.
+
+Thus the boundary of a cupped region R consists of (a) a horizontal top surface (possibly disconnected, but of constant
+height) where R meets the open air; and (b) the rest of the boundary, where R is bounded by solid objects. Note that the
+cupped region may be formed by a single solid object or by many.
+
+We can now formulate a ﬁrst approximation to Rule 4:
+
+Rule 4.A. Let Q be a region-valued ﬂuent. Suppose that over time interval I , Q is always cupped and is a continuous
+function of time. (Again, we defer to Section 3.7 the question of what it means to say that a function of time to regions is
+“continuous”.) If Q is never full of liquid in I , then there is no outﬂow from Q during I .
+
+5 A set of points is regular if it is equal to the closure of its interior. The regularization of set S is the closure of the interior of S.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1549
+
+Fig. 6. Fluents onto cupped regions for Rule 4.
+
+Before explaining the problem with this formulation and correcting it, let me ﬁrst discuss a couple of critical aspects
+of the proposed rule, and then show that this rule works correctly in some cases where one might suppose there was a
+problem.
+
+First, when we say that liquid L “ﬂows out of” ﬂuent Q during time interval I , what that means is at some time in I , L
+is inside Q , and at some later time in I , L is outside Q . This can happen, either because the liquid L moves, or because Q
+moves, or both.
+
+Second, the chief feature of Rule 4.A is that it applies to all region-valued ﬂuents that are continuous and always cupped,
+
+not just the largest-possible cup at each time. For instance, in Fig. 6, one might deﬁne the following ﬂuents:
+
+• Q 1 is the largest cupped region formed by the cup.
+• Q 2 is the cupped region whose top is always 8 inches below the top of Q 1.
+• Q 3 is the cupped region whose top is always 8 inches above the bottom of the cup.
+
+All of these satisfy the conditions of continuity and of always being cupped. There are inﬁnitely many such ﬂuents. The
+condition that Q is not full of liquid is met by Q 1 throughout the scenario; it is met by Q 2 from times S1 to S2, and
+ends sometime between S2 and S3; it is met by Q 3 from S1 to S2, becomes false in S2, and becomes true again some time
+between S3 and S4. During the time that it is met, for a given ﬂuent, the rule states that no liquid ﬂows out of the ﬂuent,
+which is clearly the case. The point is that, since the ﬂuent Q is always cupped, any ﬂow out of Q can only come out of
+the top of Q ; and the liquid inside Q only reaches the top of Q if its volume becomes equal to the volume of Q .
+
+Third, the boundaries of the cup can be formed either by a single object, as in the pitcher example, or by several objects;
+in fact, the collection of objects that form the cup can vary over time, as long as the interior of the cup is a continuous
+function of time. For example, if you drop pebbles into a vase, then the “cupped region” is the interior of the vase minus
+the pebbles; the rule then states that as long as the volume of the liquid is less than the volume of the vase minus the
+volume of the pebbles, the vase will not overﬂow. Or one might have a cup formed by a cylinder and a piston that can
+move the bottom of the cupped region up and down (Fig. 7); this will be a useful example for us in our discussion, since it
+is easier to see what happens to the volume of the cup in this case than in the case of a tilting pitcher. In all these cases,
+
+1550
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Fig. 7. Cylinder with piston.
+
+Fig. 8. Ladling from a pail.
+
+we assume that the liquid inside the cup can always reshape itself to the interior of the cup as fast as the objects move
+around; this is part of the assumption that objects move slowly.
+
+One might suppose that a scenario like Fig. 8, in which liquid is lifted out of a pail in a ladle, would contradict rule 4.A.
+After all, the interior of the pail is a cupped region and the liquid in the ladle comes out of the pail even though the interior
+of the pail is not full of liquid. But in fact there is no problem here. The interior of the pail, minus the solid material of the
+ladle, does indeed constitute a cupped region at time S1, and continues to do so right until time S2, when the rim of the
+ladle reaches the top of the pail. At that moment, however, the interior of the pail as a whole ceases to be a cupped region,
+because it ceases to be thickly connected. In S2 there are two separate cupped region: One region that is inside the pail and
+outside the ladle and one region that is inside the ladle, and there is no cupped region that includes them both. Therefore,
+the ﬂuent “inside of the pail minus the material of the ladle” does not satisfy the conditions of the lemma, since it is not
+cupped in S2 and after.
+
+One might also suppose that inﬂow into a cupped region could cause trouble for the rule; surely if there is liquid ﬂowing
+into a region there can be liquid ﬂowing out of it? The answer is no; there can be outﬂow only if the region is full of liquid,
+in which case the condition of the rule is not satisﬁed.
+
+The cases where the rule does fail are more recondite. Consider the case shown in Fig. 9: the piston cup, full of liquid,
+is inside an empty pail and the piston is pushed upward. Suppose that the motion of the piston causes the liquid to rise a
+distance D H over the top of the cylinder. Now consider the region bounded by the pail whose top is D H/2 above the top
+of the cylinder. This ﬂuent does violate Rule 4.A; it is always cupped, it is a continuous function of time, it is not full of
+liquid, and yet liquid ﬂows out.
+
+We therefore have to make an exception to Rule 4.A in the case of a cupped region that contains another cupped region
+that is overﬂowing. Speciﬁcally, we say that a piece of liquid is “driven” if it is overﬂowing from a cup (the precise deﬁnition
+is given in the next sentence). Driven liquids are exceptions to Rules 4, 5, and 6.
+
+We now can formulate Rule 4 correctly:
+
+Rule 4. Let Q be a region-valued ﬂuent. Suppose that over time interval I , Q is always cupped, is a continuous function of
+time, and does not contain any driven liquids. If Q is never full of liquid in I , then there is no outﬂow from Q during I .
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1551
+
+Fig. 9. Exception to Rule 4.A.
+
+3.3. Driven liquids
+
+Fig. 10. Not a case of overﬂow.
+
+To complete the formulation of Rule 4, we need next to deﬁne precisely what is meant by a “driven” liquid. This deﬁ-
+nition, as we will see, constitutes our theory of overﬂowing; overﬂow occurs in the region above the top of a cup where a
+driven liquid is allowed to violate rules 4, 5, and 6.
+
+The deﬁnition that we will present is obviously rather arbitrary and does not correspond closely to any physical reality.
+Given the nature of the theory here, this arbitrariness is, I think, both inevitable and unimportant. It is inevitable, because
+we are trying to characterize what is a very complex, dynamic process in terms of a few simple geometric constraints;
+necessarily, the ﬁt will not be very good. And it is unimportant because the question of exactly what is happening at the
+layer where liquid is overﬂowing is probably not very well understood by a human commonsense reasoner, and does not
+much affect the large-scale inference that the liquid pours from the pitcher into the pot. What is important is that the rule
+should be stated in a way that (a) successfully resolves the contradiction between the unqualiﬁed version of Rules 4, 5,
+and 6 and the scenario of an overﬂowing cup; and (b) justiﬁes the inference that overﬂow liquid pouring from a spout can
+only go a fairly small distance before Rule 5 starts to apply and the liquid pours straight downward.
+
+Since driven liquid is caused by an overﬂowing cupped region, we must ﬁrst characterize the circumstance of overﬂow-
+ing. Unlike Rule 4, which applies to all cupped regions, it is not the case that overﬂowing occurs whenever any cupped
+region becomes too small for the liquid it contains. For instance, in Fig. 10, the liquid reaches the top of R A and rises above
+it, but there is no overﬂow, in the sense of an exception to Rules 4, 5, and 6; the liquid just continues to occupy the cupped
+region of the correct volume at the current bottom of the cylinder. True overﬂow and driven liquid occurs when it is not
+possible for the liquid to adjust instantaneously to a new bottom of a cup, either because it is not inside any cupped region
+at all any more, or because the nearest containing cupped region is some ﬁnite distance beyond the overﬂowing cup, and
+the liquid requires some ﬁnite time to ﬂow out to it.
+
+We are thus led to the deﬁnition of a locally maximal cup:
+
+Deﬁnition 3.3.1. Region R is a locally maximal cup at time T if:
+
+1. R is a cupped region at T .
+2. There exists a distance D > 0 such that, if R1 is a cupped region in S and R1 properly contains R, then some point in
+
+R1 is at least distance D from R.
+
+Thus, R A in Fig. 10 is not a locally maximal cup, since there are cupped regions that are supersets of R A and arbitrarily
+close to R A. By contrast, the inside of the ladle in Fig. 8 and the inside of the cylinder in Fig. 9 are locally maximal cups,
+
+1552
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Fig. 11. Driven regions.
+
+because the cupped regions that properly contain them all involve the inside of the pail and thus contain points that are
+far from the inside of the ladle/cylinder.
+
+Deﬁnition 3.3.2. Let Q be a region-valued ﬂuent that, throughout time interval [T S, T E], is continuous and is always a
+locally-maximal cup. If Q is full at T S, and the volume of Q strictly monotonically decreases throughout [T S, T E], then Q
+overﬂows throughout I .
+
+Deﬁnition 3.3.3. Let Q be a region-valued ﬂuent that overﬂows throughout time interval [T S, T E]. Let T be a time between
+T S and T E, and let Q (T ) be the value of Q at T . Suppose that a piece of liquid L ﬁlls region R at T . L is driven by the
+overﬂow from Q at T (Fig. 11) if:
+
+1. R ∪ Q (T ) is thickly connected.
+2. R is entirely within distance maxOutﬂow of Q (T ).
+3. For every point P in R there is a point P
+is less than or equal to the height of P .
+
+(cid:4)
+
+in Q (T ) such that the line from P to P
+
+(cid:4)
+
+is entirely in R and the height of P
+
+(cid:4)
+
+Note that in these deﬁnitions, the liquid overﬂowing from Q is driven only as long as the volume of Q is monotonically
+decreasing; as soon as Q stops decreasing in volume, the overﬂow ceases to be driven and starts being governed by Rules 4
+and 5.
+
+3.4. Rule 6: Flowing down
+
+Deﬁnition 3.4.1. A liquid L ﬂows down during a time interval if the heights of the top and of the bottom of L are monotoni-
+cally strictly decreasing functions of time.
+
+Rule 6. If a piece of liquid L can ﬂow down at time T , then it does ﬂow down.
+
+The question is, what do we mean by saying that a liquid “can ﬂow down”? Rather than analyze this in terms of
+a general theory of possible behaviors of liquids, which raises rather diﬃcult technical issues, we will give an explicit
+geometric characterization.
+
+Deﬁnition 3.4.2. At any time T , nonFlowingSpace is the union of all regions of space occupied by solid objects, cupped
+liquids, driven liquids, and “weakly cupped” liquids.
+
+A liquid is weakly cupped if it is cupped by some combination of solid objects, cupped liquid, and driven liquid. Since
+driven liquid and cupped liquid are, to a degree, resistant to being pushed out of the way, weakly cupped liquid must
+likewise be, since there is nowhere it can ﬂow freely.
+
+Deﬁnition 3.4.3. Point P is a ﬂow stopping point associated with region R if P is a local minimum of the top surface of R.
+(R is the region occupied by an obstacle. A liquid incident on P cannot ﬂow downward at P .)
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1553
+
+Fig. 12. Column of liquid ﬂowing down.
+
+Deﬁnition 3.4.4. A piece of liquid L cannot ﬂow down if either L overlaps nonFlowingSpace or if a bottom point of L is
+incident on a ﬂow stopping point of nonFlowingSpace. If it is not the case that L cannot ﬂow down, then L can ﬂow down.
+
+If a piece of liquid L can ﬂow down, in the sense of Deﬁnition 3.4.3 then either there is nothing below it, or it can ﬂow
+
+around whatever is below it, or whatever is below it is itself ﬂowing down and thus making room for L.
+
+Suppose, for instance, that in a given coordinate system there is a ﬁxed solid table with a round horizontal top of radius 2
+lying in the x–y plane at z = 0, and suppose that there is a cylinder of water of radius 1 and height 1 sitting above the center
+of the table at time t = 0. By our deﬁnition any piece of this cylinder that is incident on the table cannot ﬂow down; any
+piece that is not incident on the table can ﬂow down. And indeed, assuming that the cylinder ﬂows outward and downward,
+every piece not incident on the table will ﬂow down (Fig. 12). Consider, for example, the following ﬂow pattern: a point of
+1 − t, θ0, z0(1 − t)(cid:6) for
+liquid whose position at t = 0 is (cid:5)r0, θ0, z0(cid:6) in cylindrical coordinates at t = 0 ﬂows to position (cid:5)r0/
+t between 0 and 3/4 (at t = 3/4 the liquid reaches the edge of the table). It is easily veriﬁed that in this ﬂow pattern every
+piece of liquid has a constant volume, and move continuously, and that every piece of liquid not incident on the table ﬂows
+downward.
+
+√
+
+3.5. Rule 5: Flowing straight downward
+
+There are two main questions about Rule 5. First, what is the dividing line between regions where Rule 5 applies and
+
+regions where only Rule 6 applies? Second, what is meant by the statement that a liquid “ﬂows straight down”?
+
+As regards the ﬁrst question: As with our deﬁnition of “driven liquid” in Section 3.3, our deﬁnition here is rather arbi-
+
+trary, justiﬁed on the grounds that in this kind of theory precision is neither possible nor necessary.
+
+Deﬁnition 3.5.1. At time T , R is a ﬂow disruption region if the following hold:
+
+1. R is thickly connected.
+2. R is ﬁlled with liquid.
+3. For every point P in R, there is a point P
+
+(cid:4)
+
+height( P ) (cid:2) height( P
+
+(cid:4)
+
+); P is within maxOutﬂow of P
+
+; and the line from P to P
+
+does not go through any solid objects.
+
+at the top of nonFlowingSpace such that
+
+(cid:4)
+
+(cid:4)
+
+Deﬁnition 3.5.2. The region ﬂowDisruptedSpace is the union of all ﬂow disruption regions. The region ﬂowUndisruptedSpace
+is the complement of ﬂowDisruptedSpace ∪ nonFlowingSpace.
+
+As regards “ﬂowing straight down”: The obvious interpretation of “ﬂows straight down” would be a simple vertical
+translation downward. However, it is obviously impossible to have a steady ﬂow of liquid in a column that (a) translates
+straight downward; (b) preserves volume; (c) does not break into droplets; and (d) accelerates under gravity. Rather, if (b),
+(c), and (d) hold, then the stream of ﬂowing liquid must get narrower, and indeed this is what happens. But if the stream is
+growing narrower, then the parts of the liquid at the periphery are not translating straight down, they are moving toward
+the center. It is not necessary, at our level of precision, to have a theory that mandates that falling liquid accelerates, but
+it seems overly restrictive to have a theory that prohibits it. Therefore we deﬁne “falling straight down” as a characteristic,
+not of all pieces of liquids, but of a stream as a whole (or, more precisely, of a horizontal slice of a stream).
+
+Deﬁnition 3.5.3. A piece of liquid L falls straight down if it falls downward and the horizontal projection of L is a monotoni-
+cally non-increasing function of time. (The complete statement of this deﬁnition requires an additional condition to ensure
+continuity. See Section 4.9.)
+
+1554
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Rule 5. At time T , let L be any piece of liquid in ﬂowUndisruptedSpace. Then L is contained in a piece of liquid L X with
+the same vertical span that ﬂows straight downward for some time interval starting in T .
+
+3.6. The ontology of liquids
+
+There are a number of different ontologies that can be used for modelling the dynamics of liquid ﬂow:
+
+I. Discrete models
+
+I.1 Molecular model. A quantity of liquid on the scale of easy manipulations (between about 1 gram and 100 kilograms)
+
+consists of between about 1022 and 1027 molecules, interacting through van der Waals forces.
+
+I.2 Small particle model. Liquid consists of a collection of particles that are very small on the human scale but very
+large as compared to a molecule. They are too small, and therefore too numerous, to allow reasoning that depends
+on enumerating them individually, but large enough that each one can be meaningfully assigned properties that are
+in fact statistics over large numbers of molecules, such as temperature [3].6
+
+I.3 Large particle model. The behavior of liquid can be calculated by simulating the interactions of a fairly small number
+
+(dozens or at most hundreds) of large-scale particles [17].
+
+I.4 Spatial cellular model. Space is divided into a grid of cells, and the state of the liquid is characterized in terms of
+
+the occupancy of the cells.
+
+II. Continuous models
+
+II.1 Fixed point model. The behavior of the liquid is characterized in terms of the evolving state of the liquid at ﬁxed
+
+points in space. (This is the Eulerian model in ﬂuid dynamics.)
+
+II.2 Flowing point model. The behavior of the liquid is characterized by tracking “points” of liquid as they move through
+space over time, and describing the position of each point and the state of the liquid at the point. (This is the
+Lagrangian model in ﬂuid dynamics.) For instance, the speciﬁcation of ﬂuid ﬂow in Section 3.4 is a simple instance
+of a ﬂowing point model.
+
+II.3 Fixed region models. The behavior of the liquid is characterized in terms of the occupancy of ﬁxed regions.
+II.4 Pieces of liquid. The behavior of the liquid is characterized in terms of the motion of pieces of liquid over time.
+
+Hayes’ theory [19] uses primarily the ﬁxed regions model and to a lesser extent the “pieces of liquid” model. Kim’s
+program [21] likewise uses primarily the ﬁxed regions model. DeCuyper et al. [13] propose a hybrid architecture combining
+a large particle model, a spatial cellular model, and a ﬁxed region model, but as mentioned it seems unlikely that the details
+of this were ever worked out. As our above discussion indicates, our theory here uses primarily the “pieces of liquids” model
+and to a lesser extent the ﬁxed regions model.
+
+Space here does not permit an extended comparison of these ontologies, but let me discuss brieﬂy the diﬃculties that
+
+arise in using the other ontologies for the kinds of reasoning addressed here.
+
+The true molecular model I.1 is of course the most correct of these; but it is by far the most diﬃcult to use. The
+relationship between the small scale interactions of the molecules and the large scale dynamics of liquid is mediated by
+statistical mechanics, and the reasoning needed to get from one to the other is generally more complex than the kinds of
+reasoning used in this paper or in continuous ﬂuid dynamics.
+
+The small particle discrete model of [3] was developed to enable rather speciﬁc lines of inference; for instance, to reason
+about liquid that heats up while ﬂowing past a heat source. No general dynamic theory has been developed using this
+ontology.
+
+The large particle model and the cellular model are both inherently limited in their precision by the grain-size of the
+
+discretization. Neither is applicable in any straightforward way to reasoning with qualitative spatial information.
+
+It should be noted that the large particle model is no less an abstraction of the true molecular model than any of the
+other models described here; and it is a mistake to suppose that the superﬁcial resemblance between the large particle
+model and the molecular model implies that there is any actual advantage to using the large particle model in reasoning.
+A collection of 1023 molecules actually behaves in almost every respect more like the partial differential equations of ﬂuid
+dynamics than like a collection of 100 particles.
+
+The two point-based models II.1 and II.2 are the basis of ﬂuid dynamics. They have the advantages, ﬁrst, that an exact
+speciﬁcation of ﬂow and other dynamic change can easily be represented in terms of closed-form formulas, as we have done
+in above in Section 3.4; and that a very precise dynamic theory can be stated in partial differential equations. However,
+neither of these is suited to qualitative reasoning. The evolution of the ﬂow ﬁeld and the partial derivatives involved are
+unstable under the kind of qualitative variation we wish to consider, even in circumstances where the overall behavior is
+very stable.
+
+Note, also, that even in stating the standard scientiﬁc theory, there are facts that are more easily stated in the region-
+based ontology than in point-based ontologies. In particular, the incompressibility of liquid is trivial to state in the region-
+
+6 Gibbs used a somewhat similar model in order to apply statistical mechanic arguments to thermodynamics without needing to resolve the ongoing
+
+controversy over the kinetic model of heat.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1555
+
+based model. In the ﬂowing point model, it is substantially more complicated to state, and in the ﬁxed point model, it can
+only be stated quite indirectly, using the divergence theorem.
+
+Ideally, one would think that there ought to be a language for describing large-scale physical phenomena that is agnostic
+and indifferent to the small-scale structure. After all, the naive human reasoner knows how liquids behave on the scales in
+which he can perceive and manipulate it and he neither knows nor cares what is going on at scales much smaller than he
+can perceive; a commonsense theory should do likewise, certainly if it is making claims to cognitive validity. Unfortunately,
+despite many attempts, no one has succeeded in formulating such a theory. Space here does not permit an analysis of the
+diﬃculties involved; I hope to address this in [12].
+
+3.7. Continuous motion of liquids
+
+An important constraint on liquids is that they move continuously in space. In a “piece of liquid” ontology, it is not
+obvious how this constraint should be expressed, since there are a number of different possible topologies over the space
+of regions, and hence a number of different notions of continuity [9].
+
+One condition that is indisputable is that the volume of liquid in any bounded region must be a continuous function of
+time; e.g. the volume of liquid in a pail cannot instantaneously change from 1 pint to 2 pints. This can be guaranteed as
+follows:
+
+Deﬁnition 3.7.1. Let R1 and R2 be two bounded, topologically regular regions. The symmetric difference of R1 and R2,
+denoted R1(cid:8) R2 is deﬁned as the regularization of (R1− R2)∪(R2− R1). We deﬁne the function dV (R1, R2) = volume(R1(cid:8)
+R2).
+
+For example, let A be the square with vertices (cid:5)1, 1(cid:6), (cid:5)−1, 1(cid:6)(cid:5)−1, −1(cid:6), (cid:5)1, −1(cid:6) and let B be the circle centered at the
+origin of radius 1.2 (Fig. 13). The symmetric difference between A and B consists of the four corners of the square that lie
+outside the circle together with the four “sides” of the circle that lie outside the square. The area of this region is 0.92.
+
+It is easily shown that dV is a metric over the space of regular, bounded regions.
+
+Deﬁnition 3.7.2. Let Q be a region-valued ﬂuent and let I be a time interval. Q is volume-continuous during I
+if it is
+continuous with respect to the metric dV ; that is, for any (cid:3) > 0 there exists δ > 0 such that, for all T 1, T 2 in I , if |T 1 − T 2| <
+δ then dV (Q (T 1), Q (T 2)) < (cid:3).
+
+It is certainly the case that the region occupied by any piece of liquid is volume-continuous over time. However, this
+constraint is too weak; it would permit a liquid to gradually disappear from one container and simultaneously reappear in
+a container some distance away. Such a behavior would be volume-continuous but is clearly not what we mean by liquid
+moving continuously.
+
+Fig. 13. Measures of distance between regions.
+
+1556
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+The obvious reason that such a behavior is impossible is that it requires molecules of the liquid to teleport from one
+container to the other; whereas of course each molecule moves continuously. We can’t say that exactly in a continuous,
+molecule-free model; but one plausible equivalent is to require continuity in the Hausdorff metric, deﬁned as follows:
+
+Deﬁnition 3.7.3. Let R1 and R2 be bounded regular regions. The one-sided Hausdorff distance from R1 to R2, denoted
+“dH1(R1, R2)” is the maximal distance from any point in R1 to the nearest point in R2.
+(cid:3)
+d(P 1, P 2)
+
+(cid:2)
+
+.
+
+dH1(R1, R2) = max
+P 1∈R1
+
+min
+P 2∈R2
+
+The Hausdorff distance, denoted dH (R1, R2) from R1 to R2 is the maximum of the one-sided Hausdorff distance from R1 to
+R2 and the one-sided Hausdorff distance from R2 to R1.
+
+dH (R1, R2) = max
+
+(cid:3)
+(cid:2)
+dH1(R1, R2), dH1(R2, R1)
+
+.
+
+√
+
+For example, in Fig. 13, the distance from the point a1 = (cid:5)1, 1(cid:6) in A to the closest point b1 = (cid:5)0.6
+2(cid:6) in B is
+2 − 1.2 ≈ 0.214. Moreover, this is the greatest distance from any point in A to the closest point in B. The distance from the
+point b2 = (cid:5)1.2, 0(cid:6) in B to the nearest point a2 = (cid:5)1, 0(cid:6) in A is 0.2. Moreover, this is the greatest distance from any point in
+B to the nearest point in A. Therefore, the Hausdorff distance between A and B, dH (A, B) = max(0.214, 0.2) = 0.214.
+
+2, 0.6
+
+√
+
+√
+
+Deﬁnition 3.7.4. Let Q be a region-valued ﬂuent and let I be a time interval. Q is Hausdorff-continuous during I
+if it
+is continuous with respect to the metric dH ; that is, for any (cid:3) > 0 there exists δ > 0 such that if |T 1 − T 2| < δ then
+dH (Q (T 1), Q (T 2)) < (cid:3).
+
+Clearly, if a liquid consists of the union of molecules each of which is moving continuously, then the region occupied by
+a piece of liquid is a Hausdorff continuous function of time, since each point occupied by a molecule at one time is close
+to a point occupied by the same molecule at a suﬃciently recent time.
+
+Nonetheless, there is a plausible argument that in certain important cases the constraint that the region occupied by a
+
+piece of liquid is Hausdorff continuous is overly restrictive. There are two main cases of this kind.
+
+Case 1. Suppose that solid objects O 1 and O 2 have ﬂat surfaces that can meet, and suppose that those surfaces are im-
+mersed in liquid and pushed together (Fig. 14). Then the liquid ﬁlls the gap between the two surface up until the moment
+that the two objects meet, at which point the gap disappears. At the moment that the gap disappears, the region occupied
+by the liquid has a discontinuity in the Hausdorff metric equal to the radius of the largest circle that can be inscribed in the
+common surface (assuming that the two objects meet in a planar surface. If they meet in a non-planar surface, the analysis
+is more complex).
+
+Case 2. Let O 1 be a closed box with a ﬂat inner bottom surface and let O 2 be an object with a ﬂat bottom sitting inside O 1
+(Fig. 15). Suppose that the entire inner cavity of O 1 other than O 2 is ﬁlled with liquid. Now, if O 2 is lifted off the surface
+of O 1 the gap created between O 1 and O 2 is ﬁlled with liquid; since the volume of the liquid is constant, the gap must be
+ﬁlled instantaneously. Again, the region occupied by the liquid is discontinuous with respect to the Hausdorff metric.
+
+What are we to do about these two cases? One natural answer might be as follows. In Case 1, the idealization of the
+liquid as continuous breaks down once the gap between O 1 and O 2 becomes a single molecule wide, and the molecular
+nature of the liquid becomes critical. In Case 2, the idealization of liquid as incompressible breaks down; clearly what
+happens in fact is that the liquid is slightly compressed until it can ﬂow to ﬁll up the gap. Since the idealizations are
+not sustainable in these cases, these cases naturally lie outside the scope of the theory I am trying to develop. (Another
+explanation is that the idealization of the solid objects as perfectly rigid breaks down; if the surfaces can bend, then they
+can meet or separate gradually.)
+
+Fig. 14. Hausdorff discontinuous ﬂow: Case 1.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1557
+
+Fig. 15. Hausdorff discontinuous ﬂow: Case 2.
+
+It is possible that this is, in fact, the best answer to the question, that we should simply exclude these cases and posit
+that liquids move continuously in the Hausdorff distance. (One aspect of knowledge representation that is in general very
+poorly understood is what to do about cases where an idealization breaks down.) But I ﬁnd this solution problematic. In
+particular, note that case I appears in exactly the same form if O 1 and O 2 are immersed in a gas (air). I could believe that
+when you push two objects together in liquid, there is always a residual ﬁlm of liquid between them, but saying that any
+two solid objects that appear to be in contact actually have a separating ﬁlm of air does not seem at all plausible. Moreover,
+it will hugely complicate our theory of the dynamics of solid objects if no two solid objects are ever actually in contact, and
+all forces between solid objects are actually mediated by a layer of ﬂuid. And a theory that excludes the case of one solid
+object from being placed against another would seem to be unacceptably limited.
+
+Instead, in order to maintain at least the option of being able to place one solid against another, I have weakened the
+constraint that the region occupied by a piece of liquid is Hausdorff continuous to read that it is almost everywhere Hausdorff
+continuous; that is, any piece of liquid contains a subset that is Hausdorff continuous. This allows discontinuities like Case 1
+and Case 2 to take place, but only with protrusions that are initially “inﬁnitesimally thin” and connected to a previously
+existing body of liquid.
+
+Similarly, though it is critical in a theory of liquids is that a piece of liquid can break into disconnected parts and that
+a piece of liquid can deform itself into a shape of arbitrarily large diameter, we want to prohibit ﬂows patterns in which
+every piece of liquid breaks into parts, or in which every piece of liquid becomes very long and thin. Therefore, we impose
+the similar condition that, over any ﬁnite time interval, every piece of liquid contains a subpiece that is thickly connected
+and has a small diameter throughout the time interval.
+
+Deﬁnition 3.7.5. A piece of liquid L has a simple ﬂow of maximal diameter D during time interval [T S, T E] if throughout
+[T S, T E], L is Hausdorff continuous, is thickly connected, and has a diameter at most D.
+
+Rule 3. For any piece of liquid L and time interval I ,
+
+• The region occupied by L is volume continuous;
+• For any distance D > 0 there is a subset L1 of L that has simple ﬂow of maximal diameter D during I .
+
+It is easily shown that Rule 3 as stated above is ﬂexible enough to allows Cases 1 and 2 above but strong enough to
+prohibit a liquid from disappearing from one place and reappearing at a separated place. To show the latter we use a proof
+by contradiction. Suppose that liquid L gradually disappears from R1 and reappears in R2, where R1 and R2 are separated.
+Then there must exist a subset L1 of L that has simple ﬂow. But L1 must likewise move from R1 to R2, which contradicts
+both the condition that L1 is Hausdorff continuous and the condition that it is always thickly connected.
+
+We also wish to impose a rule that discontinuities like Cases 1 and 2 can only happen under special circumstances. For
+our purposes in this paper, it suﬃces to say that they cannot happen in ﬂowUndisruptedSpace. The exact statement is given
+in axiom DOWN.4, and will be discussed in Section 4.9.
+
+(One of the reviewers suggested an alternative solution to this problem, which would be to add an axiom stating, in
+
+effect,
+
+for each piece of liquid L and times T S, T E
+
+there exists a ﬁnite set of time points T 1 . . . Tk between T S and T E
+
+such that for every subset L1 of L,
+
+L1 is Hausdorff continuous throughout T S, T E except at T 1 . . . Tk.
+
+With a small extension to the temporal vocabulary, this can be recast in valid ﬁrst-order form. I don’t know whether this
+alternative axiom is adequate or how it relates logically to Rule 3 above.)
+
+1558
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+4. The formal representation and theory
+
+This section describes how the physical theory developed in Section 3 can be represented in formal logic. This is ac-
+tually reasonably straightforward; we have covered most of the tricky issues already. In this section we ﬁrst describe the
+foundational theories: notational conventions and system of sorts (Section 4.1), theories of real arithmetic and of Boolean
+operations on ﬁnite sets of objects (4.2) and the language and theory of time (4.3), and space (4.4). We then proceed to
+the parts of the paper speciﬁc to the theory of liquids. Section 4.5 describes the ontology of solids and liquids. Section 4.6
+formalizes the kinematic theory, which includes Rules 1, 2, and 3. Section 4.7 formalizes our theory of overﬂowing, particu-
+larly the deﬁnition of driven liquid (Deﬁnition 3.3.3 above). Section 4.8 formalizes the theory of cupped liquids, particularly
+Rule 4. Section 4.9 formalizes the theory of downward ﬂow, particularly Rules 5 and 6.
+
+It may be of methodological interest to note that, though the exposition in this paper follows a linear sequence of ﬁrst
+working through the pre-formal theory, next formalizing the theory, then verifying the proof, the actual progression of
+the research project did not proceed in anything like so systematic a fashion. Rather, at the time when I ﬁrst thought I
+had completed the representational work and could now easily work out the formal proof of the example (in early April
+2007), both the physical theory and the problem speciﬁcations were quite different from when I ﬁnally completed the proof
+(in mid July); inadequate in many respects, overly detailed or overly constrained or even inconsistent in others. Many large
+holes in the physical theory and the speciﬁcations were found through the impossibility of closing surprisingly minor details
+of desired lemmas. I am not advocating this as a method of research—in fact, I suspect I could have saved time overall if I
+had spent more time earlier on the pre-formal theory before entering on to the work of formalization—just saying that this
+is, in fact, how this project developed.
+
+We assume the standard mathematical theories of integer and real arithmetic, Boolean operators on ﬁnite sets, Euclidean
+geometry, and continuous functions. Therefore, in our axiomatization, we will enumerate the sorts and symbols we need,
+but we will not list the axioms. In our formal proof, we cite theorems from these theories as needed without axiomatic
+proofs (though when the theorems are not obvious, we give proofs in the usual sense).
+
+4.1. Notational conventions
+
+All this is largely standard and self-explanatory, but it is as well to lay it out systematically.
+Our axioms are stated in a sorted ﬁrst-order logic. We use symbols in Roman font beginning with a lower-case letter,
+such as “openBox” for constant, function, and predicate symbols. We use upper case symbols in italics for variables. Standard
+mathematical functions and predicates are used in the standard way; e.g. X1 + X2 is an inﬁx function; the curly brackets of
+{E1, E2} is an outﬁx function (mapping E1 and E2 to the set {E1, E2}). To aid readability, the sort of a variable is generally
+indicated by the ﬁrst letter; however, all axioms are stated so that this convention is not necessary. Quantiﬁed variables are
+subscripted to their quantiﬁer. For brevity, we use two forms of restricted quantiﬁcation in the subscript: a variable may
+be restricted by sort or by membership in a set. Logical operators follow the following precedence, from highest to lowest:
+negation ¬, conjunction ∧, disjunction ∨, implication ⇒, equivalence ⇔, deﬁnitional equivalence ≡, and quantiﬁers ∀ and
+∃. Thus, the scope of a quantiﬁer is to the end of the formula or to a right bracket that contains it. Free variables are taken
+to be universally quantiﬁed, where the scope of the implicit quantiﬁer is the entire formula. Greek letters are infrequently
+used as meta-variables.
+
+We have a hierarchical system of sorts, which is interpreted as syntactic sugar for a standard ﬁrst-order theory with a
+null element ⊥. (The null element is never used explicitly in our formulas, except in the axioms of sorts in Table 1.) In the
+translation to the base theory, an individual sort such as “object” or “time” is considered an entity. There are two predicates
+over sorts: “sortOf( X, S)”, meaning that X is an entity of sort S, and “subsort(S1, S2)”, meaning that S1 is a subsort of S2.
+We will abuse notation in our formulas by writing “S( X)” where S is a sort instead of “sortOf( X, S)”; e.g. we will write
+“object(O )” instead of “sortOf( X ,object)”. The sorts of the arguments to predicate and function symbols and to the values
+of function and constant symbols will be declared in a self-explanatory notation when these symbols are deﬁned. Table 1
+shows the translation of sort declarations into the base language.
+
+As axiom SORT.2 indicates, all functions are required to be total over the sort on which they are deﬁned. Hence, when
+we have a mapping which is single-valued but not total, we will use a relation symbol for it and add an axiom stating that
+it is single valued (when necessary). The “value” of the mapping will conventionally be the last argument. For this reason,
+in cases where we do use a function symbol, even if that is deﬁned and not primitive, we do not have to add an axiom
+stating that the function is total; such an axiom is implicit from the use of the function symbol.
+
+Axiom SORT.4 combined with axioms SORT.1 and SORT.2 implies that any ground term with argument ⊥ evaluates to ⊥
+
+and that any ground atomic formula with argument ⊥ is false, unless the predicate is the equals sign.
+
+4.2. Real arithmetic; Set theory
+
+As stated above, we use real arithmetic and Boolean set theory over sets of elements. (As we shall see below, the sets
+that we need in this paper are sets of objects and sets of geometric points; these two sorts are therefore deﬁnes as subsorts
+of “element”.) Table 2 enumerates the sorts and the symbols used.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1559
+
+Table 1
+Axioms of sorts
+
+SORT.1 The declaration of predicate symbol α as taking arguments of sorts σ1 . . . σk corresponds to the axiom
+
+∀ X1...Xk α( X1 . . . Xk)⇒ sortOf( X1, σ1) ∧ · · · ∧ sortOf( Xk, σk).
+(Note: The equality symbol X = Y has no sort declaration, so this axiom does not apply.)
+
+SORT.2 The declaration of function symbol β as taking arguments of sorts σ1 . . . σk and returning a value of sort σ0 corresponds to the two axioms
+
+∀ X0, X1... Xk X0 = β( X1 . . . Xk) (cid:19)= ⊥⇒
+
+sortOf( X1, σ1) ∧ · · · ∧ sortOf( Xk, σk) ∧ sortOf( X0, σ0)
+
+and
+∀ X0, X1... Xk sortOf( X1, σ1) ∧ · · · ∧ sortOf( Xk, σk) ⇒ β( X1 . . . Xk) (cid:19)= ⊥
+
+SORT.3 The declaration of constant symbol γ as having sort σ corresponds to the axiom
+
+sortOf(γ , σ )
+
+SORT.4 ∀S ¬sortOf(⊥, S).
+
+(The null element has no sort.)
+
+SORT.5 subsort(S1, S2) ≡ ∀ X sortOf( X, S1) ⇒ sortOf( X, S2).
+
+(Deﬁnition of subsort.)
+
+Table 2
+Sorts and symbols for real arithmetic and set theory
+
+Sorts:
+Real numbers ( X).
+Integers (I). Subsort of reals.
+Elements. (E)
+Sets of elements (U ).
+
+Symbols:
+X1 + X2, X1 − X2, X1 · X2, X1/ X2, | X|, min( X1, X2), X1 < X2, X1 (cid:2) X2, X1 > X2, X1 (cid:3) X2.
+
+∅, {E1, E2 . . . Ek}, E ∈ U , U 1 ∪ U 2, U 1 ⊂ U 2, U 1 − U 2.
+
+4.3. Time
+
+Since this paper does not deal with the feasibility of actions, and since all the actions carried out consist of the exogenous
+motion of solid objects, a very simple temporal ontology will suﬃce; there is a single time line, isomorphic to the real
+numbers, and there are ﬂuents (functions of time) that take on different values at different times. Times and ﬂuents are
+indeed the only temporal sorts that we will need. For brevity, we will treat times as real numbers, though of course a more
+rigorous treatment would take “time” to be a separate sort which has a real-valued measure in a given temporal coordinate
+system.
+
+A ﬂuent is an entity that takes on a particular value at a particular time [30]. A Boolean ﬂuent such as “fullOfLiquid(R)”
+(region R is full of liquid) is true or false at a time; a non-Boolean ﬂuent such as “place(O )” (the region occupied by object
+O ) takes on values of some other sort. If a ﬂuent Q takes on values of sort σ , we denote the sort of Q as “ﬂuent[σ ]”;
+e.g. grasping( A, O ) has sort ﬂuent[Bool] and place(O ) has sort ﬂuent[region]. In translating the sort language to the base
+language, the symbol “ﬂuent” here is a function mapping a sort like “region” to the sort ﬂuent[region].
+
+The temporal language is likewise simple and requiring only two primitives holds(T , Q ) and value(T , Q ) in addition to
+the primitives over the reals. However, it is useful to have some additional deﬁned predicates as convenient abbreviations.
+We assert two axioms of time in Table 3 (in addition to the implicit axioms of the real numbers). These are comprehen-
+
+sion axioms for ﬂuents; they state that any deﬁnable property of time can be reiﬁed as a ﬂuent.
+
+It will also be convenient to deﬁne some additional syntactic conventions for constructing functions over ﬂuents from
+functions and predicates over atemporal entities. First, if X is an atemporal entity, then we deﬁne value(T , X) = X for all
+times T ; that is, we conﬂate a ﬂuent that is constant with its value.
+
+Let Φ( X1 : σ1 . . . Xk : σk) be a predicate (or equality sign) over atemporal sorts σ1 . . . σk. For i = 1 . . . k let Q i be a ﬂuent
+
+of sort ﬂuent[σi ]. Then we deﬁne Φ #(Q 1 . . . Q k) to be the Boolean ﬂuent satisfying
+∀T :time holds (T , Φ#(Q 1 . . . Q k))⇔Φ(value(T , Q 1) . . . value(T , Q k)).
+
+Similarly let Ψ ( X1 . . . Xk) : σ be a function with arguments of atemporal sorts σ1 . . . σk and value of sort σ . Then
+
+Ψ #(Q 1 . . . Q k) is the ﬂuent of sort ﬂuent[σ ] satisfying
+
+∀T :time value (T , Ψ #(Q 1 . . . Q k)) = Ψ (value(T , Q 1) . . . value(T , Q k)).
+
+Finally, if (cid:11) is a Boolean operator then (cid:11)# is the corresponding function over Boolean ﬂuents (used with the same
+
+syntax as the operator). That is,
+
+∀T :time holds(T , Q 1(cid:11)# Q 2)⇔[holds(T , Q 1)(cid:11) holds(T , Q 2)].
+
+For example, if Q 1 and Q 2 are ﬂuents whose value at each time is a set, then “ Q 1 =# ∅” is the Boolean ﬂuent that holds
+at those times where Q 1 is empty. “ Q 1 ⊂# Q 2” is the Boolean ﬂuent that holds when Q 1 is a subset of Q 2. “ Q 1 ∪# Q 2”
+
+1560
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Table 3
+Temporal theory: Proper axioms
+
+Sorts:
+Time (T ) = real.
+Fluent (Q ).
+
+Symbols:
+holds(T : time, Q : ﬂuent[Bool]). Boolean ﬂuent Q holds at time T .
+value(T : time, Q : ﬂuent[γ ]) → γ .
+
+The value of non-Boolean ﬂuent Q at time T . γ is a meta-variable ranging over sorts.
+throughout(T 1, T 2:time, Q : ﬂuent[Bool]). Boolean ﬂuent Q holds from T 1 to T 2 inclusive.
+throughoutxE(T 1, T 2:time, Q :ﬂuent). Boolean ﬂuent Q holds from T 1 until T 2 but possibly not at
+
+T 2.
+
+foreverAfter(T :time, Q :ﬂuent). Fluent Q holds from time T onward.
+eventuallyForever(Q :ﬂuent). Q eventually becomes true and remains true forever.
+
+Deﬁnitions:
+
+TD.1
+TD.2
+TD.3
+TD.4
+
+throughout(T 1, T 2, Q ) ≡ ∀T T 1 (cid:2) T (cid:2) T 2 ⇒ holds(T , Q ).
+throughoutxE(T 1, T 2, Q ) ≡ ∀T T 1 (cid:2) T < T 2 ⇒ holds(T , Q ).
+foreverAfter(T , Q ) ≡ ∀T 1 T (cid:2) T 1 ⇒ holds(T 1, Q ).
+eventuallyForever(Q ) ≡ ∃T 1∀T 2 T 1 < T 2⇒ holds(T 2, Q ).
+
+Axioms:
+
+T.1
+
+T.2
+
+Let Φ(T ) be an open formula where T is a variable of sort “time” such that the variable Q does not appear free in Φ. Then the following is
+an axiom:
+
+∃Q ∀T :time holds(T , Q ) ⇔ Φ(T ).
+
+Let Φ( X, T ) be an open formula where T is a variable of sort “time”, and X is an atemporal variable (i.e. not of sort “time” or “ﬂuent”) such
+that the variable Q does not appear free in Φ. Then the following is an axiom:
+
+[∀T :time ∃X Φ( X, T )] ⇒ ∃Q ∀T :time Φ(value(T , Q ),T ).
+
+is the ﬂuent whose value at each time S is the union of the values of Q 1 and Q 2. “ Q 1 ⊂# Q 2 ∨# Q 2 ⊂# Q 1” is the ﬂuent
+that holds at all times in which either Q 1 is a subset of Q 2 or Q 2 is a subset of Q 1.
+
+4.4. Space
+
+The ontology we use for space is Euclidean geometry ((cid:2)3). Our discussion here is entirely ad hoc for the example of
+pouring liquids from one container to another. That is, Table 4 enumerates the sorts and the predicates that we use in the
+physical axioms of Sections 4.5–4.9; it does not attempt any systematic discussion of geometric reasoning. In our formal
+proof, we will cite standard or easily proven geometric theorems as needed.
+
+We use the following geometric sorts: distance, height (abbreviated “ht”), volume, point,, point set, vector, region, bregion,
+and rigid mapping. The general category “geometric entity” includes points, point sets, vectors, regions, bregions, and rigid
+mappings.
+
+It is useful to posit a standard unit length and a standard coordinate system, with a vertical z-axis. Relative to these,
+
+“distance”, “height” and “volume” can be considered subsorts of the real numbers.
+
+A point set is any non-empty set of points. The exclusion of empty point sets together with our rule excluding partial
+functions means that many useful functions such as intersection have to be deﬁned as predicates. (Including empty point
+sets would necessitate adding the condition “ P S is non-empty” to all kinds of logical statements; my feeling is that overall
+it is about an even trade-off.)
+
+A region is a topologically regular point set. A region need not be either bounded or connected. A bregion is a bounded
+
+(but not necessarily connected) region.
+
+A rigid mapping is a positive, orthonormal mapping of three-dimensional space to itself; that is, the composition of a
+
+rotation and a translation. (Reﬂections are not allowed.)
+
+The other geometric sorts are self-explanatory.
+The large number of geometric sorts that we use here may surprise readers who are used to more ontologically pure
+theories, in which the only geometric sort allowed is the sort of well-behaved, fully dimensional regions. However, it turns
+out that, strictly speaking, the greater ontological proﬂigacy here is illusory. Speciﬁcally, if you have a ﬁrst-order language
+that allows quantiﬁcation over regions, then even if you restrict the language to the single predicate “closer( X, Y , Z )”,
+meaning “region X is closer to Y than to Z ” and you restrict the universe of entities to include only simple polygons,
+nonetheless all of these ontological categories and the whole range of standard geometric concepts can be deﬁned as ﬁrst-
+order constructions in this language [10].
+
+Because of the large number of geometric sorts, we are less systematic about the use of initial letters to indicate sort
+of variables. In most cases, variables of sort “region” start with R; points start with start with P ; pointSets start with P S;
+rigid mappings start with M; distances start with D; other geometric variables start with G.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1561
+
+Table 4
+Spatial sorts and symbols
+
+Sorts:
+distance. subsort(distance,real).
+ht (height). subsort(ht,real).
+geomEntity (G). Any geometric entity.
+point (P ). subsort(point,geomEntity). subsort(point,element).
+pointSet (P S). subsort(pointSet,set). subsort(pointSet,geomEntity).
+vector. subsort(vector,geomEntity).
+region (R). subsort(region,pointSet).
+bregion(R). subsort(bregion,region)
+rigidMapping (M). subsort(rigidMapping,geomEntity).
+
+Symbols: (These are mostly explained in the text.)
+rccC(R1, R2: region).
+rccEC(R1, R2: region).
+rccDS(R1, R2: region).
+rccO(R1, R2: region).
+rccNTPP(R1, R2: region).
+bounded(P S:pointSet).
+mappingImage(M :rigidMapping, G: geomEntity) → geomEntity. The image of G under M.
+interior(P S:region) → pointSet. The topological interior of P S.
+boundary(R:region) → pointSet. The topological boundary surface of R (R-interior(R)).
+diameter(R: bregion) → distance.
+ˆz: vector. The absolute upward direction.
+pointAbove(P 1, P 2: point). P 1 is vertically above P 2.
+height(P : point) → ht.
+bottom(R: bregion) → ht. The minimum value of height(P ) for P ∈ R.
+top(R: bregion) → ht. The maximum value of height(P ) for P ∈ R.
+openBox(R B:region, R I: bregion).
+thicklyConnected(R:region)
+volumeOf(R:bregion) → volume.
+topPoint(P :point, R:region).
+bottomPoint(P :point, R:region).
+weakTopPoint(P :point,R:region).
+dist(P 1, P 2:point) → distance.
+dist(P S1, P S2:pointSet) → distance.
+xyProj(P S: pointSet) → pointSet.
+regDif(R1, R2, R D:region)
+regCompl(R1, R2:region)
+regInt(R1, R2, R I:region)
+hausdorff1(P S1, P S2:pointSet, D:distance).
+hausdorff(P S1, P S2:pointSet, D:distance).
+expand(P S:pointSet, D:distance) → pointSet.
+lineSeg(P S:pointSet,P A, P B:point)
+upExpand(P S:pointSet, D:distance, R, R E:region).
+
+We use some of the RCC [29] topological relations between regions. However, since our vocabulary of symbols is so
+large, we preface the name with “rcc". Thus, the predicate “rccC(R1, R2)” is the relation usually designated “C(R1, R2)” in
+the qualitative spatial reasoning literature; namely, regions R1 and R2 are connected. Similarly “rccEC(R1, R2)” is the QSR
+relation EC(R1, R2), R1 and R2 are externally connected; “rccDS(R1, R2)” is the QSR relation DS(R1, R2), R1 and R2 are
+disjoint (either disconnected or externally connected); “rccO(R1, R2)” is the QSR relation O(R1, R2), R1 and R2 overlap; and
+“rccNTPP(R1, R2)” is the QSR relation NTPP(R1, R2), R1 is a non-tangential proper part of R2. The RCC relations are only
+applied to regions, not to other point sets.
+
+The function “mappingImage(M, G)” denotes the image of G under rigid mapping M. The sort of mappingImage(M, G) is
+
+the same as the sort of G (in other words, all our geometric sorts are closed under rigid mappings).
+
+The predicates “regDif(R1, R2, R D)”, “regCompl(R1, RC )”, and “regInt(R1, R2, R I )” assert that R D is the regularized dif-
+
+ference of R1 and R2, RC is the regularized complement of R1, and R I is the regularized intersection of R1 and R2.
+
+The predicate “openBox(R B, R I )” is the geometric equivalent of the deﬁnition of a “cupped” region in Deﬁnition 3.2.3.
+It holds for regions R B, R I if R I is thickly connected; R B and R I are disjoint; and every boundary point of R I either has
+height equal to top(R I ) or is a boundary point of R B.
+
+The predicate “diameter( P S, X )” means that X is the diameter of point set P S; that is, the least upper bound on
+
+distance( P 1, P 2) where P 1, P 2 are points in P S. If P S is unbounded, then this does not hold for any X .
+
+The predicate “topPoint( P , R)” holds if point P is a boundary point of R and there is a vertical line segment upward
+from P that lies outside R. The predicate “bottomPoint( P , R)” is deﬁned analogously. The predicate “weakTopPoint( P , R)”
+holds if P is a boundary point of R and there is a vertical line segment upward from P that does not enter the interior of
+R (but may lie in the boundary of R).
+
+1562
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Table 5
+Some spatial deﬁnitions
+
+Deﬁnitions:
+
+SD.1 bregion(R) ≡ region(R) ∧ bounded(R).
+SD.2 localMin(P , P S) ≡
+
+∃D D > 0 ∧ ∀P 1∈P S dist(P , P 1)< D ⇒ height(P )(cid:2)height(P 1).
+
+SD.3 bottom(R) = H ≡ [∃P ∈R height(P )=H)] ∧ [∀P ∈R height(P )(cid:3) H)].
+SD.4 top(R) = H ≡ [∃P ∈R height(P )=H)] ∧ [∀P ∈R height(P )(cid:2) H)].
+SD.5 topPoint(P , R) ≡
+
+P ∈boundary(R)) ∧
+∃D1:distance 0 < D1 ∧ ∀D2:distance,P ∈P S 0 < D2 < D1 ⇒ P + D2 · ˆz (cid:19)∈ R.
+
+SD.6 bottomPoint(P , R) ≡
+P ∈boundary(R)) ∧
+∃D1:distance 0 < D1 ∧ ∀D2:distance,P ∈P S 0 < D2 < D1 ⇒ P − D2 · ˆz (cid:19)∈ R.
+
+SD.7 dist(P S1, P S2)=D ≡
+
+[ ∀P 1∈P S1,P 2∈P S2 dist(P 1, P 2) (cid:3) D] ∧
+[∀D1 D1 > D ⇒ ∃P 1∈P S1,P 2∈P S2 dist(P 1, P 2) < D1].
+
+SD.8 regDif(R1, R2, R3) ≡
+
+∀R:region R ⊂ R3 ⇔ R ⊂ R1 ∧ rccDS(R, R2).
+
+Table 6
+More spatial deﬁnitions
+
+regCompl(R1, R2) ≡ ∀R:region R ⊂ R2 ⇔ rccDS(R, R1).
+SD.9
+SD.10 regInt(R1, R2, R3) ≡ ∀R:region R ⊂ R3 ⇔ R ⊂ R1 ∧ R ⊂ R2.
+SD.11 openBox(R B, R I) ≡
+
+thicklyConnected(R I) ∧
+[∀P P ∈boundary(R I) ⇒ top(R I)=height(P )) ∨ P ∈boundary(R B)]
+
+SD.12 pointAbove(P A, P B) ≡
+
+∃D 0 (cid:2) D ∧ P A = P B + D · ˆz.
+
+SD.13 hausdorff1(P S1, P S2, D) ≡
+
+[ ∀P 1∈P S1 dist(P 1, P S2) (cid:2) D] ∧
+[∀D1 D1 < D ⇒ ∃P 1∈P S1 dist(P 1, P S2) > D1].
+
+SD.14 hausdorff(P S1, P S2, D) ≡
+
+∃D1,D2 hausdorff1(P S1, P S2, D1) ∧ hausdorff1(P S2, P S1, D2) ∧ D = max(D1, D2).
+
+SD.15 weakTopPoint(P , R) ≡
+
+P ∈boundary(R)) ∧
+∃D1:distance 0 < D1 ∧ ∀D2:distance,P ∈P S 0 < D2 < D1 ⇒ P + D2 · ˆz (cid:19)∈interior(R).
+P ∈expand(P S, D) ⇔ dist(P , P S) (cid:2) D.
+
+SD.16
+SD.17 upExpand(P S, D, R, R E) ≡
+
+∀P P ∈ R E ⇔
+∃P A,P L P A ∈ P S ∧ lineSeg(P L, P A, P ) ∧ P L ∈ R ∧
+height(P ) (cid:3) height(P A) ∧ dist(P , P A) (cid:2) D.
+
+The predicates “hausdorff1( P S1, P S2, D)” and “hausdorff( P S1, P S2, D)” assert that D is the one-sided Hausdorff dis-
+tance/the true Hausdorff distance between point sets P S1 and P S2. They are deﬁned as predicates, because they may be
+undeﬁned (i.e. inﬁnite) for unbounded point sets.
+
+The function “xyProj( P S)” is the projection of point set P S in the standard coordinate system.
+The function “expand( P S, D)” is the set of all points within distance D of some point in P S. The predicate
+“upExpand( P S, D, R, R E)” states that R E is the upward expansion of point set P S by distance D through region R; that
+is, R E is the set of all points P such that there is a point P A in P S within distance D of P such that the line segment from
+P to P A goes through R and P is at least as high as P A.
+
+The meanings of the remaining symbols in Table 4 are immediate. Functions and predicates deﬁned over point sets are
+overloaded to apply to individual points by coercing the point P to the point set {P }. Tables 5 and 6 give formal deﬁnitions
+of non-standard symbols.
+
+4.5. Ontology
+
+There are two basic kinds of physical entities in our theory. An object is a rigid solid object.
+A liquid chunk is a piece of liquid. Think of it as an abstraction of a set of particular molecules. At any time, any bounded
+region, connected or disconnected, which is ﬁlled with liquid has a corresponding liquid chunk. Each liquid chunk is eternal.
+The volume of liquid chunk L, denoted “liqVolume(L)” is constant over time. The set theoretic relation between two liquid
+chunks is constant over time; in particular, the atemporal relation “subchunk(L1, L2)” asserts that L1 is a subset of L2.
+
+In physical reasoning about solid objects it is often useful to be able to reify pseudo-objects [4]; geometric entities that
+“move around” with an object, such as the center of mass of an object, the hole of a donut, the apex of a cone, and so on.
+The source of pseudo-object B is the object to which B is “attached”.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1563
+
+Table 7
+Ontology: Sorts and symbols
+
+Sorts:
+movableEntity(G).
+gObject (G). Subsort of movableEntity.
+object (O ). Subsort of gObject.
+pseudo (B). Subsort of gObject.
+liquidChunk (L). Subsort of movableEntity.
+objectSet(U ). Subsort of set.
+
+Symbols:
+place(G: movableEntity) → ﬂuent[geomEntity].
+source(G: gObject) → object.
+shape(G: gObject) → geomEntity.
+placement(G: gObject) → ﬂuent[rigidMapping].
+motionless(O :object) → ﬂuent[Bool]
+liquidSpace → ﬂuent[region].
+solidSpace → ﬂuent[region].
+solidFreeSpace → ﬂuent[region].
+subChunk(L1, L: liquidChunk).
+liqVolume(L:liquidChunk) → volume.
+fullOfLiquid(R:region) → ﬂuent[Bool].
+empty(R: region) → ﬂuent[Bool].
+emptyLiquid(R:region) → ﬂuent[Bool].
+
+Table 8
+Ontology: Deﬁnitions and axioms
+
+Deﬁnitions:
+
+ONTD.1
+ONTD.2
+ONTD.3
+ONTD.4
+ONTD.5
+ONTD.6
+
+fullOfLiquid(R) = R ⊂#liquidSpace.
+emptyLiquid(R) = rccDS#(R,liquidSpace)
+holds(T , P ∈#solidSpace) ≡ ∃O :object holds(T , P ∈# ↑O ).
+solidFreeSpace = regCompl#(solidSpace).
+empty(R) = emptyLiquid(R) ∧# R ⊂#solidFreeSpace.
+objectSet(U ) ∧ O ∈ U ⇒ object(O ).
+
+Axioms:
+
+ONT.1
+ONT.2
+ONT.3
+ONT.4
+ONT.5
+
+ONT.6
+
+ONT.7
+ONT.8
+
+object(O ) ⇒ source(O )=O .
+gObject(G) ⇒ placement(G) = placement(source(G)).
+object(O ) ⇒ bregion(shape(O )).
+gObject(G) ⇒ value(T ,place(G)) = mappingImage(value(T ,placement(G)),shape(G)).
+T :time,L1,L2:liquidChunk subChunk(L1, L2) ⇔ holds(T , ↑L1 ⊂# ↑L2)
+∀
+bregion(R) ∧ holds(T ,fullOfLiquid(R)) ⇒ ∃1
+∀T :time,L:liquidChunk holds(T ,bregion#(↑L)∧# ↑L ⊂#liquidSpace)
+throughout(T 1, T 2,motionless(O )) ⇔ ∃P throughout(T 1, T 2,P =#placement(O )).
+
+L:liquidChunk value(T , ↑L) = R.
+
+Since objects, pseudo-objects, and liquid chunks have important properties in common, it will be convenient to group
+these into supersorts and deﬁne these properties over the supersorts. A generalized object (gObject) is either an object or a
+pseudo-object, and a movable entity is either an object, a pseudo-object or a liquid chunk.
+
+We characterize an object O and its associated pseudo-objects in terms of an arbitrary standard position. The shape of O
+is the region that it occupies in its standard position. The shape of pseudo-object Q is the geometric entity that instantiates
+Q when O is in its standard position.
+
+The position of an object O at a given time T is speciﬁed by a rigid mapping from its standard position to its posi-
+tion at T , denoted value(T ,placement(O )). The region occupied by O at time T is thus the image of shape(O ) under the
+mapping value(T ,placement(O )); this is denoted value(T ,place(O )). The same holds for pseudo-objects. The constraint that
+a pseudo-object must move around with its source is expressed by axiom ONT.2, which states that, for any pseudo-object
+B, placement(B) = placement(source(B)).
+
+Similarly, if L is a liquid chunk, then the ﬂuent “place(L)” is the region occupied by L at each time T .
+Since the function place(E) is used so frequently in our theory, we abbreviate it using the symbol ↑E. For example, the
+formula, “holds(T ,rccEC#(↑O , ↑L))” is an abbreviation for “holds(T ,rccEC#(place(O ), place(L)))”, meaning that O and L are
+externally connected at time T .
+
+The constants “liquidSpace” and “solidSpace” denote the ﬂuents corresponding to all of the space in the world occupied
+by liquid/solids at a given time. The constant “solidFreeSpace” denotes the ﬂuent corresponding to all the space not in
+the interior of a solid at a given time. The function “fullOfLiquid(R)” denotes the Boolean ﬂuent that holds at time T if
+R is full of liquid. The function “empty(R)” holds when the interior of R is empty of both liquids and solids. The ﬂuent
+“emptyLiquid(R)” holds when the interior of R is empty of liquid but not necessarily of solids.
+
+1564
+
+Table 9
+Continuity
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Symbols:
+continuous(Q :ﬂuent[real], T S, T E:time)
+continuousPoint(Q :ﬂuent[point], T S, T E:time)
+continuousPlacement(Q :ﬂuent[rigidMapping], T S, T E:time)
+volumeDiff(R1, R2:bregion) → volume
+volumeSymDiff(R1, R2:bregion) → volume
+continuousVolume(Q :ﬂuent[bregion], T S, T E:time)
+continuousHausdorff(Q :ﬂuent[pointSet], T S, T E:time)
+
+Deﬁnitions:
+
+CONTD.1
+
+CONTD.2
+
+CONTD.3
+
+CONTD.4
+
+CONTD.5
+CONTD.6
+
+CONTD.7
+
+continuous(Q , T S, T E) ≡
+∀E E > 0 ⇒
+
+∃D D > 0 ∧
+
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ∧ T 2 − T 1 < D ⇒
+|value(T 1, Q )−value(T 2, Q )| < E.
+
+continuousPoint(Q , T S, T E) ≡
+∀E E > 0 ⇒
+
+∃D D > 0 ∧
+
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ∧ T 2 − T 1 < D ⇒
+dist(value(T 1, Q ),value(T 2, Q )) < E
+
+continuousPlacement(Q , T S, T E) ≡
+∀P continuousPoint(mappingImage#(Q , P ), T S, T E).
+volumeDiff(R1, R2)=V ⇔
+[R1 ⊂ R2 ∧ V = 0] ∨ [∃R3 regDif(R1, R2, R3) ∧ V = volumeOf(R3)].
+volumeSymDiff(R1, R2) = volumeDif(R1, R2) + volumeDif(R2, R1).
+continuousVolume(Q , T S, T E) ≡
+∀E E > 0 ⇒
+
+∃D D > 0 ∧
+
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ∧ T 2 − T 1 < D ⇒
+
+volumeSymDiff(value(T 1, Q ),value(T 2, Q )) < E
+
+continuousHausdorff(Q , T S, T E) ≡
+∀E E > 0 ⇒
+
+∃D D > 0 ∧
+
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ∧ T 2 − T 1 < D ⇒
+
+∃E1 hausdorff(value(T 1, Q ),value(T 2, Q ),E1) ∧ E1 < E.
+
+Tables 7 and 8 present ontological deﬁnitions and axioms. ONT.4 asserts that the place occupied by any object or pseudo-
+object G is the image of shape(G) under the rigid mapping placement(G). Since shape(G) is constant over time rather than
+a ﬂuent, this implies that objects are rigid. ONT.2 asserts that the placement of a pseudo-object is equal to the placement
+of a source, guaranteeing that the pseudo-object moves around with the corresponding object. ONT.6 asserts that at a given
+time the region occupied by liquid chunk L1 is a subset of the region occupied by liquid chunk L2 just if L1 is a subchunk
+of L2; since subchunk is not time-dependent, this means that the set theoretical relations among chunks are constant over
+time. ONT.7 and ONT.8 assert that every bounded region ﬁlled with water corresponds to a liquid chunk, and conversely.
+
+4.6. Kinematics
+
+We begin with the representation of Rules 1, 2, and 3, called the kinematic constraints. In the domain of solid object
+mechanisms, reasoning purely with kinematic constraints is an important category of reasoning; there are many mechanisms
+whose workings can be explained largely or entirely on kinematic principles [22]. In the domain of liquids, purely kinematic
+reasoning is much less important because the class of kinematic behaviors is much less constrained. Nonetheless, these are
+very important constraints, because they always apply, as long as the idealizations that objects are rigid and liquids are
+incompressible are valid.
+
+Table 9 deﬁnes the concepts of continuity that we will need, as in Section 3.7. Solid objects have a continuous placement
+
+function; liquid chunks are volume-continuous and almost everywhere Hausdorff-continuous.
+
+Table 10 contains the kinematic axioms. Deﬁnition KIND.2 deﬁnes a liquid chunk L having “simple ﬂow” of diameter
+D between times T S and T E as in Deﬁnition 3.7.5. Axiom KIN.1 asserts that no two solid objects overlap. Axiom KIN.2
+asserts that no liquid overlaps a solid object. Axiom KIN.3 asserts that a liquid chunk always occupies a volume equal to
+its inherent volume; thus liquids are incompressible. Axiom KIN.4 asserts that the place of every liquid chunk is volume
+continuous. Axiom KIN.5 asserts that every liquid chunk has a subchunk with simple ﬂow of arbitrarily small diameter.
+
+4.7. Overﬂow
+
+Table 11 gives the formal statement of Deﬁnition 3.3.3 of “driven” liquids, since that category is needed as an exception
+
+to Rules 4, 5, and 6,
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1565
+
+Table 10
+Kinematics
+
+Symbols:
+simpleFlow(L:liquidChunk, D:distance, T S, T E:time)
+
+Deﬁnitions:
+
+KIND.1 simpleFlow(L, D, T S, T E) ≡
+
+continuousHausdorff(↑L, T S, T E) ∧
+throughout(T S, T E,thicklyConnected#(↑L) ∧# diameter#(↑L) <# D)
+
+Axioms:
+
+KIN.1 ∀O 1,O 2:object,T :time O 1 (cid:19)= O 2 ⇒ holds(T , rccDS#(↑O 1, ↑O 2))
+
+(Two objects O 1 and O 2 do not overlap at any time T .)
+
+KIN.2 ∀O :object,L:liquidChunk,T :time holds(T , rccDS#(↑O , ↑L))
+
+(An object O does not overlap a liquid chunk L at time T .)
+KIN.3 ∀L:liquidChunk,T :time volumeOf(value(T , ↑L)) = liqVolume(L).
+
+(The volume of a liquid chunk L is constant.)
+KIN.4 ∀L:liquidChunk,T S,T E:time continuousVolume(↑L, T S, T E)
+KIN.5 ∀L:liquidChunk,T S,T E:time,D:distance
+D > 0 ⇒
+
+∃L1:liquidChunk subchunk(L1, L) ∧ simpleFlow(L1, D, T S, T E).
+
+(Liquids ﬂow continuously, as described in the text.)
+
+Table 11
+Overﬂow
+
+Symbols:
+localMaxBox(R B:region,R I:bregion) → ﬂuent[Bool].
+localMaxCup(R:bregion) → ﬂuent[Bool].
+monotonic(Q :ﬂuent[real], T S, T E:time, X:real).
+monotonicPreﬁx(Q :ﬂuent[real], T S:time).
+simpleOverﬂows(L:liquidChunk, Q : ﬂuent[bregion], T S, T E: history)
+drivenReg(R:bregion) → ﬂuent[Bool].
+driven(L:liquidChunk) → ﬂuent[Bool].
+
+SPILLD.1
+
+localMaxBox(R B, R I) ≡
+openBox(R B, R I) ∧
+∃D D > 0 ∧
+
+∀R1 openBox(R B, R1) ∧ R I ⊂ R1 ∧ R (cid:19)= R1 ⇒
+
+∃P ∈R1 dist(P , R I) > D.
+
+SPILLD.2
+SPILLD.3 monotonic(Q , T S, T E, X) ≡
+
+localMaxCup(R) = localMaxBox#(solidSpace,R).
+
+T S < T E ∧
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ⇒
+
+[[ X = 0 ∧ value(T 2, Q ) = value(T 1, Q )] ∨
+X·(value(T 2, Q ) − value(T 1, Q )) > 0].
+
+SPILLD.4 monotonicPreﬁx(Q , T S) ≡ ∃T E, X monotonic(Q , T S, T E, X).
+SPILLD.5
+
+simpleOverﬂows(L, Q , T S, T E) ≡
+holds(T S, ↑L =# Q ) ∧
+throughout(T S, T E, localMaxCup#(Q )) ∧ continuousVolume(Q , T S, T E) ∧
+monotonic(volumeOf#(Q ), T S, T E, −1)
+holds(T ,drivenReg(R)) ⇔
+∃L O ,Q O ,T S,T E,R E T S (cid:2) T (cid:2) T E ∧
+
+SPILLD.6
+
+simpleOverﬂow(L O , Q O , T S, T E) ∧ R ⊂ R E ∧
+holds(T , thicklyConnected#(R ∪ ↑L O ) ∧#
+
+upExpand#(topSurface#(Q O ), maxOutﬂow, solidFreeSpace, R E))
+
+SPILLD.7
+
+holds(T ,driven(L)) ⇔
+∃R holds(T ,drivenReg(R) ∧# ↑L ⊂# R)
+
+Axioms:
+
+SPILL.1
+
+throughout(T S, T E,localMaxCup#(Q )) ∧ continuousVolume(Q , T S, T E) ⇒
+monotonicPreﬁx(volumeOf(Q ),T S).
+
+Deﬁnitions SPILLD.1 and SPILLD.2 deﬁne “locally maximal cup” as in Deﬁnition 3.3.1. Deﬁnition SPILLD.3 deﬁnes the
+relation “monotonic( Q , T S, T E, X )”, meaning that ﬂuent Q is monotonic over interval [T S, T E] with sign X . If X is positive,
+Q is strictly monotonically increasing; if X is negative, Q is strictly monotonically decreasing; if X is 0, Q is constant.
+
+Deﬁnition SPILLD.5 deﬁnes the event of a cupped region overﬂowing. Let Q be a locally maximal cup throughout interval
+[T S, T E] that is volume continuous. If liquid chunk L ﬁlls Q at T S and the volume of Q monotonically decreases during
+[T S, T E], then Q overﬂows during [T S, T E]. The condition “continuousVolume( Q , H )” is required, ﬁrst to ensure that Q
+
+1566
+
+Table 12
+Flow
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Symbols:
+ﬂowsIn(L:liquidChunk, Q :ﬂuent[bregion], T S, T E: time)
+ﬂowsOut(L:liquidChunk, Q :ﬂuent[bregion], T S, T E: time)
+noInﬂow(Q :ﬂuent[bregion], T S, T E: time)
+noInﬂowDuring(Q :ﬂuent[bregion], T S, T E: time)
+noOutﬂow(Q :ﬂuent[bregion], T S, T E: time)
+
+Deﬁnitions:
+
+FLOWD.1 ﬂowsIn(L, Q , T S, T E) ≡
+
+holds(T S, rccDS#(↑L, Q )) ∧ holds(T E, ↑L ⊂# Q ).
+
+FLOWD.2 ﬂowsOut(L, Q , T S, T E) ≡
+
+holds(T S, ↑L ⊂# Q ) ∧ holds(T E, rccDS#(↑L, Q )).
+
+FLOWD.3 noInﬂow(Q , T S, T E) ≡ ¬∃L ﬂowsIn(L, Q , T S, T E).
+FLOWD.4 noOutﬂow(Q , T S, T E) ≡ ¬∃L ﬂowsOut(L, Q , T S, T E).
+FLOWD.5 noInﬂowDuring(Q , T S, T E) ≡
+
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ⇒ noInﬂow(Q , T 1, T 2).
+
+Table 13
+Cups
+
+Symbols:
+cuppedRegion(R:bregion) → ﬂuent[Bool]
+motionlessLiquidIn(R:bregion) → ﬂuent[Bool].
+slowObjectMotion(O :object) → ﬂuent[Bool].
+slowObjectsInContact(R:region) → ﬂuent[Bool].
+motionlessObjectsInContact(R:region) → ﬂuent[Bool].
+driven(L) → ﬂuent[Bool].
+noDrivenLiqIn(R:region) → ﬂuent[Bool].
+
+Deﬁnitions:
+
+CUPD.1 cuppedRegion(R) = openBox#(solidSpace,R)
+CUPD.2 holds(T ,slowObjectsInContact(R) ≡
+
+∀
+
+O :object holds(T , rccC#(↑O , R)) ⇒ holds(T ,slowObjectMotion(O ))
+
+CUPD.3 holds(T ,motionlessObjectsInContact(R)) ≡
+
+∀O :object holds(T , rccC#(↑O , Q )) ⇒ holds(T ,motionless(O ))
+
+CUPD.4 holds(T ,noDrivenLiqIn(R)) ≡
+
+¬∃L holds(T , driven(L) ∧# ↑L ⊂# R).
+
+Axioms:
+
+CUP.1
+
+throughout(T S, T E,motionlessLiquidIn(Q )) ≡
+T S < T E ∧
+∀L:liquidChunk,T 1,T 2 T S (cid:2) T 1 (cid:2) T E ∧ T S (cid:2) T 2 (cid:2) T E ∧ holds(T 1,↑L ⊂# Q ) ⇒
+
+value(T 2,↑L)=value(T 1, ↑L).
+
+CUP.2
+
+continuousVolume(Q , T S, T E) ∧
+throughout(T S, T E, slowObjectsInContact(Q ) ∧# cuppedRegion(Q ) ∧#
+
+¬#fullOfLiquid(Q ) ∧# noDrivenLiqIn(Q )) ⇒
+
+CUP.3
+
+CUP.4
+
+noOutﬂow(Q , T S, T E).
+∀T S:time,R:bregion
+[∀T 1 T S (cid:2) T 1 ⇒
+
+holds(T 1, cuppedRegion(R) ∧# motionlessObjectsInContact(R)) ∧
+noInﬂowDuring(R, T S, T 1)] ⇒
+eventuallyForever(motionlessLiquidIn(R)).
+holds(T ,motionless(O )) ⇒ holds(T ,slowObjectMotion(O )).
+
+does not simply “jump” from one cup to an entirely separate cup, and second to exclude the case where the extent of a
+cupped region changes discontinuously, e.g. a plug is pulled from the side of a cup.
+
+Deﬁnitions SPILLD.6 and SPILLD.7 deﬁnes a “driven region” and a “driven liquid” as in Deﬁnition 3.3.3.
+Axiom SPILL.1 is required to exclude certain pathological scenarios. SPILLD.6 and SPILLD.7 assert that a liquid is driven
+only while the corresponding cup is overﬂowing, and SPILLD.5 states that a cup overﬂows only over a history where its
+volume decreases monotonically. However, there exist continuous real-valued functions—variants of the Cantor function—
+which decrease between the start and end of an interval but do not monotonically decrease over any subinterval. If the
+volume of a cupped region were to follow one of these, then SPILLD.5 would say that it never “overﬂows” even though the
+volume of the cup has fallen below the volume of the liquid it contains. To rule this out, we assert the rather specialized
+axiom SPILL.1 that if Q is a ﬂuent satisfying the conditions of SPILLD.5 (other than being ﬁlled with liquid) at time T 1,
+then volumeOf( Q ) has the “monotonic preﬁx property” deﬁned in SPILLD.4; there exists T 2 > T 1 such that volumeOf( Q )
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1567
+
+Table 14
+Downward ﬂow: Symbols
+
+Symbols:
+maxOutﬂow → distance.
+obstacleSpace → ﬂuent[region].
+weaklyCupped(L:liquidChunk) → ﬂuent[Bool].
+nonFlowingSpace → ﬂuent[region].
+ﬂowDisruptionReg(R:region) → ﬂuent[Bool].
+ﬂowDisruptedSpace → ﬂuent[region].
+ﬂowUndisruptedSpace → ﬂuent[region].
+ﬂowStoppingPoint(P :point,R:region) → ﬂuent[Bool].
+cantFlowDown(R:bregion) → ﬂuent[Bool].
+canFlowDown(R:bregion) → ﬂuent[Bool].
+ﬂowsDown(Q :ﬂuent[bregion], T S, T E:time).
+ﬂowsStraightDown(L:liquidChunk, T S, T E:time).
+connHorizOutslice(L A, L B:liquidChunk) → ﬂuent[Bool].
+
+is monotonic over [T 1, T 2]. Essentially, this amounts to a well-behavedness condition on the shape and the motion of the
+objects forming the cup. It is a quite weak condition; if the shapes and motions are semi-algebraic or probably even if they
+are semi-analytic, then the condition is guaranteed.
+
+4.8. Cupped liquid
+
+Axiom CUP.1 is the formal statement of rule 4, the ﬁrst of our substantive dynamic rules: If, throughout an interval
+[T S, T E] ﬂuent Q is always a cupped region, is continuous, and is never full of liquid, and if the objects in contact with
+Q move slowly throughout [T S, T E], then there is no outﬂow from Q during [T S, T E]. The deﬁnition of “no outﬂow” and
+other useful predicates associated with ﬂow are given in Table 12.
+
+Axiom CUP.2 states a dynamic rule which we actually do not need for our pouring example here and did not discuss
+in Section 3: If a ﬁxed region R is a cupped region forever after a starting time T S and the objects in contact with R are
+motionless throughout forever, then eventually the liquid in R will likewise become motionless.
+
+Axioms CUP.3–CUP.5 assert some basic properties of “slow object motion”: it is inherited by subhistories and by splicing,
+
+and an object that is motionless is (so to speak) moving slowly.
+
+4.9. Downward ﬂow
+
+Finally, Tables 14–16 give the formal statement of our theory of downward ﬂow and rules 5 and 6 from Sections 3.4 and
+3.5. Deﬁnitions DOWND.1–DOWND.5 deﬁne the concepts of weakly cupped liquids, nonFlowingSpace, ﬂowDisruptedSpace,
+and ﬂowUndisruptedSpace, corresponding to Deﬁnitions 3.4.2, 3.5.1, and 3.5.2. Deﬁnitions DOWND.7–DOWND.9 deﬁne re-
+gions that can and can’t ﬂow down, corresponding to Deﬁnitions 3.4.3 and 3.4.4. Deﬁnitions DOWND.10–DOWND.12 deﬁne
+the event of a liquid ﬂowing down and ﬂowing straight down, corresponding to deﬁnitions 3.4.1 and 3.5.3. Deﬁnition
+DOWND.13 deﬁnes the concept of a liquid slice with the same vertical span, used in Rule 5.
+
+The deﬁnition of “ﬂowing straight down” given in Section 3.5 (Deﬁnition 3.5.3) was not quite adequate, and is corrected
+here. The precise deﬁnition is given in DOWND.11 and DOWND.12. We say that a region-value ﬂuent Q ﬂows straight down
+in history [T S, T E] if Q is continuous and ﬂows down and is always thickly connected and its projection on the xy plane
+is constant. A piece of liquid L ﬂows straight down in [T S, T E] if L ﬂows down T S, T E, and at T E, the place of every
+connected piece L2 of L is equal to the value in T E of some region-valued ﬂuent Q that has ﬂowed straight down in H and
+has always been part of L in [T S, T E]. Note that Q does not have to correspond to L2 throughout [T S, T E]—that would
+require the whole liquid to ﬂow vertically downward—but at each time T between T S and T E, Q corresponds to some part
+of L. This condition excludes histories in which pieces of L could “sneak around” obstacles, getting underneath other pieces
+of L that they are not actually connected to, which would satisfy Deﬁnition 3.5.3 as originally stated.
+
+Axiom DOWN.2 states Rule 5: a liquid that can ﬂow down throughout an interval does ﬂow down. Axiom DOWN.3
+states Rule 6: a liquid chunk in ﬂowUndisruptedSpace is part of a horizontal slice of the same vertical extent that ﬂows
+straight down for some ﬁnite length of time. The horizontal slice may ﬂow into ﬂowDisruptedSpace—indeed, it may overlap
+ﬂowDisruptedSpace even at the start—but it certainly does not stop ﬂowing straight down before it has come into contact
+with ﬂowDisruptedSpace.
+
+Axiom DOWN.4 prohibits the phenomenon of liquid ﬂow that is not Hausdorff continuous, discussed in Section 3.7, from
+occurring in ﬂowUndisruptedSpace. Speciﬁcally it states that for any suﬃciently small interval [T S, T E], any liquid chunk
+that is contained within ﬂowUndisruptedSpace at any time between T S and T E moves only a small Hausdorff distance
+between T S and T E.
+
+Axiom DOWN.5 states that if a region R never contains any cups, and there is no ﬂow into R, then all the liquid will
+
+eventually ﬂow out of R.
+
+Axiom DOWN.6 states that the downward velocity of any downward ﬂowing liquid L is faster than the downward velocity
+of the top of any region ﬂuent Q which is a maximal cup of any slowly moving object. This is not literally true, but we use
+
+1568
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Table 15
+Downward ﬂow: Deﬁnitions
+
+Deﬁnitions:
+
+DOWND.1
+
+holds(T ,P ∈#obstacleSpace) ⇔
+∃G holds(T , P ∈# ↑G) ∧
+
+[object(G) ∨
+
+[liquidChunk(G) ∧
+
+[holds(T ,cuppedRegion(↑G) ∨# driven(G))]]]
+
+DOWND.2 weaklyCupped(L) = openBox#(obstacleSpace,↑L)
+holds(T ,P ∈#nonFlowingSpace) ⇔
+DOWND.3
+holds(T ,P ∈#obstacleSpace) ∨ ∃L holds(T ,weaklyCupped(L) ∧# P ∈# L).
+holds(T ,ﬂowDisruptionReg(R)) ≡
+thicklyConnected(R) ∧ holds(T ,fullOfLiquid(R)) ∧
+∀P ∈R ∃P 1∈R holds(T ,weakTopPoint#(P 1,nonFlowingSpace) ∧
+
+DOWND.4
+
+DOWND.5
+
+DOWND.6
+DOWND.7
+
+DOWND.8
+
+DOWND.9
+DOWND.10
+
+DOWND.11
+
+DOWND.12
+
+P ∈# upExpand#(P 1,maxOutﬂow,solidFreeSpace)).
+
+holds(T ,P ∈#ﬂowDisruptedSpace) ≡
+∃R P ∈ R ∧ holds(T ,ﬂowDisruptionReg(R)).
+ﬂowUndisruptedSpace = regCompl#(ﬂowDisruptedSpace ∪# nonFlowingSpace)
+ﬂowStoppingPoint(P , R) ≡
+¬bottomPoint(P , R) ∧ localMin(P ,boundary(R)).
+holds(T ,cantFlowDown(R)) ⇔
+[holds(T ,rccO#(R,nonFlowingSpace)) ∨
+
+[∃P bottomPoint(P , R) ∧ holds(T , ﬂowStoppingPoint#(P ,nonFlowingSpace))]]
+
+canFlowDown(R) = ¬#cantFlowDown(R).
+ﬂowsDown(Q , T S, T E) ≡
+∀T 1,T 2 T S (cid:2) T 1 < T 2 (cid:2) T E ⇒
+value(T 2,top#(Q )) < value(T 1,top#(Q )) ∧
+value(T 2,bottom#(Q )) < value(T 1,bottom#(Q ))
+qFlowsStraightDown(Q , T S, T E) ≡
+continuousVolume(Q , T S, T E) ∧ ﬂowsDown(Q , T S, T E) ∧
+throughout(T S, T E,thicklyConnected#(Q )) ∧
+∃P S1:pointSet throughout(T S, T E,P S1 =# xyProj#(Q ))
+ﬂowsStraightDown(L, T S, T E) ≡
+ﬂowsDown(L, T S, T E) ∧
+∀T 2,L2 T S (cid:2) T 2 (cid:2) T E ∧ subchunk(L2, L) ∧ holds(T 2,thicklyConnected#(↑L2)) ⇒
+
+∃Q 2 qFlowsStraightDown(Q 2, T S, T 2) ∧
+
+holds(T 2, Q 2 =# ↑L2) ∧ throughout(T S, T 2, Q 2 ⊂# ↑L).
+
+DOWND.13
+
+holds(T ,connHorizOutslice(L A, L B)) ⇔
+subchunk(L A, L B) ∧
+holds(T , thicklyConnected#(↑L B)∧#
+
+top#(↑L A) =# top#(↑L B) ∧# bottom#(↑L A) =# bottom#(↑L B))
+
+it to exclude a scenario in which one pours liquid of a cup and catches it again in the same cup.7 Note that “slow moving”
+must actually exclude downward acceleration that is faster than gravitational acceleration, or axiom CUP.2 would be false.
+Axiom DOWN.6 approximates this constraint on acceleration with a similar constraint on velocity, since we do not deal with
+acceleration in this paper.
+
+5. Problem speciﬁcation
+
+In this section, we translate the commonsense inference, “If a partially full pitcher is lifted over a pail and tilted far
+enough, some of the liquid will pour from the pitcher to the pail”, into a formal speciﬁcation and a conclusion that is
+a logical consequence of the speciﬁcation and the theory presented above. In particular, we must specify the necessary
+geometric constraints on the pitcher, the pail, and the motion of the pitcher.
+
+This is a more problematic undertaking than one might suppose. It seems plausible to assume that the speciﬁcations of
+individual inference problems will consist entirely or largely of a set of sentences of simple logical form over a ﬁxed and
+ﬁnite language. Determining what concepts should be included in that language is a large part of the research enterprise.
+That is to say, we need to determine what concepts are important in specifying individual inference problems; this is a
+different and probably larger set than the concepts needed to state the general theory. The concepts themselves are deﬁned
+in terms of the theoretical temporal, spatial, and physical primitives. These deﬁnitions may be of arbitrary logical complexity,
+but hopefully they will eventually be a ﬁxed and ﬁnite collection. We have followed this structure in our speciﬁcations,
+giving the deﬁnitions in Tables 17 and 18, and the scenario description in Table 19; note that the scenario description is
+effectively a conjunction of ground atomic formulas.
+
+7 One of the reviewers of this paper, who is more agile than the author, remarks that he/she has actually succeeded in doing this.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1569
+
+Table 16
+Downward ﬂow: Axioms
+
+Axioms:
+
+DOWN.1 maxOutﬂow > 0.
+liquidChunk(L) ∧
+DOWN.2
+throughout(T S, T E,slowObjectsInContact(↑L) ∧# canFlowDown(↑L)) ⇒
+ﬂowsDown(↑L,T S, T E)
+liquidChunk(L) ∧ throughout(T S, T E,slowObjectsInContact(↑L)) ∧
+holds(T S, ↑L ⊂#ﬂowUndisruptedSpace) ⇒
+∃T X,L X T S < T X ∧
+
+DOWN.3
+
+holds(T S,connHorizOutslice(L, L X) ∧# rccDS#(↑L X,nonFlowingSpace)) ∧
+ﬂowsStraightDown(L X, T S, T X) ∧ holds(T X, rccC#(↑L X,ﬂowDisruptedSpace)).
+
+DOWN.4
+
+DOWN.5
+
+∀T S,T E:time T S < T E ∧ bregion(R) ∧ distance(D) ∧ D > 0 ⇒
+∃T 1 T S < T 1 (cid:2) T E ∧
+∀L:liquidChunk,T
+
+T S (cid:2) T (cid:2) T 1 ∧ holds(T , ↑L ⊂#ﬂowUndisruptedSpace ∧# ↑L ⊂# R) ⇒
+∃D1 hausdorff(value(T , ↑L),value(T S, ↑L),D1) ∧ D1 < D.
+
+∀T S:time,R:bregion
+
+[∀T E,RC T S (cid:2) T E ∧ RC ⊂ R ⇒
+
+noInﬂowDuring(R, T S, T E) ∧ ¬holds(T E,cuppedRegion(RC ))]
+
+⇒
+
+eventuallyForever(emptyLiquid(R)).
+
+DOWN.6
+
+liquidChunk(L) ∧ ﬂowsDown(↑L, T S, T E) ∧ continuousVolume(Q I N, T S, T E) ∧
+throughout(T S, T E, slowObjectMotion(O B) ∧# localMaxBox#(↑O B, Q I N) ∧#
+
+rccDS#(↑L,nonFlowingSpace)) ⇒
+
+value(T S, top#(Q I N)) − value(T E, top#(Q I N)) (cid:2)
+value(T S, top#(L)) − value(T E, top#(L)).
+
+Table 17
+Problem speciﬁcation: Symbols
+
+Symbols:
+oPitcher, oPail → object.
+bInsidePitcher, bSpout, bTopPitcher → pseudo.
+l0 → liquidChunk.
+t0,t1,t2 → time.
+topSurface(P S:pointSet, R:region)
+partialBox(R B, R I1, R I2, R O P E N: bregion, D:distance)
+spout1(R B, R I1, R I2, R S P O U T , R O P E N:region,D:distance)
+spout(R S P O U T , R B:bregion, D;distance).
+pitcherShape(R O B, R I N:bregion, P T O P :pointSet ,R S P O U T :bregion).
+pitcher(O P :object, B I, B T , B S:pseudo) → ﬂuent[Bool].
+volumeBelow(R:region, Z :ht) → volume
+psBottom(P S:pointSet, Z :ht).
+simpleSafeTilt(B I N, B T O P : pseudo, V : volume)
+alwaysSimpleBox(R B: region)
+passOverBox(P A S S:pointSet, R B O X, R I N:region)
+upColumn(P S:pointSet, Z :ht, P SC :pointSet).
+pouringRegion → ﬂuent[region].
+simpleBox(R:region).
+convexHull(P S:pointSet) → pointSet.
+isolated(R:region, U :objectSet, L:liquidChunk) → ﬂuent[Bool].
+maxBox(R B, R I:region).
+horizExpand(P S:pointSet, D:distance) → pointSet.
+
+Turning now to the details of the speciﬁcations: There are two objects oPitcher and oPail, and a liquid chunk l0. There
+are three pseudo-objects associated with oPitcher: bInsidePitcher, the inside of the pitcher at the starting time, bTopPitcher,
+the top surface of bInsidePitcher, and bSpout, the spout (PS.3, PS.4). Initially all the liquid l0 is inside bInsidePitcher (PS.5).
+There are three distinguished time points: t0, t1, and t2 (PS.1). At the starting time t0, the pitcher is an open box (PS.3)
+
+and contains the liquid l0 (PS.4).
+
+From t0 to t1, the pitcher is moved slowly (PS.7) to a position where its spout is over oPail, being kept reasonably upright
+
+throughout (PS.8).
+
+From t2 to t3, the pitcher is tipped to a ﬁnal position where the volume it can contain is less than the volume of l0.
+After t3, it remains motionless forever in its pouring position (PS.17). Since the pitcher remains motionless after t3, any
+geometric property that holds in t3 continues to hold after t3.
+
+PS.6 speciﬁes that the bottom of bTopPitcher is always above the bottom of bInsidePitcher. This guarantees that there is
+
+always some cupped region inside the pitcher, and thus that some of l0 remains inside the pitcher.
+
+1570
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Table 18
+Problem speciﬁcation: Deﬁnitions
+
+Deﬁnitions:
+
+PD.1
+
+PD.2
+PD.3
+
+PD.4
+
+PD.5
+
+PD.6
+
+PD.7
+
+PD.8
+
+PD.9
+
+PD.10
+
+bubbleFreeAttachment(R A, R B) ≡
+rccEC(R A, R B) ∧
+¬∃R rccEC(R, R A) ∧ rccDS(R, R B) ∧
+boundary(R) ⊂ boundary(R A) ∪ boundary(R B) ∧
+¬[boundary(R) ⊂ boundary(R B)].
+topSurface(P S, R) ≡ ∀P P ∈ P S ⇔ topPoint(P , R).
+partialBox(R B, R I1, R I2, R O P E N, D) ≡
+localMaxBox(R B, R I1) ∧ R I1 ⊂ R I2 ∧ top(R I2)=top(R I1)+D ∧
+rccEC(R B, R O P E N) ∧ openBox(R B ∩ R O P E N, R I2,D)
+spout1(R B, R I1, R I2, R S P O U T , R O P E N, D) ≡
+partialBox(R B, R I1, R I2, R O P E N, D) ∧
+bubbleFreeAttachment(R S P O U T , R B) ∧ R O P E N ⊂ R S P O U T .
+spout(R S P O U T , R B, D) ≡
+∃R I1,R I2,R O P E N spout1(R B, R I1, R I2, R S P O U T , R O P E N, D).
+regionBelow(R, Z , R B) ≡
+∀R1:region R1 ⊂ R B ⇔ R1 ⊂ R ∧ top(R B) (cid:2) Z .
+psBottom(P S, Z ) ≡
+[∀P ∈P S height(P S) (cid:3) Z ] ∧
+[∀ Z 1 Z 1 > Z ⇒ ∃P ∈P S height(P ) < Z 1].
+holds(T ,simpleSafeTilt(B I N, B T O P , V )) ≡
+∃Z ,R B holds(T ,psBottom#(↑B T O P , Z ) ∧# regionBelow#(↑B I N, Z , R B)) ∧
+V (cid:2)volumeOf(R B)
+simpleBox(R) ≡
+∃R1 localMaxBox(R, R1) ∧
+
+[∀R2 localMaxBox(R, R2) ⇒ R1 = R2] ∧
+[∀P ﬂowStoppingPoint(P , R) ⇒ P ∈ R1].
+
+holds(T ,isolated(R, U , L)) ⇔
+∃D:distance D > 0 ∧
+
+[∀O :object holds(T ,dist#(↑O , R) <# D) ⇒ O ∈ U ] ∧
+[∀L1:liquidChunk holds(T , ↑L1 ⊂# expand#(R, D)) ⇒ subchunk(L1, L)].
+
+PD.11 maxBox(R B, R I) ≡
+
+PD.12
+
+PD.13
+
+PD.14
+
+openBox(R B, R I) ∧ [∀RC openBox(R B, RC ) ∧ R I ⊂ RC ⇒ R I = RC ].
+columnWithin(RC, R I) ≡
+∃R B, Z T O P R B ⊂ R I ∧ thicklyConnected(R B) ∧ upColumn(R B, Z T O P , RC )
+P ∈horizExpand(P S, D) ⇔
+∃P A∈P S dist(P , P S) (cid:2) D ∧ height(P A)=height(P ).
+onlyChannelsInReg(R B, R E, R X, Z T O P , D) ≡
+∀P weakTopPoint(P , R B) ∧ height(P ) (cid:2) Z T O P ∧ P ∈ R E ⇒
+
+[P ∈ R X∨ horizExpand(P , D) ⊂ R E ∨ [∃R I openBox(R B, R I) ∧ P ∈ R I]]
+
+PS.7 asserts that oPitcher is a “simple box” throughout the scenario. This means that (a) throughout j0, oPitcher bounds
+at most one locally maximal boxed region; and (b) that the only ﬂow stopping points associated with oPitcher are in the
+inside of the pitcher. Thus, no ﬂow of liquid outside the pitcher can have its ﬂow blocked by a piece of the pitcher.
+
+PS.8 together with PD.8, PD.7, PD.6 asserts that from t0 to t1, the pitcher stays suﬃciently upright that the volume of the
+inside of the pitcher below the bottom of bTopPitcher is always greater than the volume of the liquid l0. This guarantees
+that bInsidePitcher does not overﬂow between t0 and t1. (This is a suﬃcient condition, not a necessary one; the cupped
+region may actually extend higher than the lowest point of bTopPitcher.)
+
+PS.9 states that bSpout is a “spout” for oPitcher from time t1 onward. This is a geometric constraint whose purpose is to
+guarantee that any overﬂow out of the pitcher to the outside must pass through bSpout. The geometric deﬁnition is a little
+complicated. We say (PD.3) that R B is a partial box with true inside R I1, overﬂow region R I2, and opening R O P E N relative
+to the overﬂow distance D if the following hold (Fig. 16):
+
+• R B is a locally maximal box with inside R I1.
+• The union of R B with R O P E N forms a open box with inside equal to R I2. R I2 contains R I1 and has a top D higher
+
+than the top of R I1.
+
+R S P O U T is a spout for R B if
+
+• R B is a partial box with opening R O P E N which is a subset of R S P O U T .
+• R S P O U T ∪ R B has no internal cavities other than the ones that are already in R B (R S P O U T is a bubble free attachment
+
+to R B (PD.1)).
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1571
+
+Table 19
+Problem speciﬁcation: Axioms
+
+Axioms:
+
+PS.1
+PS.2
+PS.3
+
+PS.4
+PS.5
+PS.6
+
+PS.7
+PS.8
+PS.9
+PS.10
+PS.11
+PS.12
+PS.13
+
+PS.14
+PS.15
+PS.16
+PS.17
+
+PS.18
+PS.19
+PS.20
+PS.21
+
+t0 < t1 < t2
+oPitcher = source(bInsidePitcher) = source(bTopPitcher) = source(bSpout).
+holds(t0, openBox#(↑oPitcher,↑bInsidePitcher) ∧#
+
+↑bTopPitcher =# topSurface#(↑bInsidePitcher))
+
+holds(t0,l0 ⊂# bInsidePitcher)
+foreverAfter(t0,slowObjectMotion(oPitcher)).
+∀T t0(cid:2) T ⇒
+∃H holds(T , psBottom#(↑bTopPitcher,H) ∧#
+H ># bottom#(↑bInsidePitcher))
+foreverAfter(t0,simpleBox(oPitcher))
+throughout(t0,t1, simpleSafeTilt(bInsidePitcher,bTopPitcher,liqVolume(l0))).
+foreverAfter(t1,spout#(↑bSpout,↑oPitcher, maxOutﬂow)).
+∃R I holds(t2, maxBox#(↑oPitcher,R I)) ∧ volumeOf(R I) < liqVolume(l0).
+foreverAfter(t2,motionless(oPitcher)).
+source(bInsidePail) = oPail.
+∃R holds(t0,regionBelow#(↑bInsidePail, top#(↑bInsidePail)−#maxOutﬂow,R)) ∧
+volumeOf(R) > liqVolume(l0).
+holds(t0,maxBox#(↑oPail,↑bInsidePail) ∧# simpleBox(oPail))
+foreverAfter(t0,motionless(oPail)).
+foreverAfter(t1,top#(↑bInsidePail) <# bottom#(↑bSpout)).
+holds(t0, columnWithin#(pouringRegion,↑bInsidePail, topPouringRegion) ∧#
+
+dist#(pouringRegion,↑oPail) ># maxOutﬂow)
+
+foreverAfter(t1,rccNTPP#(expand#(↑bSpout, 2·maxOutﬂow), pouringRegion))
+foreverAfter(t2,onlyChannelsInReg#(↑oPitcher, pouringRegion,↑bSpout,top#(↑bSpout),maxOutﬂow)
+foreverAfter(t0, isolated(expand#(convexHull#(↑oPitcher), 2·maxOutﬂow), { oPitcher }, l0))
+foreverAfter(t0, isolated(horizExpand#(pouringRegion ∪# ↑bInsidePail), maxOutﬂow)
+
+{oPail, oPitcher }, l0)).
+
+Infer:
+∃L1,L2:liquidChunk eventuallyForever(↑l0 =# ↑L1 ∪# ↑L2∧#
+
+liqInContainer(L1,oPitcher) ∧# liqInContainer(L2,oPail)).
+
+Fig. 16. Partial box.
+
+PS.10 asserts that at t2, the maximal volume of any region cupped by oPitcher is less than the volume of l0, so oPitcher
+
+must have overﬂowed before t2.
+
+PS.15 states that oPail is motionless throughout the scenario. Therefore any geometric property of the pail that holds at
+
+t0 holds throughout the scenario.
+
+PS.14 states that bInsidePail is the maximal open box formed by oPail. PS.13 states that the part of bInsidePail that is
+at least maxOutﬂow below its top has a volume greater than l0. Thus, even if bInsidePail were ﬁlled with l0, the top of
+bInsidePail is still in freeFlowingSpace.
+
+PS.16 states that from t1 onward the bottom of the spout is higher than the top of the pail.
+PS.17 deﬁnes the ﬁxed region “pouringRegion” as a vertical column rising from the inside of bInsidePail and at least
+maxOuﬂow from the material of the pail (Fig. 17). The proof will work by showing that, once the liquid has been poured
+from the spout, it remains inside pouringRegion
+
+PS.18 asserts that, from time t1 onward, the spout bSpout is always inside pouringRegion, more than 2·maxOutﬂow from
+
+the boundaries of pouringRegion.
+
+PS.19 enforces the constraint that there are no channels on the outside of oPitcher that would allow liquid to ﬂow from
+the inside of pouringRegion to within maxOutﬂow of the boundary of pouringRegion. Otherwise, one could construct a
+
+1572
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Fig. 17. Pouring region.
+
+scenario in which the liquid pours out of the spout, but is then caught by a channel on the exterior of the pitcher and
+guided to spill out at a point that is not over the pail.
+
+PS.20 and PS.21 enforce the “isolation” conditions that no objects other than the pitcher and the pail and no liquids
+other than l0 interacts with the pouring of the liquid. PS.20 states that no object other than oPitcher and no liquid other
+than l0 comes within 2·maxOutﬂow of the convex hull of oPitcher. PS.21 states that no objects other than oPitcher and
+oPail and no liquids other than l0 come within maxOutﬂow, horizontally, of the pouring region or of the inside of the pail.
+In particular, the pail is empty at t0 and no liquid other than l0 pours into the pail.
+
+5.1. Correctness proof
+
+The proof of the desired inference from the axioms and the problem speciﬁcation is very much as sketched at the
+beginning of Section 3. The detailed proof is rather long but not deep; it is given in the online appendix at http://www.cs.
+nyu.edu/faculty/davise/papers/liqAppa.pdf.
+
+The main steps are as follows (we enumerate only the most important axioms as justiﬁcations here): By CUP.1, PS.10
+the liquid remains in the pitcher as the pitcher is lifted into position. By PS.12 at t2 the cupped volume in the pitcher is
+less than the volume of l0; hence using SPILL.1 and SPILLD.5 the pitcher overﬂows at some point between t1 and t2. It
+follows from DOWN.2, DOWN.6 using a proof by contradiction that the liquid cannot rise more than maxOutﬂow above the
+region cupped by the pitcher. Hence, by PS.11, any liquid that ﬂows out of the pitcher or out of the overﬂow region must
+go through the spout. By PS.12, PS.13, after t2 the cupped region in the pitcher is too small to hold the liquid; hence it
+must ﬂow out of the pitcher. By PS.8 there is always some cupped region inside the pitcher; hence by CUP.1 some of the
+liquid remains in the pitcher. By DOWN.2 the liquid in the overﬂow region must ﬂow downward through the spout. When
+it ﬂows out of the spout, by PS.20 it is inside pouringRegion. Using DOWN.2, DOWN.3, DOWN.4, PS.9, PS.21, PS.15 once the
+liquid is past the spout it remains inside pouringRegion until it is inside bInsidePail and at least maxOutﬂow below the top
+of the pail. (This is by far the hardest part of the proof; the proof is given in Lemma 64 of the appendix). Once the liquid is
+inside the pail, then by CUP.1, PS.10 it remains inside the pail. By DOWN.5 the part of pouringRegion above the pail and the
+overﬂow region above the pitcher are eventually empty. Hence eventually some of the liquid is in the pail, some of it is in
+the pitcher, and none of it is anywhere else.
+
+5.2. Consistency proof
+
+Of course, the above inference is only signiﬁcant if the problem speciﬁcations are consistent with the domain axioms;
+if they are not, then one can prove anything at all. One can demonstrate that the speciﬁcations are consistent with the
+axioms by constructing a speciﬁc model of the shapes and motions of the objects and the ﬂow of the liquid that satisﬁes
+the speciﬁcations and axioms.
+
+We sketch one such model below (Fig. 18). Assume a coordinate system where the z-axis is the vertical and where the
+
+unit length is one inch.
+
+Atemporal speciﬁcations:
+
+Assume that maxOutﬂow = 2.
+The inside of the pail is a 18 × 18 × 19 rectangular solid. The pail is a cubical box around the inside, open on top and
+
+with one inch walls on the sides and the bottom.
+
+The pitcher is a 10 × 10 × 9 rectangular box, with the 8 × 8 × 8 block cut out from the center top, and with a notch 2
+inches deep cut out of the lower x-face. In other words: the bottom of the pitcher is 10 × 10 × 1. The lower x-side is 1 ×
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1573
+
+10 × 7 (this overlaps with the bottom). The upper x-side is 1 × 10 × 10, and the two y-faces are 10 × 1 × 10. The spout
+is the 1 × 8 × 2 notch cut out from the top of the lower x-face.
+
+Fig. 18. Model scenario.
+
+The volume of the liquid is 256 cubic inches.
+
+shape(bInsidePail) = [1,19] × [1,19] × [1,20]
+
+shape(oPail) = ([0,20] × [0,20] × [0,20]) − bInsidePail.
+
+shape(bInsidePitcher) = [31,39] × [6,14] × [1,8].
+
+shape(oPitcher) = ([30,40] × [5,15] × [0,9]) − (bInsidePitcher ∪ ([30,39] × [6,14] × [8,9]).
+
+shape(bSpout) = [30,31] × [6,14] × [8,9]
+
+liqVolume(l0) = 256.
+
+pouringRegion = [4,15] × [5,15] × [4,43]
+
+1574
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Time points: t0=0. t1=1. t2=2.
+
+Initial State: At time t0, the pitcher and pail are at the positions speciﬁed by their shape. The liquid occupies the bottom
+half of the pitcher.
+
+value(t0,placement(oPitcher)) = value(s0,placement(oPail)) = identity.
+
+value(t0,place(l0)) = [31,39] × [6,14] × [1, 5].
+
+Motion of the rigid objects: The pail is motionless throughout. From t = 0 to t = 1/2, the pitcher translates vertically 30
+inches. From t = 1/2 to t = 1, the pitcher translates horizontally to the left 20 inches. From t1 to t2 the pitcher rotates at a
+constant rate around the line x = 15, z = 35; this line is parallel to the y-axis, sits at the top of the liquid, in the center of
+the x-extent of the top surface of the liquid. After t2 the pitcher is motionless.
+
+motionless(oPail,j0)
+
+0 (cid:3) T (cid:3) 1/⇒value(T , placement(oPitcher)) = translate(0, 0, 60T)
+
+1/2 (cid:3) T (cid:3) 1⇒value(T , placement(oPitcher)) = translate(−40(T − 1/2), 0, 30)
+
+1 (cid:3) T (cid:3) 2⇒value(T , placement(oPitcher)) = rotateAroundAxis({(cid:5)15, Y , 35(cid:6)|real(Y )}, π (T − 1)/4)
+
+(In the above formulas, the function “translate( X, Y , Z )” maps coordinates to a translation and the function “rotateAround-
+
+Axis( P S L, A)” maps a line P S L and an angle A to a rotation in the obvious way.)
+
+foreverAfter(t2,motionless(oPitcher)).
+
+Liquid ﬂow: There is no ﬂow in the y-dimension. Hence, we will describe the ﬂow purely in terms of its x–z component,
+
+From t0 to t1 the liquid simply translates along with the pitcher.
+The liquid ﬂow from t1 to t2 is described as follows: Let Q 2 be the region-valued ﬂuent whose value is always the
+boxed region bounded by oPail ∪ bSpout. From t1 to t2, the liquid ﬁlls the section of that region which is below the plane
+z = 35. That is, we are supposing that the liquid ﬂows in exactly the same way it would if the notch were ﬁlled in. Note that
+the volume of this section is constant; viewed in a coordinate system attached to the pitcher, this ﬂow involves vacating a
+triangular wedge on the right and ﬂowing into a congruent wedge on the left. Note that at t1, the liquid is simply observing
+rule 4 and in the region cupped by the pitcher. At some time tm before t2, it reaches the edge of the pitcher and then starts
+to overﬂow. Between tm and t2 the liquid is ﬁlling the maximal cupped region in the pitcher, and the volume of that region
+is monotonically decreasing; hence by SPILLD.5 the liquid is overﬂowing out of the pitcher. Since it continues to overﬂow
+until t2, and since the speciﬁed region of overﬂow is all within the driven area, this pattern of ﬂow is allowed by our rules.
+Within the region occupied by the liquid, the ﬂow consists of a volume-preserving “rotation” around the axis of rotation.
+That is, as the pitcher rotates, every wedge of liquid centered at the axis replaces the wedge of equal volume to its left.
+
+At t2, then, the liquid ﬁlls the cupped region bounded by oPitcher, plus a trapezoid over that (Fig. 19.A). After t2 the
+pitcher is motionless; hence, the volume of the maximal cupped region is constant; hence, by SPILLD.5 the liquid is no
+longer considered to be overﬂowing, and is no longer driven. The liquid in the cupped region remains where it is; the liquid
+in the overﬂow trapezoid must all ﬂow down. The liquid in the overﬂow trapezoid ﬂows downward and to the left into the
+triangle to the left of the overﬂow trapezoid, following the ﬂow lines shown in Fig. 19.B. To see intuitively that this can be
+done while maintaining constant volume, imagine cutting each ﬂow tube into segments of equal volume, in a way that is
+consistent across the ﬂow tubes. Then in each small time interval (cid:11)T , each segment ﬂows into the place vacated by the
+next segment in the tube.
+
+Once the liquid has ﬂowed out the bottom of the left hand triangle, it ﬂows vertically in a column at a constant rate
+down toward the pail. Until the column hits the pail, it maintains its columnar shape. Once it has hit the bottom, there will
+be a rising pool occupying a cupped region at the bottom of the pail. The part of the falling liquid more than maxOutﬂow
+above the top of this pool is in ﬂowUndisruptedSpace and therefore continues to fall down in a column. The part of the
+liquid that is above the top of the pool but less than maxOutﬂow above it is in ﬂowDisruptedSpace; it ﬂows downward and
+outward, fast enough to make room for the column falling down after it.
+
+It is an easy, but long and very uninteresting, exercise to specify this ﬂow in closed formulas.
+Verifying that the speciﬁed ﬂow actually satisﬁes the axioms is not trivial, since some of the axioms involve quantifying
+
+over all regions, or all region-valued ﬂuents, but neither is it very diﬃcult.
+
+Of course, it would be undesirable to have to construct an explicit model like this for each new problem speciﬁcation,
+to make sure that the theory meaningfully applies to it. Much better would be to have a general meta-theorem stating that
+all problem speciﬁcations of a speciﬁed form are consistent with the axioms.
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1575
+
+Fig. 19. Down ﬂow from overﬂow region.
+
+5.3. Other inferences
+
+The above inference is the only one that I have worked through in full detail. However, I am quite conﬁdent that the
+following inferences are also justiﬁed in the theory. Moreover, their proof can use many of the same general lemmas already
+worked through for our example.
+
+• It is possible to ladle liquid out of a bowl with a spoon, if the spoon is immersed in the liquid and then lifted out,
+maintaining its cupped shape. The spoon may be immersed, either by plunging it in, so that the liquid spills over its
+side, or by sliding it in.
+
+• If pebbles are gradually dropped into a vase ﬁlled with liquid, the level of the liquid will gradually rise. Once the volume
+
+of the pebbles plus the volume of the liquid exceeds the capacity of the vase, the vase will overﬂow.
+
+• If an object with no cups is immersed in a bowl of liquid and then lifted out, the removal of the object does not bring
+
+any liquid with it.
+
+• If a large object is lowered gradually into a bowl of liquid, the liquid will reach the rim of the bowl just when the
+volume of the part of the object below the rim plus the volume of the liquid is equal to the capacity of the bowl. If
+part of the object is still above the liquid, then lowering the object any further will cause the bowl to overﬂow.
+
+• (Archimedes). Consider a scenario in which (1) object A is placed inside a bowl; (2) the bowl is ﬁlled to the brim with
+liquid; (3) object A is removed; (4) object B is placed inside the bowl. Assume that object A has no cups in which to
+carry out liquid. The bowl will overﬂow during the execution of (4) if and only if the volume of B is greater than the
+volume of A.
+
+• If liquid is poured over a solid object suspended in the air, and the object does not form any cups then the liquid will
+ﬂow down over the object, spreading a short distance beyond the bounds of the object. If the object does form cups
+then all of the liquid that is not caught in those cups will pour down over the object in the same way.
+
+• Suppose there is a body of liquid inside a simple cup with a plug at the bottom and the plug is removed. If there is
+nothing below the cup, then all the liquid will ﬂow out the bottom. If the cup is itself inside a bowl then the liquid will
+ﬂow out the bottom of the cup into the bowl until the level in the outer bowl is equal to the level in the cup.
+
+• Suppose you have a W-shaped pail, and you pour from a pitcher into one of the internal cups (Fig. 20). The level of
+liquid will rise until it is full. Once it is full, the liquid will start to pour off into the other internal cup. Once both
+internal cups are full, the two pools of liquid will be joined on top, and the level will gradually rise across the entire
+pail.
+
+1576
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+Fig. 20. Pouring into W-shaped pail.
+
+6. The problem with channels
+
+Fig. 21. Anomalous ﬂow in channel.
+
+The most immediate problem with our theory is that it completely mispredicts the way that water ﬂows in a channel.
+Not only does it fail to predict the correct behavior, it actually excludes the correct behavior. Suppose that there is a
+channel whose cross-section has a radius greater than maxOutﬂow ﬁlled with ﬂowing water. The liquid chunks that are
+more than maxOutﬂow from the boundaries of the channel, in the center-top of the channel, are in ﬂowUndisruptedSpace,
+and therefore by Rule 5 ﬂow straight down rather than parallel to the channel. The only steady-state ﬂow pattern allowed
+by rule 5 is one in which the water ﬂows down in the annulus which is maxOutﬂow from the boundary of the channel
+(Fig. 21). This is all ﬂowDisruptedSpace, and therefore the liquid there is allowed to ﬂow parallel to the channel.
+
+Thus, ﬁxing this problem has two parts. The ﬁrst part is to ﬁx Rule 5 so that it does not prohibit the true ﬂow down
+the channel; the second part is to add rules that require the correct ﬂow. It is certainly possible that the ﬁrst part can be
+accomplished through some fairly minor change to Rule 5 that will eliminate this problem, while still preserving the ability
+to predict that liquid poured from the pitcher lands in the pail. I doubt it, however; I suspect that even the ﬁrst part of the
+solution will involve explicitly characterizing channels and marking them, like overﬂow, as an exception to Rule 5.
+
+In any case, for the second part of the solution we need rules that will allow us to predict the ﬂow of liquids in a
+channel. I intend to address this in future work. In the meantime, the problem provides an interesting context for discussing
+the issues involved in extending a theory like this. Absent any great simplifying insight, adding channel ﬂow to this theory
+will probably involve the following:
+
+• Deﬁning a channel geometrically. This is considerably more challenging than deﬁning a cup. A cup has a single distin-
+guished direction—upward—which is ﬁxed. A channel has two – upward and forward—and the latter is deﬁned relative
+to the channel and may change over the length of the channel. Also channels interact with each other and with other
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+1577
+
+topographical features in more complicated ways than cups. Channels may split and merge; they may contain pits,
+bumps, and ridges.
+
+• Deﬁning the dynamics of “normal ﬂow” in a channel. Again this is more complicated than the dynamics of cupped
+liquid; at its simplest, it is a steady-state ﬂow rather than a static condition. For example, an open channel overﬂows
+its banks when the ﬂow rate into the channel exceeds the maximum ﬂow rate that the channel can sustain; expressing
+this requires a substantially richer theory than the simple rule for an overﬂowing cup. As with cups, we would wish
+to at least partially categorize ﬂow through a channel even in the case where the solid object or objects forming the
+channel are in motion.
+
+• Deﬁne the liquid in a channel as an exception to Rule 5.
+• Make sure that the rules accommodate the case of non-steady-state ﬂow in a channel; for example, a chunk of liquid
+falls onto the side of a channel. The prediction in a case like this need not be precise, but it should not be absurd, and
+it should smoothly interface with the normal ﬂow through a channel. For instance, if a chunk of liquid falls onto the
+side of a channel which has a channeled ﬂow in it, the chunk should somehow merge with the channeled ﬂow.
+
+• Make sure that the examples that have been worked out still work. For instance the spout of a pitcher may well be a
+
+channel, or it may not; make sure that the pitcher example works in either case.
+
+• As far as possible, check that the theory is still consistent.
+
+Another problem is leaky cups. A cup with a small hole in fact works like a cup except for a slow leak, and can be used to
+carry liquid. But in our theory, a cup with a small hole is not a cup at all; the liquid inside can ﬂow down (Deﬁnition 3.4.4)
+and therefore must ﬂow down (Rule 6). In particular, if the cup is lifted, our theory states that the liquid must ﬂow out
+the hole fast enough that the absolute height of the top of the liquid always decreases. This problem, however, unlike the
+problem of channels is easy to ﬁx; it is merely necessary to add a new rule similar to rule 4 stating that leaky cups leak
+slowly, and to add the liquid cupped in a leaky cup as a part of nonFlowingSpace in Deﬁnition 3.4.2.
+
+7. Conclusions and future work
+
+We have constructed and formalized a theory that supports qualitative reasoning about many scenarios involving liquid
+ﬂowing around slowly moving objects. There are a few scenarios that it handles badly, but it seems likely that these can be
+corrected and that this theory can be an important part of a larger theory of commonsense physical reasoning.
+
+The most important next steps in this research are:
+
+• To develop a theory of liquid ﬂow in channels.
+• To develop a theory of liquid ﬂow around rapidly moving objects.
+• To integrate a theory of pressure, including atmospheric pressure.
+• To integrate a theory of agents, with feedback from perception to manipulation, so that one can describe the plan of
+
+carefully pouring liquid from a pitcher to a pail and reason about its feasibility.
+
+• To deﬁne a reasonable subclass of inferences, particularly prediction, that can be effectively implemented. The com-
+plexities of the proof in the appendix should not be discouraging, here; this is a complete proof based on very general
+axioms. If the language of the problem speciﬁcation and the closed-world assumptions can be standardized, and pow-
+erful general lemmas can be subsumed into procedures, then it may well be possible to develop an inference engine
+whose complexity is not much greater than the English description of the reasoning involved on page 1546.
+
+In the longer term, the critical problems are to identify signiﬁcant classes of inference in this domain, to develop ef-
+fective algorithms for these, and to integrate these into knowledge-based systems for applications such as design, text
+interpretation, and automated tutoring.
+
+References
+
+[1] B. Bennett, A.G. Cohn. P. Torrini, S.M. Hazarika, Describing rigid body motions in a qualitative theory of spatial regions, in: AAAI-00, pp. 503–509.
+[2] A.G. Cohn, J. Renz, Spatial reasoning, in: F. van Harmelen, V. Lifschitz, B. Porter (Eds.), The Handbook of Knowledge Representation, Elsevier, Oxford,
+
+2007.
+
+[3] J. Collins, K. Forbus, Reasoning about ﬂuids via molecular collections, in: AAAI-87, pp. 590–595.
+[4] E. Davis, A logical framework for commonsense predictions of solid object behavior, International Journal of AI in Engineering 3 (3) (1988) 125–140.
+[5] E. Davis, Representations of Commonsense Reasoning, Morgan Kaufmann, 1990.
+[6] E. Davis, Axiomatizing qualitative process theory, in: KR-92, pp. 177–188.
+[7] E. Davis, The kinematics of cutting solid objects, Annals of Mathematics and Artiﬁcial Intelligence 9 (1993) 253–305.
+[8] E. Davis, The naive physics perplex, AI Magazine 19 (4) (1998) 51–79.
+[9] E. Davis, Continuous shape transformations and metrics on regions, Fundamenta Informaticae 46 (1–2) (2001) 31–54.
+
+[10] E. Davis, The expressivity of quantifying over regions, Journal of Logic and Computation 16 (2006) 891–916.
+[11] E. Davis, How does a box work? A study in the qualitative dynamics of solid objects, Artiﬁcial Intelligence, submitted for publication.
+[12] E. Davis, The Logic of Commonsense Physical Reasoning, in preparation.
+[13] J. DeCuyper, D. Keymeulen, L. Steels, A hybrid architecture for modelling liquid behavior, in: J. Glasgow, B. Chandrasekaran, N.H. Narayanan (Eds.),
+
+Diagrammatic Reasoning, MIT Press, 1995, pp. 731–751.
+
+[14] J. de Kleer, Multiple representations of knowledge in a mechanics problem solver, in: IJCAI-77, pp. 299–304.
+
+1578
+
+E. Davis / Artiﬁcial Intelligence 172 (2008) 1540–1578
+
+[15] J. de Kleer, J.S. Brown, A qualitative physics based on conﬂuences, in: D. Bobrow (Ed.), Qualitative Reasoning about Physical Systems, MIT Press,
+
+Cambridge MA, 1985, pp. 7–83.
+
+[16] K. Forbus, Qualitative process theory, in: D. Bobrow (Ed.), Qualitative Reasoning about Physical Systems, MIT Press, Cambridge MA, 1985, pp. 85–186.
+[17] F. Gardin, B. Meltzer, Analogical representations of naive physics, in: J. Glasgow, B. Chandrasekaran, N.H. Narayanan (Eds.), Diagrammatic Reasoning,
+
+MIT Press, 1995, pp. 669–689.
+
+[18] P. Hayes, The naive physics manifesto, in: D. Michie (Ed.), Expert Systems in the Microelectronic Age, Edinburgh University Press, Edinburgh, 1979.
+[19] P. Hayes, Ontology for liquids, in: J. Hobbs, R. Moore (Eds.), Formal Theories of the Commonsense World, Ablex Pub., Norwood NJ, 1985.
+[20] P. Hayes, A critique of pure treason, Computational Intelligence 3 (1987) 179–185.
+[21] H. Kim, Qualitative reasoning about ﬂuids and mechanics, Ph.D. thesis, Institute of Learning Sciences, Northwestern University, 1993.
+[22] L. Joskowicz, E. Sacks, Computational kinematics, Artiﬁcial Intelligence 51 (1991) 381–416.
+[23] V. Lifschitz, Cracking an egg: An exercise in formalizing commonsense reasoning, in: Fourth Symposium on Logical Formalizations of Commonsense
+
+Reasoning, 1998.
+
+[24] J. McCarthy, Programs with common sense, in: M. Minsky (Ed.), Semantic Information Processing, MIT Press, Cambridge, MA, 1968, pp. 403–418.
+[25] J. McCarthy, P. Hayes, Some philosophical problems from the standpoint of artiﬁcial intelligence, in: B. Meltzer, D. Michie (Eds.), Machine Intelligence
+
+4, Edinburgh University Press, 1969.
+
+[26] D. McDermott, A critique of pure reason, Computational Intelligence 3 (1987) 151–160.
+[27] L. Morgenstern, Mid-sized axiomatizations of commonsense problems: A case study in egg cracking, Studia Logica 67 (2001) 333–384.
+[28] A. Newell, The knowledge level, AI Magazine 2 (2) (1981).
+[29] D.A. Randell, Z. Cui, A.G. Cohn, A spatial logic based on regions and connection, in: Third International Conference on Principles of Knowledge Repre-
+
+sentation and Reasoning, 1992, pp. 165–176.
+
+[30] R. Reiter, Knowledge in Action: Logical Foundations for Specifying and Implementing Dynamical Systems, MIT Press, Cambridge, MA, 2001.
+[31] E. Sandewall, Combining logic and differential equations for describing real-world systems, in: KR-89, pp. 412–420.
+[32] J. Schmolze, Physics for robots, in: AAAI-86, pp. 44–50.
+[33] M. Shanahan, An attempt to formalise a non-trivial problem in common sense reasoning, Artiﬁcial Intelligence 153 (2004) 141–165.
+[34] J. Shin, E. Davis, Processes and continuous change in a SAT-based planner, Artiﬁcial Intelligence 166 (1–2) (2005) 194–253.
+
+

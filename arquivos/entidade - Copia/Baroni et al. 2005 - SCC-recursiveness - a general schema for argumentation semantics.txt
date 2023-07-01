@@ -1,0 +1,3033 @@
+Artiﬁcial Intelligence 168 (2005) 162–210
+
+www.elsevier.com/locate/artint
+
+SCC-recursiveness: a general schema
+for argumentation semantics
+
+Pietro Baroni, Massimiliano Giacomin ∗, Giovanni Guida
+
+Dipartimento di Elettronica per l’Automazione, Università di Brescia, Via Branze 38, I-25123 Brescia, Italy
+
+Received 12 January 2005; received in revised form 18 May 2005; accepted 31 May 2005
+
+Available online 14 July 2005
+
+Abstract
+
+In argumentation theory, Dung’s abstract framework provides a unifying view of several alternative
+semantics based on the notion of extension. In this context, we propose a general recursive schema
+for argumentation semantics, based on decomposition along the strongly connected components of
+the argumentation framework. We introduce the fundamental notion of SCC-recursiveness and we
+show that all Dung’s admissibility-based semantics are SCC-recursive, and therefore a special case of
+our schema. On these grounds, we argue that the concept of SCC-recursiveness plays a fundamental
+role in the study and deﬁnition of argumentation semantics. In particular, the space of SCC-recursive
+semantics provides an ideal basis for the investigation of new proposals: starting from the analysis of
+several examples where Dung’s preferred semantics gives rise to questionable results, we introduce
+four novel SCC-recursive semantics, able to overcome the limitations of preferred semantics, while
+differing in other respects.
+ 2005 Elsevier B.V. All rights reserved.
+
+Keywords: Argumentation semantics; Extensions; Defeat cycles
+
+* Corresponding author.
+
+E-mail addresses: baroni@ing.unibs.it (P. Baroni), giacomin@ing.unibs.it (M. Giacomin),
+
+guida@ing.unibs.it (G. Guida).
+
+0004-3702/$ – see front matter  2005 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2005.05.006
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+163
+
+1. Introduction
+
+Argumentation theory is a framework for practical and uncertain reasoning, where ar-
+guments supporting conclusions are progressively constructed and compared in order to
+identify the set of conclusions that should be considered justiﬁed according to the current
+state of available knowledge. Since the construction of arguments proceeds by exploiting
+incomplete and uncertain information, conﬂicts between them may arise and their man-
+agement is regarded as an essential aspect of the theory. The ability to deal in this way
+with uncertain and conﬂicting information plays an important role in a variety of appli-
+cation contexts, such as legal reasoning [19,21,26], intelligent agents [17], planning [16],
+inconsistency handling [1], negotiation and dialogue [3]. As a consequence, argumentation
+theory is receiving an increasing interest both from the theoretical and application view-
+points, and a variety of approaches have been proposed in the literature, e.g., [2,6,13,14,
+25,27].
+
+An extensive survey of this research ﬁeld is provided in [22], where the literature
+proposals are examined along ﬁve dimensions, i.e., the underlying logical language, the
+deﬁnition of what an argument is, the criteria for identifying conﬂict between arguments,
+the deﬁnition of the relevant relation of defeat between them, and, ﬁnally, the deﬁnition of
+the justiﬁcation status of arguments. As to the last point, each proposal is based on an ar-
+gumentation semantics which deﬁnes in a declarative way the criteria to determine, given
+a set of interacting arguments, which ones of them should emerge as justiﬁed from the
+conﬂict. To this purpose, almost all of the argumentation semantics rely on the notion of
+extension, roughly consisting in a set of non-conﬂicting arguments: an argument is con-
+sidered as justiﬁed if it belongs to all extensions prescribed by the semantics. As pointed
+out in [22], two alternative approaches can be followed in this respect: in the unique-status
+approach a single extension is always identiﬁed, while in the multiple-status approach sev-
+eral extensions may exist for a given set of arguments. Moreover, speciﬁc proposals also
+differ in the form the underlying semantics is introduced. For instance, in [6,9,27] a ﬁxed
+point deﬁnition is exploited, while in [13] the semantics is deﬁned inductively by means of
+the notion of level.
+
+A unifying framework, able to encompass a large variety of proposals, has been pro-
+posed by Dung in [9]. Abstraction is achieved by leaving unspeciﬁed the origin and the
+structure of arguments, and by modeling the interaction between them simply as a binary
+relation indicating that an argument attacks another one. This way, Dung’s approach is
+generic with respect to the ﬁrst four dimensions of the classiﬁcation proposed in [22],
+and, as pointed out in [1], it allows one to focus exclusively on semantics issues, without
+getting entangled in the details of what arguments are. Thanks to its generality, Dung’s
+proposal has been recognized as a unifying framework encompassing most of the existing
+approaches to argumentation and has also inspired subsequent proposals of argumentation
+systems, e.g., [21,27]. Moreover, Dung’s theory is relevant in several ﬁelds where con-
+ﬂict management plays a central role, ranging from logic programming to nonmonotonic
+reasoning and game theory.
+
+As far as semantics is concerned, Dung’s framework captures several alternative seman-
+tics which are introduced in [9] by means of ﬁxed point deﬁnitions, and are all based on the
+notion of admissible set. Among them, preferred semantics is regarded as the most satisfac-
+
+164
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+tory approach, able to overcome the limitations of the previously proposed grounded and
+stable semantics. However, we show in this paper that preferred semantics is not exempted
+from producing questionable results in some cases concerning cyclic attack relationships
+(see [4,5] for a preliminary discussion on this problem). In the search of alternative propos-
+als, able to retain the advantages of preferred semantics and, at the same time, to support
+alternative treatments of such problematic cases, we carry out a broad conceptual analysis
+aimed at identifying a set of basic principles that can be regarded as universally acceptable
+in argumentation semantics and, in particular, underly all the approaches encompassed by
+Dung’s framework.
+
+This analysis leads to the introduction of a novel general recursive schema for the deﬁn-
+ition of extensions, based on the graph-theoretic notion of strongly connected components
+of an argumentation framework. Semantics adhering to this schema feature the property of
+SCC-recursiveness, which entails that a speciﬁc semantics can be characterized in terms
+of a base function, which plays the role of a parameter in the recursive schema. SCC-
+recursiveness can be assumed as a basic unifying concept in argumentation theory for two
+reasons: on the one hand, all semantics captured by Dung’s framework satisfy the SCC-
+recursiveness property and, on the other hand, the SCC-recursive schema supports in a
+rather straightforward way the deﬁnition of new semantics, since basic desirable proper-
+ties of extensions—and therefore of the argumentation semantics itself—can be guaranteed
+by simple requirements on the base function. On these grounds, we introduce, to exemplify
+the potential of the approach, four novel SCC-recursive semantics overcoming the above
+mentioned limitations of the preferred semantics, while differing in other aspects.
+
+The paper is organized as follows. In Section 2, we recall the basic notions of Dung’s
+theory and carry out a survey about argumentation semantics in this context, focusing on
+the intuitive concepts underlying formal deﬁnitions and properties of extensions. Prob-
+lematic cases that point out some questionable behaviors of preferred semantics are then
+presented in Section 3. The general SCC-recursive schema is introduced in Section 4, while
+Section 5 illustrates its role as a unifying concept in argumentation semantics, showing that
+traditional semantics adhere to the schema. Section 6 analyzes some general properties of
+SCC-recursive semantics, while in Section 7 four novel SCC-recursive semantics are in-
+troduced and compared. Finally, Section 8 concludes the paper.
+
+2. Dung’s theory
+
+2.1. Argumentation framework
+
+The general theory proposed by Dung [9] is based on the primitive notion of argumen-
+
+tation framework:
+
+Deﬁnition 1. An argumentation framework is a pair AF = (cid:2)A, →(cid:4), where A is a set, and
+→⊆ (A × A) is a binary relation on A, called attack relation.
+
+The idea is that arguments are simply conceived as the elements of the set A, whose
+origin and structure are not speciﬁed, and the interaction between them is modeled by the
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+165
+
+binary relation of attack. An argumentation framework AF = (cid:2)A, →(cid:4) can be represented as
+a directed graph, called defeat graph, where nodes are the arguments and edges correspond
+to the elements of the attack relation.
+
+In the following, the nodes that attack a given argument α are called defeaters of α and
+
+form a set which is denoted as parentsAF(α):1
+
+Deﬁnition 2. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a node α ∈ A, we
+deﬁne parentsAF(α) = {β ∈ A | β → α}. If parentsAF(α) = ∅, then α is called an initial
+node.
+
+Since we will frequently consider properties of sets of arguments, it is useful to extend
+
+the notations deﬁned for the nodes:
+
+Deﬁnition 3. Given an argumentation framework AF = (cid:2)A, →(cid:4), a node α ∈ A and two
+sets S, P ⊆ A, we deﬁne:
+
+S → α ≡ ∃β ∈ S : β → α
+
+α → S ≡ ∃β ∈ S : α → β
+
+S → P ≡ ∃α ∈ S, β ∈ P : α → β
+
+outparentsAF(S) = {α ∈ A | α /∈ S ∧ α → S}
+
+In Dung’s framework, an argumentation semantics is deﬁned by specifying the criteria
+for deriving, for a generic argumentation framework, the set of all possible extensions, each
+one representing a set of arguments considered to be acceptable together. Given a generic
+argumentation semantics S, the set of extensions prescribed by S for a given argumentation
+framework AF = (cid:2)A, →(cid:4) is denoted as ES (AF).
+
+The set of extensions is then used to compute the justiﬁcation status of the arguments,
+
+according to the following deﬁnition:
+
+Deﬁnition 4. Given an argumentation framework AF = (cid:2)A, →(cid:4), the arguments of A can
+be partitioned, with reference to a given argumentation semantics S, into three sets:
+
+• the set of undefeated arguments US (AF) = {α ∈ A | ∀E ∈ ES (AF) α ∈ E};
+• the set of defeated arguments DS (AF) = {α ∈ A | ∀E ∈ ES (AF) α /∈ E};
+• the set of provisionally defeated arguments PS (AF) = {α ∈ A | ∃E1, E2 ∈ ES (AF):
+
+α ∈ E1 ∧ α /∈ E2}.
+
+1 We use the graph-theoretical term parents instead of attackers since, in the following, we will need to resort
+to other related graph-theoretical notions, in particular that of ancestors.
+
+166
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+2.2. Argumentation semantics: a focused survey
+
+In this subsection, we carry out a conceptual analysis of the basic intuitive princi-
+ples underlying several extension-based argumentation semantics and identify their formal
+counterpart by referring to deﬁnitions and properties in Dung’s theory [9].
+
+Starting from the intuition that an extension is a set of arguments considered to be
+acceptable together, one may envisage as a ﬁrst requirement the fact that no conﬂict is
+allowed between arguments belonging to the same extension, since it should represent
+an internally consistent choice (among possibly many) over the whole set of available
+arguments. This amounts to require that an extension is conﬂict-free.
+
+Deﬁnition 5. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A is conﬂict-
+free if and only if (cid:1)α, β ∈ E such that α → β.
+
+Clearly not all conﬂict-free sets are reasonable candidates for the notion of extension.
+In fact, simply identifying the extensions with the conﬂict-free sets leads to consider the
+empty set, which is of course conﬂict-free, as an extension and, therefore, according to
+Deﬁnition 4, no argument would ever be justiﬁed in any argumentation framework. In
+order to prevent this degenerate behavior, a completeness requirement is needed, to ensure
+that the largest consistent choices of arguments are taken into account for the determination
+of the justiﬁcation status. In the case of conﬂict-free sets, this amounts to require that an
+extension is also maximal with respect to set inclusion.
+
+Deﬁnition 6. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A is maximal
+conﬂict-free if and only if it is maximal (with respect to set inclusion) among the conﬂict-
+free sets of AF. The set made up of all the maximal conﬂict-free sets of AF will be denoted
+as MCF AF.
+
+It is however easy to see that identifying extensions with maximal conﬂict-free sets
+gives rise to undesired behaviors even in very simple cases. For instance, in the case of
+an argumentation framework consisting of a defeat chain (see Fig. 1) it is widely accepted
+that the initial node, which has no defeaters (α in our example), and all other nodes in
+odd positions, whose defeaters are defeated by undefeated nodes (only γ in our example)
+should be regarded as undefeated, while nodes in even positions (β and δ) should be re-
+garded as defeated. This is an instance of the reinstatement principle [22]. However, the
+maximal conﬂict-free sets in this example are {α, γ }, {α, δ}, and {β, δ}: no argument would
+be included in all extensions and therefore the status of provisionally defeated would be
+assigned to all arguments.
+
+A ﬁrst intuition to solve this problem is based on the idea that an extension should
+not only be internally consistent but also able to reject the arguments that are outside the
+
+Fig. 1. A chain of four nodes.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+167
+
+Fig. 2. A three-length cycle.
+
+extension, namely if an argument is not in an extension then it should be attacked by the
+extension itself. This reasoning leads to the notion of stable extension [9,23].
+
+Deﬁnition 7. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A is a stable
+extension of AF if and only if
+
+E is conﬂict-free ∧ ∀α ∈ A: α /∈ E, E → α
+
+The set of all the stable extensions of AF will be denoted as SE(AF) .
+
+Note that the above deﬁnition implies that a stable extension is a maximal conﬂict-free
+set. In the example of Fig. 1 there is only one stable extension, namely {α, γ }, and the
+desired result is thus achieved. However there are argumentation frameworks where no
+stable extension exists, as in the case of odd-length cycles. In fact, considering the simple
+argumentation framework of Fig. 2, it is easy to see that none of the conﬂict-free sets ∅,
+{α}, {β}, {γ } attacks all the arguments outside it. Therefore, a semantics based on stable
+extensions fails to assign a justiﬁcation status to arguments in these cases. A practical
+example of this kind of problem has been pointed out by Pollock in [14] and concerns the
+case of three witnesses (Smith, Jones, and Robertson) which question each other reliability
+in the following way: Jones says that Smith is unreliable, Smith says that Robertson is
+unreliable, and Robertson says that Jones is unreliable. In a defeat graph representation, this
+corresponds to the three-length cycle shown in Fig. 3(a). Moreover suppose that Smith says
+that it is raining (node “rain” in Fig. 3(a)). Resorting to stable extensions, it is impossible
+to assign a justiﬁcation status to the nodes of this graph. However, if we have four rather
+than three witnesses (in general, an even-length rather than an odd-length cycle) stable
+extensions exists. In fact, considering Fig. 3(b) there are two stable extensions, namely
+{S, R, rain} and {P , J }, yielding all of the arguments provisionally defeated, as intuitively
+should be. Pollock points out that this is a serious drawback since “surely, it should make
+
+Fig. 3. The witnesses example.
+
+168
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Fig. 4. A problematic defeat graph for stable semantics.
+
+no difference that the defeat cycle is of odd-length rather than even-length. We should get
+the same result in either case” [14].
+
+One might be tempted to apply a local correction to stable semantics by prescribing that
+when no stable extension exists, then the empty set should be considered as the unique
+stable extension. Such a solution would however be unsatisfactory for several reasons.
+First of all, it still gives different results for odd-length and even-length cycles (defeated
+vs. provisionally defeated for all nodes). Moreover, it gives incorrect results in graphs
+where nodes which should be undefeated are present along with odd-length cycles. For
+instance, in the graph shown in Fig. 4 no stable extension exists, entailing that all nodes
+are not justiﬁed, however node δ, which has no defeaters and is not involved in the cycle,
+should be undefeated. A more appropriate way to solve this problem consists in taking
+a different perspective: rather than imposing the “aggressive” condition of attacking all
+external arguments, it is enough to require that, more paciﬁcally, the extension is just able to
+defend itself from external attacks. This intuition has been formalized in [9] by introducing
+the notions of acceptable argument and admissible set.
+
+Deﬁnition 8. Given an argumentation framework AF = (cid:2)A, →(cid:4), an argument α ∈ A is
+acceptable with respect to a set E ⊆ A if and only if
+
+∀β ∈ A: β → α, E → β
+
+The set of the arguments acceptable with respect to a set E will be denoted using the
+
+characteristic function FAF(E):
+
+Deﬁnition 9. Given an argumentation framework AF = (cid:2)A, →(cid:4), the function
+
+FAF : 2
+
+A → 2
+
+A
+
+which, given a set E ⊆ A, returns the set of the acceptable arguments with respect to E is
+called the characteristic function of AF.
+
+Deﬁnition 10. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A is admissi-
+ble if and only if
+
+E is conﬂict-free and ∀β ∈ A: β → E, E → β
+
+namely it is conﬂict-free and each argument in E is acceptable with respect to E. The set
+made up of all the admissible sets of AF will be denoted as AS(AF).
+
+Building on these deﬁnitions, the notion of complete extension can be introduced, by
+imposing that an admissible set also satisﬁes a completeness requirement. Complete exten-
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+169
+
+Fig. 5. The ‘Nixon diamond’ example.
+
+sions play a key role in Dung’s theory, since all semantics encompassed by his framework
+select their extensions among the complete ones. Intuitively, a complete extension is an
+admissible set such that no argument outside the set is acceptable with respect to the set
+itself.
+
+Deﬁnition 11. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A is a com-
+plete extension if and only if E is admissible and every argument of A which is acceptable
+with respect to E belongs to E, i.e.,
+
+E ∈ AS(AF) ∧ ∀α ∈ FAF(E), α ∈ E
+
+The set of complete extensions of AF will be denoted as CE(AF).
+
+One might guess that the notion of complete extension entails maximality, since no
+acceptable argument is left outside the extension. However, this is not the case. In fact,
+the above property only states that nodes already defended by the extension are included,
+but it does not impose that nodes (or sets of nodes) that defend themselves are added to
+the extension. For instance, in the case of Fig. 5, the empty set is a complete extension,
+while either of the nodes defends itself and therefore also {α} and {β} are complete exten-
+sions.
+
+As a consequence, a further notion of extension, called preferred extension, has been
+
+introduced in [9] by directly requiring maximality of admissible sets.
+
+Deﬁnition 12. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A is a pre-
+ferred extension of AF if and only if it is a maximal (with respect to set inclusion)
+admissible set, i.e., a maximal element of AS(AF). The set of preferred extensions of
+AF will be denoted as PE(AF).
+
+Preferred semantics is able to cope with the problematic examples involving odd-length
+cycles presented above: in fact, in the graph of Fig. 2 there is a preferred extension (the
+empty set), while for the case of Fig. 4 the only preferred extension is {δ} as desired. It
+can be noted however that the treatment of odd and even-length cycles is still unequal (as
+pointed out for instance by Pollock in [18]).
+
+Note that all the proposals surveyed above belong to the area of multiple-status ap-
+proaches, where multiple extensions may exist for a given argumentation framework. An
+alternative research line has focused on unique-status approaches, that prescribe the exis-
+tence of exactly one extension for each argumentation framework. Grounded semantics [9,
+13] is probably the most representative proposal among unique-status approaches and has
+played an important role in the development of argumentation theory.
+
+170
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+First of all, an alternative deﬁnition of justiﬁcation status is required [13], since Deﬁni-
+
+tion 4 is not appropriate in case of a unique-status approach:2
+
+Deﬁnition 13. Given an argumentation framework AF = (cid:2)A, →(cid:4), the arguments of A can
+be partitioned, with reference to a given unique-status argumentation semantics S, into
+three sets on the basis of the unique extension E ∈ ES(AF):
+
+• the set of undefeated arguments US (AF) = {α ∈ A | α ∈ E};
+• the set of defeated arguments DS (AF) = {α ∈ A | α /∈ E ∧ E → α};
+• the set of provisionally defeated arguments PS (AF) = {α ∈ A | α /∈ E ∧ E (cid:12)→ α}.
+
+Formally, the (unique) extension of the grounded semantics, called the grounded exten-
+
+sion, can be deﬁned as the least ﬁxed point of the characteristic function.
+
+Deﬁnition 14. Given an argumentation framework AF = (cid:2)A, →(cid:4), the grounded extension
+of AF, denoted as GE(AF), is the least ﬁxed point (with respect to set inclusion) of FAF.
+
+In more intuitive terms, the computation of the grounded extension can be understood
+as the process of labeling the nodes of the defeat graph starting from the initial ones. As a
+ﬁrst step, initial nodes are labeled as undefeated and the nodes attacked by them are labeled
+as defeated. Then the already labeled nodes are suppressed and the step is repeated on the
+resulting subgraph, and so on. If in an iteration no initial node is found, all the unlabeled
+nodes are labeled as provisionally defeated, and the process terminates. Note in particular
+that, since there are no initial nodes in the graphs of Fig. 3(a) and Fig. 3(b), all nodes are
+labeled as provisionally defeated in the ﬁrst step. In Fig. 4 node δ is labeled undefeated in
+the ﬁrst step, then all other nodes are labeled provisionally defeated, as desired.
+
+According to the above analysis, grounded semantics ﬁts well all the basic intuitions
+about the assignment of justiﬁcation status and represents a sort of reference as far as
+undefeated and defeated arguments are concerned. In a sense, these assignments are un-
+questionable and should be agreed with by any alternative proposal. In Dung’s framework,
+this reference role has a formal counterpart in the following property: the grounded ex-
+tension is contained in any complete extension, and therefore in the extensions of any
+semantics (in particular in any preferred extension).
+
+Proposition 15. Given an argumentation framework AF = (cid:2)A, →(cid:4):
+
+• the grounded extension GE(AF) is the least (with respect to set inclusion) complete
+
+extension of AF;
+
+• the preferred extensions in PE(AF) are the maximal (with respect to set inclusion)
+
+complete extensions of AF.
+
+2 The existence of two alternative deﬁnitions of justiﬁcation status is actually unsatisfactory. In [8], we have
+proposed a uniﬁed deﬁnition overcoming this limitation and introducing a more articulated classiﬁcation. The
+considerations and the results presented in this paper are however independent of the choice of justiﬁcation status
+deﬁnition.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+171
+
+Fig. 6. Argumentation framework with a ﬂoating argument.
+
+For these reasons, as well as for its computational advantages, variants of grounded
+
+semantics have been considered in several works [10,13,21].
+
+Any unique-status approach is affected however by a limitation concerning the treat-
+ment of the so-called ﬂoating defeat, as pointed out in [12,24]. Consider the defeat graph
+presented in Fig. 6: as it has no initial nodes, the grounded semantics directly labels all
+nodes as provisionally defeated. On the other hand, preferred semantics (as well as stable
+semantics) prescribes two extensions {α, δ} and {β, δ}, thus yielding δ undefeated, α and β
+provisionally defeated, and γ defeated. This seems to be the intuitively correct result since
+both α and β, while preventing each other to be justiﬁed, defeat γ , thus enabling in any
+case the acceptance of δ.
+
+3. Preferred semantics: problematic behaviors
+
+As discussed in the previous section, Dung’s work has played an inﬂuential role on ar-
+gumentation research in recent years, due to its generality, to the proposed unifying view
+able to capture the most signiﬁcant existing approaches, and to the importance of the spe-
+ciﬁc results presented. In particular, preferred semantics is able to overcome the limitations
+of stable semantics as far as the existence of extensions in presence of defeat cycles is con-
+cerned, and the limitations of grounded semantics in the treatment of ﬂoating defeat.
+
+However, while preferred semantics can be considered a signiﬁcant advancement with
+respect to previous proposals, one can notice that the treatment of cycles does not appear
+completely satisfactory, since it is not as elegant as the one of grounded semantics. As a
+matter of fact, if the nodes of a defeat graph are arranged in a cycle of attack relationships,
+then they are not justiﬁed: this seems to be the intuitively right result, since all arguments
+in a cycle should be treated equally for obvious symmetry reasons and considering them
+all justiﬁed would yield a contradiction. However, this result is obtained in rather different
+ways in the two semantics. In the context of the grounded semantics, all arguments forming
+a cycle are directly labeled as provisionally defeated, since the grounded extension turns
+out to be the empty set. On the other hand, the preferred semantics features a sort of asym-
+metry, since it treats odd-length cycles differently from the even-length ones. Considering
+the argumentation framework of Fig. 5, consisting of a two-length cycle, two preferred
+extensions exist, namely {α} and {β}, therefore both arguments are provisionally defeated
+according to preferred semantics. With reference to the argumentation framework of Fig. 2,
+consisting of a three-length cycle, Deﬁnition 12 identiﬁes the empty set as the unique pre-
+ferred extension, therefore all the arguments are defeated. More generally, with odd-length
+cycles there is a unique empty extension, and then all arguments are defeated, while with
+
+172
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Fig. 7. A simple variant of the witnesses example.
+
+even-length cycles non-empty extensions exist but their intersection is empty, and then all
+arguments are provisionally defeated. This peculiar way of assigning a justiﬁcation status
+to odd-length cycles has recently been indicated as “puzzling” by Pollock [18].
+
+So far, this difference might be considered as a mere question of symmetry and elegance.
+However, as we show considering a simple variant of the witnesses example of Fig. 3,
+it can be recognized that the different treatment of odd-length cycles is a real problem
+since it gives rise to counter-intuitive results. Let us suppose that an additional source of
+information, e.g., a weather report, suggests that it is not raining, contradicting the claim
+made by Smith; in the case of three witnesses, the resulting argumentation framework is
+shown in Fig. 7(a). In this case, it turns out that PE(AF) = {{¬rain}}, therefore ¬rain is
+undefeated while all the other arguments are not justiﬁed. On the other hand, in the case
+of four witnesses we obtain the argumentation framework shown in Fig. 7(b): it admits
+several preferred extensions whose intersection is empty, and therefore all arguments are
+provisionally defeated. Notice that similar situations arise, in general, by replacing the
+three-length and four-length cycle with any odd-length and even-length cycle, respectively.
+Therefore, the justiﬁcation status of the argument supported by the weather report turns
+out to depend (in an alternating way) on the number of conﬂicting witnesses. Note that this
+difference arises because an odd-length cycle has no extensions besides the empty one: as a
+consequence, in the argumentation framework of Fig. 7(a) there is no extension where node
+rain is in and ¬rain is out and, therefore, ¬rain emerges as the only justiﬁed argument.
+Instead, such an extension exists with an even-length cycle and, therefore, both rain and
+¬rain turn out to be provisionally defeated.
+
+This seems to be rather questionable: as remarked in [14] the length of the leftmost
+cycle should not affect the justiﬁcation status. More generally, it is counter-intuitive that
+different results in conceptually similar situations depend on the length of the cycle: sym-
+metry reasons suggest that all cycles should be treated equally and should yield the same
+results.
+
+Notice that, in the above example, the odd-length cycle is in a sense stronger than the
+even-length one, since in the case of Fig. 7(a) the status of rain is the same as if it would be
+attacked by an initial node. The opposite happens however in the variant of this example
+shown in Fig. 8. Considering the argumentation framework of Fig. 8(a), it turns out that
+there is only one preferred extension, namely {α, φ}, therefore both α and φ are justiﬁed
+according to the preferred semantics. In fact, the absence of non-empty extensions for the
+three-length cycle prevents the existence of extensions where φ is out and γ is in. Since φ
+attacks γ , also α survives: as a consequence, α and φ emerge (questionably) undefeated.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+173
+
+Fig. 8. Problematic argumentation frameworks for preferred semantics.
+
+Fig. 9. A case of ﬂoating defeat and ﬂoating acceptance.
+
+On the other hand, by replacing the three-length cycle with a four-length cycle, we obtain
+the argumentation framework of Fig. 8(b), whose arguments are all provisionally defeated
+(and a similar result is obtained with any other even-length cycle). In this case, therefore,
+the odd-length cycle is in a sense weaker than the even-length one, since it is not able to
+prevent φ from being justiﬁed.
+
+In summary, we notice that odd-length cycles are problematic for preferred semantics
+from two points of view: ﬁrst of all, they give radically different results with respect to
+even-length cycles in situations where such a difference does not seem justiﬁed, moreover
+they change their capability of defeating other arguments depending on the topology of the
+defeat graph.
+
+These problems have been ﬁrst pointed out in our previous works [4,7]. Other speciﬁc
+difﬁculties of preferred semantics related to the treatment of odd-length cycles have been
+noticed in argumentation literature. In [22], a problem in the treatment of the argumentation
+framework shown in Fig. 9 is pointed out. This is a case of ﬂoating defeat against argument
+γ by the nodes in the three-length cycle, namely it can be regarded as a variant of the argu-
+mentation framework shown in Fig. 6, where the even-length attack loop has been replaced
+by an odd-length loop. Again, regarding as irrelevant the distinction between even-length
+and odd-length cycles would yield to consider γ defeated and δ justiﬁed: although δ is
+attacked by γ , it is reinstated by arguments α, β and φ since any of them attacks γ . How-
+ever, it turns out that preferred semantics admits as preferred extension only the empty set
+and, therefore, no argument is justiﬁed. The authors underline that “this seems one of the
+main unsolved problems in argumentation-based semantics” [22].
+
+Problems also arise when considering the extreme case of odd-length cycles, namely
+self-defeating arguments, which have received a special attention in the literature [14,22].
+The argumentation framework AF shown in Fig. 10 is yet another problematic case for
+preferred semantics, as observed by Dung himself [9]. In fact, the only preferred extension
+
+174
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Fig. 10. The case of a self-defeating argument.
+
+here is the empty set, though one can argue that since α attacks itself, β should be justi-
+ﬁed. Actually, both solutions are reasonable in some sense, since different treatments of
+self-defeating arguments may be appropriate in different contexts: a discussion and some
+examples about this point are provided in [15].
+
+Before drawing any conclusion from the previous discussion, it is fair to recognize that
+different points of view about the intuitive interpretation of the defeat graphs presented
+above are possible as well. In [22], it is suggested that, while these examples are prob-
+lematic if one adheres to an intuitive symmetry requirement, an alternative view can be
+conceived where “odd defeat loops are of an essentially different kind than even defeat
+loops”. For instance, one might state that odd-length cycles are like paradoxes, i.e., sit-
+uations where nothing can be believed, while even-length cycles are like dilemmas, i.e.,
+situations where a choice needs to be made. While, in our opinion, this remark is not ap-
+plicable to the above examples concerning witnesses, we agree that the matter is far from
+admitting a univocal solution. In this perspective, one should not look for just one right
+semantics, since the correct behavior is a matter of interpretation. Similarly, in [11] exam-
+ples are pointed out where the behavior of grounded semantics appears more appropriate
+than the one of preferred semantics in the treatment of so-called ﬂoating conclusions. From
+a more general stance, in [20] it is remarked that using intuition about speciﬁc examples
+to derive general considerations about defeasible reasoning may be risky and inappropri-
+ate. This is due, in particular, to the speciﬁc nature of defeasible reasoning where it is a
+fundamental standpoint that inferences are never conclusive and are always subject to be
+invalidated in the light of additional information. For these reasons, alternative solutions to
+some puzzling examples can be obtained by making explicit some information left implicit
+in their original formulation. Moreover, it can be argued that in these problematic cases the
+topology of the defeat graph does not determine a univocal solution per se, since the same
+abstract structure may give rise to different intuitively plausible justiﬁcation status assign-
+ments when instantiated on distinct common sense reasoning examples: this is a downside
+of the generality of abstract frameworks. As a consequence, Prakken suggests that “it is
+better to use intuitions not as critical tests but as generators for further investigation” [20].
+The work described in the present paper adheres to this suggestion. The problematic
+cases discussed above point out that different solutions can be considered reasonable in
+different contexts (or even in the same context by different people) and, in particular, pre-
+ferred semantics may be regarded as problematic in some cases. As a conclusion of this
+survey, we aim at investigating an extension of Dung’s theory able to capture a larger vari-
+ety of argumentation semantics, so that none of the reasonable intuitions arising in different
+contexts is excluded. The framework we are looking for should therefore be able to include
+the traditional grounded, stable, and preferred semantics, as well as alternative treatments
+of the problematic examples discussed above. To achieve such a level of generality, we
+need to single out a few basic principles which can be regarded as a sort of insuppressible
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+175
+
+conceptual core for any argumentation semantics. The relevant analysis is carried out in
+the following section.
+
+4. A general recursive schema for argumentation semantics
+
+In our search for a minimal set of fundamental principles of argumentation semantics,
+we depart from the common practice of characterizing extensions by means of a set of
+global properties they should respect: rather, we adopt a sort of constructive approach,
+where the structure of the defeat graph drives the incremental deﬁnition of extensions. In
+this perspective, an argumentation semantics can be viewed as the deﬁnition of a mecha-
+nism for constructing all possible extensions of an argumentation framework, and this, in
+turn, can be understood as an incremental process that step-wise chooses which nodes of
+an argumentation framework should be included into an extension.
+
+We draw inspiration from the way the justiﬁcation status can be computed according
+to the grounded semantics: as described in Section 2.2, computation proceeds from the
+frontier of the defeat graph towards the inside. Considering, as an example, the chain shown
+in Fig. 1, the initial node α is assigned the status of undefeated, causing β, which is attacked
+by α, to be assigned the status of defeated; this in turn causes γ to be assigned the status of
+undefeated, and so on. This node labeling procedure suggests that edges in the defeat graph
+represent not only the attack relation, but also a dependency relation in the assignment of
+justiﬁcation status: roughly, the status of a node depends on those of its defeaters. However,
+this intuition has to be reﬁned in order to cope with the case of cyclic attack relations, where
+mutual dependence would prevent this reasoning to be applicable. To this purpose, let us
+consider the case of ﬂoating defeat shown in Fig. 6. In a sense, the subgraph {α, β} plays
+the role of initial node with respect to γ ; in fact, the status assignment within this subgraph
+determines the justiﬁcation status of γ . For instance, in the case of preferred semantics
+the construction of the extensions might proceed by selecting either α or β within the
+subgraph, and then propagating the effect of this choice on the subsequent nodes. For each
+of these choices γ is attacked and then left out from the extension; as a consequence, the
+attack from γ to δ is ineffective and δ is included in both the extensions.
+
+This example brings to light a fundamental aspect: the dependency relation introduced
+at the level of single nodes may also hold at the level of subgraphs, that play, in a sense,
+the role of single virtual nodes in the propagation of defeat. However, in order to derive a
+concrete result from this intuition, it is necessary to identify a decomposition of the defeat
+graph which appropriately reﬂects the dependency relation mentioned above. It turns out
+that such decomposition is provided by the graph-theoretical notion of strongly connected
+components.
+
+Deﬁnition 16. Given an argumentation framework AF = (cid:2)A, →(cid:4), the binary relation of
+path-equivalence between nodes, denoted as PEAF ⊆ (A × A), is deﬁned as follows:
+
+• ∀α ∈ A, (α, α) ∈ PEAF,
+• given two distinct nodes α, β ∈ A, (α, β) ∈ PEAF if and only if there is a path from α
+
+to β and a path from β to α.
+
+176
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+The strongly connected components of AF are the equivalence classes of nodes under the
+relation of path-equivalence. The set of the strongly connected components of AF is de-
+noted as SCCSAF. Given a node α ∈ A, the strongly connected component α belongs to is
+denoted as SCCAF(α).
+
+A particular case, to be considered in the following, is represented by the empty argu-
+
+mentation framework: when AF = (cid:2)∅, ∅(cid:4) we assume SCCSAF = {∅}.
+
+To exemplify Deﬁnition 16, in the graph of Fig. 1 there are four strongly connected com-
+ponents each consisting of a single node (i.e., SCCSAF = {{α}, {β}, {γ }, {δ}}), since there
+is not any couple of mutually reachable nodes. On the other hand, the graphs of Fig. 2,
+Fig. 5, Fig. 8 consist of exactly one strongly connected component coinciding with the
+whole set of nodes, since they are all mutually reachable. The graphs in Fig. 3, Fig. 4 and
+Fig. 10 include two strongly connected components: one consisting of a cycle (a degener-
+ate one in the case of Fig. 10), the other one of a single node. Three strongly connected
+components are present in the graph of Fig. 6, namely {α, β}, {γ }, and {δ}, and a simi-
+lar decomposition applies to the graph of Fig. 9. Finally two distinct strongly connected
+components can easily be identiﬁed in the graphs of Fig. 7: for instance in the graph of
+Fig. 7(a), the nodes R, S, and J form a ﬁrst strongly connected component S1, since they
+are mutually reachable being arranged in a cycle, while the nodes rain and ¬rain form a
+second distinct strongly connected component S2, since they are mutually reachable while
+there is not any path leading from them to any node of S1.
+
+We extend to strongly connected components the notion of parents, denoting the set
+of the other strongly connected components that attack a strongly connected component
+S as sccparentsAF(S), and we introduce the deﬁnition of proper ancestors, denoted as
+sccancAF(S):
+
+Deﬁnition 17. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a strongly connected
+component S ∈ SCCSAF, we deﬁne
+
+sccparentsAF(S) = {P ∈ SCCSAF | P (cid:12)= S and P → S}
+
+and
+
+sccancAF(S) = sccparentsAF(S) ∪
+
+(cid:1)
+
+sccancAF(P )
+
+P ∈sccparentsAF(S)
+
+A strongly connected component S such that sccparentsAF(S) = ∅ is called initial.
+
+It is well-known that the graph obtained by considering strongly connected components
+as single nodes is acyclic: this conﬁrms that considering a dependency relation at the level
+of SCCSAF is a sound starting point. Recalling the basic example of Fig. 1, where the
+strongly connected components consist of single nodes, clearly the dependency among
+justiﬁcation states of nodes has a direct counterpart in terms of strongly connected com-
+ponents. Turning to the example of Fig. 6, a similar consideration applies: the subgraph
+{α, β} is actually the only initial strongly connected component of the graph. The choices
+concerning extension construction carried out in this ﬁrst strongly connected component
+clearly do not depend on those concerning the other ones and directly affect the choice
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+177
+
+about the subsequent strongly connected component (actually consisting of {γ }), which in
+turn affects the last strongly connected component, namely {δ}. Similar considerations can
+be easily applied to other examples.
+
+Generalizing this intuition, we assume a ﬁrst basic principle, called directionality prin-
+ciple: with reference to a given extension E, for any strongly connected component S of
+AF, the choice of the subset of S to be included in E (i.e., (E ∩ S)) only depends on the
+choices made in the strongly connected components of sccancAF(S), i.e., those that are
+antecedent to S in the acyclic graph made up of strongly connected components.
+
+In particular, the choices in the antecedent strongly connected components determine a
+
+partition of the nodes of S into three subsets:3
+
+Deﬁnition 18. Given an argumentation framework AF = (cid:2)A, →(cid:4), a set E ⊆ A and a
+strongly connected component S ∈ SCCSAF, we deﬁne:
+
+• DAF(S, E) = {α ∈ S | (E ∩ outparentsAF(S)) → α};
+• PAF(S, E) = {α ∈ S | (E ∩ outparentsAF(S)) (cid:12)→ α ∧ ∃β ∈ (outparentsAF(S) ∩
+
+parentsAF(α)): E (cid:12)→ β};
+
+• UAF(S, E) = S \ (DAF(S, E) ∪ PAF(S, E)) = {α ∈ S | (E ∩ outparentsAF(S)) (cid:12)→ α ∧
+
+∀β ∈ (outparentsAF(S) ∩ parentsAF(α))E → β}.
+
+In words, the set DAF(S, E) consists of the nodes of S attacked by E from outside S, the
+set UAF(S, E) consists of the nodes of S that are not attacked by E from outside S and are
+defended by E (i.e., their defeaters from outside S are all attacked by E), and PAF(S, E)
+consists of the nodes of S that are not attacked by E from outside S and are not defended
+by E (i.e., at least one of their defeaters from outside S is not attacked by E). It is easy to
+verify that DAF(S, E), PAF(S, E) and UAF(S, E) are determined only by the elements of
+E that belong to the strongly connected components in sccancAF(S).
+
+To exemplify the above deﬁnitions, consider again the defeat graph presented in
+Fig. 7(a), which consists of two strongly connected components S1 = {R, S, J } and
+S2 = {rain, ¬rain}, where clearly S1 precedes S2. Accordingly, let us now show how dif-
+ferent choices of E ∩ S1 determine different partitions of S2.
+
+Let us ﬁrst consider the case that (E ∩ S1) = {J }: then the node rain receives an
+external attack coming from a node included in E. Therefore it satisﬁes the condition
+for membership in DAF(S2, E), while the node ¬rain does not receive external attacks
+from E, and thus satisﬁes the condition for membership in UAF(S2, E). Therefore it turns
+out that DAF(S2, E) = {rain} and UAF(S2, E) = {¬rain}. Note that the condition about
+¬rain does not depend on the choice of E ∩ S1, therefore it will always be the case that
+¬rain ∈ UAF(S2, E).
+
+Let us turn to the case (E ∩ S1) = {S}: now rain does not receive external attacks
+from E, but is attacked from outside S2 by the node J , which is not included in E nor
+
+3 The symbols D, P and U are meant to recall the terms “Defeated”, “Provisionally defeated” and “Unde-
+feated” respectively. It has to be noted, however, that here they refer to a relationship between arguments and a
+particular extension E, rather than to the overall justiﬁcation status of arguments.
+
+178
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+is attacked by E. Thus rain satisﬁes the condition for membership in PAF(S2, E) yielding
+PAF(S2, E) = {rain}, and, of course, again UAF(S2, E) = {¬rain}.
+
+Finally, if (E ∩ S1) = {R}, the node rain is defended by E since its only external at-
+tacker J is in turn attacked by R ∈ E, so rain satisﬁes the condition for membership in
+UAF(S2, E), yielding UAF(S2, E) = {rain, ¬rain}.
+
+Now, we need to investigate further principles which drive the selection of E ∩ S on the
+basis of the above three sets. First of all, as already discussed in Section 2.2, a conﬂict-free
+principle is universally accepted: an extension cannot include conﬂicting arguments. This
+entails that arguments in DAF(S, E), being attacked by nodes in E, cannot be chosen in
+the construction of the extension E (i.e., do not belong to E ∩ S). Selection of arguments
+to be included in E is therefore restricted to (S \ DAF(S, E)) = (UAF(S, E) ∪ PAF(S, E)),
+which, for ease of notation, will be denoted in the following as UPAF(S, E).
+
+As far as this selection is concerned, we recall that it is generally agreed that undefeated
+nodes are able to make ineffective the attacks of nodes they attack, i.e., of defeated nodes.
+This reinstatement principle prescribes that nodes defeated by an extension E play no
+role in the selection of nodes to be included in E. Taking into account the decomposition
+into strongly connected components, the application of this principle can be examined
+considering separately, for a given strongly connected component S, the nodes defeated
+by E inside and outside S. Inside S, the principle entails that the nodes in DAF(S, E) and
+the relevant attack relations can be suppressed. This implies that the selection within S
+of the nodes to be included in an extension E has to be carried out on a sort of reduced
+argumentation framework, consisting in UPAF(S, E), completely neglecting the nodes in
+DAF(S, E).
+
+To formalize this concept, we provide the deﬁnition of restriction of an argumentation
+
+framework to a given subset of its nodes:
+
+Deﬁnition 19. Let AF = (cid:2)A, →(cid:4) be an argumentation framework, and let S ⊆ A be a set
+of arguments. The restriction of AF to S is the argumentation framework AF↓S = (cid:2)S, →
+∩(S × S)(cid:4).
+
+Combining this deﬁnition with the reinstatement principle, we obtain that the selection
+of nodes within a strongly connected component S has to be carried out on the restricted
+argumentation framework AF↓UPAF(S,E) without taking into account the attacks coming
+from DAF(S, E).
+
+Let us turn to the suppression of nodes defeated by E outside S. For ease of description,
+let us call in the following outer attacker of a strongly connected component S, with respect
+to an extension E, any node α such that α /∈ S, α /∈ E, α → UPAF(S, E). Note that any
+outer attacker α of S necessarily belongs to a strongly connected component parent of S,
+i.e., SCCAF(α) ∈ sccparentsAF(S). We will also refer to the outer attackers of a node β ∈ S
+to denote the subset of the outer attackers of S attacking β. In general some of the outer
+attackers of S with respect to E are in turn attacked by E, while others are not.
+
+As to the ﬁrst ones, according to the reinstatement principle the nodes of UPAF(S, E)
+should be treated as if the outer attackers that are attacked by E did not exist. To clarify
+this point, consider the particular case where all outer attackers of S are in turn attacked
+by E (formally, UPAF(S, E) = UAF(S, E)): according to the above considerations, the se-
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+179
+
+lection of nodes to be included in the extension is carried out in AF↓UPAF(S,E) neglecting
+the suppressed outer attacks and therefore following the same principles which are applied
+to an unrestricted argumentation framework, i.e., selection is carried out in the same way
+as if the argumentation framework was not the result of a restriction. For instance, using
+again the example of Fig. 7(a), when UPAF(S2, E) = UAF(S2, E) = {rain, ¬rain} the re-
+instatement principle entails that the selection of E ∩ S2 is analogous to the case of Fig. 5,
+namely to the case of a defeat graph featuring the same topology and not resulting from
+restriction.
+
+On the other hand, outer attackers that are not attacked by E may play a role in the
+construction of the extensions. Accordingly, the nodes of UPAF(S, E) can be partitioned
+into defended nodes, i.e., nodes which have no outer attackers or whose outer attackers are
+all attacked by E, and undefended nodes, such that at least one of their outer attackers is
+not attacked by E.
+
+Summing up, on the basis of the principles we have identiﬁed, the selection of (E ∩ S)
+
+turns out to depend only on:
+
+• the restricted argumentation framework AF↓UPAF(S,E);
+• the distinction between defended and undefended nodes within UPAF(S, E).
+
+A direct way to formalize these ideas consists in stating that the nodes to be included in
+the extension are selected by means of a generic selection function, which will be denoted
+as GF . The function GF takes in input two parameters:
+
+• a generic, possibly restricted, argumentation framework AF = (cid:2)A, →(cid:4) to which selec-
+
+tion has to be applied;
+
+• the set C ⊆ A of defended nodes4
+
+and gives as output a set of subsets of A, which represents all possible choices for E ∩ A.
+Accordingly, we will use the notation GF(AF, C) for the function. For the sake of general-
+ity, besides specifying its input and output, we do not make any a priori assumption about
+GF and, in particular, about whether and how the parameter C is taken into account.
+
+Now, the next step is to deﬁne GF(AF, C) for a generic argumentation framework AF =
+(cid:2)A, →(cid:4) and a set C ⊆ A, representing the defended nodes of AF: two cases have to be
+considered in this respect.
+
+If AF consists of exactly one strongly connected component, it does not admit a de-
+composition where to apply the directionality principle, therefore it has to be assumed that
+GF(AF, C) coincides in this case with a base function, denoted as BF S (AF, C), that must
+be assigned in order to characterize a particular argumentation semantics S. The deﬁnition
+of this base function is, at least in principle, unconstrained.
+
+On the other hand, if AF can be decomposed into several strongly connected com-
+ponents, then, according to the directionality and reinstatement principles, GF(AF, C)
+
+4 This is just one of the ways of formalizing the distinction between defended and undefended nodes: this for-
+malization turned out to enable a more elegant and compact technical treatment with respect to other alternatives.
+
+180
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+is obtained by applying recursively GF to each strongly connected component of AF,
+deprived of the nodes in DAF(S, E). Formally, this means that for any S ∈ SCCSAF,
+(E ∩ S) ∈ GF(AF↓UPAF(S,E), C(cid:16)), where C(cid:16) represents the set of defended nodes of the
+restricted argumentation framework AF↓UPAF(S,E). The set C(cid:16) can be determined taking
+into account both the attacks coming from outside AF (which can be actually present only
+if AF results in turn from restriction) and those coming from other strongly connected
+components of AF, namely from sccparentsAF(S). Since the set C consists of the nodes
+defended from the former kind of attacks at the level of AF, while UAF(S, E) consists of
+those defended from the latter, it turns out that C(cid:16) = UAF(S, E) ∩ C.
+
+The above considerations suggest to introduce a new notion for argumentation seman-
+
+tics, called SCC-recursiveness:
+
+Deﬁnition 20. A given argumentation semantics S is SCC-recursive if and only if for
+any argumentation framework AF = (cid:2)A, →(cid:4), ES (AF) = GF(AF, A), where for any AF =
+(cid:2)A, →(cid:4) and for any set C ⊆ A, the function GF(AF, C) ⊆ 2A is deﬁned as follows:
+for any E ⊆ A, E ∈ GF(AF, C) if and only if
+
+• in case |SCCSAF| = 1, E ∈ BF S (AF, C),
+• otherwise, ∀S ∈ SCCSAF (E ∩ S) ∈ GF(AF↓UPAF(S,E), UAF(S, E) ∩ C),
+
+where BF S (AF, C) is a function, called base function, that, given an argumentation frame-
+work AF = (cid:2)A, →(cid:4) such that |SCCSAF| = 1 and a set C ⊆ A, gives a subset of 2A.
+
+In particular, the set of all the extensions of the original unrestricted argumentation
+framework AF coincides with GF(AF, A), since obviously there are no attacks from out-
+side and, therefore, the set C coincides with the set A of all arguments.
+
+Note that the deﬁnition of GF(AF, C) is recursive with respect to the decomposition
+of AF into strongly connected components. Since GF(AF, C) is applied to progressively
+more restricted argumentation frameworks, the deﬁnition is well founded: in particular the
+base of the recursion is given by the function BF S (AF, C), which returns the extensions
+of a generic argumentation framework consisting of a unique strongly connected compo-
+nent. Therefore, in order to deﬁne a SCC-recursive semantics, it is sufﬁcient to specify its
+behavior only on single-SCC argumentation frameworks.
+
+The deﬁnition given above has also a straightforward constructive interpretation: it
+suggests an effective (recursive) procedure for computing all the extensions of an argu-
+mentation framework AF = (cid:2)A, →(cid:4) according to a given SCC-recursive semantics, once
+a speciﬁc base function is assigned. A particular role in this context is played by the
+initial strongly connected components. In fact, for any initial strongly connected com-
+ponent I , since by deﬁnition there are no outer attacks, UPAF(I, E) = UAF(I, E) = I
+for any E and the set of defended nodes coincides with I . This gives rise to the invoca-
+tion GF(AF↓I , I ), for any initial strongly connected component I . Since AF↓I obviously
+consists of a unique strongly connected component, according to Deﬁnition 20 the base
+function BF S (AF↓I , I ) is invoked, which returns the extensions of AF↓I according to
+the semantics S. Therefore, the base function can be ﬁrst computed on the initial strongly
+connected components, where it directly returns the extensions prescribed by the seman-
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+181
+
+Fig. 11. An argumentation framework with two strongly connected components.
+
+tics, then the results of this computation are used to identify, within the subsequent strongly
+connected components, the restricted argumentation frameworks on which the procedure
+is recursively invoked.
+
+To support a better understanding of the concepts introduced above, we describe in
+detail their application to the argumentation framework presented in Fig. 11, which consists
+of two strongly connected components, namely S1 = {α, β, γ } and S2 = {δ, ε, η, ϕ}. In the
+example we refer to a generic unspeciﬁed semantics S. The set of extensions of the whole
+argumentation framework is given by GF(AF, A) and, since AF consists of more than
+one strongly connected component, the function GF is invoked recursively on them (with
+C = A), following their order. Formally, we have that E ∈ ES(AF) iff
+
+• (E ∩ S1) ∈ GF(AF↓UPAF(S1,E), UAF(S1, E)),
+• (E ∩ S2) ∈ GF(AF↓UPAF(S2,E), UAF(S2, E)).
+
+As explained above, for the initial strongly connected component S1 it holds that
+UPAF(S1, E) = UAF(S1, E) = S1
+for any E:
+this gives rise to the invocation
+GF(AF↓S1 , S1). Since AF↓S1 consists of a unique strongly connected component, the
+base function BF S (AF↓S1 , S1) is invoked, which returns the extensions of AF↓S1 accord-
+ing to the semantics S. For the sake of the example, let us assume that BF S (AF↓S1, S1) =
+{{α}, {β}, {γ }}, i.e., that, according to S, the extensions of AF↓S1 are the singletons in-
+cluded in S1. At the level of the whole argumentation framework, they represent the
+alternative choices for E ∩ S1. Now, each of these alternative choices for E ∩ S1 has
+an impact on the subsequent strongly connected component S2 and determines a distinct
+UPAF(S2, E), since, for any E, UPAF(S2, E) = UPAF(S2, E ∩ S1). Thus, GF has to be
+applied to AF↓UPAF(S2,{α}), AF↓UPAF(S2,{β}), and AF↓UPAF(S2,{γ }), to determine which sub-
+sets of S2 can be joined with {α}, {β}, and {γ } respectively to form extensions at the level of
+the whole graph. If other strongly connected components were present, the same reasoning
+would apply to them.
+
+To continue our example, let us now consider the case where
+
+E ∩ S1 = {α}
+
+As to the partition induced on S2 by this choice, since only node δ is attacked by α ∈ E,
+DAF(S2, {α}) = {δ} and, therefore, UPAF(S2, {α}) = {ε, η, ϕ}, which determines the ﬁrst
+parameter for the recursive invocation of GF . Within UPAF(S2, {α}), the only node which
+receives an outer attack is ϕ. Since its attacker γ is not included in E ∩ S1 nor is attacked
+
+182
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+1
+
+= {ε}, S(cid:16)
+2
+
+= {η}, S(cid:16)
+3
+
+2, E(cid:16) ∩ S(cid:16)
+
+by E ∩ S1, we have PAF(S2, {α}) = {ϕ}, which entails UAF(S2, {α}) = {ε, η}. Therefore,
+the recursive invocation on the second strongly connected component of the graph has the
+form (E ∩ S2) ∈ GF(AF(cid:16), {ε, η}), where AF(cid:16) = AF↓{ε,η,ϕ}.
+
+= {ϕ}. S(cid:16)
+1, E(cid:16)) = UAF(cid:16)(S(cid:16)
+
+Now, let us identify the sets E(cid:16) ∈ GF(AF(cid:16), {ε, η}) which represent the possible values
+for (E ∩ S2): the function GF is applied to AF(cid:16) following the same reasoning lines as
+above. First, note that AF(cid:16) is actually a chain of three nodes, therefore it consists of three
+simple strongly connected components S(cid:16)
+1 is the only initial
+1
+strongly connected component of AF(cid:16), therefore UPAF(cid:16)(S(cid:16)
+1, E(cid:16)) = S(cid:16)
+= {ε}
+for any extension E(cid:16) of AF(cid:16). Following Deﬁnition 20, the possible values for (E(cid:16) ∩ S(cid:16)
+1)
+are given by GF(AF(cid:16)↓{ε}, {ε} ∩ {ε, η}) = GF((cid:2){ε}, ∅(cid:4), {ε}). Since (cid:2){ε}, ∅(cid:4) consists of a
+single strongly connected component, the base function BF S ((cid:2){ε}, ∅(cid:4), {ε}) is in turn
+invoked: let us (reasonably) assume that it returns {{ε}} as result. Then, as it was intu-
+itively evident, there is only one possibility for E(cid:16) ∩ S(cid:16)
+1, whose effects on subsequent
+strongly connected components of AF(cid:16) have to be determined. It is immediate to note
+2, E(cid:16) ∩ S(cid:16)
+= {η}, therefore UPAF(cid:16)(S(cid:16)
+that DAF(cid:16)(S(cid:16)
+1) = ∅, and also the set
+of defended nodes is empty. Formally, the possible values for E(cid:16) ∩ S(cid:16)
+2 are given by
+GF(AF(cid:16)↓∅, ∅ ∩ {ε, η}) = GF((cid:2)∅, ∅(cid:4), ∅). The base function is then invoked on the empty
+argumentation framework, giving reasonably {∅} as result. Now we are ready to consider
+3: within AF(cid:16) it receives an attack only from S2 and it is clear from above
+the situation of S(cid:16)
+that E(cid:16) ∩ S2 = ∅. Therefore UAF(cid:16)(S(cid:16)
+3, E(cid:16)) =
+PAF(cid:16)(S(cid:16)
+3, E(cid:16)) = ∅ and UPAF(cid:16)(S(cid:16)
+3, E(cid:16)). Applying Deﬁnition 20, the possi-
+ble values for E(cid:16) ∩ S(cid:16)
+∩ {ε, η}) = GF((cid:2){ϕ}, ∅(cid:4), ∅). Note
+S(cid:16)
+3
+that, in this case, the second parameter of the function GF , namely the set of defended
+nodes, differs from UAF(cid:16)(S(cid:16)
+3, E(cid:16)), due to the attack coming from γ and considered at a
+previous level of recursion. Again, AF(cid:16)↓
+consists of a single strongly connected com-
+ponent, therefore the possible values of E(cid:16) ∩ S(cid:16)
+3 are given by BF S ((cid:2){ϕ}, ∅(cid:4), ∅). In this
+case, the result of the function is no more obvious since different semantics might ascribe
+a different role to the set of defended nodes, as it will be discussed later. Supposing that
+the result is {{ϕ}}, we have a unique E(cid:16) ∈ GF(AF(cid:16), {ε, η}), and therefore a unique value
+for (E ∩ S2), i.e., {ε, ϕ}. Summing up, we obtain {α, ε, φ} as an extension of the origi-
+nal AF.
+
+3, E(cid:16)) = UAF(cid:16)(S(cid:16)
+3 are given by GF(AF(cid:16)↓
+
+3, ∅) = S(cid:16)
+, S(cid:16)
+3
+
+= {ϕ}. Then DAF(cid:16)(S(cid:16)
+
+3, E(cid:16)) = UAF(cid:16)(S(cid:16)
+
+1) = S(cid:16)
+
+S(cid:16)
+3
+
+2
+
+3
+
+For the sake of brevity we do not carry out such a detailed analysis for the cases E ∩
+
+S1 = {β}, and E ∩ S1 = {γ }, rather a sketch is provided for the interested reader.
+
+In the case E ∩ S1 = {β}, there are no attacks from E to S2 and β defends ϕ, there-
+fore it turns out that DAF(S2, E) = ∅, PAF(S2, E) = {δ}, UAF(S2, E) = {ε, η, ϕ}, which
+coincides with the set of defended nodes within S2. Then UPAF(S2, E) = S2 giving
+rise to the following invocation: GF(AF↓S2 , {ε, η, ϕ}). Now, AF↓S2 consists of a unique
+strongly connected component, therefore the possible completions of extensions at the
+level of the whole graph are given by BF S (AF↓S2 , {ε, η, ϕ}), whose outcome depends
+on the speciﬁc semantics S considered and is not speciﬁed here: joining the elements of
+BF S (AF↓S2 , {ε, η, ϕ}) with {β}, we obtain a set of extensions B ⊂ ES(AF), such that
+∀B ∈ B, B ∩ S1 = {β}.
+
+Finally, in the case E ∩ S1 = {γ }, E attacks the node ϕ and defends the node
+δ within S2. Therefore DAF(S2, E) = {ϕ}, PAF(S2, E) = ∅, and UAF(S2, E) =
+UPAF(S2, E) = {δ, ε, η}, which coincides also with the set of defended nodes. Letting
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+183
+
+= {δ}, S(cid:16)
+2
+
+AF(cid:16) = AF↓{δ,ε,η}, GF(AF(cid:16), {δ, ε, η}) is invoked. AF(cid:16) is a chain of three nodes, therefore
+its strongly connected components are the singletons S(cid:16)
+= {η}.
+1
+1 is the initial one and we have GF(AF(cid:16)↓
+S(cid:16)
+∩ {δ, ε, η}) = GF((cid:2){δ}, ∅(cid:4), {δ}) =
+BF S ((cid:2){δ}, ∅(cid:4), {δ}), which reasonably gives {{δ}} as only possible choice for E(cid:16) ∩ S(cid:16)
+1. Tak-
+2, E(cid:16)) = ∅ and then we have GF(AF(cid:16)↓∅, ∅) = GF((cid:2)∅, ∅(cid:4), ∅)
+ing this into account, UPAF(cid:16)(S(cid:16)
+= BF S ((cid:2)∅, ∅(cid:4), ∅), which reasonably gives {∅} as only possible choice for E(cid:16) ∩ S(cid:16)
+2. This en-
+tails UPAF(cid:16)(S(cid:16)
+∩ {δ, ε, η}) = GF((cid:2){η}, ∅(cid:4), {η}) =
+BF S ((cid:2){η}, ∅(cid:4), {η}), which reasonably gives {{η}} as only possible choice for E(cid:16) ∩ S(cid:16)
+3.
+Summing up, we obtain {γ , δ, η} as an extension of the original AF, and ﬁnally ES(AF) =
+{{α, ε, φ}, {γ , δ, η}} ∪ B.
+
+3 and we have GF(AF(cid:16)↓
+
+= {ε}, and S(cid:16)
+3
+
+3, E(cid:16)) = S(cid:16)
+
+, S(cid:16)
+3
+
+, S(cid:16)
+1
+
+S(cid:16)
+1
+
+S(cid:16)
+3
+
+Partly due to their recursive nature, Deﬁnition 20 and its detailed application may appear
+complex.5 We argue, however, that the underlying basic ideas are relatively simple and can
+be summarized as follows:
+
+(1) the argumentation framework is partitioned into its strongly connected components;
+they form a partial order which encodes the dependencies existing among them ac-
+cording to the directionality principle;
+
+(2) the possible choices for extensions within each initial strongly connected component
+are determined using a semantic-speciﬁc base function which returns the extensions of
+argumentation frameworks consisting of a single strongly connected component;
+(3) for each possible choice determined at step 2, according to the reinstatement princi-
+ple, the nodes directly attacked within subsequent strongly connected components are
+suppressed and the distinction between defended and undefended nodes is (possibly)
+taken into account;
+
+(4) the steps 1–3 above are applied recursively on the restricted argumentation frameworks
+
+obtained at step 3.
+
+One may now wonder whether the property of SCC-recursiveness characterizes a suit-
+able family of semantics. On the one hand, such family should be general enough to include
+all traditional approaches to argumentation semantics in Dung’s framework, on the other
+hand it should be constrained enough to support the deﬁnition of novel proposals based on
+reasonable deﬁnitions of the base function.
+
+As far as the ﬁrst requirement is concerned, it is reasonable to expect a positive answer
+since SCC-recursiveness has been derived using a very essential set of largely accepted
+principles in argumentation semantics. This intuition is formally backed up in the follow-
+ing section, where it is shown that all the semantics encompassed by Dung’s theory are
+SCC-recursive. As to the second requirement, in Section 6 we show that SCC-recursive
+semantics satisﬁes two desirable properties under very general constraints on the base func-
+tion, while in Section 7 we exploit SCC-recursiveness to introduce four novel semantics
+able to cope in different ways with the problematic cases illustrated in Section 3.
+
+5 Other examples of application of the recursive schema will be given in Section 7.
+
+184
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Fig. 12. A ‘Nixon diamond’ attacking a node.
+
+5. SCC-recursive characterization of traditional semantics
+
+5.1. Generalizing Dung’s theory
+
+In order to develop an SCC-recursive characterization of traditional semantics, it is
+necessary, ﬁrst of all, to redeﬁne Dung’s theory in generalized terms, by restating its
+fundamental concepts with reference to a speciﬁc subset C ⊆ A, from which acceptable
+arguments (that compose the extensions) are selected, since it represents the subset of de-
+fended nodes within A, as explained in the previous section. Original Dung’s deﬁnitions
+can be recovered letting C = A. Proofs are omitted throughout this subsection as they are
+straightforward extensions of those in [9].
+
+Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A, we deﬁne admissi-
+
+ble sets in C as follows:
+
+Deﬁnition 21. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A, a set
+E ⊆ A is an admissible set in C if and only if E ⊆ C ∧ E ∈ AS(AF). The set of admissible
+sets in C is denoted as AS(AF, C).
+
+Note that, in general, AS(AF, C) (cid:12)= AS(AF↓C). For instance, in the argumentation
+framework of Fig. 12, with C = {γ } we have that AS(AF, C) = {∅}, since γ is not an
+admissible set because of the attack coming from β, while AS(AF↓C) = {{γ }}.
+
+We introduce now the notion of stable, complete and preferred extensions in the context
+
+of the generalized framework.
+
+Deﬁnition 22. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A, a set
+E ⊆ A is a stable extension in C if and only if E ⊆ C and E ∈ SE(AF). The set of stable
+extensions in C is denoted as SE(AF, C).
+
+Deﬁnition 23. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A, a set
+E ⊆ A is a complete extension in C if and only if E ∈ AS(AF, C), and every argument
+α ∈ C which is acceptable with respect to E belongs to E, i.e., ∀α ∈ C: α ∈ FAF(E),
+α ∈ E. The set of complete extensions in C is denoted as CE(AF, C).
+
+Deﬁnition 24. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+C ⊆ A, a preferred extension in C is a maximal element (with respect to set inclusion) of
+AS(AF, C). The set of preferred extensions in C is denoted as PE(AF, C).
+
+In other terms, E ∈ PE(AF, C) if and only if E is a maximal set such that E ⊆ C and
+
+E is admissible in AF.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+185
+
+Given these deﬁnitions, an important question concerns the existence of a preferred
+extension for any argumentation framework AF and for any set C ⊆ A. The following
+theorem provides a positive answer to this question, extending Dung’s results:
+
+Theorem 25. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A:
+
+• The elements of AS(AF, C), i.e., the admissible subsets of C, form a complete partial
+
+order.
+
+• For all F ∈ AS(AF, C), there is E ∈ PE(AF, C) such that F ⊆ E.
+
+Corollary 26. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A,
+PE(AF, C) is non empty, i.e., there is always a preferred extension E ∈ PE(AF, C).
+
+Also in the generalized framework, the grounded semantics can be deﬁned in terms of
+
+the least ﬁxed point of the characteristic function.
+
+Deﬁnition 27. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+C ⊆ A, the function
+
+FAF,C : 2C → 2C
+FAF,C(Q) = {α | α ∈ C, α acceptable with respect to Q}
+
+is called the characteristic function of AF in C.
+
+It is easy to see that FAF,C is monotonic (with respect to set inclusion).
+
+Deﬁnition 28. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set C ⊆ A, the
+grounded extension of AF in C, denoted as GE(AF, C), is the least (with respect to set
+inclusion) ﬁxed point of FAF,C .
+
+Notice that by deﬁnition GE(AF, C) ⊆ C. Also in this case we provide a positive result
+
+concerning the existence of the grounded extension:
+
+Lemma 29. For any argumentation framework AF = (cid:2)A, →(cid:4) and for all sets C ⊆ A,
+GE(AF, C) exists and is unique.
+
+Finally, the following relations between grounded, preferred and complete extensions
+
+can be drawn:
+
+Proposition 30. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+C ⊆ A, GE(AF, C) is the least (with respect to set inclusion) complete extension in C (i.e.,
+the least element in CE(AF, C)).
+
+Proposition 31. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+C ⊆ A, the preferred extensions PE(AF, C) are the maximal (with respect to set inclusion)
+complete extensions in C (i.e., the maximal elements in CE(AF, C)).
+
+186
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Since Dung’s original deﬁnitions are recovered by letting C = A, a SCC-recursive for-
+mulation of the extended deﬁnitions also covers the original ones: this is achieved in the
+following subsections, where we show that all the traditional semantics covered by Dung’s
+theory allow a deﬁnition of extensions recursively characterized along strongly connected
+components.
+
+5.2. Stable semantics
+
+The following proposition shows that stable extensions are in correspondence with a
+decomposition along strongly connected components: the intersection of a stable extension
+with any strongly connected component S is itself a stable extension of the restriction of
+the argumentation framework AF to UPAF(S, E).
+
+Proposition 32. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+E ⊆ A, E ∈ SE(AF) if and only if ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ SE(AF↓UPAF(S,E))
+
+Proof. First, let us prove that if E is a stable extension of AF then it satisﬁes local stability
+relevant to a generic strongly connected component S ∈ SCCSAF, corresponding to the
+following conditions:
+
+(1) (E ∩ S) ⊆ UPAF(S, E);
+(2) (E ∩ S) is conﬂict-free;
+(3) ∀α ∈ UPAF(S, E): α /∈ (E ∩ S), (E ∩ S) → α.
+
+Notice that, by deﬁnition, the second and third conditions should be veriﬁed with reference
+to the argumentation framework AF↓UPAF(S,E), however it is easy to see that, according
+to the ﬁrst condition and the deﬁnition of AF↓UPAF(S,E), it is sufﬁcient to verify them in
+AF. As for the ﬁrst condition, we have that ∀α ∈ (E ∩ S) α /∈ DAF(S, E), otherwise by the
+deﬁnition of DAF(S, E) we would have that E → α, therefore E would not be conﬂict-
+free contradicting the hypothesis that E is a stable extension of AF. As far as the second
+condition is concerned, it directly follows from the fact that E is conﬂict-free, entailed
+by the hypothesis that E is a stable extension of AF. As for the third condition, let us
+consider a generic argument α ∈ UPAF(S, E) such that α /∈ (E ∩ S). Since α ∈ S and
+α /∈ (E ∩ S), α /∈ E, therefore by the hypothesis that E is a stable extension of AF we
+have that E → α, i.e., ∃β ∈ E : β → α. Since α ∈ UPAF(S, E), taking into account the
+deﬁnitions of UPAF(S, E) it turns out that (cid:1)γ ∈ (E ∩ outparentsAF(S)) such that γ → α.
+As a consequence, it must be the case that ∃β ∈ E, β ∈ S : β → α, thus (E ∩ S) → α, and
+the ﬁrst part of the proof is complete.
+
+Turning to the other direction of the proof, we have to show that, with reference to the
+
+argumentation framework AF:
+
+(1) E is conﬂict-free;
+(2) ∀α ∈ A: α /∈ E, E → α.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+187
+
+Let us prove the ﬁrst condition by contradiction, assuming that ∃α, β ∈ E: α → β, and
+let us indicate SCCAF(β) as S. Let us notice that α cannot belong to S, since in this case
+(E ∩ S) would not be conﬂict-free in AF as well as in AF↓UPAF(S,E), thus contradicting
+the hypothesis that (E ∩ S) ∈ SE(AF↓UPAF(S,E)). As a consequence, α ∈ E and α /∈ S,
+therefore β ∈ DAF(S, E) by the deﬁnition of DAF(S, E). However, this contradicts the
+fact that β ∈ (E ∩ S), which by the hypothesis is contained in UPAF(S, E).
+
+Let us ﬁnally turn to the second condition, considering a generic α ∈ A: α /∈ E, and
+let us indicate SCCAF(α) as S. We can distinguish two cases for α. If α ∈ DAF(S, E),
+then E → α directly follows from the deﬁnition of DAF(S, E). In the other case, α ∈
+UPAF(S, E). Since α /∈ E, we have that α /∈ (E ∩ S), therefore the hypothesis (E ∩ S) ∈
+SE(AF↓UPAF(S,E)) entails that (E ∩ S) → α in AF↓UPAF(S,E). Obviously, (E ∩ S) → α
+holds also in AF, and the proof is complete. (cid:1)
+
+Exploiting the following lemma, the above result can be extended to the generalized
+deﬁnition of stable extensions, yielding the desired recursive characterization in Proposi-
+tion 34.
+
+Lemma 33. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a stable extension E
+of AF, ∀S ∈ SCCSAF, PAF(S, E) = ∅.
+
+Proof. Let us assume by contradiction that ∃S ∈ SCCSAF: PAF(S, E) (cid:12)= ∅, i.e., ∃α ∈
+PAF(S, E). According to the deﬁnition of PAF(S, E), we have that ∃β /∈ E, β → α: E (cid:12)→
+β, contradicting the hypothesis that E is a stable extension of AF. (cid:1)
+
+Proposition 34. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+E ⊆ A, ∀C ⊆ A, E ∈ SE(AF, C) if and only if ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ SE
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+Proof. Let us start from the ﬁrst direction of the proof, assuming that E ∈ SE(AF, C).
+According to the deﬁnition of SE(AF, C), we have that E ∈ SE(AF), thus Proposition 32
+entails that ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ SE(AF↓UPAF(S,E))
+
+In order to prove the thesis, we have only to show that (E ∩ S) ⊆ (UAF(S, E) ∩ C). First,
+the hypothesis that E is stable and therefore conﬂict-free entails that (E ∩ DAF(S, E)) = ∅.
+Moreover, according to Lemma 33 PAF(S, E) = ∅. As a consequence, it must be the case
+that (E ∩ S) ⊆ UAF(S, E). Furthermore, according to the hypothesis E ⊆ C, it holds that
+(E ∩ S) ⊆ (UAF(S, E) ∩ C).
+
+Let us turn to the other direction of the proof, assuming that ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ SE
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+Taking into account the deﬁnition of SE(AF↓UPAF(S,E), UAF(S, E) ∩ C), Proposition 32
+entails that E ∈ SE(AF). Moreover, since ∀S ∈ SCCSAF (E ∩ S) ⊆ C we have that E ⊆ C,
+thus E ∈ SE(AF, C), and the proof is complete. (cid:1)
+
+188
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+It can be noted that, on the basis of Lemma 33, the same result would have been achieved
+by adopting an alternative deﬁnition of SE(AF, C), namely SE(AF, C) ≡ SE(AF). In fact,
+in the case of stable extensions C has no concrete role, since all arguments outside an
+extension are attacked by the extension itself, and therefore all arguments within a strongly
+connected component S are defended against attacks from outside S.
+
+5.3. Admissible sets
+
+Since admissible sets play a key role in Dung’s theory, their characterization accord-
+ing to SCC-recursiveness is needed as a basis for the analysis of other semantics. This is
+achieved by Proposition 38, which requires three preliminary lemmas.
+
+Lemma 35 (from [9, pp. 327]). Given an argumentation framework AF = (cid:2)A, →(cid:4), an
+admissible set of arguments E ∈ AS(AF), and an argument α ∈ FAF(E) acceptable with
+respect to E, E ∪ {α} is admissible, i.e., (E ∪ {α}) ∈ AS(AF).
+
+Lemma 36. Given an argumentation framework AF = (cid:2)A, →(cid:4), an admissible set of argu-
+ments E ∈ AS(AF), and an argument α ∈ FAF(E) acceptable with respect to E, denoting
+SCCAF(α) as S, it holds that:
+
+• α ∈ UAF(S, E); and
+• α is acceptable with respect to (E ∩ S) in the argumentation framework AF↓UPAF(S,E),
+
+i.e., α ∈ FAF↓UPAF(S,E)(E ∩ S).
+
+Proof. First of all, on the basis of Lemma 35 (E ∪ {α}) ∈ AS(AF), and in particular
+(E ∪ {α}) is conﬂict-free: as a consequence α /∈ DAF(S, E), otherwise by the deﬁnition
+of DAF(S, E) it would be the case that E → α. Moreover, α /∈ PAF(S, E), otherwise by
+the deﬁnition of PAF(S, E) we would have that ∃β ∈ E: β → α and E (cid:12)→ β, thus con-
+tradicting the fact that α ∈ FAF(E), namely the acceptability of α with respect to E. As a
+consequence, the only possibility for α is that α ∈ UAF(S, E).
+
+Turning to the second part of the proof, let us ﬁrst note that, on the basis of the hy-
+pothesis that E ∈ AS(AF), all the elements of E are acceptable with respect to E, i.e.,
+∀γ ∈ E, γ ∈ FAF(E). Thus, the above result entails that (E ∩ S) ⊆ UAF(S, E), therefore
+(E ∩ S) is actually a set of arguments in the argumentation framework AF↓UPAF(S,E). Let
+us consider now a generic argument β that attacks α in AF↓UPAF(S,E): we have to prove that
+(E ∩ S) → β holds in this argumentation framework. Of course, β → α also in AF, there-
+fore the acceptability of α with respect to E, i.e., α ∈ FAF(E), entails that there is γ ∈ E
+such that γ ∈ parentsAF(β). Now, since β ∈ UPAF(S, E), by deﬁnition of UPAF(S, E) all
+of its defeaters outside S do not belong to E, thus γ ∈ S and therefore γ ∈ (E ∩ S). As
+a consequence, (E ∩ S) → β holds in AF, and obviously it also holds in the restricted
+argumentation framework AF↓UPAF(S,E). (cid:1)
+
+Lemma 37. Given an argumentation framework AF = (cid:2)A, →(cid:4), let E ⊆ A be a set of
+arguments such that, ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ AS
+
+(cid:3)
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E)
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+189
+
+Given a strongly connected component (cid:4)S ∈ SCCSAF and an argument α ∈ UAF((cid:4)S, E)
+which is acceptable with respect to (E ∩(cid:4)S ) in the argumentation framework AF↓
+UPAF((cid:4)S,E),
+(E ∩ (cid:4)S ), α is acceptable with respect to E in AF, i.e., α ∈ FAF(E).
+i.e., α ∈ FAF↓
+
+UPAF((cid:4)S,E)
+
+Proof. With reference to the argumentation framework AF, we have to prove that ∀β ∈
+A: β → α, then also E → β. We distinguish two cases for β.
+
+First, let us suppose that SCCAF(β) = SCCAF(α) = (cid:4)S. If β ∈ DAF((cid:4)S, E), then E → β
+holds in AF by deﬁnition of DAF((cid:4)S, E). If, on the other hand, β ∈ UPAF((cid:4)S, E), then β →
+α holds in AF↓
+UPAF((cid:4)S,E), therefore according to the hypothesis of acceptability concerning
+α it must be the case that (E ∩ (cid:4)S ) → β holds in AF↓
+UPAF((cid:4)S,E). Obviously, such relation
+holds also in AF, and entails that E → β.
+Let us consider the other case, i.e., SCCAF(β) (cid:12)= SCCAF(α) = (cid:4)S. In this case, β ∈
+(outparentsAF((cid:4)S) ∩ parentsAF(α)), while by the hypothesis α ∈ UAF((cid:4)S, E): on the basis
+of the deﬁnition of UAF((cid:4)S, E), it must be the case that E → β in AF, and the proof is
+complete. (cid:1)
+
+Proposition 38. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+E ⊆ A, ∀C ⊆ A, E ∈ AS(AF, C) if and only if ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ AS
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+Proof. First, let us prove that if E is admissible then it satisﬁes the conditions relevant
+to a generic strongly connected component S ∈ SCCSAF. According to the deﬁnition of
+AS(AF, C), E ⊆ C and ∀α ∈ E, α is acceptable with respect to E, i.e., α ∈ FAF(E). As
+a consequence, on the basis of Lemma 36 we have that ∀α ∈ (E ∩ S), α ∈ UAF(S, E),
+therefore (E ∩ S) ⊆ (UAF(S, E) ∩ C). Moreover, by the same lemma α is acceptable
+with respect to (E ∩ S) in the argumentation framework AF↓UPAF(S,E). This, as well
+as the fact that E is admissible and therefore conﬂict-free, entails that (E ∩ S) is ad-
+missible in the argumentation framework AF↓UPAF(S,E), and therefore that (E ∩ S) ∈
+AS(AF↓UPAF(S,E), UAF(S, E) ∩ C).
+
+As far as the other direction of the proof is concerned, we ﬁrst notice that, by the hy-
+pothesis, ∀S ∈ SCCSAF (E ∩ S) ⊆ (UAF(S, E) ∩ C) ⊆ (S ∩ C), therefore E ⊆ C: in order
+to prove the claim, we have only to show that E is admissible in AF.
+
+Let us ﬁrst show that E is conﬂict-free by reasoning by contradiction, i.e., let us suppose
+that ∃α, β ∈ E: β → α. Let us denote SCCAF(α) as S. Clearly, it cannot be the case that
+SCCAF(α) = SCCAF(β), since in this case (E ∩ S) would not be conﬂict-free, thus contra-
+dicting the hypothesis concerning its admissibility in AF↓UPAF(S,E). As a consequence,
+β ∈ (E ∩ outparentsAF(S)), therefore α ∈ DAF(S, E) by the deﬁnition of DAF(S, E).
+However, this contradicts the fact that α ∈ (E ∩ S), which according to the hypothesis
+is contained in UAF(S, E).
+
+In order to complete the proof, we have to prove that a generic α ∈ E is accept-
+able with respect to E, i.e., α ∈ FAF(E). If we denote SCCAF(α) as (cid:4)S, we have that
+UPAF( ˆS,E), UAF((cid:4)S, E) ∩ C). There-
+α ∈ (E ∩ (cid:4)S ), and by the hypothesis (E ∩ (cid:4)S ) ∈ AS(AF↓
+fore, α ∈ UAF((cid:4)S, E), and α is acceptable with respect to (E ∩ (cid:4)S ) in AF↓
+UPAF((cid:4)S,E).
+Since the hypothesis entails that ∀S ∈ SCCSAF (E ∩ S) ∈ AS(AF↓UPAF(S,E), UAF(S, E)),
+
+190
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Lemma 37 can be applied to α, entailing that α is acceptable with respect to E in AF, i.e.,
+α ∈ FAF(E). (cid:1)
+
+5.4. Complete semantics
+
+Exploiting the results in previous subsection, the following proposition shows that also
+complete extensions are in correspondence with a recursive decomposition along strongly
+connected components.
+
+Proposition 39. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+E ⊆ A, ∀C ⊆ A, E ∈ CE(AF, C) if and only if ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ CE
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+Proof. As for the ﬁrst direction of the proof, if E ∈ CE(AF, C) then in particular E ∈
+AS(AF, C), therefore Proposition 38 entails that
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+(E ∩ S) ∈ AS
+
+∀S ∈ SCCSAF
+
+(1)
+As a consequence, we have only to show that ∀α ∈ (UAF(S, E) ∩ C) such that α is
+acceptable with respect to (E ∩ S) in AF↓UPAF(S,E), α ∈ (E ∩ S). First, we notice
+that Lemma 37 can be applied to α, since (1) entails that ∀S ∈ SCCSAF (E ∩ S) ∈
+AS(AF↓UPAF(S,E), UAF(S, E)). On the basis of this lemma, α is acceptable with respect to
+E in AF, i.e., α ∈ FAF(E). Moreover, α ∈ (UAF(S, E) ∩ C), therefore in particular α ∈ C.
+As a consequence, from the hypothesis that E ∈ CE(AF, C) it follows that α ∈ E and
+therefore α ∈ (E ∩ S).
+
+As for the other direction of the proof, according to Deﬁnition 23 we have that ∀S ∈
+
+SCCSAF the following conditions hold:
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+(E ∩ S) ∈ AS
+(cid:2)
+UAF(S, E) ∩ C
+∀α ∈
+
+(cid:3)
+: α ∈ FAF↓UPAF(S,E)(E ∩ S), α ∈ (E ∩ S)
+
+(3)
+Thus, on the basis of (2) Proposition 38 entails that E ∈ AS(AF, C), therefore we have
+only to prove that ∀α ∈ C such that α is acceptable with respect to E, α ∈ E, i.e., ∀α ∈
+C: α ∈ FAF(E), α ∈ E. Denoting SCCAF(α) as S, on the basis of Lemma 36 we have that
+α ∈ UAF(S, E), so that α ∈ (UAF(S, E) ∩ C), and α is acceptable with respect to (E ∩ S)
+in AF↓UPAF(S,E), i.e., α ∈ FAF↓UPAF(S,E)(E ∩ S). Then, taking into account (3) we have that
+α ∈ (E ∩ S), therefore α ∈ E. (cid:1)
+
+(2)
+
+5.5. Preferred semantics
+
+Also preferred extensions ﬁt the decomposition schema along strongly connected com-
+
+ponents, as shown by Proposition 41 based on the following lemma.
+
+Lemma 40. Given an argumentation framework AF = (cid:2)A, →(cid:4), an admissible set E ∈
+AS(AF), and a strongly connected component S ∈ SCCSAF, let (cid:4)E be a set of arguments
+such that:
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+191
+
+• (E ∩ S) ⊆ (cid:4)E ⊆ UAF(S, E);
+• (cid:4)E is admissible in the argumentation framework AF↓UPAF(S,E),
+
+AS(AF↓UPAF(S,E)).
+
+i.e., (cid:4)E ∈
+
+It holds that (E ∪ (cid:4)E ) is admissible in AF, i.e., (E ∪ (cid:4)E ) ∈ AS(AF).
+
+Proof. First, we prove that (E ∪ (cid:4)E ) is conﬂict-free. Of course, (cid:4)E is conﬂict-free in
+AF↓UPAF(S,E) by the hypothesis, and, as a consequence, (cid:4)E is conﬂict-free also in AF.
+Since also E is conﬂict-free in AF by the hypothesis of admissibility, we have to prove that
+(cid:4)E (cid:12)→ E and E (cid:12)→ (cid:4)E. Since E is admissible in AF, (cid:4)E → E entails that E → (cid:4)E, therefore
+we have only to prove that E (cid:12)→ (cid:4)E. Since (cid:4)E ⊆ UAF(S, E), (E ∩ outparentsAF(S)) (cid:12)→ (cid:4)E,
+therefore E → (cid:4)E only if (E ∩ S) → (cid:4)E. However, this situation is not possible since
+(E ∩ S) ⊆ (cid:4)E and (cid:4)E is conﬂict-free.
+
+Now, with reference to the argumentation framework AF we have to prove that ∀β ∈ A
+such that β → (E ∪ (cid:4)E ), it is the case that (E ∪ (cid:4)E ) → β. In case β → E, the con-
+clusion follows from admissibility of E. On the other hand, if β → (cid:4)E, we have that
+β ∈ (outparentsAF(S) ∪ S) since (cid:4)E ⊆ S; we distinguish three cases for β:
+(1) if β ∈ outparentsAF(S), then, taking into account that β → (cid:4)E and (cid:4)E ⊆ UAF(S, E), it
+
+must be the case according to the deﬁnition of UAF(S, E) that E → β;
+
+(2) if β ∈ DAF(S, E), then according to the deﬁnition of DAF(S, E) it must be the case
+
+that E → β;
+
+(3) if β ∈ UPAF(S, E), then β → (cid:4)E holds also in AF↓UPAF(S,E). As a consequence, the
+hypothesis that (cid:4)E ∈ AS(AF↓UPAF(S,E)) entails that (cid:4)E → β holds in AF↓UPAF(S,E),
+and, of course, that (cid:4)E → β also holds in AF.
+
+In any case, (E ∪ (cid:4)E ) → β, and the proof is completed. (cid:1)
+
+Proposition 41. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+E ⊆ A, ∀C ⊆ A, E ∈ PE(AF, C) if and only if ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ PE
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+Proof. As far as the ﬁrst direction of the proof is concerned, let us assume that E ∈
+PE(AF, C). By deﬁnition, E ∈ AS(AF, C), therefore, on the basis of Proposition 38, we
+have that ∀S ∈ SCCSAF
+
+(E ∩ S) ∈ AS
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+(cid:3)
+
+Let us now reason by contradiction, assuming that ∃(cid:4)S ∈ SCCSAF such that (E ∩ (cid:4)S ) is
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C). According
+not maximal among the sets included in AS(AF↓
+to Theorem 25, there must be a set (cid:4)E such that
+
+• (E ∩ (cid:4)S ) (cid:2) (cid:4)E ⊆ (UAF((cid:4)S, E) ∩ C), and
+• (cid:4)E ∈ AS(AF↓
+
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C).
+
+192
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Taking into account that, according to the deﬁnition of AS(AF, C), E ∈ AS(AF),
+Lemma 40 entails that the set E(cid:16) (cid:1) E ∪ (cid:4)E is admissible in AF. Moreover, since both
+E and (cid:4)E are contained in C we have that E(cid:16) ⊆ C, therefore E(cid:16) ∈ AS(AF, C). However, it
+is easy to see that E is strictly contained in E(cid:16), contradicting the maximality of E among
+the sets of AS(AF, C).
+
+Let us turn now to the other direction of the proof, assuming that ∀S ∈ SCCSAF,
+(E ∩ S) ∈ PE(AF↓UPAF(S,E), UAF(S, E) ∩ C). On the basis of Proposition 38, E ∈
+AS(AF, C): in order to prove that E is also a preferred extension, we reason again by
+contradiction, supposing that ∃E(cid:16) ⊆ C, E (cid:2) E(cid:16): E(cid:16) ∈ PE(AF, C) (notice that the exis-
+tence of E(cid:16) is imposed by Theorem 25). Since E (cid:2) E(cid:16), there must be at least a strongly
+connected component S ∈ SCCSAF such that (E ∩ S) (cid:2) (E(cid:16) ∩ S): taking into account the
+acyclicity of the strongly connected components, there exists in particular (cid:4)S ∈ SCCSAF
+such that
+
+∀S ∈ SCCSAF: S ∈ sccancAF((cid:4)S),
+(E ∩ (cid:4)S ) (cid:2) (E
+(cid:16) ∩ (cid:4)S )
+
+(E
+
+(cid:16) ∩ S) = (E ∩ S)
+
+(4)
+
+(5)
+
+Note that condition (4) is trivially veriﬁed if (cid:4)S is initial.
+Since E(cid:16) ∈ AS(AF, C), on the basis of Proposition 38 we have that (E(cid:16) ∩ (cid:4)S ) ∈
+UPAF((cid:4)S,E(cid:16)), UAF((cid:4)S, E(cid:16)) ∩ C). Taking into account (4), it is easy to see that
+(E(cid:16) ∩ (cid:4)S ) ∈
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C). However, on the basis of (5) we have that (E ∩ (cid:4)S ) (cid:2)
+UPAF((cid:4)S,E), UAF((cid:4)S, E)
+
+AS(AF↓
+UAF((cid:4)S, E(cid:16)) = UAF((cid:4)S, E)
+AS(AF↓
+(E(cid:16) ∩ (cid:4)S ), and this contradicts the hypothesis that (E ∩ (cid:4)S ) ∈ PE(AF↓
+∩ C). (cid:1)
+
+and PAF((cid:4)S, E(cid:16)) = PAF((cid:4)S, E),
+
+therefore
+
+5.6. Grounded semantics
+
+Finally, in this subsection, we prove that the decomposition schema also holds for
+
+grounded semantics, as shown by the following Proposition 42.
+
+Proposition 42. Given an argumentation framework AF = (cid:2)A, →(cid:4) and a set of arguments
+E ⊆ A, ∀C ⊆ A, E = GE(AF, C) if and only if ∀S ∈ SCCSAF
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+(E ∩ S) = GE
+
+(cid:3)
+
+Proof. Let us consider the ﬁrst part of the proof, by supposing that E = GE(AF, C). On the
+basis of Proposition 30, E is in particular a complete extension in C, i.e., E ∈ CE(AF, C),
+therefore Proposition 39 entails that ∀S ∈ SCCSAF (E ∩S) ∈ CE(AF↓UPAF(S,E), UAF(S, E)
+∩ C). Taking into account Proposition 30, we have to prove that ∀S ∈ SCCSAF (E ∩ S) is
+the least element (with respect to set inclusion) in CE(AF↓UPAF(S,E), UAF(S, E) ∩ C). We
+reason by contradiction, supposing that there is at least one strongly connected component
+where the thesis is not veriﬁed. In particular, since the strongly connected components of
+AF make up an acyclic graph, we can choose (cid:4)S ∈ SCCSAF such that
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+(E ∩ S) = GE
+
+∀S ∈ sccancAF((cid:4)S),
+
+(6)
+
+(cid:3)
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+and
+
+(cid:2)
+∃ (cid:4)E (cid:2) (E ∩ (cid:4)S ), (cid:4)E = GE
+AF↓
+
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C
+
+(cid:3)
+
+Note that condition (6) is trivially veriﬁed if (cid:4)S is initial.
+
+193
+
+(7)
+
+Moreover, the second condition follows from the fact that, on the basis of Lemma 29,
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C) must exist, and according to Proposition 30 it is in-
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C).
+
+GE(AF↓
+cluded in all the elements of CE(AF↓
+
+Now, taking again into account that the strongly connected components of AF make up
+
+an acyclic graph, it is easy to see that it is possible to construct a set E(cid:16) such that:
+
+• ∀S ∈ sccancAF((cid:4)S), (E(cid:16) ∩ S) = (E ∩ S);
+• (E(cid:16) ∩ (cid:4)S ) = (cid:4)E;
+• ∀S ∈ SCCSAF, (E(cid:16) ∩ S) = GE(AF↓UPAF(S,E(cid:16)), UAF(S, E(cid:16)) ∩ C).
+
+(cid:3)
+
+To this purpose, it is obviously possible to construct a set E(cid:16)
+∗ contained in the strongly con-
+nected components of ((cid:4)S ∪ sccancAF((cid:4)S)) which satisﬁes the ﬁrst two conditions. Thus,
+it turns out that ∀S ∈ ((cid:4)S ∪ sccancAF((cid:4)S)) UAF(S, E(cid:16)
+∗) =
+PAF(S, E). Therefore, taking into account (6) and (7), E(cid:16)
+∗ satisﬁes the third condition too
+for any such S, i.e.,
+
+∗) = UAF(S, E) and PAF(S, E(cid:16)
+
+(E
+
+∀S ∈
+
+∗), UAF(S, E
+
+(cid:3)
+(cid:2)
+(cid:4)S ∪ sccancAF((cid:4)S)
+
+(cid:2)
+(cid:16)
+AF↓UPAF(S,E(cid:16)
+∗ ∩ S) = GE
+Now, E(cid:16) can be obtained constructively from E(cid:16)
+∗ by proceeding along the other strongly
+connected components of the defeat graph: in fact ∀S ∈ SCCSAF GE(AF↓UPAF(S,E(cid:16)),
+UAF(S, E(cid:16)) ∩ C) always exists by Lemma 29.
+
+On the basis of Proposition 30, we have that ∀S ∈ SCCSAF (E(cid:16) ∩ S) ∈
+CE(AF↓UPAF(S,E(cid:16)), UAF(S, E(cid:16)) ∩ C). As a consequence, by Proposition 39 it turns out that
+E(cid:16) ∈ CE(AF, C), while since (E(cid:16) ∩ (cid:4)S ) = (cid:4)E (cid:2) (E ∩ (cid:4)S ) it is not true that E ⊆ E(cid:16). However,
+this contradicts the hypothesis that E = GE(AF, C), which according to Proposition 30 is
+the least element of CE(AF, C), i.e., the least complete extension in C.
+
+(cid:16)
+∗) ∩ C
+
+Let us turn now to the other direction of the proof, by supposing that ∀S ∈ SCCSAF,
+(E ∩ S) = GE(AF↓UPAF(S,E), UAF(S, E) ∩ C). On the basis of Proposition 30, we have
+that ∀S ∈ SCCSAF, (E ∩ S) ∈ CE(AF↓UPAF(S,E), UAF(S, E) ∩ C), therefore Proposition 39
+entails that E ∈ CE(AF, C). As a consequence, taking into account Proposition 30 we
+have only to prove that E is the least element of CE(AF, C). We reason by contradiction,
+assuming that the grounded extension E(cid:16) = GE(AF, C), which must exist by Lemma 29
+and is a subset of E by Proposition 30, is strictly included in E. Thus, there must be at
+least a strongly connected component S such that (E(cid:16) ∩ S) (cid:2) (E ∩ S): since the strongly
+connected components form an acyclic graph, there is in particular a strongly connected
+component (cid:4)S such that:
+∀S ∈ sccancAF((cid:4)S),
+(cid:16) ∩ (cid:4)S ) (cid:2) (E ∩ (cid:4)S )
+(E
+
+(9)
+Moreover, since E(cid:16) = GE(AF, C) ∈ CE(AF, C), Proposition 39 applied to (cid:4)S entails that
+UPAF((cid:4)S,E(cid:16)), UAF((cid:4)S, E(cid:16)) ∩ C). Taking into account (8), it is easy to
+(E(cid:16) ∩ (cid:4)S ) ∈ CE(AF↓
+
+(cid:16) ∩ S) = (E ∩ S)
+
+(8)
+
+(E
+
+194
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+see that UAF((cid:4)S, E(cid:16)) = UAF((cid:4)S, E) and PAF((cid:4)S, E(cid:16)) = PAF((cid:4)S, E), therefore (E(cid:16) ∩ (cid:4)S ) ∈
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C). However, according to (9) we have that (E(cid:16) ∩ (cid:4)S ) is
+CE(AF↓
+strictly included in (E ∩ (cid:4)S ), contradicting the hypothesis (referred to (cid:4)S) that (E ∩ (cid:4)S ) =
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C) and therefore, on the basis of Proposition 30, that
+GE(AF↓
+(E ∩ (cid:4)S ) is the least element of CE(AF↓
+
+UPAF((cid:4)S,E), UAF((cid:4)S, E) ∩ C). (cid:1)
+
+5.7. Traditional semantics as SCC-recursive semantics
+
+As discussed in Section 4, each speciﬁc SCC-recursive semantics is identiﬁed by its own
+base function. On the basis of the results obtained in the previous sections, it is possible
+to identify the base functions corresponding to the traditional semantics introduced in [9]
+and, thus, to deﬁnitely prove that these traditional semantics ﬁt the general SCC-recursive
+schema.
+
+Theorem 43. The stable, complete, preferred and grounded semantics are SCC-recursive,
+characterized by the following base functions (deﬁned for generic argumentation frame-
+works AF such that |SCCSAF| = 1):
+
+• BF ST (AF, C) ≡ SE(AF, C);
+• BF CO(AF, C) ≡ CE(AF, C);
+• BF PR(AF, C) ≡ PE(AF, C);
+• BF GR(AF, C) ≡ {GE(AF, C)}.
+
+Proof. Let us prove the claim with reference to stable semantics. First, E ∈ SE(AF)
+if and only if E ∈ SE(AF, A), since as noticed in Section 5.1 Dung’s original deﬁ-
+nitions are recovered from the extended ones in case C coincides with the set of all
+arguments. Now, it is easy to see that SE(AF, C) for generic AF and C adheres to Deﬁn-
+ition 20: if |SCCSAF| = 1, then SE(AF, C) coincides by deﬁnition with the base function
+BF ST (AF, C), otherwise the decomposition schema along the strongly connected com-
+ponents follows from Proposition 34.
+
+As far as complete, preferred and grounded semantics are concerned, proofs are similar
+
+and are based on Propositions 39, 41 and 42, respectively. (cid:1)
+
+For the grounded semantics, the base function admits a simple explicit formulation.
+
+Proposition 44. For any argumentation framework AF = (cid:2)A, →(cid:4) such that |SCCSAF| = 1,
+and for any C ⊆ A, we have that
+
+BF GR(AF, C) =
+
+=
+
+(cid:6)
+(cid:5)
+GE(AF, C)
+(cid:7)
+{{α}},
+{∅},
+
+if C = A = {α} and →= ∅;
+otherwise.
+
+Proof. According to Deﬁnition 28, GE(AF, C) is the least ﬁxed point of FAF,C . Let us
+consider its computation in the following exhaustive cases.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+195
+
+First, if C = ∅ then ∀E ⊆ A FAF,C(E) = ∅ by deﬁnition, obviously entailing that the
+
+empty set is the least ﬁxed point of FAF,C and BF GR(AF, C) = {∅}.
+
+Second, if |A| > 1 then it must be the case that ∀α ∈ A, parentsAF(α) (cid:12)= ∅, since AF
+is made up of a unique strongly connected component, while an initial node would not be
+reachable from another one. As a consequence, taking into account the deﬁnition of FAF,C ,
+it turns that, ∀C ⊆ A,
+
+FAF,C(∅) = {α ∈ C | ∀β ∈ A: β → α, ∅ → β}
+= {α ∈ C | parentsAF(α) = ∅}
+= ∅
+
+As a consequence, the least ﬁxed point of FAF,C is the empty set, therefore again
+BF GR(AF, C) = {∅}.
+
+The remaining case to be considered is A = C = {α}. There are only two possibili-
+ties for the attack relation, namely either →= {(α, α)} or →= ∅. The ﬁrst situation can
+be treated as in the previous case, since the unique node α is not initial, yielding again
+BF GR(AF, C) = {∅}. In the other situation, i.e., C = A = {α} and →= ∅, it is easy to see
+that FAF,C({α}) = {α} and FAF,C(∅) = {α}, therefore the least ﬁxed point of FAF,C is made
+up of the unique node α and BF GR(AF, C) = {{α}}. (cid:1)
+
+6. General properties of SCC-recursive semantics
+
+Having proved that SCC-recursiveness is general enough to include traditional seman-
+tics, we now show that it is also restrictive enough to ensure that the basic desirable
+properties of an extension are satisﬁed by any SCC-recursive semantics, provided that very
+simple and intuitive constraints on the base function are respected.
+
+6.1. Conﬂict-free property
+
+As stated in Section 2.2, a basic requirement of any extension is the absence of conﬂicts,
+
+as expressed by the following deﬁnition:
+
+Deﬁnition 45. A semantics S satisﬁes the conﬂict-free property if and only if ∀AF, ∀E ∈
+ES (AF) E is conﬂict-free.
+
+Clearly, a necessary condition for a given SCC-recursive semantics to be conﬂict-free
+
+is that its base function is conﬂict-free:
+
+Deﬁnition 46. The base function GF ∗
+and only if ∀AF = (cid:2)A, →(cid:4) and ∀C ⊆ A each element of BF S (AF, C) is conﬂict-free.
+
+S of a SCC-recursive semantics S is conﬂict-free if
+
+We also prove that this is a sufﬁcient condition.
+
+196
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Proposition 47. Let S be a SCC-recursive semantics identiﬁed by the base function GF ∗
+S .
+If GF ∗
+S is conﬂict-free, then ∀AF = (cid:2)A, →(cid:4) and ∀C ⊆ A the elements of the function
+GF(AF, C) based on GF ∗
+
+S are conﬂict-free as well.
+
+Proof. Let us consider a generic argumentation framework AF = (cid:2)A, →(cid:4) and a generic
+set C ⊆ A: we have to prove that, given a generic E ∈ GF(AF, C), E is conﬂict-free.
+
+Given the recursive characterization of E as in Deﬁnition 20, we ﬁrst prove the claim in
+the base case, namely |SCCSAF| = 1, then we assume as an inductive hypothesis that the
+claim holds for any S ∈ SCCSAF at the level of AF↓UPAF(S,E) and show that this hypothesis
+entails the claim at the level of AF.
+
+If |SCCSAF| = 1, then, by Deﬁnition 20, E ∈ BF S (AF, C), and therefore is conﬂict-
+
+free by the hypothesis.
+
+In the other case, namely |SCCSAF| > 1, the inductive hypothesis can be expressed as
+
+∀S ∈ SCCSAF (E ∩ S) is conﬂict-free in AF↓UPAF(S,E)
+
+(10)
+Let us reason by contradiction, assuming the existence of two elements α, β ∈ E such that
+α → β, and let us indicate SCCAF(β) as S. Clearly, α /∈ S, otherwise (E ∩ S) would not
+be conﬂict-free in AF↓UPAF(S,E). As a consequence, α ∈ outparentsAF(S) ∩ E. However,
+this would entail that β ∈ DAF(S, E) by deﬁnition of DAF(S, E), while since β ∈ E this
+would contradict the fact that (E ∩ S) ⊆ UPAF(S, E), prescribed by (10). (cid:1)
+
+Theorem 48. Given a SCC-recursive semantics S, if its base function GF ∗
+then S satisﬁes the conﬂict-free property.
+
+S is conﬂict-free
+
+Proof. Since, according to Deﬁnition 20, any extension E ∈ ES (AF) belongs to GF(AF,
+A), the claim easily follows from Proposition 47 applied with C = A. (cid:1)
+
+6.2. Agreement with the grounded semantics
+
+As discussed in Section 2.2, the grounded semantics represents a sort of lower bound
+among argumentation semantics, since in Dung’s framework the grounded extension is
+the least among all conceivable extensions, namely complete extensions. More generally,
+the agreement with grounded semantics can be regarded as a fundamental requirement
+for any argumentation semantics, as it appears evident considering the constructive char-
+acterization of grounded semantics recalled in the same subsection. As a conﬁrmation of
+the well-foundedness of the property of SCC-recursiveness, we prove in Theorem 52 that
+for any SCC-recursive semantics each of its extensions includes the grounded extension,
+provided that a very simple condition on the base function is satisﬁed.
+
+First, we prove a general property of the SCC-recursive schema showing that inclusion
+between extensions entails inclusion relations between the elements of the partitions of
+strongly connected components introduced in Deﬁnition 18.
+
+Lemma 49. Given an argumentation framework AF = (cid:2)A, →(cid:4), let E1, E2 ⊆ A be two sets
+of arguments such that E1 ⊆ E2 and E2 is conﬂict-free (and therefore also E1). For any
+strongly connected component S ⊆ SCCSAF, it holds that:
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+197
+
+• DAF(S, E1) ⊆ DAF(S, E2);
+• UPAF(S, E2) ⊆ UPAF(S, E1);
+• UAF(S, E1) ⊆ UAF(S, E2).
+
+Proof. As to the ﬁrst point, we have by deﬁnition that DAF(S, E1) = {α ∈ S | (E1 ∩
+outparentsAF(S)) → α}. Since E1 ⊆ E2, it must be the case that DAF(S, E1) ⊆ {α ∈ S |
+(E2 ∩ outparentsAF(S)) → α} ≡ DAF(S, E2).
+
+The above result easily entails the second one, taking into account that UPAF(S, E2) =
+(S \ DAF(S, E2)): by the ﬁrst point, (S \ DAF(S, E2)) ⊆ (S \ DAF(S, E1)) = UPAF(S, E1).
+
+As to the third point, let us ﬁrst prove that
+
+(cid:3)
+(cid:2)
+E2 ∩ outparentsAF(S)
+
+∀α ∈ UAF(S, E1),
+
+(11)
+We reason by contradiction, assuming that ∃α ∈ UAF(S, E1), β ∈ (E2 ∩ outparentsAF(S)):
+β → α. In this case, we have in particular that β ∈ (outparentsAF(S) ∩ parentsAF(α)),
+therefore, according to the deﬁnition of UAF(S, E1) applied to α, E1 → β. However, since
+E1 ⊆ E2, also E2 → β holds, with β ∈ E2, contradicting the hypothesis that E2 is conﬂict-
+free.
+
+(cid:12)→ α
+
+Now, it is easy to see that
+
+∀α ∈ UAF(S, E1), ∀β ∈
+
+(cid:2)
+
+(cid:3)
+outparentsAF(S) ∩ parentsAF(α)
+
+, E2 → β
+
+(12)
+
+since by deﬁnition of UAF(S, E1) applied to α we have that E1 → β and E1 ⊆ E2.
+
+Finally, on the basis of (11) and (12) it turns out that ∀α ∈ UAF(S, E1) (E2 ∩
+i.e., α ∈
+
+outparentsAF(S)) (cid:12)→ α ∧ ∀β ∈ (outparentsAF(S) ∩ parentsAF(α)) E2 → β,
+UAF(S, E2). (cid:1)
+
+The following lemma shows that an inclusion relation between two sets C1 and C2 also
+holds between the grounded extensions in C1 and C2, even if the latter is referred to a
+restricted argumentation framework.
+
+Lemma 50. Let AF1 = (cid:2)A1, →1(cid:4) and AF2 = (cid:2)A2, →2(cid:4) be two argumentation frameworks
+such that AF2 = AF1↓A2 . Given two sets C1 and C2 such that C1 ⊆ C2 ⊆ A2 ⊆ A1,
+GE(AF1, C1) ⊆ GE(AF2, C2).
+
+Proof. First, let us consider the characteristic functions FAF1,C1 and FAF2,C2 , respectively
+deﬁned in 2C1 and 2C2 (with 2C1 ⊆ 2C2 ). We prove that, given two sets E1 ⊆ C1 and
+E2 ⊆ C2
+
+if E1 ⊆ E2
+
+then FAF1,C1(E1) ⊆ FAF2,C2 (E2)
+
+(13)
+Let us consider a generic element α ∈ FAF1,C1 (E1): by deﬁnition, α ∈ C1 and α is ac-
+ceptable with respect to E1 in AF1. Since C1 ⊆ C2, α ∈ C2, therefore to prove that
+α ∈ FAF2,C2 (E2) we have only to show that α is acceptable with respect to E2 in AF2. To
+this purpose, let us consider a generic argument β ∈ A2 which attacks α in AF2, i.e., β ∈
+(α).
+parentsAF2
+Since α is acceptable with respect to E1 in AF1, E1 → β in AF1, and taking into account
+
+(α). Clearly, since A2 ⊆ A1, β attacks α also in AF1, i.e., β ∈ parentsAF1
+
+198
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+that E1 ⊆ C1 ⊆ A2 it is easy to see that E1 → β holds also in AF2. Moreover, E1 ⊆ E2,
+therefore we get the desired conclusion that E2 → β in AF2.
+
+(cid:8)
+
+Now, by extending an analogous result proved by Dung (see [9], pp. 342) in case
+AF1 and AF2 are ﬁnitary, i.e., such that every argument has a ﬁnite number of de-
+(∅)
+featers, GE(AF1, C1) and GE(AF2, C2) can be respectively expressed as
+(∅): in order to prove the thesis, we show by induction on i that
+and
+∀i (cid:2) 1 Fi
+(∅). The proof can be extended to the general case by us-
+ing transﬁnite induction on ordinal numbers instead of ordinary induction, however we
+resort to the latter for simplicity.
+
+(∅) ⊆ Fi
+
+i(cid:1)1 Fi
+
+i(cid:1)1 Fi
+
+AF1,C1
+
+AF1,C1
+
+AF2,C2
+
+AF2,C2
+
+(cid:8)
+
+As for the base case, according to (13) FAF1,C1 (∅) ⊆ FAF2,C2 (∅), since obviously
+(∅): as a con-
+(∅)),
+
+∅ ⊆ ∅ ⊆ C1. In the induction step, we assume that Fi
+sequence, on the basis of (13) it turns out that FAF1,C1 (Fi
+i.e., Fi+1
+
+AF1,C1
+(∅), and the proof is complete. (cid:1)
+
+(∅) ⊆ Fi
+AF2,C2
+(∅)) ⊆ FAF2,C2(Fi
+
+(∅) ⊆ Fi+1
+
+AF2,C2
+
+AF1,C1
+
+AF1,C1
+
+AF2,C2
+
+We now show that the agreement with grounded semantics is ensured if the base func-
+tion properly deals with the simplest possible case of argumentation framework, i.e., a
+single node which does not attack itself and therefore should be justiﬁed.
+
+Proposition 51. Let S be a SCC-recursive semantics identiﬁed by a conﬂict-free base func-
+tion GF ∗
+
+S such that
+(cid:10)
+
+(cid:2)(cid:9)
+
+BF S
+
+{α}, ∅
+
+, {α}
+
+=
+
+(cid:3)
+
+(cid:6)
+
+(cid:5)
+{α}
+
+For any argumentation framework AF = (cid:2)A, →(cid:4) and for any set C ⊆ A, it holds that
+
+∀E ∈ GF(AF, C), GE(AF, C) ⊆ E
+
+where GF(AF, C) is the recursive function of the SCC-recursive schema characterized by
+the base function GF ∗
+S .
+
+Proof. Given a generic AF = (cid:2)A, →(cid:4) and a set C ⊆ A, let us consider a generic set E ∈
+GF(AF, C): we have to prove that GE(AF, C) ⊆ E. Let us distinguish two cases for the
+argumentation framework AF.
+
+First, if SCCSAF = 1, then the base case of the recursive deﬁnition applies to E, i.e.,
+according to Deﬁnition 20 E ∈ BF S (AF, C). Of course, if GE(AF, C) is the empty set
+then the thesis trivially holds for E. On the basis of Proposition 44, GE(AF, C) is non
+empty only if AF = (cid:2){α}, ∅(cid:4) and C = {α}, and it turns out that GE(AF, C) = {α}. By the
+hypothesis, in this case BF S (AF, C) = {{α}}, thus the only possible case for E is E = {α},
+obviously entailing that GE(AF, C) ⊆ E.
+
+Let us now consider the case where SCCSAF > 1. Taking into account the recursive
+deﬁnition of E according to Deﬁnition 20 and the proof for the case |SCCSAF| = 1, we
+can recursively assume that, if |SCCSAF| > 1, the thesis holds at the level of restricted
+argumentation frameworks:
+(cid:2)
+∀S ∈ SCCSAF, GE
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+
+⊆ (E ∩ S)
+
+(14)
+
+(cid:3)
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+199
+
+In order to simplify the notation, let us indicate GE(AF, C) as E∗: we proceed inductively
+along the strongly connected components of the argumentation framework, by proving that
+
+∀S ∈ SCCSAF,
+
+(E
+
+∗ ∩ S) ⊆ (E ∩ S)
+
+which obviously entails the claim. Let us ﬁrst notice that, according to Proposition 42
+
+∀S ∈ SCCSAF,
+
+(E
+
+(cid:2)
+∗ ∩ S) = GE
+AF↓UPAF(S,E∗), UAF(S, E
+
+(cid:3)
+
+∗
+
+) ∩ C
+
+(15)
+
+In the basis case, we consider the initial strongly connected components, namely we refer to
+a generic S ∈ SCCSAF such that sccparentsAF(S) = ∅, entailing that outparentsAF(S) = ∅.
+This, in turn, entails that, for any set E, DAF(S, E) = PAF(S, E) = ∅ and UAF(S, E) = S.
+As a consequence, according to (15) we have that (E∗ ∩ S) = GE(AF↓S, S ∩ C), which is
+in turn equal to GE(AF↓UPAF(S,E), UAF(S, E) ∩ C). Since by (14) the latter is contained
+in (E ∩ S), we get the desired result that (E∗ ∩ S) ⊆ (E ∩ S).
+
+In the inductive step, we can assume that
+
+∀P ∈ sccancAF(S),
+
+∗ ∩ P ) ⊆ (E ∩ P )
+
+(E
+
+Now, since E is conﬂict-free by Proposition 47 and the deﬁnitions of UAF(S, E) and
+PAF(S, E) only depend on the subset of E contained in the strongly connected compo-
+nents of sccancAF(S), Lemma 49 can be applied obtaining
+
+UAF(S, E
+
+∗
+
+) ⊆ UAF(S, E)
+
+and
+
+UPAF(S, E) ⊆ UPAF(S, E
+
+∗
+
+)
+
+On the basis of these results, it is possible to apply Lemma 50 with
+
+– AF1 = AF↓UPAF(S,E∗),
+– AF2 = AF↓UPAF(S,E) = AF1↓UPAF(S,E),
+– C1 = UAF(S, E∗) ∩ C,
+– C2 = UAF(S, E) ∩ C
+
+obtaining
+(cid:2)
+AF↓UPAF(S,E∗), UAF(S, E
+GE
+
+∗
+
+) ∩ C
+
+(cid:3)
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+⊆ GE
+
+(cid:3)
+
+Now, on the basis of (15) we have that
+
+(cid:2)
+∗ ∩ S) = GE
+AF↓UPAF(S,E∗), UAF(S, E
+
+(cid:3)
+
+∗
+
+) ∩ C
+
+(E
+
+while by (14)
+
+(cid:2)
+AF↓UPAF(S,E), UAF(S, E) ∩ C
+GE
+
+entailing that (E∗ ∩ S) ⊆ (E ∩ S). (cid:1)
+
+(cid:3)
+
+⊆ (E ∩ S)
+
+Theorem 52. Let S be a SCC-recursive semantics identiﬁed by a conﬂict-free base function
+GF ∗
+
+S such that
+BF S
+
+(cid:2)(cid:9)
+
+(cid:10)
+
+(cid:3)
+
+{α}, ∅
+
+, {α}
+
+=
+
+(cid:6)
+
+(cid:5)
+{α}
+
+For any argumentation framework AF = (cid:2)A, →(cid:4), ∀E ∈ ES (AF), GE(AF) ⊆ E.
+
+200
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+Proof. The theorem directly follows from Proposition 51 applied in the case C = A, taking
+into account that ES (AF) = GF(AF, A) and GE(AF) = GE(AF, A). (cid:1)
+
+Thanks to the above properties, deﬁning an SCC-recursive semantics which is sound,
+i.e., conﬂict-free and in agreement with the grounded semantics, turns out to be a rela-
+tively easy task. In fact, in order for these properties to be satisﬁed it is sufﬁcient that
+the base function is conﬂict-free and correctly treats the case of a single node without de-
+featers. In the following section we exploit the SCC-recursive schema to introduce four
+novel semantics which can cope in different ways with the problematic examples affecting
+preferred semantics. These semantics are introduced mainly for the purpose of demon-
+strating the potential of SCC-recursiveness: the possibility of deﬁning novel semantics in a
+rather straightforward way conﬁrms that our formalism is a sound basis for further studies
+in the spirit of the analysis of Section 3, where the need of a framework encompassing a
+large variety of semantics has been pointed out. In this sense, the semantics presented in
+the following section can be regarded more as illustrative than as deﬁnitive achievements:
+they represent an initial excursion in the space of SCC-recursive semantics, whose deeper
+and more complete exploration is indeed an interesting subject for future work. The deﬁn-
+ition of the semantics is deliberately example-driven; however, at a more general level, the
+four semantics are related by an underlying conceptual analysis, whose outcome seems to
+suggest that, in the SCC-recursive context, simpler base functions are better.
+
+7. Supporting the deﬁnition of novel argumentation semantics
+
+The results of the previous section suggest that relatively simple base functions are
+appropriate in the context of our SCC-recursive schema. Therefore, our search of novel
+interesting SCC-recursive semantics is driven by the idea of deﬁning base functions based
+on progressively simpler concepts. Accordingly, we adopt preferred semantics as a starting
+point, and we use the focused survey presented in Section 2.2 as a guideline, by following
+it backward from more articulated concepts to the basic ones.
+
+7.1. Beyond preferred semantics
+
+In this subsection, we explore solutions which preserve the fundamental notion of
+defense, formally represented by the property of admissibility in Dung’s framework; com-
+plete admissible sets, i.e., complete extensions, are regarded as the most general family
+of conceivable extensions in this context. As shown by Theorem 43, the recursive schema
+turns out to completely include this framework, since all complete extensions are recur-
+sively characterized. Therefore, considering the recursive schema does not introduce any
+limitation in this respect.
+
+Since preferred extensions are maximal admissible sets, in order to devise an alternative
+admissibility-based proposal the only possible way is giving up the requirement of max-
+imality. Let us start our analysis by recalling the argumentation framework of Fig. 7(a),
+where the argument ¬rain turns out to be questionably justiﬁed according to preferred se-
+mantics. First of all, note that in any semantics based on the concept of admissibility, none
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+201
+
+of the arguments S, R, or J can be included in any extension, since any of them attacks its
+only possible defender. As a consequence, also rain cannot be included in any extension,
+since it cannot be defended against its defeater J . Therefore, the only complete extensions
+of the argumentation framework AF of Fig. 7(a) are {¬rain} and ∅. While preferred se-
+mantics prescribes {¬rain} as the only extension, we aim at ﬁnding a semantics S whose
+deﬁnition admits the empty set as extension. Adopting the general SCC-recursive schema
+to identify such deﬁnition, we are led to investigate E ∩ S for all S ∈ SCCSAF = {S1, S2},
+where S1 = {R, S, J } and S2 = {rain, ¬rain}, as explained in Section 4. In particular, since
+for any complete extension E we have that (E ∩ S1) = ∅, it is necessarily the case that
+PAF(S2, E) = {rain} and UAF(S2, E) = {¬rain}. As a consequence, Deﬁnition 20 yields
+(E ∩ S2) ∈ BF S (AF↓S2 , {¬rain}), and, therefore, we must look for a base function such
+that BF S (AF↓S2 , {¬rain}) = {∅}.
+
+A hint to obtain this property in general comes from the local correction to stable se-
+mantics sketched in Section 2.2, where the empty set is selected as an extension when there
+is no set of nodes able to attack all the others. Similarly, we might select the empty set as
+an extension when the nodes of a restricted argumentation framework are not all defended,
+i.e., do not all belong to the set C. Formally, we impose to the base function that if C (cid:2) A
+then BF S (AF, C) = {∅}. Taking this for granted, to complete the deﬁnition of the base
+function only the case where C = A remains to be speciﬁed. To this purpose, the more
+direct approach is to consider the set of preferred extensions, thus obtaining the following
+base function (we denote the corresponding semantics as AD1):
+
+BF AD1(AF, C) =
+
+(cid:7)
+
+PE(AF, C)
+{∅}
+
+if C = A
+otherwise
+
+It is easy to see that AD1 semantics solves the problem related to the argumen-
+tation framework of Fig. 7(a). In fact, on the ﬁrst strongly connected component,
+BF AD1(AF↓S1 , S1) is invoked, which returns the set of preferred extensions of AF↓S1 :
+PE(AF, S1) = {∅}. Then, as explained above, BF AD1(AF↓S2 , {¬rain}) is invoked, which
+also returns {∅} as result. Summarizing we have that, for any possible extension E,
+E ∩ S1 = ∅ and E ∩ S2 = ∅, yielding the empty set as the unique extension of the whole
+argumentation framework.
+
+However, AD1 fails with the argumentation framework presented in Fig. 8(a). In fact,
+in this case we have a single strongly connected component, and, therefore, AD1 inherits
+from preferred semantics the counter-intuitive behavior discussed in Section 3, identifying
+as the unique extension the set {α, φ}, which is also a stable extension. To overcome this
+problem, we need to rule out {α, φ} as an extension. Note that the only defeater of both
+α and φ is γ , therefore the node γ should retain the capability of preventing α and φ to
+be justiﬁed. Noting that one of the defeaters of γ , actually β, is not included in the exten-
+sion, to obtain the desired behavior we take a further step going back to a notion of more
+“aggressive” behavior, which strengthens the requirement of attacking all external nodes,
+typical of stable semantics. More precisely, we require that an extension fully attacks its
+defeaters, i.e., it includes all the defeaters of its defeaters. In particular, {α, φ} does not
+satisfy this condition since it does not include β, while ∅ trivially satisﬁes it. These consid-
+
+202
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+erations lead to deﬁne the following base function (we denote the corresponding semantics
+as AD2):
+
+(cid:7)
+
+BF AD2(AF, C) =
+
+{E | E maximal in AS∗
+AF
+{∅}
+
+}
+
+if C = A
+otherwise
+
+where
+
+AS∗
+AF
+
+=
+
+(cid:5)
+F ∈ AS(AF) | ∀α ∈ A: α → F, parentsAF(α) ⊆ F
+
+(cid:6)
+
+It can be veriﬁed that AD2 preserves the desired behavior in all cases presented in
+
+Figs. 1–8.
+
+Considering ﬁrst the problematic example for AD1 of Fig. 8(a), the argumentation
+framework consists of a unique strongly connected component, and BF AD2(AF, A) is
+therefore invoked. Now AS∗
+= {∅}, as explained above, and therefore its only maximal
+AF
+set is ∅ which coincides with the unique extension.
+
+On the other hand, the behavior of AD1 is preserved in the case of the argumentation
+framework of Fig. 7(a). After recalling that it consists of two strongly connected compo-
+nents S1 = {R, S, J } and S2 = {rain, ¬rain}, it can be seen that the only admissible set in
+AF↓S1 is the empty set, which obviously belongs to AS∗
+. Then UAF(S2, ∅) = {¬rain},
+PAF(S2, ∅) = {rain}, and, as for AD1, (E ∩ S2) is determined by BF AD2(AF↓S2 , {¬rain}),
+which yields the empty set since C (cid:12)= A.
+
+AF↓S1
+
+In the other cases, it turns out that AD1 and AD2 prescribe the same extensions as
+preferred semantics, whose behavior is fully justiﬁed from an intuitive point of view. We
+describe in the following the treatment of these cases in order to provide other examples of
+application of the SCC-recursive schema: since in all these cases BF AD2(AF, C) coincides
+with BF AD1(AF, C), we will refer to AD2 only.
+
+The treatment of the argumentation framework of Fig. 3(a) is similar to that of Fig. 7(a),
+since, again, E ∩ S1 = ∅ with S1 = {R, S, J }, and, letting S2 = {rain}, then PAF(S2, ∅) =
+S2 and (E ∩ S2) is determined by BF AD2(AF↓S2 , ∅), yielding the empty set as the unique
+extension.
+
+As for the argumentation framework presented in Fig. 1, recall that its strongly con-
+nected components coincide with all the singletons. First, the base function will be invoked
+on the initial strongly connected component, obtaining BF AD2(AF↓{α}, {α}) = {{α}}.
+Then, DAF({β}, {α}) = {β} and the base function will be invoked in the trivial case of
+an empty argumentation framework: BF AD2(AF↓∅, ∅) = {∅}, thus excluding β from any
+extension. Then, for any E, UAF({γ }, E) = {γ }, and iterating the same reasoning as above
+we obtain the inclusion of γ and then the exclusion of δ from the (unique) extension of
+AF.
+
+The argumentation frameworks presented in Figs. 2, 5, and 8(b) consist of a unique
+strongly connected component, therefore in all these cases the following invocation of the
+base function applies: BF AD2(AF, A). It is easy to see that, in all cases, the set of maximal
+elements of AS∗
+
+AF coincide with the set of preferred extensions.
+
+A very similar reasoning applies to the argumentation framework of Fig. 4, whose two
+strongly connected components are both initial. Letting S1 = {α, β, γ } and S2 = {δ} and
+applying the base function to both of them we obtain, for any possible E, E ∩ S1 = ∅ and
+E ∩ S2 = {δ}, therefore {δ} is the unique resulting extension.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+203
+
+As to the argumentation framework of Fig. 3(b), ﬁrst the base function is applied to
+the initial strongly connected component S1 = {P , R, J, S}. Also in this case it is easy
+to see that the sets {R, S} and {P , J }, besides being the preferred extensions of the re-
+stricted argumentation framework AF↓S1 , are the maximal sets of AS∗
+. Considering
+the propagation of the two possible choices to the second strongly connected component
+S2 = {rain}, we have in the former case UAF(S2, {R, S}) = S2 and therefore the invoca-
+tion BF AD2(AF↓S2 , S2) returning {rain}, while in the latter case DAF(S2, {P , J }) = S2
+and therefore the invocation BF AD2(AF↓∅, ∅) returning {∅}. Thus the same extensions
+{R, S, rain} and {P , J } are obtained as in preferred semantics.
+
+AF↓S1
+
+A similar reasoning applies to the example of Fig. 7(b). Given the partition S1 =
+{P , R, J, S} and S2 = {rain, ¬rain}, the possible choices for E ∩ S1 are {R, S} and
+{P , J }. In the former case, UAF(S2, {R, S}) = S2 and since S2 is a Nixon diamond,
+analogously to the case of Fig. 5, the possible choices for E ∩ S2 are {rain} and
+{¬rain}. In the latter case DAF(S2, {P , J }) = {rain} and UAF(S2, {P , J }) = {¬rain}, then
+BF AD2(AF↓{¬rain}, {¬rain}) is invoked, obviously giving {¬rain} as result. Summing up,
+again the same extension as in preferred semantics are obtained, namely: {R, S, rain},
+{R, S, ¬rain}, and {P , J, ¬rain}.
+
+In the argumentation framework of Fig. 6 the initial strongly connected component
+S1 = {α, β} is a Nixon diamond, thus, analogously to the case of Fig. 5, the possible choices
+for E ∩ S1 are {α} and {β}. Independently of this choice, considering the second strongly
+connected component S2 = {γ }, it holds that DAF(S2, E) = S2 therefore E ∩ S2 = ∅.
+Consequently, for the last strongly connected component S3 = {δ}, UAF(S3, E) = S3 and
+E ∩ S3 = S3. Therefore also in this case the same extensions {α, δ} and {β, δ} are obtained
+as in preferred semantics.
+
+It is interesting to note that the requirement of including in an extension all of the de-
+featers of a node which attacks the extension, imposed in the base function of AD2, would
+be harmful rather than useful outside the SCC-recursive schema: examples can easily be
+found where even initial nodes would not be justiﬁed. However, the SCC-recursive deﬁni-
+tion rules the behavior of the semantics in such a way as to exploit this constraint correctly.
+Finally, we show in Proposition 53 that both AD1 and AD2 ﬁt in Dung’s framework, as
+
+all their extensions are actually complete extensions.
+
+Proposition 53. For any argumentation framework AF = (cid:2)A, →(cid:4), the extensions pre-
+scribed by AD1 and AD2 are complete extensions.
+
+Proof. According to the characterization of complete semantics as SCC-recursive given
+in Theorem 43, any set E which is decomposable according to Deﬁnition 20 with a base
+function whose elements belong to CE(AF, C) is a complete extension. Therefore, to prove
+the claim it is sufﬁcient to show that the base functions introduced for AD1 and AD2 give
+elements belonging to CE(AF, C) for any AF (consisting of a unique strongly connected
+component) and C.
+
+Considering ﬁrst AD1, we distinguish two cases for the base function. If C = A, then
+BF AD1(AF, C) = PE(AF, C), and the conclusion directly follows from Proposition 31. In
+the other case, i.e., C (cid:2) A, BF AD1(AF, C) = {∅}, therefore we have to prove that ∅ is a
+complete extension in C: since ∅ is obviously admissible in C, the only thing to show is
+
+204
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+that any α ∈ C is not acceptable with respect to ∅. This trivially holds if C = ∅. Otherwise,
+a generic α ∈ C could only be acceptable with respect to ∅ if parentsAF(α) = ∅. However,
+this is impossible, since α ∈ C and C (cid:2) A: taking into account that the argumentation
+framework admits a unique strongly connected component, there must be an argument
+β ∈ A, β (cid:12)= α such that β → α.
+
+Let us turn now to AD2-semantics, and let us notice that, if C (cid:2) A, the relevant base
+function coincides with that of AD1-semantics, therefore the proof proceeds as in the pre-
+vious case. If instead C = A, then by deﬁnition any E ∈ BF AD2(AF, C) is a maximal
+element of AS∗
+AF, i.e., it is a maximal set such that it is admissible in AF and the following
+property holds:
+
+∀β ∈ A: β → E, parentsAF(β) ⊆ E
+
+(16)
+Since C = A and E is admissible, we have only to prove that ∀α ∈ A which is acceptable
+with respect to E, α ∈ E. We reason by contradiction, assuming that ∃ ˆα ∈ A: ˆα /∈ E and
+ˆα is acceptable with respect to E. In case E = ∅, the acceptability of ˆα would entail that
+parentsAF( ˆα) = ∅, and therefore the set { ˆα} would be admissible. However, { ˆα} would
+clearly belong to AS∗
+AF, contradicting the maximality of E = ∅. Therefore, let us now
+assume that E (cid:12)= ∅. Recalling that ˆα /∈ E and that |SCCSAF| = 1, there must exist a path
+between ˆα and any element of E. In particular, there must be an element γ ∈ E such that
+the path from α to γ does not include other elements of E. In fact, since ˆα is acceptable
+with respect to E, Lemma 35 entails that ˆα (cid:12)→ E, and the above mentioned path must
+have the following structure: ˆα → β1 → · · · → βn → γ , with n (cid:2) 1, such that γ ∈ E and
+βi /∈ E for all i: 1 (cid:3) i (cid:3) n. In particular, this entails that βn → E and parentsAF(βn) (cid:3) E,
+contradicting (16). (cid:1)
+
+7.2. Beyond admissibility
+
+In the previous subsection, we have identiﬁed the suppression of the requirement of
+maximality among complete extensions as a possible way to solve the problems affecting
+preferred semantics, while preserving the notion of admissibility. As already explained,
+in any admissibility-based semantics odd-length cycles admit only the empty extension,
+while handling ﬂoating defeat as in Fig. 6 requires multiple extensions for even-length
+cycles. As a consequence, both AD1 and AD2, as well as other possible proposals inspired
+to the same ideas, feature an asymmetry in the treatment of cycles. In this subsection,
+we follow the idea that this asymmetry is the primary cause of questionable behaviors of
+preferred semantics and should be avoided to allow alternative treatments of cycles.
+
+Let us investigate the deﬁnition of a semantics driven by this perspective. Consider again
+the simple case of a three length-cycle shown in Fig. 2: in order to enforce a symmetric
+treatment of cycles, we need to look for a possible set of non-empty extensions for this
+argumentation framework. To this purpose, note that, in order to preserve the conﬂict-free
+property, each extension has to include exactly one node. Moreover, obvious symmetry
+reasons entail that all nodes should be treated equally, therefore the only possibility is to
+identify as extensions the three sets {α}, {β} and {γ }.
+
+Two general hints can be drawn from this simple example. First, it appears that our di-
+rection of investigation cannot be constrained by the admissibility requirement, since, in
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+205
+
+the considered example, the only sets that can be identiﬁed as extensions are not admissi-
+ble. Second, it turns out that these extensions coincide with the maximal conﬂict-free sets
+of the argumentation framework (see Deﬁnition 6), and the same holds in the even-length
+cycle case. This suggests to exploit the notion of maximal conﬂict-free set as a basis for
+a new deﬁnition of extension. In a sense, this corresponds to the ﬁnal step in our route
+from articulated concepts to basic ones, since the notion of conﬂict-free set has been the
+starting point of the survey in Section 2.2 and the conﬂict-free property is, actually, the
+most fundamental assumption underlying any deﬁnition of extension, that could never be
+removed.
+
+The above intuition is conﬁrmed by the fact that, by identifying the extensions as the
+maximal conﬂict-free sets, the problematic cases shown in Fig. 7 and Fig. 8 are handled
+correctly, since in all cases the intersection of maximal conﬂict-free sets is empty yielding
+all arguments not justiﬁed. However, as already discussed in Section 2.2, this intuition
+alone would not represent a satisfactory solution, since, due to the increased number of
+extensions prescribed, it would tend to assign the status of provisionally defeated to a large
+number of arguments, often to all of them. In other words, replacing the admissibility
+requirement with the less demanding notion of maximal conﬂict-free set requires some
+further condition in order to properly constrain the set of extensions prescribed by the
+semantics, i.e., to capture only a subset of the maximal conﬂict-free sets.
+
+As a matter of fact, the SCC-recursive schema directly offers the solution to this difﬁ-
+culty: as it will be shown in the following, simply requiring that the semantics S is SCC-
+recursive represents an appropriate additional condition. To this purpose, let us consider
+again the example of Fig. 2 involving the three-length cycle. In this case, |SCCSAF| = 1,
+therefore, according to Deﬁnition 20, the base function, applied to the set of all argu-
+ments, directly returns the set of the extensions. As a consequence, identifying exten-
+sions as the maximal conﬂict-free sets yields BF S (AF, A) = MCF AF. Generalizing this
+idea, we obtain the speciﬁcation of the base function for the case where C = A, i.e.,
+BF S (AF, C) = MCF AF. Taking this for granted, to complete the deﬁnition of the base
+function only the case where C (cid:2) A remains to be speciﬁed. In this respect, it seems
+reasonable to exploit again the notion of maximal conﬂict-free set to provide a uniform
+conceptual basis to the approach. Two ways of applying this notion can be envisaged, de-
+pending on the role ascribed to the set C of defended nodes.
+
+On the one hand, one may regard the inclusion of all the arguments in C as a require-
+ment, preserving, as far as possible, the role of defense in the base function. This gives rise
+to the following deﬁnition (we denote the corresponding semantics as CF1):
+
+BF CF1(AF, C) = MCF AF↓C
+
+On the other hand, one may note that the perspective we are following is based on the
+assumption that the concept of defense is unnecessary in some cases, since the nodes of a
+three-length cycle are admitted as extensions though not being able to defend themselves.
+Generalizing from this remark, one may regard the notion of defense as deﬁnitely unneces-
+sary. This leads to consider the following base function, where the requirement of inclusion
+of the arguments in C is overlooked (we denote as CF2 the corresponding semantics, ﬁrst
+proposed in our [4]):
+
+BF CF2(AF, C) = MCF AF
+
+206
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+It can be seen that both CF1 and CF2-semantics are able to treat appropriately all argu-
+mentation frameworks presented in Figs. 1–8, as it was the case for AD2. To give a detailed
+account of the proposed semantics, we analyze their treatment of the argumentation frame-
+work of Fig. 7(a).6
+
+Recall that SCCSAF = {S1, S2} with S1 = {R, S, J } and S2 = {rain, ¬rain}. As for S1,
+which is an initial strongly connected component, the base case of Deﬁnition 20 applies,
+yielding (E ∩ S1) ∈ BF S (AF↓S1 , S1). Therefore, according to CF1-semantics (E ∩ S1)
+must belong to MCF AF↓C with AF = AF↓S1 and C = S1, which is of course equal to
+MCF AF↓S1
+. This is the same set prescribed by CF2-semantics, therefore the two semantics
+= {{S}, {R}, {J }}, leading to three alternative possi-
+agree in this case. Now, MCF AF↓S1
+bilities for (E ∩ S1). Assuming that (E ∩ S1) = {J }, we have that DAF(S2, E) = {rain},
+UAF(S2, E) = {¬rain} and PAF(S2, E) = ∅. Therefore, the base function is applied to
+the argumentation framework AF↓{¬rain} with C = {¬rain}, yielding for both semantics
+(E ∩ S2) = {¬rain}. Therefore, we have an extension E1 = {J, ¬rain} for both semantics.
+Let us turn now to the alternative (E ∩ S1) = {R}, which entails that UAF(S2, E) = S2 (as
+J is attacked by R ∈ E). Then, the base function is applied to the argumentation frame-
+work AF↓S2 with C = S2: it is easy to see that both semantics give two alternatives for
+(E ∩ S2), namely {rain} and {¬rain}. Therefore, we have for both CF1 and CF2 the ad-
+ditional extensions E2 = {R, rain} and E3 = {R, ¬rain}. Finally, if (E ∩ S1) = {S}, we
+have that PAF(S2, E) = {rain}, UAF(S2, E) = {¬rain} and DAF(S2, E) = ∅. Then, the
+base function is applied to the argumentation framework AF↓S2 with C = {¬rain}. In
+this case, CF1 and CF2-semantics differ. In fact, CF1 gives MCF AF↓C which is equal to
+MCF AF↓{¬rain} , therefore (E ∩ S2) = {¬rain}, giving E4 = {S, ¬rain}. On the other hand,
+= {{rain}, {¬rain}}, yielding therefore the same extension E4 as
+CF2 gives MCF AF↓S2
+CF1 and an additional extension E5 = {S, rain}.
+
+In spite of this difference, both semantics provide the intuitively desirable result: no
+argument is justiﬁed, since the intersection of all extensions is empty. A similar treatment
+is provided by CF1 and CF2 to the argumentation framework of Fig. 7(b), where they
+identify the same extensions as preferred semantics, yielding again an empty intersection.
+
+7.3. Comparing SCC-recursive semantics
+
+Having provided the deﬁnition of four novel semantics, we now need to discuss their
+placement with respect to the traditional semantics of Dung’s framework, in order to carry
+out a comparative analysis.
+
+First of all, the basic requirement of agreement with the grounded semantics is satis-
+ﬁed by all the introduced proposals. In fact, it is easy to see that the sufﬁcient conditions
+for agreement stated in Theorem 52 are respected by their base functions and, therefore,
+all the extensions of the proposed semantics contain the grounded extension. All seman-
+tics, in turn, differ from preferred semantics in the treatment of the problematic cases
+which have been the starting point of our investigation. In this respect, AD1 and AD2 are
+
+6 The treatment of other examples of Section 2.2 can be easily derived along the same lines, as well as that
+of the examples of Fig. 8, where there is only one strongly connected component and the extensions, coinciding
+with maximal conﬂict-free sets, have empty intersection.
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+207
+
+closer by construction to preferred semantics, since, by Proposition 53, they select their
+extensions among complete extensions and, therefore, each one of their extensions is con-
+tained in a maximal complete extension, i.e., in a preferred extension. According to the
+relation of inclusion between extensions, AD1 and AD2 can be regarded as intermediate
+approaches lying between grounded and preferred semantics. On the other hand, CF1 and
+CF2 radically depart from preferred semantics, relying only on the conﬂict-free property
+and SCC-recursiveness, while relaxing the admissibility requirement and thus admitting
+extensions which are not complete extensions.
+
+As remarked in the previous subsection, this departure supports a symmetric treatment
+of odd-length cycles with respect to even-length ones, which represents a distinguishing
+property of CF1 and CF2 with respect to AD1 and AD2. As far as the examples considered
+in previous subsections are concerned, this difference, though conceptually remarkable,
+does not give rise to signiﬁcantly different results in the assignment of the justiﬁcation
+status. In particular, only an example where AD1 fails to provide an intuitively adequate
+treatment has been pointed out, while AD2, CF1 and CF2 substantially agree in all ex-
+amples, though sometimes achieving the desired result in different ways. Actually, this is
+not always the case: different behaviors are possible in other examples, which indeed show
+that the symmetric treatment of cycles can be a real advantage and make the difference in
+some cases.
+
+To substantiate this statement, let us consider the argumentation framework shown in
+Fig. 9, corresponding to a ﬂoating defeat against argument γ by the nodes in the three-
+length cycle. In this case, any admissibility-based semantics admits the empty set as the
+unique extension, and therefore this is the case for AD1 and AD2 as well, which do not
+regard as justiﬁed any argument. On the contrary, both CF1 and CF2 admit as exten-
+sions the sets {α, δ}, {β, δ} and {φ, δ}. In fact, in the initial strongly connected component
+S1 = {α, β, φ} the maximal conﬂict-free sets, namely the singletons {α}, {β}, and {φ}, are
+selected as possible choices for E ∩S1. Then S2 = {γ } is ruled out from possible selections,
+since γ is attacked in any case by E and, therefore, DAF(S2, E) = S2. As a consequence,
+δ is always selected, since, letting S3 = {δ}, UAF(S3, E) = S3 and {δ} is of course the only
+maximal conﬂict free set of S3. As a result, α, β and φ are provisionally defeated, γ is
+defeated and δ is undefeated. This behavior is coherent with that obtained in the case of
+even-length cycles, like that shown in Fig. 6. As a consequence, this kind of examples
+discriminates admissibility-based semantics from the proposed novel semantics based on
+maximal conﬂict-free sets.
+
+Considering now the case of a self-defeating argument shown in Fig. 10, it is easy
+to see that the only admissible set here is empty, therefore any admissibility-based se-
+mantics, including AD1 and AD2, is doomed to show the problematic behavior discussed
+in Section 3 and can not allow an alternative treatment where the self-defeating argu-
+ment is ruled out. Let us now consider how this case is handled by CF1 and CF2. First,
+note that the argumentation framework AF is composed of two strongly connected com-
+ponents, namely S1 = {α} and S2 = {β}. Starting from the initial strongly connected
+component S1, the base function applies to AF↓{α} with C = {α}: both CF1 and CF2
+prescribe that (E ∩ S1) is a maximal conﬂict-free set of S1. Since S1 consists just of a
+self-defeating argument, the only conﬂict-free set is the empty set, therefore both CF1
+and CF2 exclude α from any extension. This in turn entails that, for any extension E,
+
+208
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+PAF(S2, E) = {β} while UAF(S2, E) = DAF(S2, E) = ∅. Then, E ∩ S2 ∈ GF(AF↓{β}, ∅),
+and, since AF↓{β} has obviously only one strongly connected component, this entails that
+E ∩ S2 ∈ BF CF(AF↓{β}, ∅), where CF stands for either CF1 or CF2. CF1 and CF2 behave
+differently in this case, due to the role of the parameter C in the deﬁnition of the relevant
+base functions. In particular, according to CF1 (E ∩ S2) ∈ MCF (AF↓{β})↓∅ , i.e., (E ∩ S2)
+must be the empty set. On the other hand, C plays no role in the base function of CF2,
+yielding (E ∩ S2) ∈ MCF AF↓{β} , i.e., (E ∩ S2) = {β}. As a consequence, CF1 admits the
+empty set as the unique extension, thus sharing with admissibility-based semantics the in-
+ability to rule out self-defeating arguments. On the contrary, CF2 is able to select the only
+desired extension {β}, thus preventing the self-defeating argument α to exert a (possibly
+undesired) effect on the rest of the graph.
+
+8. Conclusions
+
+In this paper, we have proposed a general recursive schema that, while including Dung’s
+framework as a special case, can be regarded as an alternative foundation of argumentation
+semantics. In particular, the property of SCC-recursiveness has a basic unifying role in
+argumentation semantics, in a similar way as admissibility in Dung’s framework, and can
+ensure the correct propagation of the fundamental semantic principles coded in the base
+function to a generic argumentation framework.
+
+In fact, SCC-recursiveness turns out to be an effective tool for supporting the devel-
+opment of new semantics. On the one hand, in order to deﬁne a particular SCC-recursive
+semantics it is sufﬁcient to identify a suitable base function deﬁned over the argumentation
+frameworks consisting of a single strongly connected component. On the other hand, the
+fundamental requirements that all extensions are conﬂict-free and contain the grounded
+extension come almost for free, since it is sufﬁcient that the base function is conﬂict-free
+and correctly treats single nodes without defeaters.
+
+To exemplify the potential of the recursive schema, we have introduced four novel se-
+mantics all providing a different treatment with respect to preferred semantics in cases
+where its behavior can be regarded as problematic. Our investigation has been developed
+in two directions: semantics AD1 and AD2 remain in the area of Dung’s admissibility-
+based framework, while CF1 and CF2 more radically depart from traditional semantics,
+giving up the requirement of admissibility and resorting to simpler concepts. The most
+satisfactory behavior is achieved by CF2, which, in particular, is the only one able to deal
+with a thorny example concerning self-defeating arguments. It is worth noting that such se-
+mantics corresponds to the last step in our exploration of the use of progressively simpler
+concepts within the SCC-recursive schema, since it only relies on the notion of maximal
+conﬂict free set and completely overlooks the notion of defense in the deﬁnition of the base
+function.
+
+As for future work, three main directions of investigation are worth considering. First, a
+further analysis of the general properties of the SCC-recursive schema will be carried out.
+In particular, in order to compare different proposals, it would be interesting to characterize
+the relationships between SCC-recursive semantics in terms of the notion of skepticism,
+i.e., on the basis of the level of commitment concerning the choices about the justiﬁcation
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+209
+
+status assigned to the arguments [8]. Second, the space of SCC-recursive semantics will
+be extensively explored in order to identify further semantics, whose properties will be
+analyzed both from a theoretical point of view and with respect to their meaning and use
+in different application contexts. Third, since, as shown in the examples, the deﬁnition
+of SCC-recursiveness has a direct constructive interpretation, it is worth investigating the
+development of efﬁcient and incremental algorithms based on local computation at the
+level of strongly connected components.
+
+Acknowledgements
+
+We are indebted to the anonymous referees for their helpful comments and suggestions.
+
+References
+
+[1] L. Amgoud, C. Cayrol, Inferring from inconsistency in preference-based argumentation frameworks, J. Au-
+
+tomat. Reason. 29 (2) (2002) 125–169.
+
+[2] L. Amgoud, C. Cayrol, A reasoning model based on the production of acceptable arguments, Ann. Math.
+
+Artiﬁcial Intelligence 34 (1–3) (2002) 197–215.
+
+[3] L. Amgoud, S. Parsons, N. Maudet, Arguments, dialogue, and negotiation, in: Proceedings of the 14th
+
+European Conference on Artiﬁcial Intelligence (ECAI 2000), IOS Press, Berlin, 2000, pp. 338–342.
+
+[4] P. Baroni, M. Giacomin, Solving semantic problems with odd-length cycles in argumentation, in: Pro-
+ceedings of the 7th European Conference on Symbolic and Quantitative Approaches to Reasoning with
+Uncertainty (ECSQARU 2003), in: Lecture Notes in Artiﬁcial Intelligence, vol. 2711, Springer, Aalborg,
+Denmark, 2003, pp. 440–451.
+
+[5] P. Baroni, M. Giacomin, A recursive approach to argumentation: motivation and perspectives, in: Proceed-
+ings of the 10th International Workshop on Non-Monotonic Reasoning (NMR 2004), Whistler, BC, Canada,
+2004, pp. 50–58.
+
+[6] P. Baroni, M. Giacomin, G. Guida, Extending abstract argumentation systems theory, Artiﬁcial Intelli-
+
+gence 120 (2) (2000) 251–270.
+
+[7] P. Baroni, M. Giacomin, G. Guida, On the notion of strength in argumentation: overcoming the epis-
+temic/practical dichotomy, in: Proceedings of the 2001 ECSQARU Workshop—Adventures in Argumen-
+tation Toulouse, France, 2001, pp. 1–8.
+
+[8] P. Baroni, M. Giacomin, G. Guida, Towards a formalization of skepticism in extension-based argumentation
+semantics, in: Proceedings of the 4th Workshop on Computational Models of Natural Argument (CMNA
+2004), Valencia, Spain, 2004, pp. 47–52.
+
+[9] P.M. Dung, On the acceptability of arguments and its fundamental role in nonmonotonic reasoning, logic
+
+programming, and n-person games, Artiﬁcial Intelligence 77 (2) (1995) 321–357.
+
+[10] A.J. Garcia, G.R. Simari, Defeasible logic programming: An argumentative approach, Theory Pract. Logic
+
+Programming 4 (1) (2004) 95–138.
+
+[11] J.F. Horty, Skepticism and ﬂoating conclusions, Artiﬁcial Intelligence 135 (1–2) (2002) 55–72.
+[12] D. Makinson, K. Schlechta, Floating conclusions and zombie paths: Two deep difﬁculties in the ‘directly
+skeptical’ approach to defeasible inheritance networks, Artiﬁcial Intelligence 48 (2) (1991) 199–209.
+
+[13] J.L. Pollock, How to reason defeasibly, Artiﬁcial Intelligence 57 (1) (1992) 1–42.
+[14] J.L. Pollock, Justiﬁcation and defeat, Artiﬁcial Intelligence 67 (1994) 377–407.
+[15] J.L. Pollock, Cognitive Carpentry: A Blueprint for How to Build a Person, MIT Press, Cambridge, MA,
+
+1995.
+
+[16] J.L. Pollock, The logical foundations of goal-regression planning in autonomous agents, Artiﬁcial Intelli-
+
+gence 106 (2) (1998) 267–334.
+
+[17] J.L. Pollock, Perceiving and reasoning about a changing world, Comput. Intelligence 14 (4) (1998) 498–562.
+
+210
+
+P. Baroni et al. / Artiﬁcial Intelligence 168 (2005) 162–210
+
+[18] J.L. Pollock, Defeasible reasoning with variable degrees of justiﬁcation, Artiﬁcial Intelligence 133 (1–2)
+
+(2001) 233–282.
+
+[19] H. Prakken, Logical Tools for Modeling Legal Argument: A Study of Defeasible Reasoning in Law, Kluwer
+
+Academic, Dordrecht, 1997.
+
+[20] H. Prakken, Intuitions and the modelling of defeasible reasoning: Some case studies, in: Proceedings of the
+9th International Workshop on Non-Monotonic Reasoning (NMR 2002), Toulouse, France, 2002, pp. 91–
+102.
+
+[21] H. Prakken, G. Sartor, Argument-based extended logic programming with defeasible priorities, J. Appl.
+
+Non-Class. Logics 7 (1997) 25–75.
+
+[22] H. Prakken, G.A.W. Vreeswijk, Logics for defeasible argumentation, in: D.M. Gabbay, F. Guenthner (Eds.),
+
+Handbook of Philosophical Logic, second ed., Kluwer Academic, Dordrecht, 2001.
+[23] R. Reiter, A logic for default reasoning, Artiﬁcial Intelligence 13 (1–2) (1980) 81–132.
+[24] K. Schlechta, Directly sceptical inheritance cannot capture the intersection of extensions, J. Logic Com-
+
+put. 3 (5) (1993) 455–467.
+
+[25] G.R. Simari, R.P. Loui, A mathematical treatment of defeasible reasoning and its implementation, Artiﬁcial
+
+Intelligence 53 (2–3) (1992) 125–157.
+
+[26] B. Verheij, Artiﬁcial argument assistants for defeasible argumentation, Artiﬁcial Intelligence 150 (1–2)
+
+(2003) 291–324.
+
+[27] G.A.W. Vreeswijk, Abstract argumentation systems, Artiﬁcial Intelligence 90 (1–2) (1997) 225–279.
+
+

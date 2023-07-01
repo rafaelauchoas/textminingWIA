@@ -1,0 +1,5751 @@
+ELSEVIER 
+
+Artificial  Intelligence  93  ( 1997)  I69-  199 
+
+Artificial 
+Intelligence 
+
+Definability  and  commonsense  reasoning 
+
+Gianni  Amati a**, Luigia  Carlucci  Aiello  b,l, Fiora  Pirri b-2 
+a Fo~dazione  Ugo  Bordoni,  via 3alduss~~rre C~st~g~io~e 59,  00142  Roma,  My 
+h Dipurtjme~to  di  ~~farmat~ca e  Sistemi~tjca, Universitii di  Roma  “La  Sapienza”,  via Suluria  1 J-3, 
+00198  Romu,  Daly 
+
+Received  March  1996; revised  September  1996 
+
+Abstract 
+
+in  commonsense 
+
+is  a  central  problem 
+
+The  definition  of  concepts 
+
+in 
+reasoning  concern  implicit  and  explicit  definability.  Implicit  definability  in  non- 
+nonmonotonic 
+monotonic  logic  is  always  relative  to  the  context-the 
+current  theory  of  the  world.  We  show  that 
+fixed  point  equations  provide  a  generalization  of  explicit  definability,  which  correctly  captures  the 
+relativized  context.  Theories  expressed  within  this  logical  framework  provide  implicit  definitions 
+of  concepts.  Moreover,  it  is  possible  to derive  these  fixed points  entirely  within  the  logic.  @  1997 
+Elsevier  Science  B.V. 
+
+reasoning.  Many  themes 
+
+Kqw~rrds:  Commonsense  reasoning;  Delinabiiity;  Fixed  points;  Logic  of  provability;  Default  logic; 
+Contextual  reasoning;  Self-reference 
+
+1.  Introduction 
+
+and  motivations 
+
+Concepts  play  a  central 
+
+role  in  commonsense 
+
+of  postulating 
+in  which  the  properties  used  as  definientes  are  independent 
+
+a  definition  of  a  concept, 
+
+of  the  definiendum. 
+
+reasoning.  The  classical  view  consists 
+in  terms  of  necessary  and  sufficient  conditions, 
+
+Positivists  pointed  out  that  if  a  concept  cannot  be  defined  via  necessary  and  sufficient 
+that  there  are  concepts, 
+do  not  seem  to  have  a  common  core  which 
+
+it  is  not  a  scientific  concept. 
+noted  by  Wittgenstein-that 
+
+It  turns  out,  however 
+
+conditions 
+like  game-as 
+could  be  characterized 
+
+by  a  set  of  necessary  conditions 
+
+(see  [IS] 
+
+for  a  discussion). 
+
+* Corresponding  author.  E-mail:  gba@fub.it.  Work  carried  out  in  the  framework  of  the  agreement  between 
+the  halian  Ff  Administration  and  the  Fondazione  Ugo  Bordoni. 
+
+’ E-mail:  aiello@dis.uniromal  .it. 
+*E-mail:  pirri@dis.uniromal.it. 
+
+0004-3702/97/$17.00  @  1997 Efsevier  Science  B.V. All rights  reserved. 
+PI1 s0004-3702(94)00049-5 
+
+170 
+
+G.  Amati  et  al.  /Art@cial 
+
+Intelligence 
+
+93  (I  997)  169-199 
+
+natural  kinds 
+
+is  one  of  the  main  proponents 
+
+On  the  other  hand,  concepts 
+
+involving 
+
+necessary  but  not  sufficient  conditions.  This  point 
+Eleanor  Rosch 
+view  on  “natural  kinds”,  Reiter  [41]  suggests  resorting 
+via  some 
+appeals 
+patterns  mirror 
+of  classical  necessary  conditions  W  and  a  set  of  “sufficient”  default  conditions  D. 
+
+like  bird,  lemon,  etc.,  possess 
+theory,  where 
+in  prototype 
+(see  e.g.  [ 321).  In  connection  with  this 
+to  sufficient  conditions  postulated 
+“ typically”,  or  “assume  by  default”,  which 
+is  relativized.  And,  in  fact,  these  linguistic 
+
+the  role  of  defaults;  namely,  a  default 
+
+to  which  the  definition 
+
+linguistic  pattern 
+
+(lY D)  accounts 
+
+like  “normally”, 
+
+to  the  context 
+
+is  stressed 
+
+for  a  set 
+
+theory 
+
+axiomatization 
+
+in  almost  all  cases  reported 
+
+Likewise, 
+a  circumscription 
+definitions 
+implicit  sufficient  condition 
+tions)  whereby 
+amounts 
+
+(by 
+
+(e.g. 
+
+[22,24,29] 
+
+in  the  literature 
+finding  an  equivalent 
+
+),  solving 
+theory)  yields 
+axiom  acts  like  an 
+(just  as,  for  Reiter,  the  default  rules  act  like  sufficient  condi- 
+the  concept.  Solving 
+for  the  predicates  being  minimized. 
+
+the  circumscription 
+
+first-order 
+
+for  the  predicate  being  minimized.  The  circumscription 
+
+the  theory  is  implicitly  defining 
+
+to  finding  an  explicit  definition 
+
+logic 
+
+theorem 
+
+in  first-order 
+
+through  Beth’s  definability 
+
+The  notions  of  implicit  and  explicit  definition  of  a  predicate,  with  respect  to  a  theory, 
+[ 6]), 
+from  an  implicit  definition 
+formula. 
+in  first-order 
+
+are  formalized 
+which  shows  that  the  two  notions  are  equivalent.  Moreover, 
+of  a  predicate  an  explicit  definition  can  be  found  by  constructing 
+An  immediate 
+logic  state 
+we  state  that  S  t-  V’x (RAVEN(X)  =  BLACK(X)),  then 
+talk  about 
+axioms, 
+then  by  the  monotonicity 
+definition  of  the  concept.  Tarski  discusses 
+with  definability 
+
+if 
+things  we  can 
+for  example  by  adding  new 
+the 
+
+of  Beth’s  theorem 
+of  the  predicate  being  defined.  Therefore, 
+
+logic,  one  cannot  compatibly  update 
+
+consequence 
+the  uniqueness 
+
+and  those  concerned  with  deduction 
+
+in  S  are  ravens.  Whenever 
+
+is  that  implicit  definitions 
+
+the  connection  between 
+
+the  notions  concerned 
+
+the  context  changes, 
+
+the  only  black 
+
+an  interpolant 
+
+for  example, 
+
+of  first-order 
+
+(see  e.g. 
+
+in  (541. 
+
+On  the  other  hand,  only  “well-behaved” 
+
+can  be  drawn.  McCarthy’s  circumscription 
+
+we  may  lack  either  sufficient  or  necessary  conditions 
+no  explicit  definition 
+strong  behaviour  of  definability 
+is  weaker 
+the  explicit  definition 
+constraint  because 
+other  words,  there  is  no  total  commitment 
+
+in  first-order 
+(see 
+
+is  achieved  by  minimization, 
+
+than  implicit  definability 
+
+it  is  relativized 
+
+to  define  a  concept; 
+
+predicates  are  implicitly  definable; 
+
+in  general 
+in  such  cases 
+this 
+axiom 
+[ 111 for  a  discussion).  As  noted  above,  since 
+is  no  longer  a  strong 
+In 
+
+the  circumscription 
+
+[29]  circumvents 
+
+logic  because 
+
+is  applied. 
+
+uniqueness 
+
+to  the  theory  on  which  circumscription 
+to  the  given  definition. 
+
+Consider, 
+
+for  example, 
+
+the  following 
+
+theory  T. 
+
+ONTABLE(a)VONTABLE( 
+
+b), 
+
+vxRED(x)  -ONTABLE( 
+
+(1) 
+
+The  circumscription 
+is  separable 
+
+(see  [ 21]), 
+
+that  is 
+
+of  ONTABLE  in  T  yields  a  first-order 
+
+formula  because  ONTABLE 
+
+(vxONTABLE(x) 
+
+=  (RED(x) 
+
+i’X=U)  AZ)  v 
+
+(vxONTABLE(  x)E  (FCED(x)VX=  b)  AZ’) 
+
+(2) 
+
+where  Z  and  Z’  are  formulae  not  containing  ONTABLE  (see [ 2 1, Theorem  1 ] ) 
+
+G. Amati  et al./Artijiicial  fnielligence  93 (1997)  169-199 
+
+171 
+
+We  note 
+
+that  in  such  a  case  we  do  not  get  an  implicit  definition 
+
+as 
+for  it.  Therefore  we  do  not  get 
+
+of  ONTABLE, 
+
+to  uniqueness.  A  first-order  disjunction 
+
+the  lack  of  a  classical  explicit  definition, 
+a  disju$z~tio~ of  two  de~nitio~s  for  the  predicate  ONTABLE.  The 
+
+shows 
+
+is  weaker 
+
+that  circumscription 
+
+in  Beth  sense.  Despite 
+
+two  minimal  nonisomorphic  models 
+
+there  are  at  least 
+an  explicit  definition 
+we  have  obtained 
+example  clearly 
+and  we  are  no  longer  committed 
+is  a  nice  generalization 
+definition 
+circumscription 
+yield  a  very 
+large  disjunction 
+Lin  proposes  a  transformation 
+state  axioms.  The 
+interesting 
+introducing 
+the  different  effects  of  the  performed  action  are  realized. 
+
+of  successor 
+that  breaks 
+contribution 
+
+of  definability, 
+from  weak 
+
+of  a  theory,  axiomatizing 
+
+though 
+implicit 
+
+can  be  obtained 
+
+the  disjunction 
+
+than  Beth’s 
+
+implicit  definability 
+of  definitions 
+it  does  not  tell  how  a  single  explicit 
+that 
+the 
+[23] 
+conditions.  Lin 
+actions,  may 
+the  effects  of  indeterminate 
+this  problem, 
+state  axioms.  To  overcome 
+and  yields  different  successor 
+by 
+in  which 
+
+is  that  his  transfo~ation 
+
+is  perfo~ed 
+
+shows 
+
+a  suitable  predicate  which  is  used,  in  a  sense,  to  name  the  contexts 
+
+As  another  example  of  how  implicit  and  explicit  definability 
+
+that  an  approach 
+
+reasoning,  observe 
+tonic  negation  as  failure  operator 
+as  a  set  of  necessary 
+ficient  conditions 
+shows  how,  in  some  cases, 
+program. 
+
+conditions 
+
+yielding 
+
+semantics 
+
+to  logic  programming 
+
+enters  into  nonmonotonic 
+for  the  nonmono- 
+is  the  Clark  completion,  which  treats  a  logic  program 
+suf- 
+and  “completes” 
+predicates.  Reiter  1401 
+the 
+
+this  program  by  adding  suitable 
+
+is  the  result  of  circumscribing 
+
+for  the  progr~ 
+
+the  Clark  completion 
+
+explicit  definitions 
+
+The  upshot  of  the  foregoing  discussion 
+
+implicit 
+
+and  explicit  definability. 
+
+of  the  definientes 
+it  seems  clear  how  to  weaken 
+
+concern 
+reasons  for  wanting  explicit  definitions,  because 
+by  substitution 
+However,  while 
+reasoning 
+of  how  to  get,  in  general,  an  explicit  definition 
+stated  through  a  nonmonotonic 
+one  way  to  solve  this  problem. 
+
+(via  defauits  or  circumscription) 
+
+is  that  many  themes  in  nonmonotonic 
+
+reasoning 
+In  fact  there  are  very  good  computational 
+theorem  proving 
+to  be  proved. 
+
+then  we  can  do  efficient 
+
+theorem 
+
+in  any 
+
+for  the  definiendum 
+
+implicit  de~nability 
+so  far  there  is  no  solution 
+from  the  implicit 
+
+in  nonmonotoni~ 
+to  the  problem 
+sufficient  conditions 
+
+theory.  The  main  contribution 
+
+of  this  paper  is  to  show 
+
+Returning 
+
+to  the  above  theory  ( 1))  in  order  to  obtain  one  of  the  disjuncts  disregarding 
+
+the  others,  we  should  be  able  to  express 
+sufficient  conditions 
+object  a.  Analogously 
+contexts 
+different  context. 
+
+should  be  the  following: 
+
+to  a  context  C,  the  necessary  and 
+to  be  on  the  table  are  that  either  it  is  red  or  it  is  the 
+is  b.  The  role  played  by 
+refer  to  a 
+
+there  is  a  context  C’  where  the  object 
+each  definition 
+
+in  the  disjunction 
+
+for  an  object 
+
+that,  relative 
+
+should 
+
+To  subsume  a  context  of  reasoning 
+
+(or  a context  of  discourse) 
+
+state  of  affairs,  we  need  a  language 
+
+that  resorts 
+
+a  certain 
+ability.  That  is,  we  need  to  formalize, 
+about 
+taken 
+naturally 
+hand. 
+
+in  that  same  language 
+into  account 
+
+relies  on  a  current 
+
+is  a  cu~~~~nse~se 
+
+in  a theory  axiomatizing 
+to  a  kind  of  self-referential 
+that  can  be  reasoned 
+
+in  the  language,  expressions 
+
+itself.  A  statement 
+
+in  which 
+
+the  context  can  be  ex~~~~it~~ 
+
+state~lent.  And, 
+
+in  fact,  commonsense 
+
+reasoning 
+
+state  of  affairs: 
+
+the  minimum 
+
+resource  of  information 
+
+at 
+
+This  form  of  relativization 
+
+to  the  context 
+to  the  belief  set  of  an  agent.  So  the  self-referential 
+
+statements 
+
+is  often  carried  out  by  binding  commonsense 
+
+ability 
+
+is  lifted  from  the 
+
+172 
+
+G. Anzati et  al. /Art+&1 
+
+Intelligence 93 (I 997) 169-l  99 
+
+language 
+
+to  one  in  which  two  distinct 
+the  one  where  the  agent  draws  conclusions 
+
+commonsense 
+are  fo~ulated: 
+and 
+general, 
+in  which  the  agent  is  reasoning.  The  following  definition 
+
+the  conclusions 
+structure, 
+
+i.e.,  a  computational 
+
+is  a  metalogical 
+
+the  one  where 
+
+drawn  are  compared  with 
+
+(or  even  more) 
+
+levels  of  reasoning 
+from  the  initial  assumptions 
+
+the  context,  which, 
+
+in 
+object  external 
+to  the  language 
+is,  in  this  sense,  paradigmatic: 
+
+r  E  cn/,  (I  u  (Off  f -cd  $8 F}) 
+
+(3) 
+
+f 
+
+in  the  sense 
+
+is  a  context, 
+
+as  “it  is  consistent 
+
+the  above  schema 
+
+the  deductive  closure-in 
+
+theory  then  the  nonmonotonic 
+
+the  above  expression  does  not  belong 
+
+which  says  that  if  I  is  a  nonmonotonic 
+the  logic  n-of 
+I  are  obtained  by  taking 
+the  formulae  consistent  with  r,  where  Oa  is,  in  fact,  interpreted 
+assume  a  in  r”.  Although 
+belief  set  of  an  agent, 
+When 
+of  discourse.  One  for  the  default 
+compatible  with  Oa,  and,  finally  one  for  the  equation 
+referential 
+equation 
+example,  providing 
+(see  [26-28,30,31,45,47]). 
+Let  us  reformulate 
+
+consequences 
+of 
+I,  together  with  all 
+to 
+to  be  the 
+language. 
+is  used  to  characterize  default  reasoning,  we  have  three  levels 
+to  be 
+itself.  In  this  last  case  the  self- 
+the  above 
+like,  for 
+logics 
+
+statement, 
+for  default  reasoning 
+
+that  it  is  considered 
+to  the  agent’s 
+
+theory,  one  for  the  translation  of  I,  in  order 
+
+disregarded.  Therefore,  we  cannot  consider 
+
+the  strict  relation  between  definability 
+
+in  a  wide  class  of  modal 
+
+it  has  many  advantages 
+
+(3)  as  a  commonsense 
+
+an  embedding 
+
+is  definitely 
+
+although 
+
+ability 
+
+and  self-reference.  As  we 
+to 
+
+i.e.,  it  commits 
+
+implicit 
+
+is  too  strong  because 
+
+it  is  functional, 
+
+have  argued,  classical  definability 
+uniqueness, 
+definability 
+disjunction 
+(e.g. 
+through 
+Insofar  as  the  context 
+general,  an  appropriate 
+conditions 
+
+involved 
+
+sentence 
+
+in  a  definition. 
+
+and  this  behaviour 
+(as  nonmonotonic 
+(in 
+of  definitions 
+in  the  case  of  default)  which  are,  in  general, 
+
+in  the  real  world.  Weakening 
+involves, 
+the  case  of  circumscription) 
+
+is  not  reasonable 
+do) 
+formalisms 
+
+in  almost  all  cases,  either  a 
+or  a  variety  of  extensions 
+infinite  objects  not  characterizable 
+to  a  different  context. 
+in  the  language,  an  agent  does  not  have,  in 
+and  sufficient 
+
+the  required  necessary 
+
+implicitly 
+
+refers 
+
+is  not  made  explicit 
+
+for  representing 
+
+sentences.  Each  disjunct  or  extension 
+
+is  to  treat  it  as  a  designator, 
+
+i.e.,  a  parameter  which  acquires 
+
+What  we  need  is  a  sentence  whose  denotation  depends  on  its  context, 
+
+like  the  deno- 
+[ 5 11.  A  well-known  device 
+its 
+through  a  suitable  substitution 
+(see  [ 501  for  a  discussion  on  the  role  of  sub- 
+that  a  given  sentence  cy is  consistent 
+in  these  cases).  For  example, 
+to  a  context  C  a  formula  of  the  form  C  A (Y may  be  provided,  say  rp[ C 1. Since 
+for  C  has  to  be  found.  The 
+for  C  is 
+
+tation  of  the  word  “here”  depends  on  the  place  it  is  uttered 
+for  naming  a  context 
+meaning 
+stitution 
+relative 
+C  occurs 
+designator  C  is,  indeed, 
+the  very  sentence  q[C].  Therefore 
+a  sentence  A,  in  which  C  does  not  occur,  such  that  qf  A]  E  A  is  true.  The  sentence 
+for  C:  they  are 
+rp[C]  E  C  is  a  fixed  point  equation  which  gives  us  explicit  definitions 
+the  admissible 
+that  rpr.41  =  A  is 
+a  theorem. 
+
+substitutions  A  for  C  in  p[C], 
+
+as  a  parameter,  a  suitable 
+
+established  by  shawing 
+
+the  substitution 
+
+substitution 
+
+to  express 
+
+in  p[C] 
+
+More  precisely,  when  a  context 
+
+is  treated  as  a  parameter 
+
+finding  a  substitution 
+an  explicit  definition 
+I-(,  q[  A]  E  A,  where  n  is  an  appropriate 
+
+for  the  context  amounts 
+exists  only 
+
+if  we  can  prove 
+
+to  find  an  explicit  de~nition 
+
+in  a  self-referential 
+
+language, 
+for  it.  Such 
+that  there  are  theorems  of  the  form 
+
+logic  that  will  be  made  precise 
+
+in  the  paper. 
+
+G.  Amati  et  al./Artijicial 
+
+Intelligence 
+
+93  (1997)  169-l  99 
+
+173 
+
+imply 
+
+namely 
+
+resorting 
+
+of  a  context 
+
+[ 81.  The  modal 
+
+between  nonmonotonic 
+
+The  above  considerations 
+
+that  an  explicit  definition 
+
+theorems  must  be  stated  without 
+
+requires  a 
+logic  where  fixed  point  theorems  of  the  form  F,I  p[  A]  G  A  exist  for  a  formula  p[  C]  in 
+which  the  parameter  C  is  suitably  used  as  a  designator.  More  important, 
+the  existence  of 
+such  fixed  point 
+to  the  uniqueness  of  C,  that 
+is,  without  relying  on  an  implicit  definition  of  C.  This  has  been,  in  fact,  the  main  effort 
+of  this  work.  The  connection 
+in  which 
+fixed  points  are  characterizable, 
+logic  G,  has  been  early  investigated 
+by 
+Peano  Arithmetic 
+through 
+unique  solution 
+to  the  constraints 
+and  provability 
+both  G  and  G*-axiomatizing 
+all  conringent 
+the  other  hand,  Gabbay 
+means  of  the  provability  operator  of  the  modal 
+
+in 
+of  fixed  points  goes 
+that  there  exists  a 
+to  uniqueness  brings  us  back 
+
+that 
+out  on 
+in  Section  4.2.  On 
+by 
+
+implicit  definability  which,  as  we  discussed  above,  means 
+
+logic  was  noticed  by  Doyle,  who  also  observed 
+
+logic.  The  inadequacy  of  G  for  interpreting 
+
+[ 141  has  modeled  negation  by  failure 
+
+of  first-order 
+in  nonmonotonic 
+
+is  interpreted.  For  this  reason 
+
+to  the  fixed  point  equation; 
+
+statements  of  provability” 
+
+in  Peano  arithmetic-“miss 
+
+the  notion  of  provability 
+
+in  logic  programming 
+
+the  notion  of  truth 
+
+the  characterization 
+
+[ 91.  We  discuss 
+
+logic  G  [ 7,521 
+
+this  commitment 
+
+and  a  logic 
+
+is  the  logic 
+
+consistency 
+
+the  modal 
+
+this  point 
+
+in  which 
+
+reasoning 
+
+logic  G. 
+
+Let  us  consider  again  the  previous  example  and  say  that  T[  C]  is  a  theory  in  which  a 
+
+context  C  occurs  as  a  parameter,  That  is,  T[C] 
+e.g.,  sentences  of  the  form: 
+
+is  a  theory  in  which  one  can  represent, 
+
+(C  --f  (vxRED(X) 
+
++  ONTABLE(x 
+
+or 
+
+(C  A ONTABLE(U 
+
+Then,  what  we  want  to  get  from  T(C) 
+
+are  the  following  explicit  definitions: 
+
+Al  f 
+
+(b’x  ONTABLE 
+
+=  RED(x)  V  x  =  a), 
+
+A2 E  (tin  ONTABLE 
+
+z  RED(X)  V  x  =  b). 
+
+Now,  such  sentences  Al  and  A2  exist  if  we  can  say  that  there  is  a  logic  A  in  which,  by 
+substituting 
+
+either  Al  or  42  for  C  in  T[C],  we  get  the  following 
+
+theorems: 
+
+that  if  such  fixed  points  are  expressible 
+
+in  the  logic  A  then  the  Ai 
+
+We  ask,  furthermore, 
+are  computable 
+The  problem 
+
+from  Z’[ C]  itself. 
+is  to  determine 
+
+the  restrictions 
+
+that  has  to  be  imposed  so  as  to  avoid 
+the 
+
+and  in  [34] 
+
+language.  Both  in  [37,38] 
+
+the  obvious  paradoxes  of  a  self-referential 
+difficulties  of  dealing  with  a  first-order  self-referential 
+language  are  thoroughly  analyzed. 
+In  particular  Montague  points  out  the  problems  concerned  with  substitution;  we  discuss 
+this  point  in  the  last  section  of  this  paper. 
+to  circumvent 
+
+through  a  modal 
+this  was  in  fact  the  claim  of  Montague.  We  show  that  there  is  a  suitable  modal 
+
+the  difficulties  arising  from  self-reference 
+
+It  is  possible 
+
+logic; 
+
+174 
+
+G.  Amati  et  al./Art@cial 
+
+intelligence 
+
+93  (1997)  169-199 
+
+in  which 
+
+logic 
+fully  managed 
+therefore, 
+of  this  paper 
+in  which  commonsense 
+obtainable  via  fixed  point  equations. 
+
+just  an  initial  way  to  inquire 
+is  the  introduction 
+
+statements 
+
+fixed  points  of  predicates 
+
+are  definable, 
+
+so  that  self-reference 
+
+in  the  previously  described  sense.  The  modal  approach 
+
+to  the  problem 
+
+into  interesting 
+of  a  self-referential 
+are  expressible 
+
+solutions.  The  main  contribution 
+language, 
+
+through  modal 
+
+and  in  which  explicit  definitions 
+
+can  be 
+is, 
+
+logic, 
+are 
+
+More  precisely,  we  show  how  one  can  deal  with  a  self-referential 
+
+is  implicitly 
+
+is,  indeed,  what  we  have  in  mind: 
+
+the  context 
+which 
+generally, 
+is  the  minimal 
+the  theory.  To  show  this,  let  us  consider  a  default  rule  y 
+the  following 
+parameter  denoting 
+
+the  context  and  consider 
+
+the  context 
+
+the  context 
+
+a  concept, 
+
+defining 
+
+in  the  case  of  a  nonmonotonic 
+is  its  explicit  definition 
+
+set  of  formulae  whose  consequences 
+
+in  defauh 
+sentences: 
+
+language  and  that 
+theory 
+and,  more 
+are  true  in 
+let  C  be  a 
+
+logic, 
+
+(i)  “cy is  provable  with  respect 
+(ii)  “p  is  consistent  with  respect 
+Observe 
+
+to  the  context  C”  is  identified  with  q l(C  -+  crf . 
+to  the  context  C”  is  identified  with  El 0  (C  A /3). 
+and 
+
+the  notion  of  provability 
+
+the  composite  operator  00 
+
+that  we  use  the  modal  operator  Cl  to  interpret 
+to  interpret 
+
+the  notion  of  consistency. 
+
+There  are  many  Iogics  in  which  consistency 
+the  dual  of  &--just 
+
+consider 
+
+and  provability 
+
+intuitionistic 
+
+logic 
+
+are  not  dual,  likewise  El 
+[3].  Here  we  are  man- 
+
+the  meaning  of  the  notions  of  consistency 
+
+these  notions  are  interpreted  with  respect 
+
+and  provability 
+to  a  context, 
+
+in  nomnonotonic 
+they  do  not  enjoy 
+
+is  not  always 
+ufacturing 
+logic.  Since 
+duahty  as  in  classical 
+
+logic. 
+We  define  a  sentence  E(C) 
+
+sentence  A,  not  cont~ning  C,  that  explicitly  defines  C  in  A,  with  A  the  modal 
+KD42, 
+
+logic  built  from  the  axiom  schemata  K,  D,  4  and  Z, 
+
+i.e.,  the  modal 
+
+capturing 
+
+(i)  and  (ii)  and  such  that  there  exists  a  diagonal 
+logic 
+
+tK~4z  A 3  E(A). 
+
+(4) 
+
+The  above 
+the  relativized 
+framework,  where 
+we  apply 
+theory 
+
+[ 391: 
+
+this  result 
+
+context,  of  explicit  definability 
+
+fixed  point  equation  provides  a  generalization,  which  correctly  captures 
+for  theories  expressed 
+in  this  Iogicaf 
+to  define  concepts.  Specifically,  when 
+is  a  default 
+
+theories  may  be  used 
+
+theories  we  show 
+
+that,  whenever 
+
+to  default 
+
+these 
+
+(W; D) 
+
+km42 
+
+A  =  E(A) 
+
+iff 
+
+(51 
+
+A*  provides  an  extension  of  the  default 
+
+theory  (FV D) 
+
+where  *  is  an  effective  mapping 
+
+from  the  language  of  A  to  that  of  (FY D).  3 
+
+Example  1.  Let  us  consider  again 
+(W, D)  is  used  to  weakly 
+
+the  foregoing  example, 
+implicitly  define  the  predicate  ONTABLE: 
+
+in  which 
+
+the  default 
+
+theory 
+
+w  =  {‘dx  RED(x) 
+
+--f  ONTABLE(  X) , ONTABLE(  a)  V  ONTABLE(  b)  ), 
+
+o By  adding 
+
+to  KD4Z 
+
+the  modal  schema  5,  the  above  result  does  no  longer  hold. 
+
+C.  Amati 
+
+et  al./Artijcial 
+
+Intelligence 
+
+93  (1997) 
+
+169-199 
+
+175 
+
+D= 
+
+: -ONTABLE( 
+
+: TONTABLE( 
+
+:ONTABLE(x)  -+RED(x) 
+
+ONTABLE 
+
+'  ONTABLE 
+
+' O~TABLE(X)~~D(X) 
+
+' 
+
+Now,  let  (W  D)  (C)  be  the  selfreferential 
+the  context  C  explicit,  as  a  designator.  According 
+have  the  following 
+
+sentence,  along 
+
+from  (W, D),  by  making 
+to  the  results  of  this  paper,  we  will 
+introduced  above: 
+
+the  lines  of  (i)  and  (ii) 
+
+sentence,  obtained 
+
+[OCr\G(tjx 
+
+RED(X)  --+ONTABLE(X)  A(oNTABLE(~) 
+
+V~~TABLE(~))~ 
+
+i\ 
+
+[o(c  --+ ~-)A~~(CA~ONTABLE(U))+[?(C 
+
+--+ONTABLE(bf)] 
+
+[n(c  -+ T)  AOO(CA 
+[lJ(C 
+
+TONTABLE( 
+-+  T)  A  q O(C  ~\V~(ONTABLE(X)  -+m3~(X)))+ 
+-t~E~(x)ff]]. 
+
+q (C  --+ (V~~NTABLE(X~ 
+
+-n(c 
+
+-iONTABLE(a 
+
+A 
+
+A 
+
+The  technical  meaning  of  this  self-referential 
+Let  us  call  E(C) 
+it  is  possible 
+namely 
+
+to  prove,  using 
+
+the  boxed  sentence  q l(W, D)(C).  By  suitably 
+
+sentence  will  be  made  clear  in  the  paper. 
+the  parameter  C 
+treating 
+
+the  techniques  of  this  paper,  that  there  are  two  sentences, 
+
+A,  =OEl( 
+
+~D{~)~(~NTABLE(~)V~~ABLE(~)) 
+
+A 
+
+(VX  RED(x)  -+ONTABLE(x)) 
+
+A 
+
+(VXONTABLE(X) 
+
++mD(x))) 
+
+A9, 
+
+and 
+
+A2  z  00 
+
+(~D(~)A(~NTABLE(u)~~~ABLE(~)~ 
+
+A 
+
+(vxRED(x)  --+ ONTABLE( 
+
+A 
+
+(VX~NTABLE(X) 
+
+IRED(. 
+
+A q’, 
+
+such  that 
+
+for  i  =  1,2  where  q  and  q’  in  Al  and  A2  are  the  “consistency 
+are  of  the  form  Cl 0  a,  and  are  later  eliminated  by  theoremhood, 
+from  subformulae 
+C  in  E(C). 
+the  fact  that  both  At  and  42  are  fixed  points  of  E  in  the  modal 
+
+In  other  words,  both  A,  and  A2 are  ~uivalent 
+
+denoting  consistency, 
+
+part”  of  the  context, 
+
+i.e., 
+thus  delivering  Ai  free 
+for 
+from 
+
+substituted 
+
+to  C,  which  is  obtained 
+logic  KD42. 
+
+and  Al  and  62  are,  respectively, 
+
+By  mapping 
+
+the  formula  Al  into  the  language  of  (K  D)  we  get 
+
+A;  =  (ONTABLE 
+
+A\~x(RED(x) 
+
+SONTABLE(~ 
+
+which, 
+
+in  its  turn, 
+
+is  equivalent 
+
+to 
+
+V~(~NTA~~LE(X)  =(m~(x)vx=b)) 
+
+ARED( 
+
+(6) 
+
+(7) 
+
+Therefore  we  get  an  explicit  definition  out  of  the  default  theory.  Observe  that  the  sentence 
+we  have  obtained 
+
+is  free  from  disjunctions. 
+
+the  fixed  point 
+
+through 
+
+The  rest  of  the  paper 
+
+is  organized 
+
+as  follows. 
+
+preliminaries 
+
+on  the  language. 
+
+In  Section  3  we  present 
+
+In  the  next  section  we  give  some 
+and  a 
+
+logic  KD4Z 
+
+the  modal 
+
+to  perform  proofs.  More  details  can  be  found  in  [ 1,2],  In  Section  4  we 
+
+the  results  on  definability 
+
+in  modal 
+to  quantified  modal 
+
+tableau  method 
+present 
+and  fixed  points 
+extensions 
+be  computed  by  a  self-referential 
+in  Section  6.  Section  7  closes 
+modal  approaches 
+proofs  of  the  main 
+
+of  fixed  points 
+
+in  KD4Z,  we  discuss  self-reference 
+
+logic,  notably 
+
+the  relation  with  the  provability 
+logic.  In  Section  5  we  prove  that  Reiter  extensions 
+
+logic  G  and 
+can 
+and  some  examples  are  provided 
+and  comparison  with 
+the 
+
+sentence 
+
+in  KD4Z 
+the  presentation  with  a  discussion 
+
+to  nonmonotonic 
+theorems.  Other  proofs  can  be  found 
+
+in  [ 1,2]. 
+
+reasoning.  Finally  we  add  an  appendix  with 
+
+2.  Preliminaries 
+
+We  deal  with  propositional  modal 
+
+logic  at  the  end  of  Section  4.  We  refer 
+logic.  A  propositional  modal 
+language  L  is  defined  using  a  set  of  propositional 
+whose  elements  are  denoted  p,  4,.  . . and  a  unary  operator  17. The  well-formed 
+of  the  modal 
+
+language  are  given  by  the  rule 
+
+the  extension 
+
+to  first-order 
+to  [ 171  for  the  basics  of  modal 
+letters  U 
+formulae 
+
+logic,  we  shall  address 
+the  reader 
+
+and 
+
+In  general, 
+
+abbreviations 
+
+T  a  tautology 
+
+and 
+apply.  We  use  both 
+the 
+letters  of  the  Latin  alphabet  and  upper-case  Greek  letters  to  denote  sets. 
+
+where  p  ranges  over  elements  of  lir,  i  denotes  a  contraddiction, 
+the  usual  classical 
+implication 
+for  disjunction 
+lower-case  Greek  letters  and  upper-case  Latin  letters  to  denote  sentences  and  reserve 
+last  upper-case 
+Structures  are  denoted  by  Gothic 
+is  interpreted 
+if  0 
+is  alethic  (from 
+
+the  modal 
+context 
+like 
+e~~~~e~~c, where  q is  interpreted  either  as  “knowledge”  or  “belief”,  or  ~e~~~~~~,  where 
+as  “always”.  Other  meanings  of  El  are  the  dynamic  one,  that  is,  “true 
+Cl  is  interpreted 
+to  be” 
+after  every  execution  of  an  action”, 
+and  finaliy 
+similarly 
+operator 
+
+to  the  logic  of  arithmetic.  This  is,  indeed, 
+in  this  paper. 
+
+letters. 
+in  the  standard  way  as  “necessity” 
+
+of  [?  is  “it  is  provable”, 
+the  intended  meaning  of  the  modal 
+
+the  deontic  one,  in  which  0  means  “ought 
+
+the  Greek  “true”).  There  are  many  other 
+
+the  default  one,  where  a  suitable 
+
+then 
+interpretations, 
+
+interpretation 
+
+A  dual  operator  of  Cl  is  defined  by  OA  = ~0 
+We  first  introduce 
+
+some  basic  notions  on  Kripke  semantics 
+
+-A. 
+
+is  a  pair  3  =  (W, R)  where  W  is  a  nonempty 
+
+frame 
+W.  A  model  is  a  pair  Iu  =  (5,  I),  where  5  is  a  frame,  and  I  is  a  function  assigning 
+subset  I(p) 
+The  notation  Q,  w  /== ‘p is  defined 
+
+of  W  to  each  propositional 
+
+set  and  R  is  a  binary 
+
+letter  p.  The  function 
+
+I  is  called  a  valuation. 
+
+inductively: 
+
+for  modal  logic.  A  Kripke 
+relation  on 
+a 
+
+U,wj=p 
+
+iff  wEI( 
+
+53, w  /== -9 
+
+iff 
+
+not  53, w  /=  40, 
+
+U,W+~DA$ 
+
+iff 
+
+IU,w~~aandU,w~~, 
+
+U,  w  t_  q p 
+
+iff 
+
+for  all  u  E  W,  with  wRu,  Iu, u  k  qa. 
+
+G. Amati et al. /Artijicial Intelligence 93 (I 997) 169-l 99 
+
+111 
+
+that  the  formula  A  is  true  at  world 
+If  2l  =  (K  R,  I)  is  a  model 
+(point)  w  in  the  model  2l;  A  is  true  in  a  model  Q  (‘u  +  A) 
+if  it  is  true  at  all  worlds 
+in  !2l. A  modal  formula  A  is  valid  on  a  frame  5  if  A  is  true  at  every  world  of  5,  under 
+every  valuation. 
+
+then  U,  w  k  A  means 
+
+Most  of  the  research 
+
+in  commonsense 
+
+self-reference 
+A  normal  modal 
+that  extends  propositional 
+
+takes  into  account  normal  modal 
+
+logic  is  a  collection  of  well-formed 
+
+logic  with  the  axiom  schema 
+
+reasoning  dealing  with  knowledge,  belief  and 
+[ 28,30,36,38,42,_53,55] 
+) 
+formulae  of  the  modal  language  C 
+
+logics 
+
+(e.g. 
+
+K:  q A/\O(A-+B) 
+
++OB 
+
+and  it  is  closed  under 
+
+the  rules  of: 
+
+Necessitation 
+
+: 
+
+A/OA; 
+
+Uniform  Substitution 
+
+:  A [p]  /A  [p/B] 
+
+, 
+
+where  p,  A,  B  E  C,  p  is  atomic  and  B  is  uniformly  substituted 
+formula  A [p/B] 
+The  following 
+
+is  a  substitution 
+list  includes  some  of  the  better  known  axiom  schemata 
+
+instance  of  A. 
+
+for  p  in  A.  The  resulting 
+
+in  modal 
+
+logic, 
+
+together  with  their  traditional  names: 
+
+D:  q C,O -+  09 
+4: 
+(cid:144)~~00$0 
+T:  q +P 
+5:  OOp+Op 
+B:  C)Op+q 
+2-T:  q (ap+_t) 
+L:  q (Oq  A  cp -+  +)  V  q (Of+G A  I++ -+  p) 
+(Oo~~rCI)-fCXrpv0$), 
+
+-(OOp+-tp9) 
+
+F: 
+x:  q cllp+nqJ 
+w:  q (tlcp  *  cp) --+ clp 
+
+(seriality  ), 
+
+(transitivity), 
+
+(reflexivity), 
+
+(Euclideanness) 
+
+, 
+
+( symmetry), 
+
+(discreteness), 
+
+(linearity), 
+
+(density), 
+
+(finiteness). 
+
+If  S,,  .  . , S,, are  schemata 
+
+then  KS,  . . . S,  is  the  normal  modal 
+
+logic  generated  by 
+SI ,  .  , S,,. A  sentence  A  is  provable 
+in  the  logic  A  =  KS1  . . . S,,,, denoted  F,,  A  if  it  has 
+, S,,.  That  is,  there  is  a  sequence  of  formulae  Ao, . . . , A,,  = A,  and 
+a  proof  from  K,  S1 , . . 
+for  each  i,  i  <  n,  either  Ai  is  a  propositional 
+. , S,,,, 
+or  it  has  been  obtained  by  Modus  Ponens  or  by  Necessitation.  The  set  of  theorems  of 
+n  coincides  with  the  set  of  formulae 
+
+in  n  that  have  a  proof  from  K,  Sl,  . . . , S,,. 
+
+tautology  or  is  an  instance  of  K,  S1 , 
+
+Let  F  be  a  class  of  frames  (or  models),  a  normal  modal  logic  A  is  sound  with  respect 
+to  IF iff  for  all  formulae  cp and  all  Q,  U  E  F,  1~  40 implies  U  /=  p.  If  A  is  sound  with 
+respect 
+
+to  IF then  F  is  said  to  be  a  class  of frames 
+
+(or  models) 
+
+for  A. 
+
+A  normal  modal 
+
+logic  A  is  complete  with  respect 
+
+to  F  iff  for  any  set  of  formulae 
+
+r  U  {p}, 
+characterized 
+frames, 
+
+i.e.,  R  =  W  x  W. 
+
+if  r  kp  cp then  r  En  ‘p. Hence  A  is  said  to  be  characterized  by  F.  E.g.  KD  is 
+by  the  class  of  serial  frames,  S5  is  characterized  by  the  class  of  universal 
+
+17X 
+
+G.  Amati  et  al./Arh’jicial 
+
+Intelligence  93  (I 997)  169-199 
+
+3.  The  modal  logic  KD4Z 
+
+The  modal 
+extending  KD4 
+(i.e., 
+axiom  Z,  discreteness: 
+
+logic  we  are  interested 
+
+in  is  KD42,  which 
+
+the  normal  modal 
+
+logic  with  transitivity 
+
+is  the  normal  modal 
+
+logic 
+and  seriality)  with  the 
+
+z:  q (O$C +  $0) - 
+
+(O[L!~ici$9). 
+
+In 
+
+the  sequel  we  show 
+
+that  KD4Z 
+
+reasoning.  We  shall  illustrate 
+
+commonsense 
+theoretic  methods.  The  schema  2  is  widely  discussed 
+in  [ 1,2]. 
+
+is  indeed  a  good 
+
+in 
+the  logic  and  give  both  semantics  and  proof 
+in  [ 171,  more  details  can  be  found 
+
+for  self-reference 
+
+logic 
+
+3. i.  KD4Z  and  its  semantics 
+
+elements. 
+is  linear  or  connected 
+for  no  14 is  uRu) 
+
+We  now  introduce  some  useful  notions.  Given  a  set  T  of  worlds,  with  U, u  E  T,  if  uRv 
+and  for  no  t  is  uRtRv 
+then  u  is  called  predecessor  of  v  and  v  stdccessor  of  u.  Note  that 
+both  a  successor  or  a  predecessor  of  a  world  may  not  be  unique  and  a  reflexive  world 
+has  no  predecessor  or  successor  at  all.  A  world  w  E  T  is  called  a first  element  in  T  if  it 
+has  no  preceding 
+
+A  frame 
+(i.e., 
+
+frame 
+no  infinite  chains  of  worlds  uRtl  Rt2 . . . Rt,R. 
+all  u  and  u’, z&.  We  recall  from  [ZS]  that  the  concatenation  RI  ~3 Rz  of  two  relations 
+Rt  &  T  x  T  and  R2  c  S  x  S  is  the  relation  RI  U  (T  x  S)  U  Rz. 
+
+if  for  all  u  and  v  either  uRv  or  vRu;  an  irreflexive 
+if  for  all  worlds  u  and  v,  with  uRv 
+if  for 
+
+. . RL’ exist;  a  frame 
+
+is  weakly  discrete 
+
+is  universal 
+
+Given 
+
+two  Kripke  frames  51  =  (T, RI)  and  $2  =  (S, Rz),  where  T  n  S  = 0,  the  Kripke 
+is  denoted  by 
+
+of  51  and  52  and 
+
+the  concatenation 
+
+frame  {T  u  S, RI  CQ R2)  is  called 
+$1  i;,\& 
+
+(see[28]). 
+
+In  a  frame 
+
+(W; R)  a  cluster 
+
+to  the 
+that  for  all  u  and  u  from  V,  uRv.  We  say  that  a  frame  has  the  terminal  cluster 
+(compare 
+if  it  is  the  concatenation 
+
+is  a  subset  V  of  W  that  is  maximal  with  respect 
+
+property 
+property 
+with  condition  2  of  Definition  9.17  for  cluster-closed 
+
+is  a  universal 
+class  of  models 
+
+frame 
+in  [ 281). 
+
+of  31  0  52  where  & 
+
+A  frame  5  is  said  to  be  well-capped  or  to  have  thejfinite  depth  property 
+
+if  no  ascending 
+
+chain  of  worlds  ~vt R  .  . . Rw,  Rwn+i  . . . exists.  A  frame  3  is  said  to  be  of  depth  n  if  no 
+(n  +  1 )-chain  of  worlds  wr R  . . . Rw,Rw,,+l 
+
+exists. 
+theorem  gives  the  characterizations 
+
+of  KD42. 
+
+The  following 
+
+Theorem  2  (see  [ I]  ) .  KD4Z 
+
+is  complete  with  respect  to  each  of  the  following: 
+
+l  The  class  6fiii  o~~nite  models  whose  frames  are  5  0  V  where  5  is  tra~siti~~e, 
+
+it-reflexive  with  a first  element  and  V  is  a  cluster. 
+
+l  The  class  CZJ of  models  whose  frames  are  5  0  V  where  5  is  transitive, 
+
+irrejexive, 
+
+well-capped  and  V  is  a  cluster. 
+
+*  The  class  C5 of  models  whose  frames  are  5  0  V  where  3  is  transitive, 
+
+irrejlexive, 
+
+well-carped,  V  is  ~sorn~r~h~c to  (w,  <). 
+
+The  decidability 
+
+of  KD4Z 
+
+follows  from  the  above  theorem. 
+
+G.  Amati  et  d/Artijicial 
+
+Intelligence 
+
+93  (I  997)  169-199 
+
+179 
+
+) 
+
+Fig.  I.  A  KDlZ  model 
+
+respect 
+catenation 
+cluster.  KD4LZ 
+
+By  adding 
+
+the  linearity 
+
+axiom  L  to  KD4Z  we  have  that  KD4LZ 
+
+to  the  class  B  of  balloons 
+
+[ 171,  where 
+
+of  finite, 
+
+linear, 
+
+irreflexive  and  with  a  first  element 
+
+is  complete  with 
+the  frames  are  the  results  of  the  con- 
+frames  with  a  terminal 
+
+is  also  complete  with  respect 
+Note  that  a  frame  with  no  ascending  chain  is  not  necessarily 
+
+to  the  frame  of  “integers” 
+
+(w,  <). 
+finite:  in  fact  a  world  w 
+(or  predecessors)  wi,  i  <  6,  where  6  is  any 
+
+may  have  an  infinite  number  of  successors 
+cardinal.  The  set  of  all  successors  of  a  world  is  called  a  pseudo-cluster. 
+
+Fig.  1  gives  an  intuitive  picture  of  the  structure  of  the  frames  for  KD4Z. 
+
+3.2.  Tableaux  for  KD4Z 
+
+We  introduce 
+
+in  the  following 
+
+semantic 
+
+tableaux 
+
+for  the  logic  KD4Z,  a  proof  method 
+in  the  logic. 
+
+some  derivation 
+
+useful  when  dealing  with  examples 
+
+involving 
+
+Semantic 
+
+tableaux  are  used  as  refutation 
+
+rules  that  preserve  satisfiability 
+of  modal 
+Tp  or  Fqo,  where  the  prefixes  T  and  F  intuitively 
+
+tableaux  given 
+
+systems.  They  are  built  by  means  of  a  set  of 
+of  sets  of  formulae.  We  make  use  of  the  signed  version 
+in  the  form 
+
+if  it  is  presented 
+
+in  [ 131.  A  formula  cp is  signed 
+
+Each  world  in  a  KD4Z  model 
+
+to  the  terminal 
+cluster  V  and,  as  tableaux  build  a  countermodel,  we  have  to  be  able  to  end  up  in  the 
+cluster,  whichever  path  we  are  following, 
+
+after  a  given  number  of  steps. 
+
+refer  to  true  and  false. 
+(5,  R,  I)  can  “see”  a  world  belonging 
+
+In  the  following 
+
+F  0  p,  and  the  necessity  force 
+
+Modal  expansion 
+
+the  possible  force 
+
+formulae  are  signed  formulae  of  the  form  T  0  Q, 
+formulae  are  signed  formulae  of  the  form  T  q a,  F  0  p. 
+is  briefly  denoted  by 
+
+rules  are  stated  as  follows,  where  set  union 
+
+the  comma, 
+
+in  the  obvious  sense. 
+
+3.3.  Tableau  rules 
+
+Let 
+
+r~={FUOpjFOOpE~}U{TO~~jTO~pE~)U 
+
+{Tp,TCIp 
+
+ITO~E~}U{@,FOP 
+
+IFOpa-}. 
+
+Let 
+
+180 
+
+G.  Amati  et  al./Artijiciut 
+
+Intelligence  93  (1997)  169-199 
+
+FO: 
+
+FOP 
+- 
+FDOP' 
+
+The  above  rules  for  FO)  and  TO)  are obtained 
+from  the  axiom  Z  in  the  form  -10  cy -+ 
+0 (El& A -~a)  V 7  0  Elcr  together  with  the  KD4Z  theorem  q 0  cy -+  (cid:144)1  0  ty iz Oa  capturing 
+both  transitivity 
+
+and  seriality. 
+
+If  r 
+
+is  a  set  of  signed  formulae,  a  KD4Z 
+by  r  and  every  non-root  node  is  obtained 
+by  means  of  the  application  of  an  expansion 
+is  closed  if  both  T(o and  FC+Y occur 
+in  f?;  otherwise 
+if  T_L or  FT  occurs 
+exist  a  model  and  a  world  w  such  that  w  satisfies 
+occurring 
+open  branch 
+A  tableau 
+
+in  B.  A  tableau 
+is  satisfiable, 
+is  closed 
+
+is  satisfiable 
+a  closed  branch 
+
+is  a  tree  whose  root  is  labeled 
+tableau  for  r 
+from  a  preceding  node  in  the  same  branch 
+rule  of  the  logic.  A  branch  B  of  a  tableau 
+in  some  node  of  8,  for  some  signed  formula  40, or 
+if  there 
+of  all  the  formulae 
+is  satisfiable.  An 
+
+it  is  called  open.  A  branch  B  is  satisfiable 
+the  conjunction 
+
+iff  all  its  branches  are  closed, 
+
+if  some  branch  of  the  tableau 
+
+is  unsatisfiable. 
+
+isfiable.  A  KD4Z 
+is  a  closed  KD4Z 
+tableau  refutation  of  r 
+refutation  of  Fu,  is  a  tableau  proof  of  C,U. Hence  by  a  KD4Z 
+mean  a  closed  KD4Z 
+
+tableau  whose  root  node  is  labeled  by  Fp. 
+
+i.e.,  if  all  its  branches  are  unsat- 
+for  r.  A  tableau 
+tableau  proof  for  9  we 
+
+tableau 
+
+Theoorem  3  (Soundness). 
+models. 
+
+Theorem  4  (Completeness). 
+tableau  proof 
+
+rf  p  has  a  KD4Z  tableau  proof  then  rp is  valid in all  KD4Z 
+
+lfq 
+
+is  valid in all the  KD4Z  models,  then  cp has a  KD4.Z 
+
+The  above 
+completeness 
+details  see  [ 21. 
+
+theorems  have  fairly  classical  proofs  along  the  lines  of  [ 131;  in  particular, 
+of  a  generated  model.  For 
+the  construction 
+exploits  both  filtration 
+
+and 
+
+4.  Self-reference 
+
+in  modal  logic 
+
+In  the  following  we  give  the  technical  details  on  the  de~nability  of  fixed  points  in  the 
+in 
+
+logic  KD4Z;  we  shall  discuss 
+
+it  with  those  established 
+
+this  result  and  compare 
+
+modal 
+
+G. Amati et al. /Artificial Intelligence 93 (1997)  169-199 
+
+181 
+
+provability 
+to  quantified  modal 
+
+logic. 
+
+logic  G  in  the  next  section.  We  shall  also  address 
+
+the  problem  of  extensions 
+
+4.1.  Definability  ofjixed  points  in  KD4Z 
+
+A  modal  sentence  with  occurrences  of  a  propositional 
+
+variable  p  are  in  the  scope  of  some  modal  operator.  E(p) 
+
+or  C(p),  while  E(p) 
+
+B(p) 
+propositional 
+boxed  sentence.  We  may  use  B(  DC(p)) 
+result  of  uniformly 
+obtained  by  uniformly 
+q (p  ---) r)  and  p  denotes 
+in  E(p)  =  q (p  +  y)  gives  q (O(crAp) 
+i.e.,  p  denotes 
+the  theory 
+
+substituting  UC(p) 
+substituting 
+
+instead  of  E(p) 
+
+variable  p  will  be  denoted  by 
+denotes  any  modal  sentence  where  all  occurrences  of  the 
+is  called  a 
+is  the 
+the  formula 
+for  q  in  B(q).  By  E(A)  we  denote 
+is 
+if  E(p) 
+.  For  example 
+then  the  substitution  of  q ( LY A /I)  for  p 
+theory, 
+in  which 
+
++  y).  p  is,  thus,  used  as  a  parametric 
+
+a  formula  A  for  p  in  E(p) 
+
+returns  a  formula 
+
+for  p  in  E(p), 
+
+that  E(p) 
+
+to  denote 
+
+the  theory  which,  substituted 
+
+the  theory  q ( LY A p) 
+
+in  a  logic  JI  is  a  modal  formula  A  logically  equivalent 
+
+to 
+
+E(A), 
+
+itself  is  realised. 
+A  fixed  point  A  for  E(p) 
+that  is  th  A  =  E(A). 
+T  denotes  any  tautology. 
+We  say  that 
+(i J  a  set  ofjxed 
+
+points  @J explicitly  defines  a  modal  predicate  E  in  KD4Z  provided 
+
+tKDdZ  E(A)  =:  A 
+
+iff  A  E  @, 
+
+(ii)  E(p) 
+
+is  an  implicit  consistency  predicate  provided 
+
+kKD4Z 
+
+E(P) 
+
+--+  0 
+
+0  P. 
+
+(8) 
+
+(9) 
+
+By  suitably  modifying 
+any  implicit  consistency 
+of  the  form  IX(p) 
+points 
+
+in  KD4Z. 
+
+some  of  the  proofs  reported 
+
+predicate 
+
+is  definable 
+
+we  are  able  to  characterize, 
+
+in  KD4Z.  Furthermore, 
+
+in  [48],  we  are  able  to  prove  that 
+for  a  predicate 
+all  fixed 
+
+up  to  logical  equivalences, 
+
+Theorem  5  (Definability 
+
+of  predicates  of  the  form  UC(p) 
+
+).  Let  E(p)  =  IX(p), 
+
+with 
+
+E(p) 
+
+an  implicit  consistency  predicate.  Then  q C(  T) 
+
+is  a jixed  point.  That  is, 
+
+t~~4z 
+
+IX(T) 
+
+=  q C(OC(T)). 
+
+The  above 
+solutions.  That 
+condition 
+this  condition 
+discussion 
+
+(9), 
+
+in  the  next  section). 
+
+theorem,  whose  proof  is  in  Appendix  A,  states  the  existence  of  consistent 
+predicate  has  a  fixed  point.  The  above 
+In  other  words,  the  effect  of 
+the 
+
+is,  any 
+is  essential 
+in  the  logic  KD4Z 
+
+implicit  definability. 
+is  to  withdraw  uniqueness 
+
+of  fixed  points 
+
+consistency 
+
+to  weaken 
+
+implicit 
+
+(see 
+
+Example  6.  Let  E(p)  =  UC(p) 
+an  implicit  consistency 
+
+predicate.  q lC( T) 
+
+is  q (O  0  A  +  q A). 
+
+=  q ((0  0  (p  A  A)  +  q l(p  --f  A))  A  Op).  E(p) 
+
+is 
+
+182 
+
+G.  Amnti  et  aL/Arti’cial 
+
+Intelligence 
+
+93  (1997)  169-199 
+
+We  now  provide  a  representation 
+
+theorem 
+
+for  fixed  points 
+
+in  the  restricted  hypothesis 
+
+that  E(p) 
+is  of  the  form  UC(p). 
+lattice  of  the  fixed  points  of  E(p),  while 
+lJOi/\p).Infact: 
+
+First,  the  fixed  point  q iC( T)  is  the  top  element 
+l-~odz 
+is  the  bottom  element 
+
+(being 
+
+i 
+
+in  the 
+i  = 
+
+Theorem  7  (Existence 
+q lC( T)  A rfor 
+
+some  y,  that  is  FKDJZ 7  +  q C(  T). 
+
+of  the  maximum). 
+
+Every  fixed  point  7  of  UC(p) 
+
+is  of the form 
+
+In  conclusion.  we  have: 
+
+Theorem  8  (Characterization 
+E(p)  = UC(p),  with  E(p)  an  implicit  consistent  predicate, 
+equivalent 
+
+to  a formula  of  the  form  UC(T)  A 0  0 y. 
+
+of  the  structure  of  fixed  points). 
+
+7 
+
+is  a  fixed  point  of 
+is  logically 
+
+if  and  only  if  I 
+
+The  above  theorems,  whose  proofs  can  be  found  in  Appendix  A,  show  that  whenever 
+is  finite  then  a  finite  set  @ of  fixed  points,  of  an  implicit  consistency  pred- 
+is  generated.  Of  course  @  is  finite,  up  to  logical  equivalence.  Furthermore 
+
+the  language 
+icate  E(p), 
+@  is  partially  ordered  by  the  t~odz 
+
+relation  as  follows: 
+
+B  <  A 
+
+iff 
+
+t~o4.z  B  +  A. 
+
+(10) 
+
+Example  9.  Let  E(p)  =  q ( (0  0  (p  A  A)  +  q l(p  4  A))  A  Op),  as  in  Example  6. 
+E  @. Observe  also  that  q (UOA  +  CIA)  is 
+Then,  OEi~A,ClOA,Cl(0~A 
+induced  by 
+the  top  element  and  i 
+
+is  the  bottom  element,  with  respect 
+
+to  the  ordering 
+
++  q A),I 
+
+(10). 
+
+It  is  also  worth  noting 
+
+that  elements 
+
+in  @ may  be  orthogonal 
+
+that  is:  k~odz  -(Al  AA2) 
+
+and  Al,Az  E  @. 
+
+4.2.  A  discussion  on  provability, 
+
+consistency  and  the  logic  G 
+
+logic  where  modalities 
+
+and  “consistent” 
+
+[4,7,48,52]. 
+
+area  of  pure 
+
+is  a  well-established 
+
+the  notions  of  “provable” 
+
+There 
+to  interpret 
+arithmetic 
+a  first-order 
+provability 
+modal  counterpart 
+formulae  as  stated  by  the  following  condition: 
+
+of  the  Diagonalization 
+
+is  interpreted 
+
+“provability” 
+
+predicate 
+
+Following  Giidel’s  procedure 
+
+for  numbering 
+
+can  be  constructed.  Once 
+
+as  a  modal  operator  0,  according 
+
+lemma  holds 
+
+have  been  used 
+in  PA,  the  first-order  Peano 
+theorems  of  PA, 
+the  unary  predicate  of 
+the 
+set  of  modal 
+
+to  Solovay’s 
+for  a  restricted 
+
+translation, 
+
+p  obeys 
+
+the  diagonalization 
+
+restriction 
+
+(DR) 
+
+in  E(p) 
+
+iff  p  is  boxed  in  E(p). 
+
+Smorynski, 
+ducing  suitable  extensions  of  the  basic  modal  logic  K4: 
+
+in  [ 481,  postulates 
+
+the  conditions 
+
+for  the  existence  of  fixed  points  by  intro- 
+
+l  DOL  is  the  extension  of  K4  such  that  for  each  formula  E(p,  41,. 
+
+, q,,),  p  obeys 
+DR  and  a  new  operator  SE( 41,  . . . , q,,)  is  added  together  with  the  following  axiom 
+schema: 
+
+G. Amati  et  al./Art$icial  Intelligence 93 (1997)  169-199 
+
+~E(BI>...  ,B,)  =  E(SE(BI,...,B,),BI,...,B,). 
+
+183 
+
+(11) 
+
+l  DIL  is  the  extension  of  K4  obtained  by  adding 
+
+the  following  diagonalization 
+
+rule: 
+
+DiR. 
+
+1~1 ((E(P) 
+
+=  P)  +  A) 
+A 
+
+where  p  obeys  DR,  it  does  not  occur  in  A,  and  [.~]a  =  q cu A (Y. 
+
+l  G  is  the  extension  of  K4  with  the  axiom: 
+
+Lob: 
+
+0  (Oa  +  cr)  4  q a. 
+
+On  the  basis  of  the  above  extensions 
+
+the  following  holds: 
+
+EDOL  A 
+
+iff 
+
+tn,L  A 
+
+iff 
+
+tG  A. 
+
+The  proof  of  the  above  result 
+implicitly 
+following  holds. 
+
+and  explicitly  definable 
+
+(see 
+
+[48]  )  amounts 
+
+to  the  proof 
+
+in  G.  In  fact,  denoting  H(p)  =  [s]  (E(p) 
+
+that  fixed  points  are 
+the 
+
+z  p), 
+
+l  Implicit  definability  (ID)  ofjxed  points  in  G: 
+
+ID: 
+
+tG  H(p)  A H(q)  ---t (p  =  q). 
+
+In  addition, 
+
+in  G)  it  follows: 
+from  ID,  by  the  Beth  theorem  and  DiR  (both  holding 
+l  Explicit  dejinability  (ED)  ofjixed  points  in G:  there  exists  a  sentence  A containing 
+
+all  the  variables  of  E(p)  other  than  p  and  such  that: 
+
+tcH(p) 
+tG  A =  E(A). 
+
+-(p-A)> 
+
+(12) 
+
+(ID) 
+
+theorem 
+
+[ 521,  showing 
+
+is  a  theorem  of  G  if  all  its  translations 
+
+is  to  state  uniqueness 
+
+first  completeness 
+
+i.e.,  a  modal  sentence 
+
+The  role  of  implicit  definability 
+crucial  for  the  Solovay’s 
+provability, 
+PA. On  the  other  hand,  for  this  very  reason  of  uniqueness, 
+a  theory  in  the  logic  G,  that  “a  sentence  p  is  consistent”, 
+to  the  inconsistency 
+to  mention 
+possible 
+in  fact,  for  example, 
+not  definable  when  A  is  KD4Z. 
+
+the  Giidel  sentence 
+
+of  G.  Therefore,  no  possible  self-reference 
+can  be  carried  out  in  G.  Observe 
+
+in  KD4Z.  The  role  played  by  the  implicit  consistency 
+
+t,,  cp =:  ?Pr(  [?I), 
+
+consistency, 
+
+it  is  not  possible 
+i.e.,  Op,  because 
+
+of  fixed  points  which 
+
+is 
+that  G  is  the  logic  of 
+are  theorems  of 
+to  state,  from 
+it  would  lead 
+required 
+this  is  always 
+is  thus  clear: 
+in  which  E(p)  =  7  0  p  is 
+
+that,  instead, 
+predicate 
+
+to  the  context, 
+
+On  the  other  hand  the  second  completeness 
+
+theorem  of  Solovay  shows  that  G*  is  the 
+
+modal  logic  whose  theorems  are  precisely 
+are  true 
+necessitation 
+G*  while  0  0  T  is  not  [ 7,521. 
+
+in  the  PA  standard  model,  where  G*  is  obtained 
+reflexivity, 
+
+the 
+i.e.,  q A  +  A.  Therefore  OT  is  a  theorem  of 
+
+from  G  by  dropping 
+
+rule  and  adding 
+
+those  modal  sentences  of  which  all  translations 
+
+The  upshot 
+
+and 
+is  that  in  any  logic  in  which  PA is  expressible 
+[ 341.  These 
+CIA +  A  are  incompatible,  which  has  been  in  fact  investigated  by  Montague 
+results  should  be  compared  with  the  use,  in  nonmonotonic  modal  logic,  of  the  schema  T 
+together  with  the  rule  of  necessitation. 
+
+It  seems  clear  that  none  of  these  logics  obtained 
+
+the  two  schemata 
+
+fi 
+
+can  capture  self-reference 
+
+by  these  additions 
+other  hand, 
+as  a  sign  of  a  more  expressive  power  than  G.  In  fact,  consistency 
+KD4Z. 
+
+the  failure  of  uniqueness 
+
+of  fixed  points 
+
+in  KD4.Z  should  be  interpreted 
+in 
+
+can  be  expressed 
+
+(see  Section  7  for  a  discussion).  On  the 
+
+4.3.  Self-reference  in. quanti$ed  modal  logic 
+
+is  still  characterizable 
+
+to  be  answered 
+
+A  natural  question 
+order  one,  self-reference 
+this  question 
+1331  and  by  Smorynski 
+ity  for  QG  and  some  of  his  counterexamples, 
+KD4Z. 
+
+for  the  quantized  modal 
+
+is  whether,  by  extending 
+
+the  language 
+
+in  the  appropriate  way.  An  answer 
+logic  G  (QG)  has  been  given  by  Montagna 
+
+to  a  first- 
+to 
+in 
+
+in  [49].  We  shall  discuss  Smorynski’s 
+
+results  on  definabil- 
+and  give  a  simple  case  for  quantified 
+
+Let  us  preserve 
+
+from 
+
+the  propositional 
+
+calculus 
+
+a  propositional 
+
+to  name  contexts, 
+
+and  the  modal  operators.  The  quantified  modal 
+
+we  shall  use  as  a  parameter 
+values  (T  and  I) 
+concerned  with  is  obtained  by  adding 
+an  infinite  set  of  variables  and  n-ary  predicate  symbols,  and  the  quantifiers 
+us  call  QKD4Z 
+the  extension  of  propositional  KD4Z 
+G)  with  the  instances  of  axioms  of  the  predicate  calculus 
+
+to  the  above  propositional 
+
+(respectively  QG) 
+
+the  propositional 
+
+in  the  above  defined 
+
+letter,  say  p, 
+
+that 
+connectives, 
+the  truth 
+language  Q,C  we  are 
+constructs  and  symbols 
+t’  and  3.  Let 
+(respectively 
+language. 
+
+Let  us  now  add  to  QKD4Z 
+
+(respectively  QG) 
+
+the  Barcan 
+
+formula: 
+
+B:  VJX 0  P(x)  +  q V’X P(X) 
+
+that  is  the  syntactic  counte~art 
+Barcan 
+
+formula: 
+
+of  models  with  const~t 
+
+domains.  The  converse  of  the 
+
+BC: 
+
+i7VXP(X) 
+
++vx 
+
+TIP(X) 
+
+is  derivable 
+
+[49]) 
+The  difficulty  of  definability 
+
+in  QG  (see 
+
+as  well  as  in  QKD4Z. 
+of  fixed  points 
+
+in  quantified  modal 
+
+from  the  interplay  between  variables  and  modal  operators. 
+the  ci,  notwithst~ding 
+be  pushed  against 
+to  the  definability 
+of  fixed  points. 
+among  others: 
+
+In  Smorynski 
+
+the  Barcan  formula, 
+
+the  following  counterexample 
+
+logic  stems  mainly 
+In  the  case  quantifiers  cannot 
+there  are  counterexamples 
+
+A(p)  =  ‘v’.xfU ci  P(x) 
+
+--+ O(p  +  P(x))). 
+
+to  arithmetic 
+
+is  used  by  Smorynski, 
+
+Eq.  (13) 
+respect 
+to  show  that  if  variables  are  not  bound,  with  the  Barcan 
+domains,  definability 
+
+in  particular, 
+
+to  show 
+
+fails. 
+
+interpretations.  An  example  can  be  analogously 
+
+incompleteness 
+
+for  QG  with 
+used  in  QKD4Z 
+formula  and  even  with  finite 
+
+We  illustrate 
+
+the  claim  as  follows: 
+
+Example  10.  Let  A(p)  =  Op /\b’x(U  0  P(x) 
+cluster  as  /=  P(O),P(l),P(2), 
+P(2), 
+
+and  wo  k  P(O),P( 
+
+l),+(2). 
+
+w2  /=  +(O),P(l),P(2), 
+
+-+  (p  -+  UP(n)  ) ) . Define 
+
+the  terminal 
+
+WI l= P(O),+(I), 
+
+WI + 
+
+is  given, 
+
+(13) 
+
+G. Amati  et  al./Art@cial  Intelligence 93 (1997)  169-199 
+
+185 
+
+Then 
+
+w2~.oP(o),oP(1),oP(2),ooP(o),ooP(1),noP(2), 
+
+WI ~~oPto),I?P(1),oP(2),ooP(o),ooP(l),ooP(2), 
+
+wo~~oP(o),~oP(1),oP(2),-ooP(o),ooP(1),noP(2). 
+
+Therefore  wa  p  p  where  p  =  V,x( 0  0  P(x)  +  q P(  x)  )  and  wo  k  p  E  I,  while 
+
+in 
+
+wn  the  following 
+
+are  all  satisfied: 
+
+0p~~x(00P(x) 
+
+-+  (p  --op(X))), 
+
+op  r\Vx(OUP(n) 
+
+---) (i+ 
+
+UP(X))), 
+
+Vp  A’d’x(O  0  P(X)  +  T). 
+
+Smorynski 
+counterexamples 
+(see 
+combination 
+against 
+
+discusses 
+
+also 
+
+the  cases  which,  with  the  Barcan 
+
+to  definability. 
+
+In  particular, 
+
+interpreting 
+
+formula,  do  not  offer 
+logic  SR, 
+
+the  multimodal 
+
+[48,  Chapter  41) 
+
+into  QG  +  B  it  is  possible 
+
+of  formulae  of  the  form  Qtxt 
+
+the  box,  explicit  definability 
+
+can  be  given. 
+
+to  show  that  for  any  propositional 
+. . . Qkxk 0  B,  in  which  quantifiers  are  pushed 
+
+Analogously,  we  show 
+
+the  first  substitution 
+
+modal  language, 
+the  second  substitution 
+pure  syntactical  manipulations 
+given. 
+
+lemma 
+
+that  for  some  restricted  class  of  formulae  of  the  quantified 
+lemma  holds  (FSL,  see  Appendix  A).  Then,  since 
+(SSL,  see  Appendix  A)  can  be  obtained  by  means  of 
+can  be 
+from  FSL,  for  this  class  of  formulae  definability 
+
+Let  E(p)  be  a  formulaof  QKD42, 
+
+decomposable 
+
+p  not  occurring 
+propositional 
+of  variables 
+0  E  {+,A,V}. 
+
+in  E(  91,  . . . , qk),  E  propositional 
+
+or  of  the  form  q (poQt  XI,  . 
+in  qo(xt 
+
+as  E(ClCt(p), 
+
+. . . ,UCk(p)), 
+with 
+either 
+in  41,  . . . , qk  and  each  UC,(p) 
+. , Qkxkp(  xt  . . . xk)  ),  with  all  the  occurrences 
+
+. xk)  bound,  no  modal  operators  occurring 
+
+in  ~(xt 
+
+. . . xk),  and 
+
+Then: 
+
+(1)  ~Q,W4ZO(A=B) 
+
+~(O(AoQlx~,...,Qkxk~(x~...~k))) 
+
+=  (O(B~QIXI,...,Q~X~~~(XI...X~))) 
+
+(tautology) 
+
+tQKD4Z  fJ(A  =B) 
+
+4  /I\i<k'Cl(A)  E  'C;(B) 
+
+(( 11, tautology) 
+
+kQKD4Z  WA 
+
+=B) 
+
+--E(UCl(A),...,OCk(A)) 
+
+rE(OC,(B),...,OCk(B)) 
+
+( (2))  propositional 
+
+substitution) 
+
+kQKD4Z  q (A  =B) 
++  (E(A)  =  E(B)) 
+t--eKD4z q l(A  =  B)  A  (A  =  B)  +  (E(A) 
+
+z  E(B)) 
+
+kQKD4Z  [sl  (A  =  B)  + 
+
+(E(A)  =  E(B)) 
+
+((3)) 
+
+((4), 
+
+tautology) 
+
+((5), 
+
+tautology) 
+
+(2) 
+
+(3) 
+
+(4) 
+
+(5) 
+
+(6) 
+
+Observe 
+useless.  Both 
+decomposition. 
+UC(p), 
+defined  above. 
+
+that  if  E(p) 
+
+the  Bat-can  formula 
+
+is  decomposable 
+and 
+Therefore  Theorem  5,  i.e.,  the  definability 
+
+as  above,  obviously 
+
+its  converse  may  be  needed 
+
+formula 
+to  get 
+
+the  Barcan 
+is 
+the 
+just 
+of  predicates  of  the  form 
+form 
+
+in  the  restricted 
+
+can  be  analogously 
+
+given 
+
+for  formulae  of  QKD4Z 
+
+186 
+
+G.  Amuti  et  cd./Artijiciicinl Intelligence  93  (1997)  169-199 
+
+Example  11.  Consider 
+
+the  following  cases: 
+
+l Let  E(p)  =  q (p  + 
+
+‘v’/x(P(x)  +  Q(X)))  A q (p  A P(a)  VP(b)); 
+
+then  E(p)  = 
+
+E(uC~(p),&(p)), 
+Q(x)))) 
+q C2(T)  =  q (P(a)  VP(b)) 
+
+and q CZ(P) 
+
+whereE(qt,q2) 
+
+=  (cid:144)(pAP(a)VP(~)). 
+
+=qtAqz,nC~(p) 
+q Cl(T) 
+
+=O(P  + 
+
+(vx(P(x) 
+
+--f 
+
+=  q ~x(f’(x) 
+
+--j  Q(x))), 
+
++  Q(x)))  A q (P(a) 
+
+V 
+
+and  E(T)  =  lJ(Yx(P(x) 
+
+P(b)). 
+
+l Let  E(p)  = VxO(pAP(x)), 
+
+then,  by  B  and  its  converse  E(p)  E  q Vx(pAP(x)), 
+
+E(p)  =  E(OC(p)), 
+l If  E(p)  = Vx(Q(x) 
+
+where  UC(p)  = q (p  A’v’x P(x)). 
+V  q l(p +  P(x))), 
+
+then  it  has  no  good  decomposition. 
+
+We  can  observe 
+
+that  the  example  of  the  introduction 
+
+is,  in  fact,  analogous 
+
+to  the  first 
+
+case  above. 
+
+5.  Self-reference 
+
+in  nonmonotonic 
+
+logic:  the  case  of  default  logic 
+
+We  have  shown 
+we  show  that  a  default 
+points  corresponding 
+
+that  fixed  points  are  explicitly  definable 
+
+in  KD4Z. 
+the  definition  of  a  modal  predicate 
+
+In  this  section 
+that  has  fixed 
+
+theory  yields 
+
+Let  (w  D)  be  a  default 
+
+theory,  where  W  is  finitely  axiomatizable 
+
+to  an  effective 
+
+translation  of  its  extensions. 
+
+rules  each  of  the  form  6  =  “$;  LY is  called 
+of  the  default.  We  assume 
+
+and  y  the  conclusion 
+
+and  D  is  a  finite 
+the 
+the  prerequisite,  p 
+the  reader  familiar  with 
+and  the 
+the  context.  We 
+
+logic,  we  refer  to  [39]  and  to  [28] 
+results.  Let  p  be  a  propositional 
+
+parameter,  denoting 
+
+for  the  basic  formalisms 
+
+the  translation  of  a  default 
+
+theory 
+
+into  the  modal 
+
+logic  KD4Z  as  follows: 
+
+set  of  default 
+justification 
+Reiter’s  default 
+most  significant 
+define 
+
+trs(P)=O(p~a)AOO(PAP)jO(P~y), 
+
+Tr(w,D)(P)  =  0 
+
+OP  A  WA 
+
+( 
+
+A  m(p) 
+&D 
+
+. 
+
+1 
+
+(14) 
+
+(15) 
+
+that  Op,  under 
+
+Observe 
+In  addition,  we  define  a  stability  condition  St(~o)  which  singles  out  the  set  Jo  of 
+theory  p  as: 
+
+consistent  with  the  parameter 
+
+the  outermost  Cl,  commits 
+
+in  D  maximally 
+
+to  be  consistent. 
+
+of  the  defaults 
+
+the  contest 
+
+justifications 
+
+Sf(WD) 
+
+(P) 
+
+=  P  4  q A 
+
+CpAOP-p~OOP). 
+
+(16) 
+
+PEJI) 
+
+In  the  following  we  shall  drop  the  subscript  both  in  Tr(w~)(p)  and  st(,D)(p) 
+
+when 
+
+no  confusion 
+
+arises. 
+
+The  fixed  point  equation  becomes 
+
+therefore 
+
+p  =  (TdP) 
+
+A  St(p) 
+
+1 
+
+which  is  equivalent 
+
+to 
+
+(p  -  Tr(p))  A St(p) 
+
+by  definition  of  St(p). 
+
+(  17) 
+
+(18) 
+
+G.  Amati  et  ul./Artijicinl 
+
+Intelligence  93  (1997)  169-199 
+
+187 
+
+In  the  sequel  we  sometimes 
+
+(Tr(  p)  ASt(  p)  )  with  E(p) 
+
+identify 
+( 18)  saturated 
+
+jixed  points.  Namely,  a  saturated 
+
+. We  call  the  solutions 
+fixed  point 
+
+to  the  fixed  point  equation 
+7  satisfies: 
+
+1KD4Z  (7  EE Tr(7))  AL%(l). 
+
+(19) 
+
+in  St(p), 
+
+of  fixed  points,  notwithstanding 
+
+the  theorems  of  Section  4  cannot  be  applied  directly 
+to  (p  z 
+the  fact  that 
+
+Since  p  is  not  boxed 
+the  fact  that  the  fixed  point  equation 
+to  E(p).  Nevertheless, 
+the  computation 
+allows 
+Tr(p))  A  St(p) 
+in  the  general  case  a  formula  may  have  different  decompositions 
+of  7  may  be  rather  complex.  The  set  of  saturated 
+fixed  points 
+set  of  fixed  points  of  Tr.  Furthermore,  we  may  use  the  “guess  and  check”  method 
+computing 
+Theorem  8  applied 
+in  more  details  below. 
+Once  a  theory  7 
+
+to  [ 281)  : we  first  look  for  candidates  7  by  exploiting 
+,St( 7)  holds.  This  will  be  explained 
+
+and  the  computation 
+is  thus  a  subset  of  the 
+for 
+
+to  Tr(p)  and  then  check  whether 
+
+is  equivalent 
+
+fixed  points 
+
+is  uniformly 
+
+(similar 
+
+substituted 
+E(p) 
+the  first  sentence  Tr  checks  whether 
+are  closed 
+modal 
+translations 
+the  application  of  the  whole  set  of  defaults  D. 
+
+in  7; 
+
+for  p  in  the  self-referential 
+
+sentence  p  E 
+there  exists  a  succession  of  defaults  whose 
+the  second  sentence  St  checks  for  the  saturation  of 
+
+The  fixed  point  equation 
+
+( 19)  states  that  the  logical  content  of  7 
+
+is  exactly  circum- 
+
+scribed  by  the  two  conditions  Tr  and  St.  We  can  now  introduce  both  a  provability 
+and  a 
+operator  for  default  logic.  We  define  the  provability  operator  PrT  (40)  for  de- 
+consistency 
+fault  logic  as  q l( 7  +  Up)  and  the  consistency  operator  Conl(  9)  as  q ( 7r\  09).  Note 
+that  a  fixed  point  solution  7  for  E(p) 
+force”,  that  is  ~~~~~  7  -+  [?I, 
+then  7  t-~naz  PrI(q) 
+
+is  of  “necessary 
+if  and  only  if  7  ~K,QJZ 0  0  p. 
+the  set  of  modal-free 
+
+formulae  CY such  that  7  EKD4Z 
+
+In  the  following  7*  denotes 
+
+0  0  CY. 
+
+Let  Jn  be  the  set  of  justifications 
+
+p  of  the  defaults  of  D.  To  show  that  the  condition 
+the  saturation  of  the  application  of  the  defaults  of  D,  we  must  prove  that, 
+the 
+
+subset  D’  of  D  whose  elements 
+
+in  Jo,  are  consistent  with  I*, 
+
+of  the  elements 
+
+in  JOT can  be  derived  from  7.  This  leads  to  prove: 
+
+St  imposes 
+for  the  maximal 
+consistency 
+
+Theorem  12.  Let 
+
+I-KDJZ  (7  =  Tr(Kn)  (7) 
+
+)  A St(w,o) (7) 
+
+und 
+
+D’  = 
+
+consistent  with  I” 
+
+Then: 
+
+(Reduct  of  a$xed  point)  kKD4Z  7  s  Tr(wDy(7) 
+
+A  /j\PEJ,l,  0  O(7  A  p). 
+
+(a) 
+( b)  ( Completeness) 
+
+I* 
+
+is  a  Reiter  extension  of  (w  D). 
+
+Theorem  12(a)  whose  proof 
+
+method  for  reducing 
+
+the  search  of  solutions 
+
+is  that  of  Proposition  A. 13  in  Appendix  A,  provides  a 
+to  the  case  where 
+
+for  fixed  point  equations 
+
+the 
+fixed 
+
+188 
+
+G.  Amaii  et  d/Artificial 
+
+Intelligence  93  (1997)  169-199 
+
+It  shows  that  D’  is  the  reduct  of D  with  respect  to  the  context 
+[ 16,281.  Theorem  12(b),  whose  proof  is  that  of  Proposition  A. 14  in  Appendix  A, 
+
+E(p)  has  the  form  UC(p). 
+7” 
+shows  that  D’  consists  of  those  defaults  used  for  constructing 
+
+the  extension  7’. 
+
+As  for  the  other  direction  of  Theorem 
+
+12(b), 
+
+if  E  is  a  Reiter  extension, 
+
+then 
+
+formula  LIE  A 0  0  {/3  1 /?  E  J D and  /3  consistent  with  E} 
+
+is  a  saturated 
+
+modal 
+point. 
+
+Theorem  12,  together  with  the  results  presented 
+
+to  find  saturated 
+
+fixed  points.  The  method  consists  of  the  following 
+
+in  the  previous  sections, 
+steps: 
+
+tells  us  how 
+
+l Substitute  T  for  p  in  Tr(,,) 
+l  I 
+
+is  a  fixed  point  solution  of  Tr(w.0) (p). 
+
+(p), 
+
+thus  getting  Tr(,,) 
+
+(T). 
+If  it  is  the  only  solution, 
+
+then  there  are 
+
+no  consistent 
+
+extensions. 
+
+l All  fixed  points  of  Tr(KD) (p)  are  obtained  as  logical  conjunctions 
+
+of  Tr(,,) 
+
+(T) 
+
+with  Cl 0  p  (possibly  obtaining 
+12  applies 
+
+l Theorem 
+
+I). 
+
+to  the  modal-free 
+
+to  consider  only 
+
+to  obtain  Reiter  extensions.  Since  we  are  interested 
+
+reduction  of  the  fixed  points 
+*,  it  is  sufficient 
+of  (W, D).  A  consistent 
+point  7  of  Tr(w,D)(p)  by  putting 
+set  of  formulae  0  0  /3  (p  must  be  consistent  with  I*). 
+still  equivalent 
+reduction  performed  by  the  operator  *. 
+
+in  the 
+language  by  means  of  the  operator 
+of  defaults 
+from  a  fixed 
+in  logical  conjunction  Tr(w,~j(T)  with  a  certain 
+and 
+to  a  consistent  Reiter  extension  via  the 
+
+those  p  which  are  justifications 
+if  any, 
+
+If  it  is  consistent 
+
+it  corresponds 
+
+fixed  point, 
+
+to  ‘7,  then 
+
+is  obtained 
+
+saturated 
+
+6.  Examples 
+
+We  now  show  some  examples 
+
+to  illustrate  how  to  check  for  fixed  points 
+
+along 
+
+extensions, 
+paradigmatic 
+be  easily  reduced 
+
+the 
+examples, 
+
+to  the  following  ones. 
+
+lines  of  the  given 
+
+results.  Observe 
+
+so  that  any  other  (e.g. 
+
+the  one  given 
+
+that  we  shall  give  all 
+in  the  introduction) 
+
+for  Reiter 
+the 
+can 
+
+Example  13.  Let  us  consider 
+extensions.  We  have: 
+
+the  default 
+
+theory  (w  D)  =  (8;  ($-,  $)},  which  has  two 
+
+is 00  a  ---f O-y)  A  [7( 0~  +  q 7a) 
+
+To 
+stituting  D’  as  in  Theorem 
+q 0  cx A  Tr(KD) (T)  which 
+satisfies 
+is  q ( OTT  A  0~).  The  two  Reiter  extensions  E  are  7 
+closures  of  my  and  1~  respectively. 
+
+the  condition  of  Theorem  12.  Analogously, 
+
+12,  we  get  a  candidate 
+
+is  q ( 077  A  Va).  This  is  a  saturated 
+
+.  By  assuming 
+
+for  a  saturated 
+
+a  second  saturated 
+and  7**,  namely 
+
+the  first  default  con- 
+fixed  point  71, 
+fixed  point  since  D’ 
+fixed  point  72 
+the  deductive 
+
+Example  14.  Let  us  consider 
+the  trivial  extension 
+
+{T}.  We  have: 
+
+the  default 
+
+theory 
+
+(K  D)  =  (8;  ($)}, 
+
+which  has  only 
+
+G.  Amati  et  al./Arti$cial 
+
+Intelligence 
+
+93  (1997)  169-199 
+
+189 
+
+fI’r(t~)(T) 
+operator  *.  Then  the  only  Reiter  extension  Tr(,n) 
+
+is OtDa  -+  cly).  This  is  the  only  saturated 
+
+fixed  point  up  to  the  reduction 
+to  T. 
+
+(T)  * is  equivalent 
+
+Example  15.  The  default 
+
+theory 
+
+(W  =  0,  D  =  { $G})  has  no  Reiter  extension. 
+
+E(T)  =KD~Z O(O  V /? A LIT -+ Cl+)  =KD~Z  q KD  0 P +  O+) 
+
+=KD~Z  0 0  -/3  is 
+
+the  generating 
+
+fixed  point  for  E  but 
+
+While  (W  = I,  D  = { $})  has  -L as  Reiter  extension. 
+And, 
+condition: 
+
+in  fact,  E(T)  =K~4z  i 
+
+is  a  fixed  point  of  E  and  also  satisfies 
+
+the  stability 
+
+Example  16.  We  now  show  with  a  simple  example,  a  computation 
+
+of  a  fixed  point. 
+in  (W:D).  Then  E(p)  =  q l(Op  A  (Cl  0  (p  A p) 
+
+--+ 
+
+Let  be  W  = 8  and  D  =  {$j} 
+
+!=KP  -  P))). 
+
+7+tn,(T) 
+
+=  (0  0 P -+ W>. 
+
+A = 0  0  /? is  such  that 
+
+E(A)=E(DOP)=U(OOCI~A(OO(OC~PAP) 
+
+-+U(ClO/3--+/3))) 
+
+sincein  KD~Z,~OCIC~--+OO(CIU~!A~) 
+obtained  also  by  (4):  q l(0  Cl p  A  (0  Cl p  -  0(0&I  + 
+q l(Cl~2 ---f QI) --t  (OOa 
+
++  q ]CX), we  get 
+
+andl-~ClOa!--+OUathefollowingis 
+
+/?>))  hence,  by  the  schema  2: 
+
+Moreover, 
+
+I-_KDJZ St(%o)  ( q Cl ,B) . 
+
+While. if A = 0 (cid:144)i -P  then  YKDU St(q~)  (0  q -p) 
+
+( =KD~~ 0  II  +  +  q l( 0  q -p  A 
+
+op- 
+
+J-)  =m4z 
+
+oo~p-+un+). 
+
+The  above  examples 
+
+seem  to  bring 
+
+extensions.  Observe  however 
+KD4Z 
+
+is  decidable  and  tableaux 
+
+that  these  computations 
+
+lots  of  machinery 
+
+into  the  computation 
+
+of  Reiter 
+can  be  completely  automated,  since 
+
+for  the  logic  are  available. 
+
+7.  Discussion  on  the  related  literature 
+
+We  have  argued 
+
+that  much  of  commonsense 
+
+concepts,  and  that  this  is,  in  fact,  a  central 
+
+reasoning 
+theme  in  nonmonotonic 
+
+concerns 
+
+reasoning. 
+
+the  definition 
+
+of 
+
+Nonmonotonic 
+cepts  by  relativizing 
+
+reasoning  provides 
+
+the  sufficient  conditions 
+
+it  to  the  context,  which  accounts 
+
+for  some  self-referential 
+
+in  the  definition  of  con- 
+statement 
+
+190 
+
+G. Anzati et al./Art@cial Intelligenre  93  (1997)  169-199 
+
+such  as  “It  is  consistent 
+strong 
+(functional) 
+above  notions. 
+
+to  assume, 
+
+definability 
+
+like 
+
+in  the  context  p,  that  (Y is  pi,. 
+in  G  or  first-order 
+
+logic  cannot  account 
+
+. , &“.  However, 
+for  the 
+
+This  form  of  relativization 
+
+to  the  context 
+
+reasoning, 
+
+nonmonotonic 
+agent.  So  that  the  self-referential 
+in  which  two  distinct 
+
+by  binding 
+
+ability 
+
+commonsense 
+
+is  often  carried  out,  in  the  literature  on 
+to  the  belief  set  of  an 
+to  one 
+language 
+
+statements 
+
+is  lifted  from  the  commonsense 
+
+(or  even  more) 
+
+levels  of  reasoning 
+
+are  formulated. 
+
+These  approaches  are  based  on  two  paradigms,  which  we  call  the  preference  paradigm 
+
+and,  according 
+
+to  Marek  and  Truszczynski, 
+
+the  negation  as  failure 
+
+to prove  paradigm. 
+
+The  preference  paradigm 
+
+[ 5, 18,251,  defines  a  preference 
+
+tures  which  are  sets  of  classical 
+were  introduced 
+logic 
+a  bimodal 
+preferred  modal  models. 
+
+by  Doyle 
+to  provide  a  semantical 
+
+interpretations. 
+in  [IO]  and  Etherington 
+
+relation  among  modal  struc- 
+Preference  criteria  for  default  reasoning 
+
+characterization 
+
+of  default 
+
+[ 121.  Lin  and  Shoham 
+
+[25]  use 
+logics  by  means  of 
+
+The  fixed  point  paradigm 
+to  the  equation 
+
+is  based  on  the  following 
+(i.e.,  a 
+r  =  Cnn  (I  U  { Oy  1 my  $F! T}“,  where  I  is  a  translation  of 
+
+idea:  “Find  a  solution 
+
+hexpansion) 
+the  defaults 
+
+in  the  modal 
+
+logic  A. 
+
+In  particular 
+
+(see 
+
+and  Doyle 
+of  1980,  appeared 
+afterwards 
+proposed  by  the  work  of  Konolige 
+
+expanded  by  Moore 
+
+the  above  schema  has  been  introduced  by  the  early  work  of  McDermott 
+[ 30,3  I]  ),  further  developed  by  Stalnaker 
+in  an  unpublished  manuscript 
+later  in  [ 531,  with  the  introduction 
+of  the  notion  of  stable  set,  and 
+logic  has  been 
+
+in  [35].  The  connection  with  default 
+in  [27]. 
+
+[ 191  and  further  developed 
+
+Marek  and  Truszczynski 
+
+[ 26,28,55] 
+
+have  shown  that  with  the  negation  as  failure 
+
+to 
+
+to  yield 
+
+r  which 
+
+is  so  powerful 
+
+to  capture  default 
+
+a  family  of  modal 
+
+logics  can  be  devised 
+
+Indeed,  Marek,  Truszczynski 
+
+turn  out  to  be  Reiter  extensions. 
+
+the  choice  of  the  underlying  monotonic  modal 
+
+results  showing 
+infinitely  many  nonequivalent 
+
+reasoning. 
+logics  are  stable  sets  of  ground 
+and 
+
+prove  paradigm 
+In  fact,  A-expansions  with  n  in  this  family  of  modal 
+theories 
+Schwartz  have  established  more  general 
+fixed  point 
+logics,  by  varying 
+these  KD45 
+candidates 
+is  that  they  are  maximal 
+class  of  modal 
+
+that  Doyle  and  McDermott’s 
+nonmonotonic  modal 
+[45].  Among 
+,  Sw5,  S4f,  S4.2  and  S4.3  have  been  widely  studied  and  proposed  as  good 
+in  favor  of  them 
+(i.e.,  in  the 
+[45] 
+the  same  nonmonotonic  modal  logic). 
+boxed  nonmonotonic  modal 
+
+is 
+logics  enjoying 
+(3) 
+is  redefined  by  means  of  boxed  contexts.  Boxed  expansions  are  thus  generated  by  a 
+set  equation  which 
+the 
+membership 
+operator. 
+
+and  belief.  A  strong  argument 
+and  even  the  largest  in  their  range 
+
+is  called  boxed  jixed  point.  The  underlying 
+
+for  these  logics  the  schema 
+
+Recently  Amati  et  al. 
+
+fixed  point  construction; 
+
+relation  of  a  formula 
+
+logics  which  generate 
+
+idea  is  to  interpret 
+
+as  a  nonmonotonic 
+
+for  representing 
+
+[ 11  introduced 
+
+to  the  context 
+
+an  alternative 
+
+knowledge 
+
+provability 
+
+[43-461 
+
+logics, 
+
+logic 
+
+that 
+
+I 
+
+In  general,  modal 
+
+logic 
+
+is  used 
+
+to  this  purpose,  belief  and  knowledge 
+
+the  agent  can  also  define  autoepistemic 
+truths, 
+of  K  and  B  that  refer  to  the  agent’s  knowledge 
+
+and 
+
+occurrences 
+
+as  two  modalities, 
+containing 
+way  K  and  B  should  be  clearly  distinguished 
+For  example,  Schwartz  and  Truszczynski 
+and  Moses 
+
+edge  of  Halpern 
+
+is  however  a  controversial  matter. 
+
+[ 181  more  suitable 
+
+for  describing 
+
+[ 471  consider 
+
+the  logics  of  minimal  knowl- 
+sets  of  an 
+
+knowledge 
+
+are  treated 
+i.e.,  sentences 
+itself.  In  what 
+
+G.  Am& 
+
+et  al./Artijiciat 
+
+inteili~ence  93  (1997)  169-199 
+
+191 
+
+than 
+
+if  0 
+
+requirement 
+
+is  a  modality 
+
+if  one  compares 
+
+the  autoepistemic 
+
+is  I  =  {Clp  -+  p}, 
+
+for  either  B  or  K  and 
+
+set  containing  p  whenever 
+
+logics 
+the  agent’s 
+
+standing 
+then  p  belongs 
+
+logic  of  Moore  or  Levesque’s  “only  knowing” 
+
+but  when  Cl is  used  as  a  belief  operator,  p  may  be  actually 
+Indeed,  an  implicit 
+
+[ 201. 
+agent 
+For  example, 
+initial 
+to  the  belief  set  when  using  Moore’s 
+assumption 
+[ 351,  while  Halpern  and  Moses’  logics  reject  p  as  a  plausible  con- 
+autoepistemic 
+logic 
+if  the  agent’s  beiief  is just  {Elp},  then  it  is  argued  that  p  should  be 
+clusion,  AnaIogously, 
+false, 
+a  plausible  conclusion, 
+for  a  knowledge  operator  K  is  to 
+even  though  believed. 
+is  {Kp  -+  p}, 
+the  agent’s  belief 
+avoid  forming  a  knowledge 
+tautological.  This  remark 
+since  this  last  axiom  schema  must  in  some  way  be  considered 
+yields  an  apparent  paradox 
+schemata  of  G, 
+in  which  the  modal  operator  can  be  regarded  as  an  extremely  strong  form  of  the  knowl- 
+is  effectively  provable. 
+edge  operator, 
+that  p  is  a  theorem 
+Contrary 
+(by  the  Lob  rule)  _ As  a  consequence, 
+cannot  be  considered 
+for  any  form  of  negative 
+result  about 
+ability  and  truth  run  on  two  different 
+to  the  possibility 
+drawbacks 
+knowledge 
+is  intended 
+given  only  at  the  intentional  or  “external” 
+are  appropriate 
+question. 
+
+if  the  agent’s 
+as  a  set  of  true  beliefs  and  a  suitable  notion  of  truth  can  be 
+level,  then  the  question  of  which  modal  logics 
+arguable 
+
+sentences  of  the  form  10 
+of  using  G  as  a  logical  basis 
+of  the  well-known 
+logic  in  the  language  of  arithmetic;  prov- 
+
+that  what  is  known  by  the  system 
+from  the  validity  of  {Up  +  p}  it  follows 
+
+introspection.  This  fact  is  a  consequence 
+
+and  beliefs  may  become  an  eternally 
+
+result  causes  unrecoverable 
+
+it  with  the  valid  reasoning 
+
+to  represent  knowledge 
+
+tracks.  This  limiting 
+
+in  G,  thus  denying 
+
+theories  containing 
+
+the  incompleteness 
+
+from  knowledge: 
+
+of  distinguishing 
+
+to  our  intuition, 
+
+the  possibility 
+
+to  the  extent 
+
+of  first-order 
+
+beliefs 
+
+c;o 
+
+referring 
+
+conditions 
+
+in  first-order 
+
+to  themselves 
+
+a  self-referential 
+
+in  the  language, 
+
+Another  approach, 
+
+to  maintaining 
+
+like  Belt  [~j  )  A Belt  19  -+  $1) 
+
+ability 
+in  the  language.  This  amounts 
+
+is  taken  by 
+to  dealing  with 
+- 
+for  the  modal  operator  B,  and  [ai 
+is  a  suit- 
+the  difficulties  caused  by  unquoting  quoted 
+logic  languages  have  been  investigated  by 
+
+quoting  sentences 
+some  analogue  of  the  Lob  derivability 
+BeZ( [q?])  where  Bet  is  a  predicate  standing 
+able  quotation  of  the  sentence  CY. However, 
+through  substitutions 
+statements, 
+in  [ 341  who  thus  argued 
+Montague 
+to  Montague’s 
+thesis,  Perlis  in  [ 37,381  argues  that  modal  logics  are  on  no  tirmer  ground  than  first-order 
+self-reference.  Perlis  introduces  a  suitable 
+logic  when  equally  endowed  with  substitutive 
+a  similar 
+notion  of  substitution  of  a  name  1~1  for  its  expression  p  in  formulae 
+(providing 
+language).  A  func- 
+expressiveness 
+in  the  arithmetic 
+[Ql,  Icy1 )  =  S 
+tion  symbol 
+holds  if  S  is  the  name  for  the  term  obtained  as  the  result  of  naming 
+in 
+reasoner 
+P  of  [Ql  for  all  occurrences 
+results  are 
+languages 
+such  self-referential 
+reported. 
+
+of  1~~1). Perlis  suggests 
+are  desirable  but,  essentially, 
+
+of  the  godelian  numbering 
+
+that  for  an  intelligent 
+
+[LX])  of  substitution 
+
+in  favor  of  modal 
+
+logic.  In  contrast 
+
+the  substitution 
+
+is  supplied 
+
+(sub(  IPI, 
+
+sub(  IPI, 
+
+function 
+
+limiting 
+
+only 
+
+[(zl, 
+
+admitting 
+
+to  the  self-referential 
+and  therefore  KD4Z  admits  a  class  of  modal  predicates  expressing 
+
+In  this  paper  we  have  shown  that  in  the  modal  logic  KD4Z,  we  can  postulate  a  weaker 
+sentence  p  zz 
+the  provability 
+self- 
+
+notion  of  definability, 
+E(p), 
+of  consistency.  Finally  we  have  addressed  how  to  solve  the  problem  of  representing 
+reference  as  an  internal  construction, 
+explicit  definability. 
+
+to  the  problem  of  representing 
+
+thus  giving  a  solution 
+
+several  fixed  points 
+
+192 
+
+G.  Amati  et  al./Art@cial 
+
+Intelligence  93  (1997)  169-199 
+
+Acknowledgements 
+
+on  fixed  points 
+
+We  thank  Dov  Gabbay 
+
+for  many  useful  discussions 
+
+in  the  logic  G 
+on  previous  works 
+logic.  We  thank  Ray  Reiter  for  reading  a  draft  of  this  paper  and  giving 
+for  comments  on 
+in 
+
+and  on  their  computation;  Dov  has  also  given  important  contriburions 
+on  provability 
+important 
+suggestions 
+disjunctive  definitions, 
+which  he  commented 
+and  for  a  vivid  discussion 
+many  worthy  comments 
+investigations 
+
+on  the  definability 
+and  Jon  Doyle  for  providing  us  with  an  unpublished  manuscript 
+on  the  relationship 
+
+for 
+and  for  pointing  us  the  earlier 
+
+on  this  point.  We  thank  also  the  anonymous 
+
+problem,  Vladimir  Lifshitz 
+
+logic  G  and  nonmonotonic 
+
+logic  and  nonmonotonic 
+
+between  provability 
+
+on  the  connection 
+
+the  presentation 
+
+that  improved 
+
+reviewers 
+
+reasoning 
+
+between 
+
+logic. 
+
+Appendix  A 
+
+A.I.  Basic  theorems  of  KD4Z 
+
+theorems  and  rules  of  KD4Z: 
+
+theorems  of  K: 
+
+are  useful 
+
+The  following 
+.  Kl:  q (A  +  B)  +  (OA  +  OB). 
+.  K2:  q AAOB+O(AAB). 
+are  useful 
+The  following 
+Let  L  be  00  and  M  be  00. 
+.  Tl:  LLp  E  Lp  (MMp  =  Mp). 
+l  T2:ClLp~Lp,OLp~LpandLI3p~Lp. 
+.  T3:  L(Lp 
+l  T4:  MLp  +  Lp. 
+.  T5:  M(q  A  Mp)  +  Mp. 
+.  Rl: 
+It  is  easy 
+completeness 
+
+If  A  is  a  theorem 
+to  show 
+theorem 
+
+the  soundness 
+they  are  proved. 
+
+-p). 
+
+then  LA  is  a  theorem  of  KD4Z.  Lp  +  p  is  not  a  theorem. 
+
+of  the  above  sentences 
+
+in  KD4Z, 
+
+hence  by  the 
+
+A.2.  Self-reference  and  default 
+
+logic  in  KD4Z 
+
+Let  [s]  be  the  strong  box  defined  as  [s]  A  = OA  A  A. 
+
+Proposition  A.1  (Formalization 
+equivalent: 
+
+(i) 
+(ii) 
+
+-+  q R 
+~KD~Z  q A 
+tKD&?  [s]A  +  B. 
+
+lemma 
+
+(FORL)  ) .  For  any  A  and  B  the  following  are 
+
+follows 
+
+from  transitivity, 
+
+Proof.  One  direction 
+semantic  proof  for  kKD4z  q a  -+  q p  implies  ~~~~~  [s]  a  +  p.  From  t-~~4z  & 
+we  have  k~~4.z  q a  A (Y 4  Up,  and  thus  kKD4z  [s]  a  +  Op.  Suppose 
+model  Q  and  a  world  w,  such  that  5% w  h 
+submodel  21  generated  by  w.  23  is  of  the  form  5  0  C  with  3  well-capped 
+
+[s]  a,  w  +  q p  and  24  w  k  p.  Consider 
+
+that  there  is  a 
+the 
+and  with  a 
+
+and  schema  K.  We  give  a 
+
+necessitation 
+
+----f q p 
+
+C.  Amati  et  ~l./Art~&~~l 
+
+i~teii~~e~ce 93  (1997)  169-199 
+
+I93 
+
+first  element.  Let  93’  be  the  model  obtained 
+We  have  %‘,  w  /=  [s]  LY, hence  B’,  wa  k  Ua!  and  thus  !B’, wo  /== Ofi, 
+contradiction. 
+
+from  B  by  adding  a  new  first  world  we. 
+thus  w  /=  /3,  a 
+
+Cl 
+
+Proposition  A.2  (First  substitution 
+
+lemma 
+
+(FSL)). 
+
+Let  E(p)  be  a  boxed formula. 
+
+tKnGz  [s](A  -  B)  --+ (E(A)  =  E(B)). 
+
+Proposition  A.3  (Second 
+
+substitution 
+
+lemma 
+
+(SSL)).  Let  E(p)  be  a  boxed formula. 
+
+tKDeZ Cl(A  =  B)  --+ [?(E(A)  = E(B)  ). 
+
+The  proofs  of  Propositions  A.2  and  A.3  can  be  found 
+
+in  Smorynski 
+
+[ 481. 
+
+Proposition  A.4  Let  C(p)  be  a formula  with  p  propositional  variable.  Then 
+
+(1) 
+(21 
+
+k~4  UC(T) 
+tKD4z  OI?C(T) 
+
+-+  q C(OC(T)). 
+--+ (UC(T) 
+
+E  ElC(UC(T))). 
+
+Proof. 
+
+Proof  of  (1). 
+
+(i) 
+
+(ii) 
+
+(iii) 
+
+t--1(042 RC(?-) 
+t-~4  q OC(T) 
+I--KD~z lXlClC(T) 
+
+---f (T  z  UC(T)) 
++  q (T  -  DC(T)) 
+
++ 
+
+(UC(T)  G  q C(OC(T))) 
+
+t-~4  UC(T) 
+(iv) 
+(v)  E,Y~  q C(-V 
+
+--+ (UC(T)  E  q C(OC(T))) 
+
+-+  fJC(OCU7.J 
+
+Proof  of  (2). 
+
+(tautology  ) 
+
+Wet, 
+
+f9 
+
+(SSL) 
+
+(Axiom  4) 
+
+(tautology) 
+
+(vi) 
+
+(vii) 
+
+I-KDQ  q C(OC(T>) 
+I-KDJZ q C(OC(T)) 
+
+--+ (OOC(T) 
+-3  q (OOC(T) 
+
++ 
+
+IX(T)) 
+
+((  3)  and  tautology) 
+
+-+  UC(T)) 
+
+I-KD~Z q C(OC(T>> 
+
+(viii) 
+(ix)  ~KD~Z  q C(OC(T)) 
+
+-+  (OUUC(T) 
+
++  ElOC(T)) 
+
+(Axiom  Z) 
+
+--+  (0 0 C(T) -+ 0 Cl C(T) 1 
+
+(I-~042  V q q lcx =I  0  q a  in  KD4Z  see  Section  A.1  (T2)  ) 
+
+(Net,  K  and  Axiom  4) 
+
+(x) 
+
+tm42  q CU1 
+I-KI)~z  IX(T) 
+(xi) 
+(xii)  ~-KDYD$Z q ClC(T) 
+I-,UMZ OClC(T) 
+(xiii) 
+
+--+  F.71 CT = UC(T)) 
+z  C  UC(T)) 
+--+ (C(T) 
+
++  (UC(T) 
+
+~OC(OC(T))) 
+
++ 
+
+(OC(OC(T)) 
+
++  q C(T)) 
+
+(xiv) 
+
+I--xDK~)~z 0  OC(T) 
+
++ 
+
+(OC(UC(T~~ 
+
+-  UC(T)) 
+
+((2),  Axiom  4) 
+
+(FSL) 
+(Net  and  K) 
+
+(tautology, 
+
+(12)  and  (9)) 
+
+(tautology, 
+
+(13)  and  (5)) 
+
+cl 
+
+194 
+
+G. Anzati et  aL/Artijicial  Intelligence 93 (1997)  169-199 
+
+Theorem  A.5  (Definability 
+with  E(p)  an  implicit  cunsistenc~  predicate.  Then  UC(T) 
+
+of  predicates  of  the  form  UC(p)). 
+
+Let  E(p)  =  UC(p), 
+
+is  a fixed  point.  That  is 
+
+t~~4~  UC(T)  E  q C(OC(T)). 
+
+Proof. 
+
+(i)  ~KD~Z  DC(p) 
+
++  0  Op 
+
+(hypothesis) 
+
+(ii)  ~KD~Z UC(OC(T)) 
+
+-tCiOClC(T) 
+
+(Uniform  Substitution) 
+
+(iii)  ~KD~Z OC(OC(T)) 
+
+-+OUC(T) 
+
+(iv) 
+
+i-~~4z  UC(T)  E  UC(OC(T)) 
+
+(Proposition  A.4(  I )  and  (2)  ) 
+
+(~-KL)~z  00 
+
+p  E  0  Cl Op  see  Section  A.1  (TZ)) 
+
+0 
+
+Proposition  A.6.  Let  E(p)  = B(UC(p)) 
+
+artd  suppose 
+
+t~~4z  C(p) 
+
+-+  Op.  Thea: 
+
+tm42 
+
+E(B(-V) 
+
+=  E(EtB(T))). 
+
+The  proof  is  as  in  Smorynski 
+
+[48],  where  C(p) 
+
+is  C(B(p)). 
+
+Proposition  A.7.  Let  p  be  boxed  in  E(p)  and  let  q  be  a  new  variable.  Then: 
+
+(1)  ~KD42  q p  =  4)  + 
+(2)  km42  [~l(-Qp) = P)  A  [sl (E(q)  =  d  --) (Qp  =  q)  +  (P  -  9)). 
+(3)  km42  Csl (E(P) 
+
+s+ 9)  +  f0  0  (P  =  4)  +  (P  z  4))s 
+
+(E(P)  =  E(q)  ). 
+
+=  PI  A  Is1  (E(g) 
+
+Proof.  The  proofs  of  ( 1)  and  (2)  are  as  in  Smorynski 
+
+[48]. 
+
+Proof  of  (3). 
+
+(i> 
+
+›KD~Z 
+
+[sl (E(p)  =  p)  A Es1 (E(q)  =  4)  --j O(p  s  q)  --f  (p  s  q)) 
+
+(ii)  F-KD~Z  U(E(p) 
+
+=  p)  A  WE(q) 
+
+=  q)  --f  Il(O(p 
+
+SE q)  --t  (p  s  q)) 
+
+((2)) 
+
+(FORL) 
+
+(iii)  b4z 
+
+WE(p) 
+
+=  p>  A  WE(q) 
+
+=  q)  ----f (0 cl (p G 9) --) q l(p  s  q)) 
+
+(iv)  FKD~Z  O(W) 
+
+=  p)  A  EKE(q) 
+
+=  q)  +  (0 q (p = q) -+ (p 5 4)) 
+
+(Z) 
+
+((i) and  tautology) 
+0 
+
+Proposition  A.8. 
+
+I-.QXZ [s](p  E  UC(p)) 
+
+-+  (p  -+  UC(T)). 
+
+G.  Amati  et  al./Artijicial 
+
+Intelligence 93  (1997)  169-199 
+
+195 
+
+Proof. 
+
+(i)  FKD/IZ 0~  -+ q F  =  P)) 
+(ii)  1~~4z  q (T  =  p)  --t  q (C(T) 
+(iii) 
+(iv)  ~--KD~z [sl(p  =  q C(p))  +  ((p  +  q p)  -  (UC(p)  +  q nC(p))) 
+
+[7p  +  q (C(T)  =  C(p)) 
+
+=  C(p)) 
+
+( (i), 
+
+t,,4z 
+
+(SSL) 
+
+(ii)  and  tautology) 
+
+(tautology,  Net,  K) 
+
+(v)  kKD4Z  [Sl(P  -  UC(P))  +  (P  +  q P) 
+(vi)  ~KD~z  [sl(p  =  UC(p))  +  (P  +  UC(T) 
+
+(vii)  ~KD~z  [sl  (P  =  q C(P)) 
+
++ 
+
+(P  +  q C(T)) 
+
+(FSL  with  E(q)  =  q  -+  q q) 
+
+( (iv),  Axiom  4  and  tautology) 
+
+=  C(P))) 
+
+( (v),  (iii)  and  tautology) 
+
+(  (vi),  K  and  tautology) 
+
+q 
+
+As  a  consequence 
+
+of  the  above  proposition,  we  can  establish: 
+
+Theorem  A.9  (Existence  of  the  maximum). 
+form  UC(T)  Ayfor 
+
+some  y,  that  is  7  +  UC(T). 
+
+Every  jixed  point  7  of  UC(p) 
+
+is  of  the 
+
+Proposition  A.lO.  Let  7  be  a  jixed  point  cf  E(p) 
+~_KD~Z  E(p)  +  0  Op.  Then: 
+
+=  B(  UC1  (p), 
+
+. . . , UC,(p)) 
+
+and 
+
+7~OO~~i~aJixedpointofE(p); 
+
+(I) 
+(2)  7  A  Cl 0  a  is  a  consistent  fixed  point  of  E(p) 
+(3) 
+
+IAOO~isaJixedpointofE(p); 
+
+ifs 7  y~~4z  0  0  TX; 
+
+(4)  7  A  0  0  a  is  a  consistent$xed 
+
+point  of  E(p) 
+
+ifs 7  17’~~4z 0  0  -a 
+
+Proof.  Proof  of  ( 1). 
+
+(i)  kKD4Z  E(P)  --+o  OP 
+(ii)  t~~4z  E( 7)  =  7 
+
+(iii)  t-~~4~tIiOq+ 
+
+[s](7=;7AOOq) 
+
+(hypothesis) 
+
+(hypothesis) 
+
+(q  not  occurring 
+
+in  7; 
+
+theorem  of  K4) 
+
+(iv)  ~-KD~zOO~+ 
+(v)  ~-KD~Z q OqAE(7) 
+(vi)  ~~~~~OOqr\7rOOqr\E(7~OOq) 
+
+(E(7) 
+
+-E(7AOOp)) 
+
+=oOqAEE(7-AnOq) 
+
+(FSL) 
+(tautology) 
+
+( (ii), 
+
+tautology) 
+
+(vii)  E-KD~z EC7  A  0  0  q)  -+  Cl 0  (7  A  0  0  q) 
+
+( (ii),  Uniform  Substitution) 
+
+(viii) 
+
+~,w4~00(7AOOq) 
+
++OOq 
+
+(see  Section  A. 1  (T5)  ) 
+
+(ix)  FKD~Z  0  0  q  A  7  G  E(  7  A  0  0  q) 
+
+( (vi), 
+
+(viii)  and  tautology) 
+
+Proof  of  (2).  7  A 0  0  (Y is  a  consistent 
+-w 
+
+iff  7  v~~4z 
+
+--t  0  0 
+
+iff  y~~4z 
+
+7 
+
+0  0  ~a. 
+
+fixed  point  of  E(p) 
+
+iff  y~~4z  -(  7  A  0  0  a) 
+
+Proof  of  (3)  and  (4).  Since  7  A  q Oq  is  a  fixed  point  then  substitute  q q  for  q.  From 
+
+~KD4Z~o~q-o~q 
+
+we  get  that  7  A  0  0  q  is  a  fixed  point. 
+
+0 
+
+196 
+
+G.  Amati  et  al. /Artijicial 
+
+Intelligence  93  (1997)  169-199 
+
+Proposition  A.ll. 
+
+FKD~Z [J](p  H  UC(p))  AK(T) 
+
+4  (p  E  q 0~). 
+
+Proof. 
+
+(i>  ~KD~Z  ISI (P -  UC(p))  A UC(T)  ---f (0~  -+ P) 
+(ii)  ~-.KD~z El  (P *  UC(P))  A UC(T)  +  (p  +  Up) 
+(iii)  ~KD~Z  El  (P ++ UC(P))  A UC(T)  +  (P =  0~) 
+(iv)  ~KD~z  q p  --+ 0 q p 
+(v)  Em4z  El  (P ++ UC(P))  A UC(T)  +  (P +  VP) 
+
+(Proposition  A.8) 
+
+(Proposition  A.~(v)) 
+
+((i)  and  (ii)) 
+
+(D  and  Axiom  4) 
+
+((ii) 
+
+and  D) 
+
+(vi)  FKD~Z  [SI(p  ++ UC(p))  A UC(T)  +  (0  UP  +  4) 
+
+((i),  Net,  Axiom  4  and  Z) 
+
+(vii)  ~KD~Z  El  (P  c-$ UC(p))  A UC(T)  +  [$I (P =  UP) 
+
+(viii)  ~KD~Z  [SI(p  +-+ UC(p)) 
+
+AnC(T) 
+
+( (iii),  Net,  K  and  tautology) 
+
++  (VP +P) 
+((vi), 
+
+(vii),  FSL  with  Vp  --+ p) 
+
+(ix)  ~KD~Z  [Sl (P  *  UC(p)) 
+
+A  UC(T) 
+
+(x)  bKD4Z  bI(P  ‘-+~c(P)) 
+
+AOC(T) 
+
++ 
+(P  =  VP) 
+-+  (UP=  q vP) 
+
+(xi) 
+
+kKD4Z  [SI(p 
+
+++  UC(P)) 
+
+A  UC(T) 
+
++ 
+
+tP  =  0  0~) 
+
+((v), 
+
+(viii)) 
+
+(Net, 
+
+K) 
+
+(  (iii)  ) 
+
+0 
+
+Theorem  A.12  (Characterization 
+with  E(p) 
+of  E(p)  =  IX(p), 
+to  a formula  of  the  form  q C(  T)  A  0  0  y,  Moreover, 
+logically  equivalent 
+fixed  points 
+
+of  the  structure  of  fixed  points). 
+an  implicit  consistent  predicate, 
+
+is 
+
+7 
+
+if  and  only  if  7 
+
+is  a  fixed  point 
+is 
+the  set  of  all 
+
+{UC(T) 
+
+A  0  0  y 
+
+/  y  any  formula}. 
+
+Proof. 
+
+(i)  k~D4z  UC(T)  +  (7  E  0  0 I) 
+(ii)  tKD4z  IA  q C(  T) 
+(iii) 
+
+ir=  UC(T)  A007 
+
+t‘~D4z 
+
+(Proposition  A.1  1 and  hypothesis) 
+
+(Theorem  A.9) 
+
+(tautology) 
+
+Furthermore, 
+the  set 
+
+by  Propositions  A.1  1  and  A.4  the  set  @J of  all  fixed  points  of  UC(p) 
+
+is 
+
+{UC(T) 
+
+A  0  0  y  1 y  any  formula}. 
+
+0 
+
+Proposition  A.13. 
+
+If  7 
+
+is  a  saturatedfied 
+
+point  then 
+
+E,I  7  =  Tr(wDt)(7) 
+
+A  A 
+
+0  0(7A 
+
+P) 
+
+PEJr,/ 
+
+where 
+
+G.  Amati  et  al. /Artificial 
+
+Intelligence 
+
+93  (1997) 
+
+169-199 
+
+197 
+
+E D  ) j3 is  consistent  with  T* 
+
+. 
+
+Proof.  Let  D’  be  defined  as  above.  When 
+0  0  p  (the  models  of  25  are  models  of  KD4Z). 
+
+/3  E  Jnr,  there  is  a  model  U  of  7  satisfying 
+
+Let  us  first  prove  t,i  7  --+ /jpEJ,,  00 
+
+(7Ap) 
+
+that  7  is  a  saturated 
+
+the  first  half  of  the  equivalence 
+
+fixed  point.  Then 
+Tr(kKDi) (7).  Let  Zl  be  a  model.  Since  EKD~Z 7  -+  El7  then,  without 
+we  may  suppose 
+hypothesis,  we  have  2l  k  S~(KJ,) (I), 
+
+that  !2  is  a  model  of  7.  If  U  satisfies  0  0  p,  with  j3  E  Jo/ 
+
+hence  24 k  0  0  p,  that  is  Q  b  Cl 0  (7  A /?). 
+
+loss  of  generality, 
+then,  by 
+
+from  Tr(,~,)(l) 
+
+~KL)~Z 
+
+in  the  hypothesis 
+follows 
+
+We  may  suppose 
+
+that  Iu  is  a  model  of  7,  with  an  initial  world  ~0,  that  does  not  satisfy 
+u  of 
+to  the  stable  set  of  I*.  Let  us  insert  U  in  the  frame 
+the  evaluation  of  all  formulae  on  U  and  on  the  set  of  worlds  preceding 
+
+0  0  p  for  some  j3  E  Jo/,  hence  U  /=  0  q -/3.  Let  U  be  the  set  of  interpretations 
+the  universal  model  corresponding 
+of  $21 updating 
+U  in  the  relation  R  by  forcing.  We  obtain  a  new  model  5X’. 
+
+!2l’ is  such  that  for  all  modal-free 
+
+formulae  9  wg  b  0  0  40 if  (D is  consistent  with  I*, 
+but  wg  &c 0  0  O/3  (this  is  obtained  by  inserting  U  as  a  set  of  siblings  of  any  immediate 
+of  fi  with  I*, 
+successor  of  the  initial  world  ~0).  By  the  hypothesis  of  consistency 
+MQ i=; 0  0  /3.  Obviously 
+the  same  set 
+of  formulae  satisfied 
+in  2,  hence  the  new  model  2  cannot  be  a  model  of  7,  otherwise 
+52’ /== q IOP,  by  reasoning  as  in  the  first  part  of  the  proof,  but  2l’  +  Ocl~p.  Furthermore 
+7 
+
+:  since  for  all  worlds  w  successive 
+
+to  the  boxed  formula  Tr(,q~)  (7) 
+
+the  worlds  which  are  successive 
+
+to  2.4 still  satisfy 
+
+is  equivalent 
+
+to 
+
+A(O(~~(Y)A\O((IA~)-~O(~-~~))AOW~\W,~~~~U~ 
+
+u,  NJ k= 07r\,,, 
+Tr(wD) (7) 
+the  fact  that  7 
+
+hence  U  /=  7.  Then 
+
+is  logically 
+
+implies 
+
+that  for  some  default 
+
+equivalent 
+
+for  some  world  w  preceding  U,  w  k  7.  Now  from 
+T~(w,~) (7) 
+is  not  satisfied.  This 
+( y),  with  p  j  j?‘,  there  is  a  world  w  preceding  U  and 
+
+to  Tr(,,) 
+
+(I), 
+
+to  the  first  world  wg,  such  that  w  /== Cl(7  +  my’) i\aO(?cAP’) 
+
+successive 
+to  w  we  have  u  /=  7  +  a’  and  u  /== 7  A  77’  and 
+that  is  for  some  world  u  successive 
+p’  E  Jnt.  This  world  u  must  belong 
+inserted  Lf, 
+from  U  k  7,  we  get  U  +  a’ 
+hence  U  k  7  + 
+and  (cid:228) KDJZ 7  +  Cl7 
+and  u  i_  my’,  that  is  U  $“I y’.  But  from  EKDJZ 7  s  TrcKD) (7) 
+we  have  7  ~,QMZ  0  Cl a’  A  0  0  /3’  +  0  0  y’.  Therefore  7  I-,  Cla’  A OJ?’  +  07’. 
+implies  U  b  y’:  we  have  a 
+Since  U  kss  a!  and  U  kss  O/l’  hence  U  kss  y’  which 
+contradiction. 
+
+to  U.  because  of  the  way  we  have 
+
+(Y’ and  u  b  7  A  1~’ 
+
+,  and  then, 
+
+AO(lAyr’) 
+
+As  for  the  other  direction 
+
+7  derives  0  q -/3  hence  T~(~Jv)  (7) 
+t-,i  T~QVD) (7)  +  7  hence 
+
+of  the  equivalence, 
+k/i  Tr(,,) 
+
+notice 
+(7).  From 
+
+that  if  j3  is  not 
+
+in  D’  then 
+the  hypothesis  we  have 
+
+t-KD4z  ApEJ,,  0  0 (7  A P)  A  Tr(Lv.v;DJ) 
+
+(71)  -+  7. 
+
+0 
+
+Proposition  A.14. 
+Reiter  e~te~~~on. 
+
+11(042 
+
+(T 
+
+s  Tr(~,j 
+
+(7)) 
+
+A  (7 
+
+-  Stpn)  (7)  )  only  if  I* 
+
+is  n 
+
+Proof.  I* 
+is  a  Reiter  fixed  point  for  the  operator  r  when  using  ‘T* as  a context.  In  fact, 
+by  Theorem  A.9,  7  implies  CIC ( T)  ,  hence  q ( cllr  A q 0  p  +  q y)  , and  by  Proposition 
+the  reduct  D’,  T*  is  closed  with  respect  to  D.  On  the  other  hand  it  is 
+A.13  considering 
+Cn~r  ( W)  = I*,  where  Cno,  ( W)  is  the  set  of  all  formulae  which  have  a  derivation  with 
+
+198 
+
+G.  Arnati  et  d./Artijiciul 
+
+Intelligence  93  (1997)  169-199 
+
+defaults  D’  from  the  set  of  axioms  W  with  the  context  T*.  Let  us  prove 
+on  the  length  of  a  derivation  of  a  formula 
+is  a 
+derivation  and  for  all  j,  j  <  i,  7  F.KD~Z 0  q cr; : let  us  prove  that  7  t-KD4z 0  0  (Y,+,  The 
+
+in  Cno,  (W).  Assume 
+
+that  aI,. 
+
+. . , a, 
+
+induction 
+
+it  by 
+
+case  is  when  a,i,_l  is  a  consequence 
+
+nontrivial 
+hypothesis  we  have  7  k KD~Z 0  q LY hence,  from  J-KDQ  7  42;@I(Otl~4D~, 
+from  Proposition  A. 13,  we  have  FKDQ  7  +  q Oy),  hence  y  E  T*.  By  [28,  Proposition 
+3.261  7* 
+to  I* 
+and  cn~j(W) 
+
+is  a  Reiter  extension  of  (w  D)  being  D’  the  reduct  of  D  with  respect 
+
+(Q)  E  D’.  By  inductive 
+
+y  of  a  default 
+
+=  7*.  q 
+
+References 
+
+I 1 I  G.  Amati,  L.  Carlucci  Aiello,  D.  Gabbay 
+
+characterizing 
+
+default 
+
+logic, 
+
+.I. IGPL  4  ( 1996) 
+
+and  E  Pirri,  A  structural 
+l-24. 
+
+property 
+
+on  modal 
+
+frames 
+
+121  G.  Amati,  L.  Carlucci  Aiello  and  F.  Pirri,  Deduction  methods 
+
+for  KD42,  Tech.  Rept.  Rap.  Vl.94, 
+
+Universit6  di  Roma  “La  Sapienza”,  Roma  ( 1994). 
+1 3 1 G.  Amati,  L.  Carlucci  Aiello  and  F.  Pini,  Intuitionistic 
+[ 4 1 C.  Bemardi,  The  fixed-point 
+for  diagonalizable 
+15 I  P. Besnard  and  T.  Schaub,  Possible  world  semantics 
+
+theorem 
+
+logic,  Stud.  Logica 
+
+autoepistemic 
+algebras,  Stud.  Logica  34  ( 1975)  239-25 
+for  default  logic,  in:  Working  Notes  4th  Internutionul 
+
+(to  appear). 
+I. 
+
+Workshop  on  Nonmonotonic  Reasoning 
+
+16 1 E.  Beth,  On  Padoa’s  method 
+17 1 G. Boolos,  On  the  Unprovubility  of  Consistency 
+18 I J.  Doyle,  A  mode1 
+
+for  deliberation, 
+
+action, 
+
+( 1992)  34-40. 
+in  the  theory  of  definition, 
+
+Indq.  Math.  15  ( 1953)  330-339. 
+(Oxford  University  Press,  Oxford,  1979). 
+
+and 
+
+introspection,  Al-TR  58 I,  Artificial 
+
+Intelligence 
+
+Laboratory,  Massachusetts 
+19 I J.  Doyle,  A  mathematical 
+I IO I J.  Doyle,  Some 
+
+Institute  of  Technology,  Cambridge,  MA  ( 1980). 
+
+basis  for  psychology,  Unpublished  manuscript 
+
+( I98  I ). 
+
+theories  of  reasoned  assumptions: 
+
+an  essay 
+
+in  rational  psychology,  Tech.  Rept.  CMU- 
+
+CS-83.125,  Department  of  Computer  Science,  Carnegie  Mellon  University,  Pittsburgh,  PA  (1983). 
+
+[ I I 1 J.  Doyle,  Circumscription 
+I 12 I  D.  Etherington,  Reasoning  with  fncomplefe 
+I I3 1 M.  Fitting,  Proof  Methods  for  Modal  and  Intuitionistic  Logics 
+I 141  D.M.  Gabbay,  Modal  provability 
+
+and  implicit  definability, 
+
+interpretations 
+
+Information 
+
+J.  Automated  Reasoning  1  ( 1985)  391-405. 
+
+(Morgan  Kaufman,  San  Mateo,  CA,  1988). 
+
+(Reidel,  Dordrecht,  1983). 
+
+ed., 
+Exten.sions  of  Logic  Programming,  Lecture  Notes  in  Computer  Science  475  (Springer,  Berlin,  199 I ) 
+179-222. 
+
+for  negation  by  failure, 
+
+in:  P.  Shroeder-Heister. 
+
+I 15 I  l? GBrdenfors,  A  geometric  model  of  concept 
+
+formation, 
+
+Informution  ModellinK  und  Knowledge  Buses 
+
+III  (IOS  Press,  Amsterdam, 
+
+1992) 
+
+l-17. 
+
+I I6  I  M.  Gelfond  and  V.  Lifschitz,  The  stable  model  semantics 
+
+Internutionul  Conference  on  Logic  Programming 
+
+(ICLP-88) 
+1 17 I  R.  Goldblatt,  Logics  of  time  and  computation,  CSLI  ( 1992). 
+1 181 .I.  Halpern 
+and  Y.  Moses,  Toward  a  theory  of  knowledge 
+
+for  logic  programming, 
+( 1988)  230-237. 
+
+in:  Proceedings  Fiffh 
+
+in: 
+Proceedings  AAAI  Workshop  on  Non-Monotonic  Reasoning,  New  Paltz,  NY  (Morgan  Kaufmann,  Los 
+Altos,  CA,  1984)  125-143. 
+
+preliminary 
+
+ignorance: 
+
+report, 
+
+and 
+
+[ 19 1 K.  Konolige,  On  the  relation  between  default  and  autoepistemic 
+1201  H.J.  Lcvesque,  All  I  know:  a  study  in  autoepistemic 
+121 1 V.  Lifschitz,  Computing 
+I22  j  V.  Lifschitz,  Formal 
+
+circumscription, 
+theories  of  action, 
+Kaufmann,  Los  Altos,  CA,  1987)  35-57. 
+
+in:  Proceedings 
+in:  Tlze  Frame  Problem 
+
+logic,  Artij  Intell.  35  ( 1988)  343-382. 
+
+logic,  ArtiJ:  Intell.  42  ( 1990)  381-386. 
+
+IJCAI-85,  Los  Angeles,  CA  ( 198s)  121-127. 
+(Morgan 
+
+in  Artificial 
+
+Intelligence 
+
+1231  F,  Lin.  Specifying 
+
+the  effects  of  indeterminate 
+
+actions,  Tech.  Rept.,  Computer  Science  Department, 
+
+University  of  Toronto,  Toronto,  Ont.  ( 1996). 
+
+1241  F,  Lin  and  R.  Reiter,  State  constraints 
+125  I F. Lin  and  Y.  Shoham,  Epistemic 
+
+logic%  in:  Proceedings  Third 
+Conference  on  Theoreticul  Aspects  of  Reasoning  about  Knowledge,  Pacific  Grove,  CA  ( 1990)  11 I-120. 
+
+for  fixed-points  non-monotonic 
+
+semantics 
+
+revisited,  J.  Logic  Cornput.  4  ( 1994)  655-678. 
+
+G.  Amuti  et  ol./Arfijiciuf 
+
+Intelligence 
+
+93  (1997)  169-199 
+
+199 
+
+[ 26  1 V.W.  Marek.  G.  Schwarz  and  M.  Truszczynski,  Modal  nonmonotonic 
+
+logics: 
+
+ranges,  characterization, 
+
+computation, 
+
+.I. ACM  40  ( 1993)  963-990. 
+[ 27  1 V.W.  Marek  and  M.  Truszczynski,  Modal 
+
+(1990)  275-302. 
+
+logic 
+
+for  default 
+
+reasoning, 
+
+in:  Arm.  Math.  Art$ 
+
+frztefl.  1 
+
+128  j  V.W. ivlarek  and  M.  Truszczynski,  ~~~~~~~~~~~~~~~~ 
+
+l.o@c,  Context-Dependerzf  Rensonina 
+
+f Springer,  Berlin, 
+
+1993). 
+
+form  of  nonmonotonic 
+
+[ 29  / J.  McCarthy,  Circumscription-a 
+[ 301  D.  McDermott,  Non-monotonic 
+[ 3 I 1 D.  McDermott 
+I32 1 C.  Mervis  and  E.  Rosh,  Categorization 
+133 1 E Montagna,  The  predicate  modal  logic  of  provability,  Notre  Dame  J.  Fi~rmul  Logic  25  ( 1984)  179-189. 
+and  finite 
+134)  R.  Montague, 
+
+lfllefi.  13  ( 1980)  27-39. 
+reasoning,  A@ 
+logic  II:  non-monotonic  modal  theories,  J.  ACM  29  ( 1982)  33-57. 
+
+of  natural  objects,  Annual  Rev.  Ps~chol.  32  ( I98  1)  89-I  IS. 
+
+of  modality.  with  corollaries 
+
+and  J.  Doyle,  Non-monotonic 
+
+Intell.  13  ( 1980)  41-72. 
+
+on  reflexion  principfes 
+
+logic  I,  Artq: 
+
+Syntactical 
+
+treatments 
+Acfa  Philus.  Fennicu  16  ( 1963) 
+
+IS3-  167. 
+
+axiomatizability, 
+j 35 j  R.  Moore,  Semantical 
+{ 36  j  R.  Moore,  Possibly-world 
+N~~nmctnomnic  Reasoning 
+
+considerations 
+
+on  nontnonotonic 
+
+logics.  Arfif. 
+
+Infell.  25  ( 1985)  75-94. 
+
+semantics 
+
+for  autoepistemic 
+
+logic, 
+
+in:  M.  Ginsberg, 
+
+ed.,  Rend&~ 
+
+in 
+
+(Morgan  Kaufmann.  Los  Altos,  CA,  1987)  137-  142. 
+
+I37  /  Il.  Perlis,  Languages  with  self-reference 
+I.18 1 Il.  Perlis.  Languages  with  self-reference 
+
+I:  foundations,  Art& 
+
+Infell.  25  ( 1985)  301-322. 
+
+II:  knowledge, 
+
+belief,  and  modality.  Artif:  Intel/.  34  ( 1988) 
+
+179-212. 
+
+[ 39  1 R.  Reiter,  A  logic  for  default  reasoning,  Arti$ 
+/ 40  /  R.  Reiter,  Circumscription 
+implies  predicate 
+Pittsburgh,  P4  (1982) 
+
+183-188. 
+
+InteU.  13  ( 1980)  81-132. 
+
+completion 
+
+(sometimes), 
+
+in:  Proceedings 
+
+AAAI-82, 
+
+[ 4 I 1 R.  Reiter,  Nonmonotonic 
+
+reasoning, 
+
+in:  ~~~~111~ Review  of  C~~m~~~tter Science  2  (Annual  Reviews 
+
+inc., 
+
+Palo  Alto,  CA,  1987)  147-186. 
+142  I G. Schwarz.  Autoepistemic  modal 
+
+logic%  in:  Proceedings  Third  Cwzfererzce  on  Theoreticnl  Aspects  c!# 
+
+Rwxoning 
+
+[ 43  I G.  Schwarz,  Minimal  model 
+
+czbouf  Knowledge,  Pacific  Grove,  CA  ( 1990)  97-109. 
+semantics 
+
+for  nonmonotonic 
+
+Internufioncd  Workshop  on  Logic  Propamming 
+
+260-274. 
+
+logics, 
+First 
+und  Nonmonotonic  Reasoning,  Washington,  DC  ( 199 I ) 
+
+in:  Proceedings 
+
+modal 
+
+144  1 G. Schwarz,  Minimal  model  semantics 
+
+for  nonmonotonic  modat 
+
+iogics, 
+
+in:  Proceedings  Seventh  Ann~ff/ 
+
+IEEE  S~n~l?~~.~il~~l on  Logic 
+
+in  C~~n~p~fer Science,  Santa  Cruz,  CA  ( 1992)  34-43. 
+
+[ 45  f G. Schwarz, 
+
+In  search  of  a  “true” 
+
+logic  of  knowledge: 
+
+the  nontnonotonic 
+
+perspective,  Artg 
+
+fnfeif.  79 
+
+(1995)  39-63. 
+
+[ 46  ]  G.  Schwarz  and  M.  Truszczynski,  Modal  logic  S4f  and  the  minimal  knowledge  paradigm, 
+
+in:  Proceedings 
+Third  Conference  on  Theoretical  Aspects  of  Reusnning  about  Knowledge,  Pacific  Grove,  CA  ( 1990)  97- 
+109. 
+
+[ 47  1 G. Schwarz  and  M.  Truszczynski,  Minimal  knowledge  problem:  a  new  approach,  Artif: 
+
+Infell.  67  ( 1994) 
+
+113-141. 
+
+148  1 C.  Smotynski,  Se~Re~r~~2~e  and  Mrtdrri  Logic 
+1491  C.  Smorynski,  Quantified  modal 
+
+(Springer,  Berlin,  1985). 
+logic  and  self-reference,  Notre  Dame 
+
+.I.  FormuI 
+
+.&$c  28  ( 1987) 
+
+356-370. 
+
+in  which  self-reference 
+
+I SO 1 R.  Smullyan,  Languages 
+[ 5 I ]  R.  Smullyan,  Diagonrdization 
+IS2  ]  R.  Solovay,  Provability 
+I S3 1 R.  Stalnaker,  A  note  on  non-monotonic  modal 
+I 54  j  .4.  Tarski,  Srmre  Methndob~icul 
+
+interpretations 
+
+invesfi~afions 
+
+and  Self-Reference 
+
+of  modal 
+
+is  possible,  J.  S)ambolic  Logic  22  ( 19.57)  5.5-67. 
+
+(Oxford  University  Press,  Oxford,  1994). 
+
+logic, 
+logic,  Art$ 
+
+Israel  J.  Math.  25  ( 1976)  287-304. 
+
+Intel/.  64  ( 1993)  183-196. 
+
+on  fhe  Definability 
+
+ofC(mcepfs 
+
+(Oxford  University  Press, 
+
+Oxford,  1956). 
+
+1551 M.  Truszczynski,  Modal 
+
+inte~retations 
+
+of  default 
+
+logic. 
+
+in:  Pr[~~gedi~~.~  IJCAI-91, 
+
+Sydney 
+
+(1991) 
+
+393-398. 
+
+

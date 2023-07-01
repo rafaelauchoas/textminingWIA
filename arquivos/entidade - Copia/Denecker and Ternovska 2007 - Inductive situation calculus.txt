@@ -1,0 +1,2897 @@
+Artiﬁcial Intelligence 171 (2007) 332–360
+
+www.elsevier.com/locate/artint
+
+Inductive situation calculus
+
+Marc Denecker a,∗, Eugenia Ternovska b
+
+a Department of Computer Science, KU Leuven, Belgium
+b School of Computing Science, Simon Fraser University, Canada
+
+Received 15 November 2006; received in revised form 7 February 2007; accepted 8 February 2007
+
+Available online 20 February 2007
+
+Abstract
+
+Temporal reasoning has always been a major test case for knowledge representation formalisms. In this paper, we develop an
+inductive variant of the situation calculus in ID-logic, classical logic extended with inductive deﬁnitions. This logic has been
+proposed recently and is an extension of classical logic. It allows for a uniform representation of various forms of deﬁnitions,
+including monotone inductive deﬁnitions and non-monotone forms of inductive deﬁnitions such as iterated induction and induction
+over well-founded posets. We show that the role of such complex forms of deﬁnitions is not limited to mathematics but extends to
+commonsense knowledge representation. In the ID-logic axiomatization of the situation calculus, ﬂuents and causality predicates
+are deﬁned by simultaneous induction on the well-founded poset of situations. The inductive approach allows us to solve the
+ramiﬁcation problem for the situation calculus in a uniform and modular way. Our solution is among the most general solutions
+for the ramiﬁcation problem in the situation calculus. Using previously developed modularity techniques, we show that the basic
+variant of the inductive situation calculus without ramiﬁcation rules is equivalent to Reiter-style situation calculus.
+© 2007 Elsevier B.V. All rights reserved.
+
+Keywords: Knowledge representation; Inductive deﬁnitions; Situation calculus
+
+1. Introduction
+
+ID-logic1 [5,8,10] is an extension of classical logic with inductive deﬁnitions (ID). In mathematical texts, inductive
+deﬁnitions are usually represented as collections of rules, which represent the base case and inductive cases. Inductive
+rules may be monotone or non-monotone. An example of the latter is the following rule in the deﬁnition of the truth
+relation |=:
+
+I |= ¬ψ if
+
+I (cid:3)|= ψ,
+
+which states that I satisﬁes ¬ψ if I does not satisfy ψ. It is well known that in general, inductive deﬁnitions cannot
+be represented in ﬁrst-order logic (FO). ID-logic extends classical logic with a construction that allows for a uniform
+
+* Corresponding author.
+
+E-mail address: Marc.Denecker@cs.kuleuven.be (M. Denecker).
+
+1 The term ID-logic was introduced by the ﬁrst author in [5] to denote a logic of sets of classical ﬁrst-order logic sentences and deﬁnitions.
+This logic was extended to its current deﬁnition in [8] and in [7], where it was called NMID-logic in order to emphasize that the logic deals with
+non-monotone inductive deﬁnitions (NMIDs).
+
+0004-3702/$ – see front matter © 2007 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2007.02.002
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+333
+
+representation of different sorts of inductive deﬁnitions; moreover, this representation preserves the rule-based nature
+of deﬁnitions in mathematical texts. The semantics of this new construct is based on the well-founded semantics of
+logic programming [41]. This semantics correctly formalizes the semantics of different types of deﬁnitions that can
+be found in mathematics, e.g. recursion-free deﬁnitions, monotone inductive deﬁnitions, and non-monotone inductive
+deﬁnitions such as inductive deﬁnitions over well-founded orders and iterated inductive deﬁnitions [4,6].
+
+ID-logic occupies an interesting place in the spectrum of logics used in mathematics, computer science and knowl-
+edge representation. As an extension of classical logic with a ﬁxpoint semantics for inductive deﬁnitions, it can be
+viewed as a new element in the family of ﬁxpoint logics. Monotone ﬁxpoint logics have their origin in the logical
+study of monotone inductive deﬁnitions [1,28]. The contribution of ID-logic is that it formalizes two non-monotone
+inductive principles (i.e., inductive deﬁnition over a well-founded order and iterated inductive deﬁnition), which differ
+from the non-monotone principle based on the inﬂationary ﬁxpoint studied in the inﬂationary ﬁxpoint logic IFP [16].
+ID-logic is similar to description logics [2] in its separation of deﬁnitional and assertional knowledge, but it allows
+deﬁnitions for n-nary predicates and non-monotone inductive deﬁnitions. In addition, ID-logic is formally an exten-
+sion of Logic Programming and its variants such as Abductive Logic Programming and Datalog. In this way, ID-logic
+induces an alternative informal semantics for logic programming, solidly based on the mathematical principle of in-
+ductive deﬁnitions. As such, the study of semantical and computational aspects of ID-logic can lead to synergy and
+integration of all these different areas.
+
+On the computational level, ID-logic has recently been proposed as the underlying language for a constraint pro-
+gramming framework [27]. This framework is based on ideas from descriptive complexity theory and is similar in
+some respects to Answer Set Programming [20,29]. A problem instance is a ﬁnite structure, and a problem speciﬁca-
+tion is an ID-logic formula deﬁning the relationship between an instance and its solutions. Solving a problem amounts
+to expanding the structure with new relations to satisfy the formula. Depending on the expressiveness allowed, the
+framework captures various complexity classes, including P and NP. Several ID-logic solvers have been developed
+[21,30].
+
+The focus of this paper is on knowledge representation and modeling in ID-logic. Although diverse forms of
+inductive deﬁnitions occur frequently in mathematics, there is little awareness in the logic and KR community of
+non-monotone forms of inductive deﬁnitions and of the potential role of inductive deﬁnitions for knowledge repre-
+sentation. Thus, a central aim of this paper is to clarify and illustrate these types of deﬁnitions. We provide examples
+of monotone deﬁnitions, deﬁnitions by induction over well-founded order and iterated inductive deﬁnitions and relate
+these to other knowledge representation principles such as completion and circumscription. Moreover, we show that
+the role of these complex forms of deﬁnitions is not limited to mathematics but extends to commonsense knowledge
+representation.
+
+A second major purpose of the paper is to illustrate the use of a “tool set” from [8,42] for analyzing deﬁnitions,
+consisting of different modularity theorems, totality theorems and translation theorems. Our experiment demonstrates
+the effectivity of the tool set for breaking up large complex deﬁnitions into conjunctions of smaller and simpler
+ones, for translating deﬁnitions into classical logic, and for proving consistency and correctness of ID-logic theo-
+ries.
+
+The domain of application selected for our study is temporal reasoning. Since the early days of AI, temporal rea-
+soning, in particular the situation calculus, has been a major test case for knowledge representation languages. In [25],
+McCarthy and Hayes exposed the famous frame problem, showing the difﬁculty of axiomatizing actions and causa-
+tion in classical logic. This problem has (partly) motivated the development of the area of non-monotonic reasoning,
+leading to non-monotone logics such as default logic [32] and non-monotone reasoning techniques in classical logic
+such as circumscription [23] and completion [3]. Many different temporal reasoning formalisms were developed. Cur-
+rently, the most widely adopted formalization of situation calculus is the one in classical logic developed by Reiter and
+his collaborators in the nineties [18,31,34]. Other well-known solutions are Event calculus [35], Fluent calculus [39],
+non-monotonic logic approaches such as the (many extensions of) the language A [14] and non-monotonic causal
+theories [15,22].
+
+We present here a formalization of situation calculus in ID-logic, which we call the inductive situation calculus.
+Temporal reasoning is a natural application for using inductive deﬁnitions on the set of situations. In Reiter’s situ-
+ation calculus for example, the description of the initial state may be viewed as the base case, and successor state
+axioms may be seen the inductive case. By axiomatizing situation calculus in ID-logic, we explicitate the deﬁnitional
+structure underlying situation calculus. The main component of the inductive situation calculus will be a deﬁnition
+
+334
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+of ﬂuent and causality predicates by simultaneous, non-monotone, iterated induction in the well-founded set of situ-
+ations. This deﬁnition and its components are natural illustrations of each of the above mentioned types of inductive
+deﬁnitions.
+
+A ﬁrst beneﬁt in explicitating the deﬁnitional structure of situation calculus, is that we considerably gain on the
+representational level. In particular, the inductive situation calculus is more expressive and modular than Reiter’s
+classical logic version. On the level of modularity, in the inductive situation calculus it is possible to represent ef-
+fects of speciﬁc actions on speciﬁc ﬂuents in speciﬁc circumstances by individual effect rules. It is well-known that
+increased modularity may improve elaboration tolerance [24]. On the level of expressivity, the inductive situation
+calculus can handle recursive ramiﬁcations, where an effect to one ﬂuent may cause an effect to another ﬂuent and
+vice versa. The challenge in handling such recursive ramiﬁcations is to avoid erroneous models in which the re-
+lated ﬂuents “cause” each other and become true simultaneously without external cause. By interpreting effect rules
+as deﬁnitional rules, such spontaneous generation of effects is avoided. As a consequence, the inductive situation
+calculus currently provides the most general solution of the ramiﬁcation problem. It also provides the most general
+solution for deﬁning ﬂuents in situation calculus, since ﬂuents can be deﬁned by monotone or non-monotone inductive
+deﬁnitions.
+
+We also prove a range of correctness results of the inductive situation calculus, which are obtained using the above
+mentioned tool set. Our strategy will be to break up the large simultaneous inductive deﬁnition of all ﬂuents in a
+conjunction of small component deﬁnitions, to prove their totality and to translate them into classical logic. The main
+results are the following:
+
+• We use the tool set to prove equivalence between Reiter’s situation calculus and a subformalism of the inductive
+situation calculus. More precisely, our techniques allow us to translate this subformalism into classical ﬁrst-order
+logic theories, closely related and provably equivalent to Reiter style situation calculus.
+
+• Extending the previous result, we show that a much broader class of inductive situation calculus theories can
+be translated into extensions of Reiter’s situation calculus in ﬁrst- or second-order logic, without using the in-
+ductive deﬁnition construct of ID-logic. However, the advantage of using explicit inductive deﬁnitions is that
+different effect and ramiﬁcation theories, which can be modeled in a uniform way in the inductive situation
+calculus, require different translation policies, using different combinations of predicate completion and circum-
+scription.
+
+• We will prove an initial state expansion property for the inductive situation calculus. This theorem guarantees that
+for each model satisfying the subtheory that axiomatizes the initial situation, and each extension of this model
+interpreting the action symbols, there is a unique way to extend this structure into a model of a complete inductive
+situation calculus theory. To demonstrate the importance of this property, we discuss two of its implications. First,
+the inductive situation calculus satisﬁes the well-known property of relative satisﬁability [31]: a theory in it is sat-
+isﬁable if and only if the subtheory of the initial state is satisﬁable. Satisﬁability of a ﬁrst-order or ID-logic theory
+is, in general, an undecidable property. The initial state expansion property thus reduces the problem of proving
+satisﬁability of an inductive situation calculus to the smaller problem of proving satisﬁability of the theory of the
+initial situation.
+Second, this proposition shows that the inductive situation calculus correctly solves the frame problem. Recall
+from [25] that, put simply, the frame problem is the problem of representing what does not change as a result of
+performing actions. In ﬁrst order logic, it turned out that a “naive” situation calculus theory, consisting merely
+of effect and inertia formulas, provides only a weak, highly incomplete axiomatization of the temporal reasoning
+domain, in the sense that the theory accepts many unintended models which differ from the intended models by
+the fact that ﬂuents become true spontaneously or are caused by the wrong type of action. To ﬁnd elegant and
+general solutions for this problem turned out to be challenging. Recall Hank and McDermot’s famous Turkey
+Shooting experiment [17], in which all early non-monotone approaches to temporal reasoning were shown to be
+too weak, in the sense of accepting unintended models. Ultimately, it took the knowledge representation com-
+munity about two decennia to come up with sufﬁciently general theories that avoid these unintended models. In
+the inductive situation calculus, this problem is excluded from the start, because successor states are deﬁned in
+terms of the initial state; hence, an initial state, together with a choice of actions, can be extended in exactly one
+model. This model is constructed using the effect rules and correctly captures the state transitions of the dynamic
+system. Thus, the initial state expansion property guarantees that there are no unintended models of an inductive
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+335
+
+situation calculus unless its initial situation is an unintended model of the subtheory of the initial situation. The
+initial state expansion property is, in this respect, an important correctness property of formalizations of situation
+calculus.
+
+• Our results imply that the initial state expansion property and all its implications are satisﬁed by Reiter’s
+situation calculus as well, since this formalism is (equivalent to) a subformalism of the inductive situa-
+tion calculus. To our knowledge, this is the ﬁrst time that such a theorem was proven for situation calcu-
+lus.
+
+There are other topics in this paper which are of wider interest for the history of knowledge representation and the
+
+philosophy of logic.
+
+• ID-logic achieves a coherent and conceptually clean integration of classical monotonic logic and logic pro-
+gramming, two knowledge representation paradigms which so far seemed to be incompatible. Our experiment
+illustrates the different roles of these formalisms. In particular, integrating (extended forms of) logic programs
+with classical logic compensates for the latter’s representational weakness on inductive deﬁnability.
+
+• In a similar spirit, ID-logic is also a clean and coherent integration of monotone and non-monotone logic and
+displays both monotone and non-monotone behaviour. ID-logic extends classical logic with a new type of atomic
+formulae, the deﬁnition, which is a set of deﬁnitional implications. As such, ID-logic is a monotone logic, in the
+sense that adding an ID-logic formula to an ID-logic theory preserves all logical consequences of the original the-
+ory. On the other hand, extending an ID-logic deﬁnition with a new deﬁnitional implication has a non-monotone
+effect and does not preserve logical consequences. For instance, adding the rule ∀x(p(x) ← x = b) to the deﬁni-
+tion {∀x(p(x) ← x = a)} deletes the logical consequence ¬p(b). Consequently, the deﬁnitional implications are
+the non-monotone modules of ID-logic.2
+
+• The deﬁnitional implication is an interesting, non-standard sort of conditional which, to the best of our knowledge,
+has not been studied from a philosophical logic perspective. The properties of this non-monotone, non-truth-
+functional connective are nicely illustrated in the inductive situation calculus, where deﬁnitional implications
+are used to represent effects of speciﬁc actions on speciﬁc ﬂuents in speciﬁc circumstances. Interestingly, these
+rules are very similar to the so called effect rules in Reiter’s situation calculus. Semantically however, there is an
+important difference between these rules in the two formalisms. In Reiter’s situation calculus, they are interpreted
+as material implications, and must be completed by additional axioms to obtain the ﬁnal axiomatization in terms of
+successor state axioms. In the inductive situation calculus, effect rules are interpreted as deﬁnitional implications,
+which entail the corresponding material implications, but are not equivalent to them. As a consequence, we obtain
+an axiomatization which is equivalent to Reiter’s solution to the frame problem in a natural way, without adding
+anything to our effect rules. In this sense, we claim that Reiter’s situation calculus makes hidden use of inductive
+deﬁnitions.
+
+• The natural and effective use of deﬁnitional rules for representing effects (including recursive ramiﬁcations!)
+also suggests an unexpected and intriguing relationship between inductive deﬁnitions and causality. In retrospect,
+this is not so surprising at all, since an inductive deﬁnition can be understood as a description of a mathematical
+construction process, where the deﬁnitional implications represent atomic operations executed during the process.
+But this is exactly the role of an effect rule in a causal theory. This topic deserves a deeper investigation, which
+might lead to a better understanding of the role of inductive deﬁnitions and logic programming in knowledge
+representation and philosophical logic.
+
+The paper is structured as follows. In the next section, we deﬁne ID-logic and present the modularity, totality and
+translation theorems that form the tool set using which we will analyze the inductive situation calculus. In Section 3,
+we review the more traditional variant of the situation calculus, which is similar to [34]. In the rest of the paper,
+
+2 Be aware that in this paper the term monotonicity is used in two different meanings, one stemming from inductive deﬁnability, the other from
+knowledge representation. A “monotone” inductive deﬁnition is—roughly—a deﬁnition without negation in rule bodies but the subformalism of
+“monotone” inductive deﬁnitions is non-monotone in the knowledge representation sense, since adding (monotone) deﬁnitional rules to such a
+deﬁnition is a non-monotone operation, as illustrated by the example.
+
+336
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+we present the formalism of the inductive situation calculus, address the ramiﬁcation problem and consider several
+detailed examples.
+
+This paper extends the conference version [7].
+
+2. Preliminaries
+
+2.1. Preliminaries from logic
+
+We begin by ﬁxing notation and terminology for the basic syntactic and semantic notions related to ﬁrst- and
+
+second-order logic.
+
+We assume an inﬁnite supply of distinct symbols, which are classiﬁed as follows:
+
+1. Logical symbols:
+
+(a) Parentheses: (,);
+(b) Logical connectives: ∧, ¬;
+(c) Existential quantiﬁer: ∃;
+(d) Binary equality symbol: = (optional);
+(e) Two propositional symbols: t and f.
+
+2. Non-logical symbols:
+
+(a) countably many object symbols. Object symbols are denoted by low-case letters;
+(b) for each positive integer n > 0, countably many n-ary function symbols of arity n. Function symbols are
+
+denoted by low-case letters;
+
+(c) for each positive integer n, countably many n-ary relation symbols, also called predicate or set symbols of
+
+arity n. We use upper-case letters to denote predicates.
+
+As usual, we identify object symbols with 0-ary function symbols and propositional symbols with predicate symbols
+of arity 0.
+
+Remark 1. In most parts of this paper, we do not make a formal distinction between variable and constant symbols.
+Symbols occurring free in a formula can be viewed as constants. Symbols in the scope of a quantiﬁer are viewed
+as variables. In examples, we tend to quantify over x, y, X, Y , and leave c, g, f and P , Q free and treat them as
+constants. This convention allows us to simplify the exposition by considering several cases at once.
+
+We deﬁne a vocabulary as any set of non-logical symbols. We denote vocabularies by τ, τ o
+
+Δ, . . . . We use σ , σ1,
+σ2 etc., to refer to an arbitrary symbol of the vocabulary. We write ¯σ to denote a sequence of symbols (σ1, σ2, . . .)
+or, depending on the context, the set of symbols {σ1, σ2, . . .}. Likewise, ¯X denotes a sequence or a set of relational
+symbols (i.e., set variables or constants), and ¯x is used to denote a sequence or a set of object symbols, etc.
+
+A term is deﬁned inductively as follows:
+
+– an object symbol is a term;
+– if t1, . . . , tn are terms and f is an n-ary function symbol, where n (cid:2) 1, then f (t1, . . . , tn) is a term.
+
+A formula is deﬁned by the following induction:
+
+– if P is an n-ary predicate constant or variable, and t1, . . . , tn are terms then P (t1, . . . , tn) is a formula, called an
+
+atomic formula or simply an atom;
+
+– if φ, ψ are formulas, then so are ¬φ, φ ∧ ψ;
+– if x is an object symbol, f a function symbol, X is a predicate symbol and φ is a formula, then ∃x φ, ∃f φ and
+
+∃X φ are formulas.
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+337
+
+A bounded occurrence of symbol σ in formula φ is an occurrence of σ in a sub-formula ∃σ ψ of φ. A free
+occurrence of σ in φ is an unbounded occurrence. The set of symbols which occur free in φ is denoted free(φ). This
+set can also be deﬁned inductively:
+
+– If φ is atomic, say of the form A(t1, . . . , tn) then the set free(φ) is the set of all object, relational and functional
+
+symbols occurring in φ;
+
+– free(¬φ) := free(φ) ;
+– free(φ ∧ ψ) := free(φ) ∪ free(ψ);
+– free(∃σ φ) := free(φ) \ {σ }.
+
+A relation symbol X has a negative (positive) occurrence in formula F if X has a free occurrence in the scope of an
+odd (even) number of occurrences of the negation symbol ¬.
+
+A formula φ is a formula over vocabulary τ if its free symbols belong to τ (free(φ) ⊆ τ ). We use SO[τ ] to denote
+the set of all formulas over τ ; and we use FO[τ ] to denote the set of ﬁrst-order formulas over τ , that is those without
+quantiﬁed predicate or function variables.
+
+We use (φ ∨ ψ), (φ ⊃ ψ), (φ ≡ ψ), ∀xφ, ∀f φ and ∀Xφ, in the standard way, as abbreviations for the formulas
+
+¬(¬φ ∧ ¬ψ), ¬(φ ∧ ¬ψ), ¬(φ ∧ ¬ψ) ∧ ¬(ψ ∧ ¬φ), ¬∃x(¬φ), ¬∃f (¬φ), ¬∃X(¬φ), respectively.
+
+Having deﬁned the basic syntactic concepts, we deﬁne the semantic concepts. Let A be a non-empty set. A value
+for an n-ary relation (function) symbol σ of vocabulary τ in A is an n-ary relation (function) in A. A value for a
+0-ary function symbol, i.e., an object constant or variable, is an element of the domain A. A value for a 0-ary relation
+symbol Y is either ∅ or {( )}, the singleton of the empty tuple. We identify these two values with false, respectively
+true. The value of the equality symbol is always the identity relation on A. The value of t is {( )} (true) and the value
+of f is ∅ (false).
+
+A structure I for a given vocabulary τ (in short, a τ -structure) is a tuple of a domain dom(I ), which is a non-
+empty set, and a mapping of each symbol σ in τ to a value σ I in dom(I ). If σ ∈ τ and I is a τ -structure, we say that
+I interprets σ . We also use letters J , K, L, M to denote structures. Given I , τI denotes the set of symbols interpreted
+by I .
+
+Let us introduce notation for constructing and modifying structures with a shared domain A. Let I be a τ -structure,
+and ¯σ be a tuple of symbols not necessarily in τ . Structure I [ ¯σ : ¯v] is a τ ∪ ¯σ -structure, which is the same as I , except
+symbols ¯σ are interpreted by values ¯v in dom(I ). Given a τ -structure I and a sub-vocabulary τ (cid:15) ⊆ τ , the restriction
+of I to the symbols of τ (cid:15) is denoted I |τ (cid:15) . Vice versa, I is called an extension of Io if I |τIo
+
+Let t be a term, and let I be a structure interpreting each symbol in t. We deﬁne the value t I of t under I by the
+
+= Io.
+
+usual induction:
+
+– if t is an object symbol σ , then t I is σ I , the value of σ in I ;
+– if t = f (t1, . . . , tn), then t I := f I (t I
+
+1 , . . . , t I
+
+n ).
+
+Next we deﬁne the satisfaction or truth relation |=. Let I be a structure and let φ be a formula such that each free
+symbol in φ is interpreted by I . We deﬁne I |= φ (in words, φ is true in I , or I satisﬁes φ) by the following standard
+induction:
+
+– I |= X(t1, . . . , tn) if (t I
+– I |= ψ1 ∧ ψ2 if I |= ψ1 and I |= ψ2;
+– I |= ¬ψ if I (cid:3)|= ψ;
+– I |= ∃σ ψ if for some value v of σ in the domain dom(I ) of I , I [σ : v] |= ψ.
+
+n ) ∈ XI ;
+
+1 , . . . , t I
+
+Note that the truth of a formula φ is only well-deﬁned in a structure interpreting each free symbol of φ. We shall
+denote the truth value of φ in I by φI , i.e., if I |= φ then φI is true and otherwise, it is false.
+
+We use notation φ(x1, . . . , xn) to emphasize that symbols x1, . . . , xn are distinct and are free in φ. Sometimes, we
+wish to investigate the truth value of a formula φ as a function of the values assigned to a speciﬁc tuple of symbols ¯σ .
+We then call these symbols the parameters of φ and denote the formula by φ( ¯σ ). Let I be some structure and let ¯v
+be a tuple of values for ¯σ in the domain dom(I ). We often write I |= φ[ ¯v] to denote I [ ¯σ : ¯v] |= φ. If X is an n-ary
+
+338
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+relation symbol and ¯d is an n-tuple of elements of some domain A, then X[ ¯d] is a domain atom in A. For I a structure
+with domain A, the value of X[ ¯d] in I is true if ¯d ∈ XI ; otherwise it is false. For a vocabulary τ , we deﬁne At τ
+A as the
+set of all domain atoms in domain A over relation symbols in τ .
+
+For a set ¯X of relation symbols, we deﬁne At
+
+in ¯X. In general, for a given vocabulary τ with predicates ¯X, we denote At
+
+¯X
+A as the set of all domain atoms in domain A over relation symbols
+¯X
+A as At τ
+A.
+
+2.2. ID-logic
+
+In this subsection, we describe ID-logic [10]. ID-logic was introduced by the ﬁrst author in [5] as a logic of sets of
+ﬁrst order logic sentences and deﬁnitions. In [8] and in [7], this logic was extended to its current deﬁnition by allowing
+arbitrary boolean combinations of atoms and deﬁnitions.
+
+Let us ﬁx some vocabulary τ . A new binary connective ← is called the deﬁnitional implication. A deﬁnition Δ is
+
+a set of rules of the form
+∀ ¯x(X(¯t) ← ϕ),
+
+where ¯x is a tuple of object variables, X is a predicate symbol (i.e., a predicate constant or variable) of some arity r,
+¯t is a tuple of terms of length r of the vocabulary τ , ϕ is an arbitrary ﬁrst-order formula of τ , which may contain
+free object or relational variables. The deﬁnitional implication ← must be distinguished from material implication
+denoted ⊃.
+
+Note that in front of rules, we allow only universal quantiﬁers. In the rule ∀ ¯x(X(¯t) ← ϕ), X(¯t) is called the head
+and ϕ is the body of the rule. A deﬁned symbol of Δ is a relation symbol that occurs in the head of at least one rule of
+Δ; other relation, object and function symbols are called open. Let τ be a vocabulary including all free symbols of Δ.
+The subset of deﬁned symbols of deﬁnition Δ is denoted τ d
+Δ. The set of open symbols of Δ in τ is denoted τ o
+Δ. The
+= τ , and τ d
+sets τ d
+Δ
+A well-formed formula of ID-logic over vocabulary τ is deﬁned by the following (monotone) induction:
+
+Δ form a partition of τ , i.e., τ d
+Δ
+
+Δ and τ o
+
+∩ τ o
+Δ
+
+∪ τ o
+Δ
+
+= ∅ .
+
+(1) If X is an n-ary predicate symbol, and t1, . . . , tn are terms then X(t1, . . . , tn) is a formula.
+(2) If Δ is a deﬁnition then Δ is a formula.
+(3) If φ, ψ are formulas, then so is (φ ∧ ψ).
+(4) If φ is a formula, then so is (¬φ).
+(5) If φ is a formula, then ∃σ φ is a formula (σ can be either a ﬁrst- or second-order symbol).
+
+A formula φ is an ID-logic-formula over vocabulary τ if the set of free symbols of φ is a subset of τ . It is a FO(ID)[τ ]-
+formula if it does not contain any second-order quantiﬁers, and it is a SO(ID)[τ ]-formula otherwise.
+
+As an example, in the language of the natural numbers, the following SO(ID)[τ ] formula, where τ = {0, s/1},
+expresses that there is a set which is the least set containing 0 and closed under taking successor numbers, and which
+contains all domain elements. It is equivalent to the standard induction axiom and to the domain closure axiom:
+
+(cid:2)(cid:3)
+
+∃N
+
+∀x (N(x) ← x = 0),
+∀x (N(s(x)) ← N(x))
+
+(cid:4)
+
+(cid:5)
+∧ ∀xN(x)
+
+.
+
+(1)
+
+Note that this formula contains an existential quantiﬁcation over the second-order variable N . The second-order
+quantiﬁcation can be avoided by skolemizing N and using a predicate constant instead. In fact, all examples of
+second-order quantiﬁcation that appear in this paper, are of the same kind as in this example and can be eliminated in
+the same way, by skolemization of the existentially quantiﬁed second-order variable.
+
+The semantics of the ID-logic is an extension of classical logic semantics with the well-founded semantics from
+Δ-structure Io.
+
+logic programming [6,12,40]. We now deﬁne the well-founded model of a deﬁnition Δ extending a τ o
+For each deﬁned symbol X of Δ, we deﬁne
+
+ϕX( ¯x) := ∃ ¯y1( ¯x = ¯t1 ∧ ϕ1) ∨ · · · ∨ ∃ ¯ym( ¯x = ¯tm ∧ ϕm),
+
+(2)
+where ¯x is a tuple of new variables, and ∀ ¯y1(X(¯t1) ← ϕ1), . . . , ∀ ¯ym(X(¯tm) ← ϕm) are the rules of Δ with X in the
+head. For every deﬁned symbol Y , we introduce a new relation symbol Y (cid:15) of the same arity. We obtain ϕ(cid:15)
+X from ϕX( ¯x)
+by substituting Y (cid:15) for each negative occurrence of each deﬁned symbol Y .
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+339
+
+For any pair of τ -structures I, J extending Io, deﬁne IJ as the extension of Io which interprets each deﬁned symbol
+X of Δ as XI , the value of X in I , and each new symbol X(cid:15) as XJ , the value of X in J . The basis of the construction
+of the well-founded model extending Io is the operator TΔ which maps pairs I, J of extensions of Io to a structure
+I (cid:15), also extending Io, such that for each deﬁned symbol X, XI (cid:15) := { ¯a | IJ |= ϕ(cid:15)
+[ ¯a]}. Thus, the operator TΔ evaluates
+positive occurrences of deﬁned symbols in rule bodies by I , and negative occurrences of deﬁned symbols by J .
+
+X
+
+In the lattice of τ -structures extending Io, the operator TΔ is monotone in its ﬁrst argument and anti-monotone
+in its second argument. Deﬁne the stable3 operator STΔ as follows: STΔ(J ) := lfp(TΔ(·, J )). This stable operator is
+Δ), and
+anti-monotone, hence its square is monotone and has a least and largest ﬁxpoint. We deﬁne Io
+Io
+
+Δ↑ := gfp(ST 2
+For an intuitive explanation of the well-founded semantics and an argument why it formalizes different forms of
+
+Δ↓ := lfp(ST 2
+
+Δ).
+
+inductive deﬁnitions, we refer to [6].
+
+Deﬁnition 1. Deﬁnition Δ is total in τ o
+the Δ-extension of Io and is abbreviated as Io
+τ o
+Δ if Δ is total in each τ o
+of T .
+
+Δ-structure Io if Io
+
+Δ-structure extending Ko. Δ is total in a theory T over τ o
+
+Δ↓ = Io
+
+Δ↑) is called
+Δ↑. When this is the case, Io
+Δ. More generally, Δ is total in a structure Ko interpreting a subset of
+Δ-model
+
+Δ if Δ is total in each τ o
+
+Δ↓ (or Io
+
+The aim of an inductive deﬁnition is to deﬁne its deﬁned symbols. This is the case only when Io
+
+Δ↓ = Io
+
+Δ↑.
+
+Therefore, a natural quality requirement for a deﬁnition is that it is total.
+
+Deﬁnition 2 (φ true in structure I ). Let φ be a ID-logic-formula and I any structure interpreting all free symbols
+of φ. We deﬁne I |= φ (in words, φ is true in I , or I satisﬁes φ, or I is a model of φ) by the following induction:
+
+n ) ∈ XI ;
+
+(1) I |= X(t1, . . . , tn) if (t I
+Δ↓ = Io
+(2) I |= Δ if I = Io
+(3) I |= ψ1 ∧ ψ2 if I |= ψ1 and I |= ψ2;
+(4) I |= ¬ψ if I (cid:3)|= ψ ;
+(5) I |= ∃σ ψ if for some value v of σ in the domain dom(I ) of I , I [σ : v] |= ψ.
+
+1 , . . . , t I
+Δ↑, where Io is the restriction of I to τ o
+Δ;
+
+Given an ID-logic theory4 T over τ , a τ -structure I satisﬁes T (is a model of T ) if I satisﬁes each φ ∈ T . This is
+denoted by I |= T .
+
+Deﬁnition 2 is a prototypical example of a non-monotone inductive deﬁnition, more speciﬁcally a deﬁnition over
+a well-founded poset, namely the set of ID-logic formulas ordered by the sub-formula relation. It contains non-
+monotone recursion in rule 4. This is an example of the sort of induction formalized in ID-logic.
+
+As mentioned before, the deﬁnitional implication should be distinguished from material implication. Rule
+∀ ¯x(X(¯t) ← ϕ) in a deﬁnition does not correspond to the disjunction ∀ ¯x(X(¯t) ∨ ¬ϕ), although it implies it. Intuitively,
+the deﬁnitional implication should be understood as the “if” found in rules in inductive deﬁnitions (e.g. Deﬁnition 2
+consists of 5 such rules).
+
+A deﬁnitional implication always contains an atom in the head, never a negative literal. This reﬂects a general
+principle of inductive deﬁnitions, which is that one deﬁnes a concept by enumerating positive cases, i.e., cases in
+which a deﬁned predicate is true. Given such an enumeration, the closure mechanism underlying inductive deﬁnitions
+yields the negative cases.
+
+2.3. Analysing deﬁnitions
+
+In this section, we recall the modularity, totality and translation theorems from [8].
+Deﬁnitions in ID-logic are non-monotone, in the sense that adding a rule to a deﬁnition in general does not preserve
+logical consequence. As a consequence, splitting a deﬁnition into a conjunction of two or more parts is, in general,
+
+3 This operator is often called the Gelfond–Lifschitz operator and was introduced in [13].
+4 By a theory, we mean a ﬁnite set of axioms.
+
+340
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+not equivalence preserving. This is quite obviously the case when we split up rules deﬁning the same predicate. For
+example, the deﬁnition
+
+(cid:3)
+
+∀x (P (x) ← x = a),
+∀x (P (x) ← x = b)
+
+(cid:4)
+
+and the conjunction of its partition
+(cid:7)
+∀x (P (x) ← x = a)
+
+∧
+
+(cid:6)
+
+(cid:7)
+(cid:6)
+∀x (P (x) ← x = b)
+
+are not equivalent. Indeed, in a Herbrand model I of the deﬁnition, P I = {a, b}, and such a model satisﬁes neither the
+ﬁrst component deﬁnition (since P I (cid:3)= {a}) nor the second (since P I (cid:3)= {b}).
+
+This motivates the following deﬁnition.
+
+Deﬁnition 3 (partition of deﬁnitions). A partition of deﬁnition Δ is a set {Δ1, . . . , Δn}, 1 < n, such that Δ = Δ1 ∪
+· · · ∪ Δn, and if deﬁned symbol P appears in the head of a rule of Δi , 1 (cid:3) i (cid:3) n, then all rules of Δ with P in the
+head belong to Δi and only to Δi .
+
+Notice that Δi has some “new” open symbols. For instance, if P is deﬁned in Δ, but not in Δi , then it is a new
+= ∅
+
+(cid:8)
+
+, 1 (cid:3) i (cid:3) n. Also,
+
+i τ d
+Δi
+
+= τ d
+
+Δ and τ d
+Δi
+
+∩ τ d
+Δj
+
+∪ τ d
+Δ
+
+= τ o
+Δi
+
+∪ τ d
+Δi
+
+open symbol of Δi . Of course, it holds that τ = τ o
+Δ
+whenever i (cid:3)= j .
+
+Even if we put all rules deﬁning the same predicate in the same module, splitting may not be equivalence preserving.
+
+For example, in the unique model of the deﬁnition
+
+{P ← Q, Q ← P },
+
+P and Q are false, whereas the conjunction
+
+{P ← Q} ∧ {Q ← P }
+
+(3)
+
+has two models, one in which P and Q are both false and another in which they are both true. A non-trivial example
+of a splittable deﬁnition is the following simultaneous inductive deﬁnition of even and odd numbers:
+
+⎧
+⎪⎨
+
+⎪⎩
+
+(cid:3)
+
+⎫
+⎪⎬
+
+∀x (E(x) ← x = 0),
+∀x (E(S(x)) ← O(x)),
+∀x (O(S(x)) ← E(x))
+
+∀x (E(x) ← x = 0),
+∀x (E(S(x)) ← O(x))
+
+(cid:4)
+
+.
+
+⎪⎭
+
+(4)
+
+In the domain of the natural numbers (interpreting 0 by 0 and S by the successor function Succ), this deﬁnition can be
+shown to be equivalent to the conjunction
+
+(cid:7)
+(cid:6)
+∀x (O(S(x)) ← E(x))
+
+.
+
+∧
+
+(5)
+
+By splitting this deﬁnition, we obtain two non-inductive deﬁnitions, one of even numbers, the other of odd numbers.
+Such non-inductive deﬁnitions can be translated to classical logic using our translation results:
+
+∀x (E(x) ≡ x = 0 ∨ ∃y (x = S(y) ∧ E(y))) ∧
+∀x (O(x) ≡ ∃y (x = S(y) ∧ E(y))).
+
+(6)
+
+This example illustrates the potential use of modularity and translation results for analysis of inductive deﬁnitions.
+
+Whether a partition of a deﬁnition is equivalent to the original deﬁnition depends on whether the split breaks up
+circular dependencies between deﬁned facts. For example, in the deﬁnition (3), P and Q mutually depend on each
+other. Splitting the deﬁnition breaks up this cycle, hence the equivalence is lost. In the deﬁnition (4), although E and O
+are deﬁned in terms of each other, there are no cyclic dependencies at the level of atoms. I.e., an atom E(n) depends
+only on O(n − 1), which in turn depends on E(n − 2), etc. So, by splitting the deﬁnition, no dependency cycles
+are broken and the equivalence is preserved. Below, the intuitive notion of a dependency relation between atoms is
+formalized by the concept of a reduction relation.
+
+Assume a deﬁnition Δ over τ and a structure Ko with domain A such that τKo
+
+A be the set of domain
+atoms over τ in domain A, i.e., the set of atoms P [a1, . . . , an] (or P [ ¯a]), where P is relation symbol of τ and
+
+⊆ τ o
+
+Δ. Let At τ
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+341
+
+A. If Q[ ¯b] ≺ P [ ¯a], we will say that P [ ¯a] depends
+a1, . . . , an are elements of A. Let ≺ be any binary relation on At τ
+on Q[ ¯b] (according to ≺). For any domain atom P [ ¯a] and any pair I, J of τ -structures with domain A, we deﬁne
+I ∼=≺P [ ¯a] J if f I = f J for every constant and function symbol f appearing in Δ, and for each atom Q[ ¯b] ≺ P [ ¯a],
+I |= Q[ ¯b] iff J |= Q[ ¯b]. We extend this to pairs by deﬁning (I, J ) ∼=≺P [ ¯a] (I (cid:15), J (cid:15)) if I ∼=≺P [ ¯a] I (cid:15) and J ∼=≺P [ ¯a] J (cid:15).
+
+Let ϕP [ ¯a] be as in (2).
+
+Deﬁnition 4 (reduction relation). A binary relation ≺ on At τ
+A is a reduction relation (or brieﬂy, a reduction) of a rule
+∀ ¯x (P (¯t[ ¯x]) ← ϕ( ¯x)) ∈ Δ if for all τ -structures I, J, I (cid:15), J (cid:15) extending Ko, for all tuples ¯a and ¯d such that ¯a = ¯t J [ ¯x: ¯d],
+if (I, J ) ∼=≺P [ ¯a] (I (cid:15), J (cid:15)) then it holds that IJ |= ϕ(cid:15)[ ¯d] iff I (cid:15)
+
+J (cid:15) |= ϕ(cid:15)[ ¯d].
+
+The relation ≺ is a reduction relation of Δ in Ko if for each deﬁned predicate P of Δ, ≺ is a reduction relation of
+
+the rule ∀ ¯x(P ( ¯x) ← ϕP ) in Ko.
+
+Intuitively, the deﬁnition expresses that ≺ is a reduction relation if the truth of the formulas ϕP [ ¯a] depends only on
+
+the truth of the atoms on which P [ ¯a] depends according to ≺.
+
+Proposition 1. If ≺ is a reduction relation of a rule or of a deﬁnition Δ in Ko, then any superset of ≺ is also a
+reduction relation of that rule, resp. of Δ in Ko.
+
+Proposition 2. Let ≺ be a reduction relation of each rule in Δ in Ko. Then ≺ is a reduction relation of Δ in Ko.
+
+The above propositions suggest a methodology for constructing reductions of a deﬁnition: deﬁne reductions for
+each of its rules and take the union. We illustrate this for deﬁnition (4) in the context of the natural numbers. We
+obtain a reduction for this deﬁnition as the union of reductions for each of its rules:
+
+∅ ∪
+(cid:6)
+∪
+(E(n), O(n + 1)), | n ∈ N
+(cid:7)
+(cid:6)
+(O(n + 1), E(n + 2)) | n ∈ N
+.
+
+(cid:7)
+
+(7)
+
+Recall that a pre-well-founded order is a reﬂexive and transitive relation such that every non-empty subset contains a
+minimal element. The following deﬁnition is crucial for two decomposition theorems.
+
+Deﬁnition 5 (reduction partition). Call partition {Δ1, . . . , Δn} of deﬁnition Δ a reduction partition of Δ in τ o
+Δ-
+structure Io if there is a reduction pre-well-founded order ≺ of Δ in Io and if for each pair of deﬁned domain atoms
+P [ ¯a], Q[ ¯b] such that Q[ ¯b] ≺ P [ ¯a] and P [ ¯a] ≺ Q[ ¯b], P and Q are deﬁned in the same Δi .
+
+The intuition underlying this deﬁnition is that in a reduction partition, if an atom deﬁned in one module depends on
+an atom deﬁned in another module, then the latter atom does not depend on the ﬁrst atom and hence is strictly less in
+the reduction ordering.
+
+A partition {Δ1, . . . , Δn} of Δ is called total in Ko if each Δi is total in Ko.
+
+Theorem 1 (modularity, [10, Theorem 5.20]). If {Δ1, . . . , Δn} is a reduction partition of Δ in Ko, then for any
+τ -structure M extending Ko, M |= Δ1 ∧ · · · ∧ Δn iff M |= Δ.
+
+Theorem 2 (totality, [10, Theorem 5.24]). If {Δ1, . . . , Δn} is a total reduction partition of Δ in Ko, then Δ is total
+in Ko.
+
+It is easy to see that the reduction relation (7) turns the partition in (5) into a reduction partition. Hence, in the con-
+text of the natural numbers the deﬁnition is equivalent to its partition. Moreover, since the two component deﬁnitions
+are non-inductive and hence, total, it follows that deﬁnition (4) is total. This illustrates the role of these theorems: they
+tell us when we can understand a large deﬁnition as a conjunction of smaller ones, and they allow us to prove totality
+of a large deﬁnition given the totality of smaller ones.
+Δ such that for any τ o
+
+Δ-model Mo of To, {Δ1, . . . , Δn} is a reduction partition of Δ
+
+Suppose To is a theory over τ o
+
+in Mo. Under this assumption, two important corollaries hold:
+
+342
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+Corollary 1. To ∧ Δ and To ∧ Δ1 ∧ · · · ∧ Δn are logically equivalent.
+
+Corollary 2. If in addition, {Δ1, . . . , Δn} is a total partition in To, then Δ is total in To.
+
+Now we consider two special cases of deﬁnitions and explain how to translate them into classical logic. Let Δ be a
+positive deﬁnition, i.e., with only positive occurrences of deﬁned symbols in rule bodies, deﬁning the symbols ¯P . Let
+Xi and Pi have the same arity. Deﬁne
+(cid:16)
+
+(cid:17)(cid:16)
+
+(cid:18)
+
+PID(Δ) :=
+
+Δ ∧ ∀ ¯X
+
+Δ[ ¯P / ¯X] → ¯P ⊆ ¯X
+
+and
+
+CIRC(Δ) :=
+(cid:19)
+
+(cid:16)
+
+Δ ∧ ∀ ¯X
+
+(cid:17)(cid:16)
+
+(cid:18)
+Δ[ ¯P / ¯X] → ( ¯X ⊆ ¯P → ¯P ⊆ ¯X)
+
+.
+
+Δ is the conjunction of formulas obtained by replacing deﬁnitional with material implications in Δ, Δ[ ¯P / ¯X]
+
+Here,
+is the deﬁnition obtained by substituting Xi for each deﬁned symbol Pi and ¯P ⊆ ¯X is a shorthand for the formula
+
+∀ ¯x (P1( ¯x) ⊃ X1( ¯x)) ∧ · · · ∧ ∀ ¯x (Pn( ¯x) ⊃ Xn( ¯x)).
+
+The formula PID(Δ) is the standard second-order formula to express that predicates ¯P satisfy the positive inductive
+deﬁnition Δ. The theory PID(Δ) expresses that the deﬁned relations are the least relations closed under the rules of Δ
+in a τ o
+Δ-structure. Because the rules of Δ are positive, such least relations are guaranteed to exist. The theory CIRC(Δ)
+is a circumscription axiom [23] and expresses that the deﬁned relations are minimal relations closed under the rules
+of Δ in a τ o
+Δ-structure. Since the least relations closed under the rules of Δ are the unique minimal relations closed
+under the rules of Δ, both formulas are equivalent.
+
+Theorem 3. (See [10, Theorem 6.3].) If Δ is positive (i.e., contains no negative occurrences of deﬁned symbols in rule
+bodies) then it is total in each τ o
+
+Δ-structure, and for any τ -structure I , I |= Δ iff I |= PID(Δ) iff I |= CIRC(Δ).
+
+These results can be applied, for example, in the context of deﬁnition (4) of even and odd numbers. Another result
+is concerned with (possibly non-monotone) deﬁnitions over well-founded posets. First, we propose a formalization
+for this informal concept in ID-logic.
+
+Deﬁnition 6 (strict reduction relation). A reduction relation ≺ of Δ on At τ
+order (i.e., an antisymmetric, transitive binary relation without inﬁnite descending chains).
+
+A is strict in Ko if it is a strict well-founded
+
+Thus, if P [ ¯a] ≺ Q[ ¯b] holds, then the bodies of rules deﬁning Q[ ¯b] may depend on the truth value of P [ ¯a], but not
+
+vice versa.
+
+Deﬁnition 7 (deﬁnition by well-founded induction). Let Δ be a deﬁnition with a strict reduction relation ≺ in Ko. We
+call Δ a deﬁnition by well-founded induction (over ≺) in Ko.
+
+This type of deﬁnitions can be formalized in ﬁrst-order logic using the well-known concept of completion [3].
+Deﬁne the completion of Δ, denoted comp(Δ), as the conjunction, for each deﬁned symbol X of Δ, of formulas
+∀ ¯x(X( ¯x) ≡ ϕX( ¯x)).
+
+In general, a deﬁnition Δ entails its completion comp(Δ) but not vice versa. However, in case of a deﬁnition by
+
+well-founded induction, the inverse is true as well.
+
+Theorem 4 (completion, [10, Theorem 6.9]). Suppose Δ is a deﬁnition by well-founded induction in τ o
+Then (a) deﬁnition Δ is total in Io, and (b) the model Io
+
+Δ of Δ is the unique model of comp(Δ) extending Io.
+
+Δ-structure Io.
+
+An example of a deﬁnition by well-founded induction is the deﬁnition (4) in the structure (cid:22)N, 0, Succ(cid:23). Indeed, the
+transitive closure of the reduction relation in (7) is a strict well-founded order and a reduction relation of deﬁnition
+(4). As a consequence, this deﬁnition and its completion, formula (6), are equivalent in this structure: each model of
+the deﬁnition extending (cid:22)N, 0, Succ(cid:23) is a model of its completion and vice versa.
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+343
+
+One observes that the above theorem does not prove logical equivalence, i.e., equivalence in all structures, but
+only equivalence in the context of a given structure. In fact, a deﬁnition may have a strict reduction relation in one
+structure and not in other structures. Consider for example the structure Ko with domain {a, b} and 0Ko = a, and
+SKo = {(a, a), (b, b)}. In this structure, the least reduction relation of deﬁnition (4) is
+
+(cid:7)
+(cid:6)
+(E(a), O(a)), (O(a), E(a)), (E(b), O(b)), (O(b), E(b))
+
+.
+
+Each other reduction is a superset of this relation. Since each transitive relation extending this relation contains
+(E(a), E(a)), the deﬁnition has no strict reduction relation in this structure. In fact, the deﬁnition (4) and its comple-
+tion (6) are not equivalent in this structure. The unique model I of the deﬁnition interprets EI = {a} and OI = {a}.
+On the other hand, the completion has an additional model in which EI = {a, b} and OI = {a, b}.
+
+Suppose To is a theory over τ o
+
+Δ such that for any τ o
+
+in Mo. Under this assumption, two useful corollaries hold:
+
+Δ-model Mo of To, Δ is a deﬁnition by well-founded induction
+
+Corollary 3. To ∧ Δ and To ∧ comp(Δ) are logically equivalent.
+
+Corollary 4. Δ is total in To.
+
+Notice that positive inductive deﬁnitions and deﬁnitions by well-founded induction have different (and, in general,
+
+non-equivalent) formalizations in classical logic.
+
+Some of the techniques that were introduced here are similar to methods found in logic programming. For example,
+Theorem 4 shows similarity to Fages theorem [11]. However, Fages notion of tight program is not equivalent to
+our notion of deﬁnition over a well-founded order; Fages theorem is only for Herbrand interpretations, and relates
+completion with stable semantics while ours is for general interpretations and relates completion with well-founded
+semantics.
+
+3. Reiter-style situation calculus
+
+From now on, we are dealing with many-sorted logic. All results and deﬁnitions introduced so far easily extend
+to this case. The vocabulary τsc of the situation calculus is a many-sorted vocabulary with equality and with sorts for
+actions (Act), situations (Sit), and possibly a ﬁnite number of domain-speciﬁc sorts called object sorts (Ob1, . . . , Obk),
+where each Obi is an arbitrary name. The vocabulary contains a potentially inﬁnite set of domain-dependent function
+symbols of the sort Act. The sort of each argument of such a function is an object sort. For example, in the block world
+domain, we may have actions pick_up(x) and put_on(x, y) ranging over the sort Block.
+
+The vocabulary contains a binary relation (cid:24) with arguments of sort Sit and denoting precedence of situations. The
+constant S0 of sort Sit denotes the initial situation. Function do of sort Sit maps actions and situations to situations,
+i.e., given a and s, term do(a, s) denotes the successor situation which is obtained from situation s by performing
+action a. The predicate constants F1, F2, . . . are called ﬂuents and denote properties of the world (both in the initial
+situation and in other situations). Fluents always have exactly one argument of sort Sit, while the sort of each other
+argument is an object sort. For example, On(x, y, s) of arity 3 denotes that object x is on object y in situation s.
+
+Deﬁnition 8 (Duna(S)). The theory of unique name axioms for sort S, Duna(S), is the set of axioms in the following
+axiom schema: for distinct function symbols f and g of sort S
+
+∀ ¯x∀ ¯y ¬(f ( ¯x) = g( ¯y))
+∀ ¯x∀ ¯y (f (x1, . . . , xn) = f (y1, . . . , yn) ⊃ x1 = y1 ∧ · · · ∧ xn = yn).
+The axioms (9) hold for every function symbol f with arity greater than zero.
+
+(8)
+
+(9)
+
+Deﬁnition 9 (Df). The foundational axioms of the situation calculus, Df, are the set of axioms consisting of the unique
+name axioms for situations Duna(Sit), the domain closure axiom for situations
+) ⊃ P (do(a, s
+
+))) ⊃ ∀sP (s))
+
+(cid:15)∀a (P (s
+
+∀P (P (S0) ∧ ∀s
+
+(10)
+
+(cid:15)
+
+(cid:15)
+
+and the precedence axioms for situations
+
+344
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+∀s ¬(s (cid:2) S0),
+∀s∀s
+
+(cid:15)∀a (s (cid:2) do(a, s
+
+(cid:15)
+
+) ≡ s (cid:24) s
+
+(cid:15)
+
+)
+
+where s (cid:2) s(cid:15) is an abbreviation for s (cid:24) s(cid:15) ∧ ¬(s(cid:15) (cid:24) s).
+
+(11)
+
+(12)
+
+The role of axiom (10) is to guarantee that the domain of situations Sit is the smallest set closed under applications
+of the function symbol do, which satisﬁes the unique name axioms for situations. Every two models of Df with
+identical domains of sort Act will have identical domains of sort Sit (modulo isomorphism).
+
+Deﬁnition 10 (Dss). The successor state axioms, Dss, are of the form:
+
+∀ ¯x∀a∀s (F ( ¯x, do(a, s)) ≡ (γ
+
++
+F ( ¯x, a, s) ∨ F ( ¯x, s) ∧ ¬γ
+
+−
+F ( ¯x, a, s))).
+
+(13)
+
+Formula γ
+
++
+F ( ¯x, a, s) (respectively, γ
+
+−
+F ( ¯x, a, s)) denotes a ﬁrst-order formula specifying the conditions under which
+action a causes ﬂuent F to become true (respectively, false) in the situation s [33]. The only free variables of these
+formulas are among ¯x, a, s and the only symbol of sort Sit is the free variable s. An example of a successor axiom is
+
+∀sw∀a∀s (On(sw, do(a, s)) ≡
+
+a = toggle(sw) ∧ ¬On(sw, s) ∨
+On(sw, s) ∧ a (cid:3)= toggle(sw)).
+
+This axiom says that a switch is on in situation do(a, s) if and only if this situation was obtained by performing action
+toggle(sw) in situation s where this switch was off, or the switch was already on and an action other than toggle(sw)
+was performed.
+
+Successor state axioms are obtained from a set of effect rules of the form:
+
+∀ ¯x∀a∀s (δi
+
+F ( ¯x, a, s) ⊃ F ( ¯x, do(a, s)))
+
+for i ∈ {1, . . . , k}, and
+∀ ¯x∀a∀s (νj
+
+F ( ¯x, a, s) ⊃ ¬F ( ¯x, do(a, s))),
+
+(14)
+
+(15)
+
+−
+for j ∈ {1, . . . , m}, where formulas δi
+F . Each of these rules speciﬁes
+an initiating or terminating effect of a particular action in one particular condition. Together these rules exhaustively
+describe all effects. Effect rules are transformed into the successor state axioms using the following equations:
+
+F satisfy the same conditions as γ
+
+F and νj
+
++
+F and γ
+
+γ
+
++
+F ( ¯x, a, s) :=
+
+k(cid:20)
+
+i=1
+
+δi
+F ( ¯x, a, s)
+
+and γ
+
+−
+F ( ¯x, a, s) :=
+
+m(cid:20)
+
+j =1
+
+νj
+F ( ¯x, a, s).
+
+This transformation is not equivalence preserving but transforms an incomplete speciﬁcation of the action domain into
+a ﬁnal axiomatization.
+
+Deﬁnition 11 (DS0 ). A description of the initial situation, DS0 , is a set of ﬁrst-order sentences that are uniform in S0,
+that is, it contains no situation term other than S0.
+
+A basic action theory consists of Df ∪ Duna(Act) ∪ DS0
+
+∪ Dss.
+
+4. Inductive situation calculus
+
+In this section, we deﬁne a variant of Reiter-style situation calculus, which we call the inductive situation calculus.
+All ﬂuents will be deﬁned by simultaneous induction on the well-founded set of situations. Ramiﬁcations describing
+propagation of effects of actions are modeled as monotone or non-monotone inductions at the level of situations. The
+result is an iterated inductive deﬁnition with alternating phases of monotone and non-monotone induction. Below we
+describe the components of the inductive situation calculus.
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+345
+
+The vocabulary τisc of the inductive situation calculus extends τsc by two types of symbols. Symbols IF1 , IF2, . . .
+are used to describe the initial situation and correspond to the ﬂuents F1, F2, . . . , Fn, but have no situation argument.
+They are open symbols of the inductive situation calculus. The other type of symbols denotes causality relations. These
+symbols will be introduced a bit later. The initial state vocabulary τinit consists of all symbols of τisc not involving
+isc of the inductive situation calculus extends τinit with So, do, (cid:24), and the action
+sorts Act or Sit. The open vocabulary τ o
+symbols. This vocabulary consists of all symbols of τisc except for all ﬂuents and causality predicates.
+
+The ID-logic induction axiom (1) of the natural numbers can be extended to arbitrary sorts in the following way.
+
+Deﬁnition 12 (DDCA(S)). Given a vocabulary τ , the domain closure axiom for sort S, DDCA(S), is the axiom:
+
+⎧
+⎡
+⎪⎪⎪⎨
+⎢
+⎢
+⎢
+⎪⎪⎪⎩
+⎣
+
+∃P
+
+∀x (P (x) ← x = c),
+· · ·
+∀x1 . . . ∀xn (P (f (x1, . . . , xn)) ← P (xi1) ∧ · · · ∧ P (xim))
+· · ·
+
+⎤
+
+∧ ∀xP (x)
+
+⎥
+⎥
+⎥
+⎦
+
+⎫
+⎪⎪⎪⎬
+⎪⎪⎪⎭
+
+where the deﬁnition contains one rule for every constant c of sort S and for every function symbol f ∈ τ of sort S
+with arguments i1, . . . , im of sort S.
+
+For example, the domain closure axiom DDCA(Sit) for situations is:
+
+(cid:2)(cid:3)
+
+∃P
+
+∀s (P (s) ← s = S0),
+∀a∀s (P (do(a, s)) ← P (s))
+
+(cid:4)
+
+(cid:5)
+∧ ∀sP (s)
+
+.
+
+(16)
+
+The role of axiom (16) is to guarantee that the domain of situations Sit is the smallest set containing S0 and closed
+under applications of the function symbol do. It is equivalent to Reiter’s induction axiom for situations. Recall that
+the second order variable can be eliminated by skolemization.
+
+A general property of the combination of unique names axioms and domain closure axiom is that they are consistent
+
+and ﬁx the domain in a unique way.
+
+Proposition 3. Let τo be a sorted vocabulary, and τ extends τo with a new sort S and a set of constant and function
+symbols of sort S. For every τo-structure Io, there is a non-empty class of τ -structures extending Io and satisfying
+Duna(S), and there is a unique (modulo isomorphism) extension of Io satisfying Duna(S) ∧ DDCA(S).
+
+The foundational axioms of the inductive situation calculus, Dif, are the unique name axioms Duna(Sit) for situa-
+
+tions, the domain closure axiom DDCA(Sit) for situations and the following deﬁnition of the precedence relation
+
+(cid:3)
+
+Δ(cid:24) :=
+
+∀s∀s
+∀s∀s
+
+(cid:15) ← s = s
+(cid:15)
+(s (cid:24) s
+(cid:15)
+(cid:15)∀a (s (cid:24) do(a, s
+
+(cid:15)
+
+),
+) ← s (cid:24) s
+
+(cid:4)
+
+.
+
+(cid:15)
+
+)
+
+(17)
+
+An initial structure A of the inductive situation calculus is a multi-sorted structure with a non-empty domain for
+
+each sort of the language, which interprets all symbols of τ o
+
+isc and which satisﬁes the foundational axioms Dif.
+
+Proposition 4. For any τinit-structure Io and arbitrary extension I of Io to (the symbols of ) sort Act, there is a unique
+(modulo isomorphism) initial structure A extending I . Io has a unique extension satisfying Duna(Act) ∪ DDCA(Act).
+
+Proof. By application of Proposition 3 for sort Sit, we can prove that an arbitrary extension I of Io to sort Act, has
+\ {(cid:24)})-structure satisfying Duna(Sit) ∪ DDCA(Sit). By Theorem 3, this structure
+a unique (modulo isomorphism) (τ o
+isc
+can be extended in a unique way to a deﬁnition of Δ(cid:24). By, again, Proposition 3, only one of these extensions satisﬁes
+Duna(Act) ∪ DDCA(Act). (cid:3)
+
+Proposition 5. Let A be an initial structure. In every such structure, the substructure (cid:22)SitA, (cid:24)A(cid:23) is a well-founded
+poset (and, thus a pre-well-founded set).
+
+Proof. In an initial structure A, the collection of situations is isomorphic to the set of ﬁnite sequences of elements of
+sort Act, where SA
+to the constructor appending an action object to a
+
+0 corresponds to the empty sequence, and doA
+
+346
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+ﬁnite sequence. Since A satisﬁes the deﬁnition (17), it holds for two situations s, s(cid:15) that s (cid:24)A s(cid:15) iff the sequence of s
+is an initial segment of that of s(cid:15). This is a well-founded order. (cid:3)
+
+The following proposition demonstrates that the remaining two foundational axioms of the situation calculus as
+
+presented in [34], are implied by the deﬁnition above.
+
+Proposition 6. The theories Df and Dif are logically equivalent.
+
+Proof. Both theories contain Duna(Sit). The induction axiom of Df is equivalent to DDCA(Sit) in Dif. It is not difﬁcult to
+prove that in a structure A satisfying Duna(Sit) ∪ DDCA(Sit), where situations correspond to ﬁnite sequences of actions,
+the unique relation (cid:24)A that satisﬁes sentences (11) and (12) is the same relation deﬁned by deﬁnition (17). (cid:3)
+
+In place of DS0 , the description of the initial situation in terms of ﬂuents which hold in S0, in the inductive situation
+calculus we describe the initial situation in terms of symbols IFi . The corresponding collection of axioms is Dinit. This
+is any theory in the vocabulary τinit.
+
+A basic action theory of the inductive situation calculus will be a collection of axioms of the form:
+
+Dif ∪ Duna(Act) ∪ Dinit ∪ {Δsc},
+
+(18)
+where Δsc is an inductive deﬁnition of the ﬂuents. We will often include also the domain closure DDCA(Act) for actions
+in an inductive situation calculus theory. In the next sections, we present three variants of Δsc.
+
+4.1. Specifying direct effects of actions
+
+For each ﬂuent Fi , we introduce two additional auxiliary relations, CFi and C¬Fi . These relations represent initi-
+ating and terminating causes for Fi , respectively. Both CFi and C¬Fi have the same sort of arguments as Fi plus one
+action argument. Let Dinit axiomatize the initial situation using IF1, . . . , IFm .
+
+We augment Dif ∪ Duna(Act) ∪ Dinit with the following deﬁnition
+
+Δsc =
+
+n(cid:27)
+
+i=1
+
+Δi
+
+ﬂuent
+
+∪
+
+n(cid:27)
+
+i=1
+
+Δi
+
+effect
+
+where
+
+Δi
+
+ﬂuent
+
+:=
+
+Δi
+
+effect
+
+:=
+
+⎧
+⎪⎨
+
+⎪⎩
+(cid:28)
+
+∀ ¯xi (F ( ¯xi, S0) ← IF ( ¯xi)),
+∀ ¯xi∀a∀s (Fi( ¯xi, do(a, s)) ← CFi ( ¯xi, a, s)),
+∀ ¯xi∀a∀s (Fi( ¯xi, do(a, s)) ← Fi( ¯xi, s) ∧ ¬C¬Fi ( ¯xi, a, s))
++
+∀ ¯xi∀a∀s (CFi ( ¯xi, a, s) ← γ
+Fi
+∀ ¯xi∀a∀s (C¬Fi ( ¯xi, a, s) ← γ
+
+( ¯xi, a, s)),
+−
+( ¯xi, a, s))
+Fi
+
+(cid:29)
+
+.
+
+⎫
+⎪⎬
+,
+⎪⎭
+
++
+Fi
+
+−
+Fi
+
+Here, formulas γ
+
+( ¯xi, a, s) are analogous to those found in Reiter-style situation calculus. They are
+formulas without causality predicates, with free variables among ¯xi, a, s and the only symbol of sort Sit is the free
+variable s. All ﬂuent atoms in such formulas are of the form Fj (¯t, s).
+
+( ¯xi, a, s), γ
+
+The intuitive meaning of this deﬁnition is as follows. The ﬁrst rule of Δi
+
+ﬂuent deﬁnes the ﬂuent Fi in situation S0.
+The second rule says that if an action causes a ﬂuent in some situation, then the ﬂuent holds in the successor situation.
+The third rule deals with the case where a ﬂuent is not affected by an action and will be referred to as the law of
+inertia. The rules in Δi
+
+effect describe direct effects of actions on the ﬂuent Fi .
+
+Note that any ﬂuent may appear in the rules for a causality predicate. Hence, the deﬁnition Δsc is one large
+simultaneous inductive deﬁnition. Moreover, since the inertia law contains a negative occurrence of C¬Fi , and this
+predicate may be deﬁned in terms of ﬂuents, Δsc is, in general, a non-monotone inductive deﬁnition. In what follows,
+we use the results of Section 2.3 in order to obtain the standard successor state axioms of the situation calculus.
+
+Proposition 7. The deﬁnition Δsc is a deﬁnition by well-founded induction in each τ o
+axioms Dif.
+
+isc-model of the foundational
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+347
+
+Proof. Let A be an initial structure with domain A. We shall construct a reduction relation ≺ of Δsc in A. This binary
+relation on At τisc
+A , the set of all domain atoms, should represent (at least) all potential dependencies between domain
+atoms that are not interpreted by A, i.e., between the ﬂuent and causality atoms. We construct ≺ in a rule-by-rule way,
+suggested by Proposition 2, as the set of all tuples:
+
+[ ¯u, a, s], Fi[ ¯u, do
+
+(CFi
+(Fi[ ¯u, s], Fi[ ¯u, do
+(Fi[ ¯u, s], C(¬)Fj
+
+A
+
+[ ¯v, a, s]),
+
+A
+
+(a, s)]),
+(a, s)]), (C¬Fi
+
+[ ¯u, a, s], Fi[ ¯u, do
+
+A
+
+(a, s)]),
+
+for arbitrary tuples of objects ¯u and ¯v, for arbitrary elements a of the action sort and s of the situation sort, for each
+i, j .
+
+It is easy to see that the tuples in the ﬁrst two lines provide a reduction relation of the two inductive rules of ﬂuents,
+while the tuples in the third line represent all possible dependencies in direct effect rules. It follows from Proposition 2
+that ≺ is a reduction relation of Δsc in A.
+
+Since, by Proposition 1, any superset of a reduction relation is also a reduction relation, the transitive closure ≺∗
+of ≺ is a reduction relation. Moreover, it follows from the fact that (cid:22)SitA, (cid:24)A(cid:23) is a well-founded set (Proposition 5),
+that ≺∗ is a strict well-founded order on At τisc
+
+A . (cid:3)
+
+This proposition, together with Corollary 3, has an interesting consequence.
+
+Proposition 8. The theories Dif ∧ Δsc and Dif ∧ comp(Δsc) are logically equivalent.
+
+We now formulate the property mentioned in the introduction of this paper.
+
+Deﬁnition 13. We say that a basic action theory Disc := Dif ∪ Duna(Act) ∪ Dinit ∪ {Δsc} of the inductive situation
+calculus satisﬁes the Initial State Expansion property if for every τinit-model Io of Dinit, for arbitrary extension I of Io
+to (symbols of) sort Act, if I satisﬁes Duna(Act), then there is a unique τ -model (modulo isomorphism) of Disc which
+extends I .
+
+When Disc satisﬁes the Initial State Expansion property, then, in particular, every τinit-model Io of Dinit has a
+
+unique τ -extension (modulo isomorphism) satisfying Disc ∪ Duna(Act) ∪ DDCA(Act).
+
+As argued in Section 1, the initial state expansion property shows that the inductive situation calculus satisﬁes the
+property of relative satisﬁability and correctly solves the frame problem in the sense that a basic action theory has no
+unintended models with spontaneous generation of effects (or “deus ex machina” effects, as they were called in [9])
+of the kind that occurred in early solutions to the frame problem. Another of its implications is that the subtheory
+modeling the state transitions is logically independent of the theory of the initial state and does not interfere with it in
+determining what are the initial states. Clearly, it would be most unpleasant if describing the effects of actions would
+somehow impose constraints on the initial state.
+
+Proposition 9. A basic action theory of the inductive situation calculus (18) satisﬁes the Initial State Expansion
+property.
+
+Proof. By Proposition 4, each extension of a τinit-structure to sort Act can be extended in a unique initial structure A.
+By Corollary 4, the extension of A that satisﬁes Δsc is unique. (cid:3)
+
+We now investigate the relationship to Reiter’s situation calculus.
+For a given vocabulary τ , let M|τ denote the restriction of the structure M to the symbols of τ .
+
+Deﬁnition 14. Suppose that τ1, τ2 are vocabularies extending τ , and let T1, T2 be theories in respectively τ1, τ2. We
+call T1 equivalent in τ to T2 if for each τ1-model M1 of T1, there exists a τ2-model M2 of T2 such that M1|τ = M2|τ
+and vice versa.
+
+348
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+Recall that τisc extends τsc with the new symbols IFi , CFi and C¬Fi .
+
+Theorem 5. A basic action theory of the inductive situation calculus
+
+Dif ∪ Duna(Act) ∪ Dinit ∪ {Δsc}
+
+is equivalent in τsc to the Reiter-style basic action theory
+
+Df ∪ Duna(Act) ∪ DS0
+
+∪ Dss,
+
+where DS0 is the theory obtained from Dinit by substituting Fi(¯t, S0) for each atom IFi (¯t) and Dss is the set of the
+successor state axioms corresponding to Δsc.
+
+Proof. Dif and Df are logically equivalent. By Proposition 8, Df ∪ Duna(Act) ∪ Dinit ∪ {Δsc} is logically equivalent to
+Df ∪ Duna(Act) ∪ Dinit ∪ comp(Δsc), where comp(Δsc) is
+
+n(cid:16)
+
+i=1
+
+(cid:15)
+
+∃a∃s
+n(cid:16)
+
+∧
+
+i=1
+n(cid:16)
+
+i=1
+
+∧
+
+∀ ¯xi∀s Fi( ¯xi, s) ≡ (s = S0 ∧ IFi ( ¯xi) ∨
+
+s = do(a, s
+
+(cid:15)
+
+) ∧ (CFi ( ¯xi, a, s
+
+(cid:15)
+
+) ∨ Fi( ¯xi, s
+
+(cid:15)
+
+) ∧ ¬C¬Fi ( ¯xi, a, s
+
+(cid:15)
+
+)))
+
+∀ ¯xi∀a∀s CFi ( ¯xi, a, s) ≡ γ
+
++
+Fi
+
+( ¯xi, a, s)
+
+∀ ¯xi∀a∀s C¬Fi ( ¯xi, a, s) ≡ γ
+
+−
+Fi
+
+( ¯xi, a, s).
+
+Since, by the domain closure axiom for situations,
+
+∀s(s = S0 ∨ ∃a∃s
+
+(cid:15)
+
+s = do(a, s
+
+(cid:15)
+
+)),
+
+Df ∪ {(19)} is logically equivalent to Df ∪ {(20), (21)}, where
+
+and
+
+n(cid:16)
+
+i=1
+
+n(cid:16)
+
+i=1
+
+∀ ¯xi∀s∀a Fi( ¯xi, do(a, s)) ≡ CFi ( ¯xi, do(a, s)) ∨ Fi( ¯xi, s) ∧ ¬C¬Fi ( ¯xi, do(a, s))
+
+∀ ¯xi IFi ( ¯xi) ≡ Fi( ¯xi, S0)
+
+∧
+
+∧
+
+n(cid:16)
+
+i=1
+n(cid:16)
+
+i=1
+
+∀ ¯xi∀s∀a CFi ( ¯xi, a, s) ≡ γ
+
++
+Fi
+
+( ¯xi, a, s)
+
+∀ ¯xi∀s∀a C¬Fi ( ¯xi, a, s) ≡ γ
+
+−
+Fi
+
+( ¯xi, a, s).
+
+(19)
+
+(20)
+
+(21)
+
+Given the equivalences in (21), it is clear that Dif ∪ Duna(Act) ∪ Dinit ∪ {(20), (21)} is logically equivalent to Df ∪
+Duna(Act) ∪ DS0
+
+∪ Dss ∪ {(21)}.
+
+Finally, observe that in the latter theory, the predicate symbols IFi , CFi and C¬Fi occur only at the left-hand
+∪ Dss ∪ {(21)} is equivalent in τsc to
+
+side of the explicit deﬁnitions in (21). It follows that Df ∪ Duna(Act) ∪ DS0
+Df ∪ Duna(Act) ∪ DS0
+
+∪ Dss. (cid:3)
+
+Note that our deﬁnition Δi
+
+ﬂuent does not contain rules of the form
+
+∀ ¯xi∀a∀s (¬Fi( ¯xi, a, s) ← C¬Fi ( ¯xi, a, s)).
+
+(22)
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+349
+
+However, under a natural requirement, we can derive negative effect axioms of actions, as we demonstrate below. The
+requirement is that a ﬂuent and its negation are not caused to hold in the same situation. Formally, the requirement is
+that the basic action theory should entail the following sentence:
+
+n(cid:16)
+
+i=1
+
+∀ ¯xi∀a∀s ¬(γ
+
++
+Fi
+
+( ¯xi, a, s) ∧ γ
+
+−
+Fi
+
+( ¯xi, a, s)).
+
+It is easy to show now that if this requirement is satisﬁed, then the negative effect axiom is implied. Observe that each
+successor state axiom entails
+
+∀ ¯xi∀a∀s (¬γ
+
++
+Fi
+
+( ¯xi, do(a, s)) ∧ γ
+
+−
+Fi
+
+( ¯xi, do(a, s)) ⊃ ¬Fi( ¯xi, do(a, s))).
+
+Under the requirement, the ﬁrst literal in the condition is entailed by the second, so we can drop it and we obtain the
+negative effect rule
+−
+∀ ¯xi∀a∀s (γ
+Fi
+
+( ¯xi, do(a, s)) ⊃ ¬Fi( ¯xi, do(a, s))).
+
+Therefore, in the context of Inductive Situation Calculus, rule (22) is not necessary. This observation illustrates a
+principle of inductive deﬁnitions which was mentioned in Section 2.2. In an inductive deﬁnition, one deﬁnes a concept
+by enumerating positive cases. Given such an enumeration, the closure mechanism underlying inductive deﬁnitions
+yields the negative cases.
+
+Recall that in Reiter’s situation calculus, the successor state axioms, in particular the formulas γ
+−
+F ( ¯x, a, s) are obtained by compiling a set of effect rules of the form ∀ ¯x∀a∀s (δi
+γ
+∀ ¯x∀a∀s (νj
+tional implications:
+
++
+F ( ¯x, a, s) and
+F ( ¯x, a, s) ⊃ F ( ¯x, do(a, s))) and
+F ( ¯x, a, s) ⊃ ¬F ( ¯x, do(a, s))). In ID-logic, the unique rule deﬁning CF can be replaced by a set of deﬁni-
+
+∀ ¯x∀a∀s (CF ( ¯x, a, s) ← δi
+
+F ( ¯x, a, s)).
+
+Likewise, the predicate C¬F can be deﬁned directly by a set of effect rules of the form:
+
+∀ ¯x∀a∀s (C¬F ( ¯x, a, s) ← νj
+
+F ( ¯x, a, s)).
+
+Note that in Reiter’s situation calculus, the compilation of effect rules into successor state axioms is crucial to
+obtain a correct axiomatization of the action domain. While each effect axiom is correct independently, together they
+are too weak to axiomatize the action domain, i.e., there are many unintended models. The compilation into successor
+state axioms modiﬁes the meaning of the theory and eliminates all unintended models. The transformation turns an
+incorrect (in the sense of too weak) theory into a correct theory (provided the set of effect axioms is correct and
+complete).
+
+In the inductive situation calculus, the situation is very different. Indeed, substituting all deﬁnitional effect rules
+
+deﬁning CF by the unique rule
+(cid:30)
+
+∀ ¯x∀a∀s
+
+CF ( ¯x, a, s) ←
+
+(cid:31)
+δi
+F ( ¯x, a, s)
+
+k(cid:20)
+
+i=1
+
+is equivalence preserving, and likewise for C¬F . Compilation is not necessary anymore to obtain a correct represen-
+tation! It is this phenomenon that we had in mind in the introduction when we claimed that Reiter-style situation
+calculus contains hidden forms of deﬁnitions.
+
+4.2. Indirect effects
+
+The ramiﬁcation problem arises when one wants to capture indirect effects of actions in a logic-based formalism.
+It has been shown (e.g., [19]) that state constraints are generally inadequate for deriving indirect effects of actions,
+and that some notion of causation is needed. Unlike material implication, causal implications are not contrapositive
+which makes them similar to the rules of inductive deﬁnitions. This correspondence between inductive deﬁnition rules
+and causal rules is the foundation of our solution to the ramiﬁcation problem. The semantic correspondence between
+causality rules and rules in an inductive deﬁnition was independently pointed out in [36,37] and in [9]. The resulting
+deﬁnition Δsc is not a deﬁnition by well-founded induction but, in general, an iterated inductive deﬁnition.
+
+350
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+Let, as before, CFi and C¬Fi represent initiating and terminating causes for Fi , respectively. We extend the
+use of the causality predicates to specify indirect effects of actions. For example, according to the causal rule
+∀a∀s(CF2(a, s) ← C¬F1(a, s)), when an action a causes termination of F1, then the same action, indirectly, causes
+the initiation of F2. We relax the conditions on Δi
+effect, so that any number of rules of the following form can appear
+in it:
+
++
+∀ ¯x∀a∀s (CFi ( ¯xi, a, s) ← Ψ
+Fi
+∀ ¯x∀a∀s (C¬Fi ( ¯xi, a, s) ← Ψ
+
+( ¯xi, a, s)),
+−
+( ¯xi, a, s))
+Fi
+
+(23)
+
+where Ψ + and Ψ − are formulas with free variables among ¯xi, a, s, with only free occurrences of a and s and no other
+symbols of sort Act or Sit. In such a formula, a ﬂuent atom is of the form Fj (¯tj , s) and a causality atom is of the form
+C(¬)Fk (¯tk, a, s). Note that in the direct effect case, causality predicates were excluded from bodies of rules of Δi
+effect.
+The basic action theory (18) in which now we allow ramiﬁcation rules of the form (23) in Δsc, encodes our solution
+
+to the ramiﬁcation problem in the inductive situation calculus.
+
+∪ · · · ∪ Δn
+
+effect, the collection of direct and indirect effect rules for all ﬂuents. Consider
+
+Let us deﬁne Δeffect = Δ1
+the following partition of Δsc:
+ﬂuent, . . . , Δn
+
+{Δ1
+
+ﬂuent, Δeffect}.
+
+effect
+
+(24)
+
+Proposition 10. Partition (24) is a reduction partition of Δsc in each initial structure A.
+
+Proof. Let A be an initial structure with domain A. We construct a reduction ≺ of Δsc on At τisc
+way. This produces the following tuples:
+
+A in the rule-by-rule
+
+A
+
+(a, s)]),
+(a, s)]), (C¬Fi
+
+A
+
+[ ¯u, a, s], Fi[ ¯u, do
+
+(CFi
+(Fi[ ¯u, s], Fi[ ¯u, do
+(Fj [ ¯u, s], C(¬)Fi
+(C(¬)Fj
+
+[ ¯v, a, s]),
+
+[ ¯u, a, s], C(¬)Fi
+
+[ ¯v, a, s]),
+
+[ ¯u, a, s], Fi[ ¯u, do
+
+A
+
+(a, s)]),
+
+for arbitrary tuples of objects ¯u and ¯v, for arbitrary elements a of the action sort and s of the situation sort and for each
+[ ¯v, a, s] depends on each ﬂuent atom in s and each other causality
+i, j . Notice that a causality domain atom C(¬)Fj
+atom in a and s. This is a reduction of rules of the form (23).
+
+Since any superset of a reduction relation is also a reduction relation, the reﬂexive, transitive closure ≺∗ is a
+reduction relation. Moreover, it follows from the fact that (cid:22)SitA, (cid:24)A(cid:23) is a (pre-)well-founded set (Proposition 5), that
+A , if Q[ ¯b] ≺∗ P [ ¯a] and
+≺∗ is a pre-well-founded order on At A
+P [ ¯a] ≺∗ Q[ ¯b], then P and Q are deﬁned in the same sub-deﬁnition. Therefore, partition (24) is a reduction partition
+of Δsc. (cid:3)
+
+A . It is easy to see that for atoms P [ ¯a], Q[ ¯b] from At A
+
+As a corollary of this proposition, we obtain the following property.
+
+Proposition 11. A basic action theory (18) with indirect effects is equivalent to
+
+Dif ∪ Duna(Act) ∪ Dinit ∪
+
+(cid:28)
+
+(cid:29)
+
+n(cid:16)
+
+i=1
+
+Δi
+
+ﬂuent
+
+∧ Δeffect
+
+and to
+
+Df ∪ Duna(Act) ∪ DS0
+
+∪
+
+(cid:29)
+
+comp(Δi
+
+ﬂuent) ∧ Δeffect
+
+.
+
+(cid:28)
+
+n(cid:16)
+
+i=1
+
+(25)
+
+(26)
+
+Proof. The theory (25) is obtained from the basic action theory by splitting Δsc. Since partition (24) is a reduction
+partition in Dif, it follows from Corollary 1 that this is equivalence preserving. The proof of the equivalence with (26)
+is similar as the proof of Theorem 5. The main step is to show that Δi
+ﬂuent) are equivalent in initial
+
+ﬂuent and comp(Δi
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+351
+
+structures. This follows from the fact that each Δi
+well-founded order constructed in the proof of Proposition 7. (cid:3)
+
+ﬂuent is a deﬁnition by well-founded induction over ≺∗, the strict
+
+Proposition 12. If Δeffect is total in (any subtheory of ) Dif ∪ Duna(Act) ∪ Dinit, the basic action theory (18) with indirect
+effects satisﬁes the Initial State Expansion property.
+
+Proof. Let I be an extension of a τinit-model of Dinit to sort Act which satisﬁes Duna(Act) and let A be its unique
+isc-extension satisfying Dif. Since Δeffect is total in A, partition (24) is a total reduction partition of Δsc in A, and by
+τ o
+Theorem 2, Δsc is total in A and has a unique model extending A. (cid:3)
+
+In general, there is no simple uniform way in which a basic action theory with ramiﬁcation rules can be translated
+into classical logic. However, the corollary provides a basis for proving several translation results, depending on the
+properties of Δeffect. The theorem below considers the case that Δeffect is a positive inductive deﬁnition.
+
+Theorem 6. If Δeffect is a positive deﬁnition then the basic action theory (18) satisﬁes the Initial State Expansion
+property and is equivalent to the theory
+
+Df ∪ Duna(Act) ∪ DS0
+
+∪
+
+and to the theory
+
+Df ∪ Duna(Act) ∪ DS0
+
+∪
+
+(cid:29)
+ﬂuent) ∧ PID(Δeffect)
+
+comp(Δi
+
+(cid:28)
+
+n(cid:16)
+
+i=1
+
+(cid:29)
+ﬂuent) ∧ CIRC(Δeffect)
+
+comp(Δi
+
+.
+
+(cid:28)
+
+n(cid:16)
+
+i=1
+
+4.2.1. Example: N Gear wheels
+
+Let us describe a simple idealized mechanical system consisting of a number of gear wheels w1, . . . , wn, each pair
+of which may or may not be mechanically connected. For each of these wheels, we consider two states: turning or
+stopped. For each of these wheels, we consider two actions start(wi) and stop(wi). The ﬁrst action gives an impulse
+to the wheel which propagates over the system to all connected gear wheels; the second action brakes the wheel and
+all connected wheels. We assume that once a wheel turns, it continues to turn (there is no friction; this system behaves
+as a perpetuum mobile) until there is a stop action.
+
+We are faced here with a ramiﬁcation problem—the problem of how to describe the propagation of effects through
+the system of connected gear wheels. The goal is to develop a modular temporal theory describing the effects of the
+basic actions and the propagation of effects. As a correctness criterion, we should be able to prove the state constraint
+that in all situations, a gear wheel w is turning if and only if all reachable wheels (those connected to w in the transitive
+closure of the connection graph) are turning as well.
+
+We could represent this example in Reiter’s basic situation calculus [34]. To do this we could pre-compute for
+each wheel the set of reachable wheels in the connection graph; it sufﬁces then to express that the action of starting
+(respectively, stopping) a wheel w has the immediate effect to initiate (respectively, terminate) the turning state of
+wheel w and each wheel reachable from w. This representation would have some important drawbacks. First, notice
+that this pre-compilation would be impossible if the physical connection relation between gear wheels would be a
+dynamic relation and gear wheels could be connected or disconnected. Such an example is worked out in Section 4.3.1.
+Second, the transitive closure of the physical connections between gear wheels is an example of a global property
+of the system which emerges as an interaction of local properties, namely the physical connections between gear
+wheels. If we explicitly represent such global properties then a small change of a local property (e.g. adding a new
+connection or deleting an existing connection between two gear wheels) may have a strong impact on the global
+properties and hence on the theory (e.g. disconnecting one pair of gear wheels may split a large interconnected set of
+connected wheels and would affect the representation of the effect of all actions on all wheels in this set). In a modular
+representation, only local properties of the components should be represented explicitly; global properties should be
+derivable from a generic part of the theory which does not explicitly depend on the actual conﬁguration of the system.
+This is an aspect of elaboration tolerance [24].
+
+352
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+To obtain a modular representation in the gear wheel example, we need to be able to express the reachability from a
+speciﬁc wheel in an arbitrary graph. It is well-known that this concept cannot be expressed in ﬁrst-order logic. Below
+we present a formalization through an iterated inductive deﬁnition.
+
+In the gear wheel example, there is one domain-dependent sort, denoted Gear_wheel. Action symbols are start and
+
+stop and have an argument of sort Gear_wheel. The unique ﬂuent Turns has arguments of sort Gear_wheel and Sit.
+
+Basic components of the inductive situation calculus for the Gear wheel example are the foundational axioms Dif of
+situations and the unique name axioms Duna(Act) for actions. The main axiom of our theory is the simultaneous iterated
+inductive deﬁnition Δsc of the ﬂuent Turns and its causality predicates CTurns and C¬Turns. The effect propagation
+process caused by start or stop actions in one situation will be modeled by a monotone induction. To deﬁne the ﬂuent
+Turns for all states, the monotone induction is then iterated over the well-founded structure of situations.
+
+The deﬁnition Δsc can be split up in two sub-deﬁnitions. The ﬁrst part of the deﬁnition consists of the standard
+
+rules for the ﬂuent Turns:
+
+⎧
+⎪⎨
+
+⎪⎩
+
+ΔTurns
+ﬂuent
+
+:=
+
+∀g (Turns(g, S0) ← ITurns(g))
+∀g∀a∀s (Turns(g, do(a, s)) ← CTurns(g, a, s))
+∀g∀a∀s (Turns(g, do(a, s)) ← Turns(g, s) ∧ ¬C¬Turns(g, a, s)).
+
+⎫
+⎪⎬
+.
+⎪⎭
+
+The second part is the deﬁnition Δeffect which describes the causation predicates CTurns and C¬Turns. The following
+set of rules Δeffect specify direct and indirect effects of actions:
+
+Δeffect :=
+
+⎧
+∀g∀a∀s (CTurns(g, a, s) ← a = start(g)),
+⎪⎪⎪⎨
+∀g∀a∀s (C¬Turns(g, a, s) ← a = stop(g)),
+⎪⎪⎪⎩
+∀g∀a∀s (CTurns(g, a, s) ← ∃g
+∀g∀a∀s (C¬Turns(g, a, s) ← ∃g
+
+(cid:15)Connected(g, g
+(cid:15)
+
+(Connected(g, g
+
+(cid:15)
+
+) ∧ CTurns(g
+
+(cid:15)
+
+, a, s)),
+(cid:15)
+
+(cid:15)
+
+) ∧ C¬Turns(g
+
+, a, s)))
+
+⎫
+⎪⎪⎪⎬
+⎪⎪⎪⎭
+
+.
+
+These rules contain positive recursion. Deﬁne Δsc := ΔTurns
+ﬂuent
+CTurns and C¬Turns by simultaneous non-monotone induction in terms of the open predicates ITurns and Connected.
+
+∪ Δeffect. This deﬁnition deﬁnes the predicates Turns,
+
+Notice that the statement of the problem does not specify what gearwheels exist, how they are connected and
+whether they are initially turning. Consequently, the theory Dinit consists only of two axioms which express general
+laws of connected gearwheels. The ﬁrst axiom expresses that the relation symbol Connected, which describes the
+physical connections between the gear wheels, is a symmetric relation:
+
+(cid:15)
+
+∀g∀g
+
+(Connected(g, g
+
+(cid:15)
+
+) ⊃ Connected(g
+
+(cid:15)
+
+, g)).
+
+The second axiom of Dinit is related to the state constraint of this system which is that interconnected gear wheels are
+in the same state: either turning or in rest. The ramiﬁcation rules guarantee that this state constraint is preserved, but
+not that it holds initially. Therefore, we have to add the constraint for the initial state. This is described by the axiom
+
+(cid:15)
+
+∀g∀g
+
+(Connected(g, g
+
+(cid:15)
+
+) ⊃ ITurns(g) ≡ ITurns(g
+
+(cid:15)
+
+)).
+
+The full axiomatization of the domain consists of
+Dwheels := Dif ∪ Duna(Act) ∪ Dinit ∪ {Δsc}.
+
+(27)
+
+Below we analyze the theory Dwheels. Since Δeffect is a positive deﬁnition, the basic action theory Dwheels satisﬁes
+
+the conditions of Theorem 6. Consequently, we have the following proposition.
+
+Proposition 13. The theory Dwheels satisﬁes the Initial State Expansion property and is equivalent to
+Fluent) ∧ PID(ΔEffect)}.
+
+Df ∪ Duna(Act) ∪ Dinit ∪ {comp(ΔTurns
+
+Proposition 14. The theory Dwheels logically entails the state constraint:
+
+∀g∀g
+
+(cid:15)∀s (Connected(g, g
+
+(cid:15)
+
+) ⊃ Turns(g, s) ≡ Turns(g
+
+(cid:15)
+
+, s)).
+
+Proof. The proof is model-theoretic. Let I be a model of Dwheels. We use induction on the length of the situations. It
+follows from axiom (27) on the initial state, that
+
+(cid:15)
+
+∀g∀g
+
+(Connected(g, g
+
+(cid:15)
+
+) ⊃ Turns(g, S0) ≡ Turns(g
+
+(cid:15)
+
+, S0)).
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+353
+
+Assume that the property is satisﬁed for situation s. We prove that it holds for the successor situation doI (a, s), for
+arbitrary action a.
+
+Select any pair (g, g(cid:15)) ∈ ConnectedI . By deﬁnition Δeffect, if CTurn(g(cid:15), a, s) is true then so is CTurn(g, a, s). Because
+the graph ConnectedI is symmetric, it follows that CTurn(g, a, s) and CTurn(g(cid:15), a, s) have the same truth value. The
+same holds for C¬Turn. The induction hypothesis states that in situation s all connected wheels are in the same state.
+By the above observation, the action a has the same effects on all connected wheels. Consequently, the induction
+hypothesis is preserved in situation doI (a, s). (cid:3)
+
+4.2.2. Non-monotone ramiﬁcation rules
+
+In [9], it was argued that to model certain forms of ramiﬁcations, also non-monotone ramiﬁcation rules are useful.
+
+We illustrate this with a variant of the suitcase example from [19].
+
+Example 1 (suitcase). Several versions of this example (e.g. [9,19,38]) have been used to demonstrate that domain
+constraints are not strong enough to solve the ramiﬁcation problem and that an explicit notion of causality is necessary.
+Suppose we have a suitcase which is opened by a spring mechanism on the moment both its locks are being open. To
+model this example, the sort lock is used. Fluent O represents the fact that the suitcase is open; ﬂuent OpenL with
+an argument of sort lock means that the lock is open. Action symbols open and close with one argument of sort lock
+represent actions of opening and closing the respective lock. Two constants l1, l2 of sort lock represent the two locks.
+Let Δeffect consist of the following rules:
+
+∀l∀a∀s (COpenL(l, a, s) ← a = open(l)),
+∀l∀a∀s (C¬OpenL(l, a, s) ← a = close(l))
+
+and
+
+∀a∀s
+
+CO (a, s) ← ∀l
+
+COpenL(l, a, s) ∨
+(OpenL(l, s) ∧ ¬C¬OpenL(l, a, s))
+
+!!
+
+.
+
+(28)
+
+For every ﬂuent F from the set {OpenL, O}, we have the standard ﬂuent deﬁnition ΔF
+
+ﬂuent. Finally, we have:
+
+Dinit := DDCA(lock) ∪ Duna(lock) ∪
+
+(cid:6)
+∀l(IOpenL(l) ⊃ IO
+
+(cid:7)
+.
+
+Interestingly, the deﬁnition Δeffect is not recursive and hence is total in each structure. It can be translated into
+classical logic by taking its completion. Consequently, the entire deﬁnition Δsc can be translated into the classical
+logic theory comp(Δsc).
+
+The example illustrates several points of interest. First, ramiﬁcations may sometimes rely on the absence of certain
+causes. In such cases, the use of non-monotone causation rules such as the rule deﬁning CO is appropriate. Second,
+ramiﬁcation rules are useful for modeling simultaneous effects and concurrency. Such simultaneous effects cannot
+occur in the above situation calculus but could occur in extensions with concurrent actions or with additional ac-
+tions and/or ramiﬁcations which could affect both locks simultaneously. For the sake of illustrating this, consider the
+following extension.
+
+Example 2. Consider an extension of Example 1 in which the suitcase has a central button which switches the state
+of the two locks of the suitcase. The effects of pushing this button are expressed by the additional effect rules:
+
+∀l∀a∀s (COpenL(l, pushbutton, s) ← ¬OpenL(l, s)),
+∀l∀a∀s (C¬OpenL(l, pushbutton, s) ← OpenL(l, s)).
+
+Note that executing the action pushbutton in a state where one lock is open and the other is closed, produces simul-
+taneous effects of opening one lock and closing the other lock, and this would not open the suitcase. In fact, the
+ramiﬁcation rule describes the intended behaviour of the suitcase for every combination of effects on both locks.
+
+As a last point, we illustrate an alternative style of representing complex forms of ramiﬁcations.
+
+ 
+ 
+354
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+Example 3. In the suitcase example, the suitcase is caused to open on the instant that both locks are open. Let us
+replace the rule (28) by the following more direct representation of this:
+
+∀a∀s (CO (a, s) ← ∀lOpenL(l, do(a, s))).
+
+(29)
+
+According to this rule, when all locks are open in the successor state do(a, s), then a causes the suitcase to open
+in situation s. Adding this axiom changes the structure of the deﬁnition. So far, causality predicates at state s were
+deﬁned in terms of ﬂuents and causality predicates at state s. Here, CO in state s is deﬁned in terms of OpenL in
+the future state do(a, s). This is no longer induction on the well-founded set of situations. However, the resulting
+deﬁnition is still a deﬁnition by well-founded induction in each initial structure A, although the underlying order does
+not entirely follow the order of situations. Indeed, the reduction relation ≺ constructed in the standard way, consists
+of the following tuples, for arbitrary lock l, situation s and action a:
+
+A
+
+(a, s)]),
+
+(COpenL[l, a, s], OpenL[l, do
+A
+(OpenL[l, s], OpenL[l, do
+(CO [a, s], O[do
+(a, s)]),
+(O[s], O[do
+(OpenL[l, do
+
+A
+
+A
+
+(a, s)]), (C¬O [a, s], O[do
+A
+(a, s)], CO [a, s]).
+
+A
+
+(a, s)]),
+
+(a, s)]), (C¬OpenL[l, a, s], OpenL[l, do
+
+A
+
+(a, s)]),
+
+It is easy to verify that the transitive closure ≺∗ is a strict well-founded order. Hence, Δsc is a deﬁnition by well-
+founded induction in each initial structure A. It follows that this deﬁnition can be translated in FO using completion
+and the Initial State Expansion property is still satisﬁed.
+
+4.2.3. Limits of the approach
+
+As pointed out in [9], there is a subtle modeling issue involved in the use of non-monotone ramiﬁcation rules. In
+the inductive situation calculus, the ramiﬁcation rules are used to model an effect propagation process. In the physical
+reality, the effect propagations in this process are not instantaneous, but take a small lapse of time. The intermediate
+states during this process are not modeled explicitly in the situation calculus. In each of these intermediate states,
+certain causes may have occurred already, and other causes did not yet occur. Therefore, it is possible that the condition
+of an effect rule, if it contains a negative cause literal ¬CF (¯t, a, s), is satisﬁed during such an intermediate state, when
+the cause of F (¯t ) was not yet produced, but not in the ﬁnal state. In such a case, according to the inductive situation
+calculus, the effect described by the rule will not occur. Stated differently, if, during the propagation process, the
+conditions of an effect rule are satisﬁed in some intermediate state, and one of the conditions is the absence of a
+certain cause, then the effect will not be inferred if there is a possibility that this cause is still produced later during
+the propagation process.
+
+Example 4. Reconsider the effect rule for opening the suitcase of Example 1 and Example 2:
+COpenL(l, a, s) ∨
+(OpenL(l, s) ∧ ¬C¬OpenL(l, a, s))
+
+CO (a, s) ← ∀l
+
+∀a∀s
+
+!!
+
+.
+
+Suppose we push the central button to switch the states of the locks. The mechanism might be just a tiny bit faster to
+switch the lock l1 than the lock l2. If the ﬁrst one was already closed and the second open, then there will be a brief
+intermediate state during which the two locks will be open and the conditions of the above effect rule are satisﬁed.
+This state will last only a fraction of a second, after which the second lock is closed. For an old-fashioned suitcase
+with mechanical spring mechanism, this is not enough time to open the suitcase. So, the suitcase does not open. The
+above rule correctly models this situation.
+
+Now, consider a high-tech suitcase in which a microprocessor monitors the state of the two locks, and when both
+are open, it sends a signal to an electric motor to open the suitcase. Compared to the old-fashioned suitcase, the effect
+propagations are the same. However, there is a difference on the level of the reaction time of the opening effect. The
+microprocessor reacts in microseconds and will detect the state change of the ﬁrst lock before that of the second. So,
+in this case, the suitcase will be opened. The ramiﬁcation rules of the inductive situation calculus cannot be used to
+model the high-tech suitcase.
+
+ 
+ 
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+355
+
+4.3. Deﬁned ﬂuents
+
+In this section, we propose a second extension of the inductive situation calculus by allowing deﬁned ﬂuents. Such
+
+ﬂuents are not governed by effect laws and the law of inertia, but by a deﬁnition in terms of existing ﬂuents.
+
+Example 5. In the standard ontology of the blocks world problem, there are basic actions pick(b) and put(b, l), and
+ﬂuents
+
+• On(b, l, s): the block b is on location l, which is the table or another block;
+• Clear(b, s): nothing is on block b;
+• Clasped(b, s): the robot clasps block b;
+• Free(s): the robot hand is free.
+
+We could represent the effects of the actions on every of these ﬂuents. It is perhaps more natural to represent the
+effects on On and Clasped and to deﬁne the ﬂuent Clear in terms of On and the ﬂuent Free in terms of Clasped. The
+deﬁnitions are:
+(cid:6)
+(cid:7)
+∀b∀s (Clear(b, s) ← ¬∃b
+, b, s))
+(cid:7)
+(cid:6)
+∀s (Free(s) ← ¬∃b Clasped(b, s))
+
+(cid:15) On(b
+
+,
+
+.
+
+(cid:15)
+
+We could also deﬁne the ﬂuent Above(b, b(cid:15), s) expressing that in state s, block b is above b(cid:15). It is deﬁned as the
+transitive closure of the ﬂuent On(b, b(cid:15), s):
+
+(cid:3)
+∀b∀b1∀s (Above(b, b1, s) ← On(b, b1, s)),
+∀b∀b1∀s (Above(b, b1, s) ← ∃b2(Above(b, b2, s) ∧ Above(b2, b1, s)))
+
+(cid:4)
+
+.
+
+In a sense, deﬁning ﬂuents is also a way of representing ramiﬁcations. Indeed, one could view the fact that Free(s)
+is initiated or terminated as a ramiﬁed effect of terminating or initiating Clasped(b, s). Yet, there is a deﬁnite difference
+with the sort of ramiﬁcation considered in Section 4.2. In that section, the causality rules model the propagation of
+effects through the system. Here, a deﬁned ﬂuent is (sometimes) only a new name denoting some, potentially complex,
+conﬁguration of the primitive ﬂuents.
+
+Below we distinguish between deﬁned ﬂuents and primitive ﬂuents. Primitive ﬂuents are deﬁned in the standard
+way. To represent deﬁned ﬂuents, we extend the inductive situation calculus by allowing the deﬁnition Δsc of Sec-
+tion 4.2 to be extended with a set of rules Δdef of the form:
+
+∀ ¯x∀s (Fd ( ¯x, s) ← Ψ ( ¯x, s)),
+
+(30)
+
+where Fd is a deﬁned ﬂuent and Ψ is a formula where s has only free occurrences, contains no causality predicates
+and every ﬂuent atom is of the form Fi(¯ti, s), where Fi may be a deﬁned or a primitive ﬂuent. We do not introduce
+initial state or causation predicates for deﬁned ﬂuents in τisc.
+
+Consider the following partition of Δsc:
+
+{Δ1
+
+ﬂuent, Δeffect, Δdef}
+
+ﬂuent, . . . , Δn
+ﬂuent is the standard deﬁnition of a primitive ﬂuent Fi .
+
+where Δi
+
+(31)
+
+Proposition 15. Partition (31) is a reduction partition of Δsc in each initial structure A.
+
+Proof. Let A be an initial structure with domain A. We construct a reduction relation ≺ in At τisc
+rule-by-rule way. It consists of all tuples:
+
+A in the normal
+
+[ ¯u, a, s], Fi[ ¯u, do
+
+(CFi
+(Fi[ ¯u, s], Fi[ ¯u, do
+(Fj [ ¯u, s], C(¬)Fi
+
+A
+
+[ ¯v, a, s]),
+
+A
+
+(a, s)]),
+(a, s)]), (C¬Fi
+
+[ ¯u, a, s], Fi[ ¯u, do
+
+A
+
+(a, s)]),
+
+356
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+[ ¯u, a, s], C(¬)Fi
+
+(C(¬)Fj
+(Fi[ ¯u, s], Fk[ ¯v, s]),
+
+[ ¯v, a, s]),
+
+for arbitrary i, for arbitrary j and j (cid:15) such that Fj and Fj (cid:15) are primitive ﬂuents, for arbitrary k such that Fk is a deﬁned
+ﬂuent, for arbitrary tuples of objects ¯u and ¯v, for arbitrary elements a of the action sort and s of the situation sort.
+Notice that according to the last line, each deﬁned ﬂuent domain atom Fk[ ¯v, s] depends on each ﬂuent atom Fi[ ¯u, s]
+and hence, ≺ is a reduction relation of each rule in Δdef.
+
+From here on, the proof is very similar to that of Proposition 10. Again, it is easy to show that ≺ is a reduction
+A . It is easy
+A such that Q[ ¯b] ≺∗ P [ ¯a] and P [ ¯a] ≺∗ Q[ ¯b], P and Q are deﬁned in the
+
+relation. Its reﬂexive, transitive closure ≺∗ is a reduction relation and a pre-well-founded order on At τisc
+to see that for atoms P [ ¯a], Q[ ¯b] from At τisc
+same sub-deﬁnition. Therefore, partition (31) is a reduction partition of Δsc in A. (cid:3)
+
+As a corollary of this proposition and the decomposition theorems, Theorem 1 and Theorem 2, we obtain the
+
+following property.
+
+Corollary 5. If Δeffect and Δdef are total in (each subtheory of ) Dif ∪ Duna(Act) ∪ Dinit, then the basic action theory
+(18) satisﬁes the Initial State Expansion property, and is equivalent to the theory Df ∪ Duna(Act) ∪ DS0
+∧
+Δeffect ∧ Δdef}.
+
+(cid:19)
+n
+i=1 Δi
+
+ﬂuent
+
+∪ {
+
+This modularity result can be used to prove the correctness of several translations from inductive situation calculus
+
+with deﬁned ﬂuents to classical logic.
+
+4.3.1. Example: Gear wheels with friction
+
+In this example, we consider another version of the gear wheel problem in which the connections between gear
+wheels can be dynamically changed (as in the gears of a car) and in which friction is taken into account. We assume
+that some of the gear wheels have a ﬁxed connection to an engine. This engine can be started or stopped. A gear wheel
+is in rest unless it is connected directly or indirectly to a running engine. There are actions to start or stop (the engine
+of) a gear wheel and to connect or disconnect gear wheels.
+We use the following vocabulary with sort Gear_wheel:
+
+• Turn(g, s): gear wheel g is turning;
+• Emp(g, s): gear wheel g is empowered;
+• DirEmp(g, s): gear wheel g is attached to an operating motor (i.e., is directly empowered);
+• Con(g, g(cid:15), s): gear wheels g and g(cid:15) are directly connected;
+• start(g), stop(g): the actions of starting and halting the engine attached to g;
+• connect(g, g(cid:15)), disconnect(g, g(cid:15)): the actions of connecting and disconnecting a pair of gear wheels.
+
+Deﬁned ﬂuents are axiomatized by the following set Δdef of rules. We represent that a gear wheel g is turning iff
+it is empowered. It is empowered if it is attached to a running engine (i.e., DirEmp(g, s) is true), or there is a path of
+gear wheel connections to such a directly empowered gear wheel:
+
+⎧
+⎪⎨
+
+⎪⎩
+
+Δdef =
+
+ΔDirEmp
+ﬂuent
+
+=
+
+⎧
+⎪⎨
+
+⎪⎩
+
+⎧
+⎪⎨
+
+⎪⎩
+
+∀g∀s (Turn(g, s) ← Emp(g, s)),
+∀g∀s (Emp(g, s) ← DirEmp(g, s)),
+∀g∀s (Emp(g, s) ← ∃g1(Con(g, g1, s) ∧ Emp(g1, s)))
+
+⎫
+⎪⎬
+,
+⎪⎭
+
+∀g (DirEmp(g, S0) ← IDiREmp(g)),
+∀g∀a∀s (DirEmp(g, do(a, s)) ← CDirEmp(g, a, s)),
+∀g∀a∀s (DirEmp(g, do(a, s)) ← DirEmp(g, s) ∧ ¬C¬DirEmp(g, a, s)),
+
+ΔCon
+ﬂuent
+
+=
+
+∀g∀g
+∀g∀g
+∀g∀g
+
+(cid:15)
+
+(cid:15)
+(Con(g, g
+(cid:15)∀a∀s (Con(g, g
+(cid:15)∀a∀s (Con(g, g
+
+(cid:15)
+
+(cid:15)
+
+, S0) ← ICon(g, g
+
+(cid:15)
+
+)),
+
+, do(a, s)) ← CCon(g, g
+(cid:15)
+, do(a, s)) ← Con(g, g
+
+(cid:15)
+
+, a, s)),
+, s) ∧ ¬C¬Con(g, g
+
+(cid:15)
+
+, a, s))
+
+⎫
+⎪⎬
+,
+⎪⎭
+⎫
+⎪⎬
+,
+⎪⎭
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+357
+
+Δeffect =
+
+⎧
+
+⎪⎪⎪⎪⎪⎪⎪⎨
+⎪⎪⎪⎪⎪⎪⎪⎩
+
+∀g∀a∀s (CDirEmp(g, a, s) ← a = start(g)),
+∀g∀a∀s (C¬DirEmp(g, a, s) ← a = stop(g)),
+(cid:15)
+∀g∀g
+∀g∀g
+∀g∀g
+∀g∀g
+
+(cid:15)∀a∀s (CCon(g, g
+(cid:15)∀a∀s (CCon(g
+(cid:15)∀a∀s (C¬Con(g, g
+(cid:15)∀a∀s (C¬Con(g
+
+, g, a, s) ← CCon(g, g
+
+, a, s) ← a = connect(g, g
+, a, s)),
+
+, a, s) ← a = disconnect(g, g
+, a, s))
+
+, g, a, s) ← C¬Con(g, g
+
+)),
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+(cid:15)
+
+)),
+
+⎫
+
+⎪⎪⎪⎪⎪⎪⎪⎬
+⎪⎪⎪⎪⎪⎪⎪⎭
+
+.
+
+In this deﬁnition, the ﬂuents Turn and Emp are deﬁned. The ﬂuent Emp is deﬁned inductively. The theory Dinit
+
+consists of a single axiom expressing that the initial connection relation between gear wheels is symmetric:
+
+(cid:15)
+
+∀g∀g
+
+(ICon(g, g
+
+(cid:15)
+
+) ⊃ ICon(g
+
+(cid:15)
+
+, g)).
+
+Let DFriction := Dif ∪ Duna(Act) ∪ Dinit ∪ {Δsc} where Δsc consists of Δﬂuent ∪ Δeffect ∪ Δdef as deﬁned above. The
+conditions of Corollary 5 apply. Because Δﬂuent is a deﬁnition by well-founded induction and Δeffect and Δdef are
+positive inductive deﬁnitions, this theory can be translated into classical logic.
+
+Proposition 16. The basic action theory with deﬁnitions DFriction satisﬁes the Initial State Expansion property and is
+equivalent to the SO theory
+
+Df ∪ Duna(Act) ∪ Dinit ∪
+
+4.4. More extensions
+
+(cid:7)
+(cid:6)
+comp(Δﬂuent) ∧ PID(Δeffect) ∧ PID(Δdef)
+
+.
+
+Many other extensions of situation calculus have been proposed, for example natural actions, concurrency and
+continuous time [34]. Most of these extensions can be integrated seamlessly in the inductive situation calculus. One
+extension that we brieﬂy discuss here is the one with non-deterministic actions. Obviously, in this case, successor
+states cannot be deﬁned in terms of predecessor states and actions, since the latter do not determine the ﬁrst in a
+unique way. A simple technique to model non-determinism is by introducing new open predicates. For example,
+consider the non-deterministic effect of rolling a dice, which causes the ﬂuent Dice to take a value between 1 and 6.
+This could be represented in the inductive situation calculus by introducing a new binary open predicate Thrown with
+a ﬁrst argument of sort int and a second of sort sit. The effect of rolling a dice on the ﬂuent Dice of sort int is then
+represented by the effect rule:
+
+∀n∀s (CDice(n, throw, s) ← Thrown(n, s))
+
+together with axioms stating that for all situations s, there is a unique number n between 1 and 6 such that Thrown(n, s)
+holds. This technique can be generalized into a general methodology to represent non-deterministic actions.
+
+5. Related work
+
+The prime goal of this paper is to clarify inductive deﬁnitions and their role in common sense knowledge represen-
+tation. The application domain is temporal reasoning, situation calculus in particular. In this respect, this paper is only
+preceded by earlier work of the authors. The semantic correspondence between inductive deﬁnitions and causality
+was pointed out independently in [36,37] and [9]. In both cases, the motivation for using inductive deﬁnitions was
+the similarity between the process of effect propagation in a dynamic system and inductive deﬁnitions. Inductive de-
+ﬁnition formalizations of situation calculus were ﬁrst presented by Ternovska in [36,37] and, a bit later, by Denecker
+in [5]. The backgrounds of these studies were quite different, in one case the classical logic approach developed at
+the Cognitive Robotics Group at the University of Toronto, and in the other case, logic programming formalizations
+of temporal reasoning. Ternovska [36,37] observed that the construction of a model of Reiter-style situation calculus
+is an induction over the well-founded order on situations, and therefore, proposed to model situation calculus with a
+logic of inductive deﬁnitions. Her approach used Aczel-style abstract monotone induction deﬁnitions [1]. To handle
+the inherent non-monotonicity of the situation calculus, the monotone deﬁnitions were constructed by simultaneous
+non-monotone induction. She also extended her solution to acyclic ramiﬁcation rules and demonstrated that an induc-
+tive deﬁnition of the set of situations implies the general induction principle on situations [33]. In [9], Denecker et al.
+
+358
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+focussed on the ramiﬁcation problem in general, and pointed to the similarity with inductive deﬁnitions. They studied
+the ramiﬁcation problem with cyclic effect rules and negative conditions, and proposed to use the well-founded se-
+mantics to model such complex ramiﬁcations. The inductive situation calculus integrates this work in the context of
+the situation calculus.
+
+For an overview of the many different approaches for temporal reasoning and/or the ramiﬁcation problem, we refer
+to [9,15,26,34,35,38,39]. Here we limit our discussion to approaches with an explicit representation of causal laws in
+situation calculus or non-monotonic logic.
+
+It has been observed that the process of effect propagation is a constructive process: basic actions cause changes
+and effects which propagate through the dynamic system; changes do not appear without an external cause (i.e.,
+no spontaneous generation of effects, or no deus ex machina effects). The same constructive intuition is found in
+inductive deﬁnitions. This explains why inductive deﬁnitions can correctly model recursive effect propagations. In
+this respect, the inductive situation calculus is more general than two other well-known classical logic formalizations
+of the situation calculus with ramiﬁcations, namely Lin’s approach [19] and McIlraith’s solitary stratiﬁed theories [26].
+Both approaches impose constraints on ramiﬁcation rules which preclude recursive ramiﬁcations. A strong constraint
+in solitary stratiﬁed theories is that no ﬂuent symbol is allowed to appear both as an effect and in the precondition of
+the same action. On the other hand, McIlraith addresses the qualiﬁcation problem, which we don’t.
+
+While the above approaches are based on classical logic, causality has also been investigated from a non-monotonic
+reasoning perspective. Perhaps the best known non-monotonic logic that takes causality as its basic principle is the
+logic of non-monotonic causal theories [15,22]. This language extends propositional logic with causal implications
+ϕ ⇐ ψ . Interestingly, this approach takes the opposite point of view with respect to spontaneous generation of effects
+than in the inductive situation calculus. Spontaneous generation is not seen as a ﬂaw but as a feature, used to model
+exogeneous ﬂuents, ﬂuents that can change state spontaneously. This is modeled by pairs of causal rules
+
+P ⇐ P ,
+
+¬P ⇐ ¬P .
+
+As a consequence, cyclic effect rules as found in the gear wheel example, cannot correctly be modeled by recursive
+causal rules in this formalism because such a theory would accept unintended models in which two connected gear
+wheels cause each other to turn, without external cause. While this seems a weakness of this formalism, it is clear
+that the possibility of representing exogeneous events or ﬂuents is a useful feature. The challenge here is to integrate
+exogeneous ﬂuents with a correct treatment of cyclic effect rules.
+
+6. Conclusion
+
+This paper explains the inductive nature of the situation calculus. We have shown that—unsuspected by its
+creators—the original Reiter-style situation calculus makes hidden use of inductive deﬁnitions. We made these de-
+ﬁnitions explicit and found monotone and non-monotone induction. We formalized these deﬁnitions in a logic of
+inductive deﬁnitions (ID-logic) thus obtaining a variant of the situation calculus which we call the inductive situation
+calculus. We presented a translation to classical logic to show that the inductive situation calculus is indeed equivalent
+to the standard formalization in the case without ramiﬁcations.
+
+Our ID-logic formalization offers a number of advantages compared to classical logic. First, in the Reiter-style
+situation calculus, different forms of induction are formalized in different ways. By using a logic of inductive deﬁni-
+tions, we obtained a uniform and modular representation. Second, the use of inductive deﬁnitions allowed us to extend
+the situation calculus to cope with complex temporal phenomena such as (recursive) ramiﬁcations and (inductively)
+deﬁned ﬂuents. We also proved that the inductive situation calculus (and Reiter’s situation calculus) satisﬁes the Initial
+State Expansion property.
+
+Our work contributes also on other levels. First, it presents the situation calculus as an application of the principle of
+iterated induction in the context of commonsense reasoning thus giving insight into this complex and little known form
+of non-monotone induction. Second, our analysis showed that the modularity, totality and transformation theorems
+are powerful tools for analyzing and transforming large deﬁnitions, by allowing to break them up using the modularity
+theorem and translating them piecewise to classical logic.
+
+Finally, our experiment demonstrates that the use of different forms of inductive deﬁnitions is not limited to mathe-
+matics, but is applicable in a much wider area of knowledge representation and commonsense reasoning. In particular,
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+359
+
+it seems that inductive deﬁnitions are well-suited for reasoning about causality. Perhaps this is not so surprising. Af-
+ter all, mathematical induction is about construction of complex mathematical objects. In this respect, mathematical
+induction may be viewed as an application of causal reasoning in the idealized abstract context of mathematics, rather
+than in the much more complex realm of commonsense reasoning.
+
+References
+
+[1] P. Aczel, An introduction to inductive deﬁnitions, in: J. Barwise (Ed.), Handbook of Mathematical Logic, North-Holland Publishing Company,
+
+Amsterdam, 1977, pp. 739–782.
+
+[2] F. Baader, D. Calvanese, D. McGuinness, D. Nardi, P. Patel-Schneider (Eds.), The Description Logic Handbook. Theory, Implementation and
+
+Applications, Cambridge University Press, 2002.
+
+[3] K.L. Clark, Negation as failure, in: H. Gallaire, J. Minker (Eds.), Logic and Databases, Plenum Press, 1978, pp. 293–322.
+[4] M. Denecker, The well-founded semantics is the principle of inductive deﬁnition, in: J. Dix, L. Fariñas del Cerro, U. Furbach (Eds.), Logics
+
+in Artiﬁcial Intelligence, Schloss Daghstull, in: Lecture Notes in Artiﬁcial Intelligence, vol. 1489, Springer, 1998, pp. 1–16.
+
+[5] M. Denecker, Extending classical logic with inductive deﬁnitions, in: J. Lloyd, et al. (Eds.), First International Conference on Computational
+
+Logic (CL2000), London, in: Lecture Notes in Artiﬁcial Intelligence, vol. 1861, Springer, 2000, pp. 703–717.
+
+[6] M. Denecker, M. Bruynooghe, V. Marek, Logic programming revisited: logic programs as inductive deﬁnitions, ACM Transactions on Com-
+
+putational Logic 2 (4) (2001) 623–654.
+
+[7] M. Denecker, E. Ternovska,
+
+in: Proceedings of Ninth International Conference on Principles of
+Knowledge Representation and Reasoning, Delta Whistler Resort, Canada, 2004, pp. 545–553, http://www.cs.kuleuven.ac.be/cgi-bin-
+dtai/publ_info.pl?id=41085.
+
+Inductive situation calculus,
+
+[8] M. Denecker, E. Ternovska, A logic of non-monotone inductive deﬁnitions and its modularity properties, in: V. Lifschitz, I. Niemelä (Eds.),
+
+7th International Conference on Logic Programming and Nonmonotonic Reasoning, 2004.
+
+[9] M. Denecker, D. Theseider Duprè, K. Van Belleghem, An inductive deﬁnition approach to ramiﬁcations, Linköping Electronic Articles in
+
+Computer and Information Science 3 (7) (1998) 1–43, http://www.ep.liu.se/ea/cis/1998/007/.
+
+[10] M. Denecker, E. Ternovska, A logic of non-monotone inductive deﬁnitions, ACM Transactions on Computational Logic (TOCL), 2007.
+[11] F. Fages, Consistency of Clark completion and existence of stable models, Journal of Methods of Logic in Computer Science 1 (1994) 51–60.
+[12] M. Fitting, Fixpoint semantics for logic programming a survey, Theoretical Computer Science 278 (1–2) (2002) 25–51.
+[13] M. Gelfond, V. Lifschitz, Classical negation in logic programs and disjunctive databases, New Generation Computing 9 (1991) 365–385.
+[14] M. Gelfond, V. Lifschitz, Describing action and change by logic programs, in: Ninth Joint International Conference and Symposium on Logic
+
+Programming JICSLP’92, MIT Press, 1992.
+
+[15] E. Giunchiglia, J. Lee, V. Lifschitz, N. McCain, H. Turner, Nonmonotonic causal theories, Artiﬁcial Intelligence (AIJ) 153 (2004) 49–104.
+[16] Y. Gurevich, S. Shelah, Fixed-point extensions of ﬁrst-order logic, Annals of Pure and Applied Logic 32 (1986) 265–280.
+[17] S. Hanks, D. McDermott, Nonmonotonic logic and temporal projection, Artiﬁcial Intelligence 33 (1987) 379–412.
+[18] H.J. Levesque, F. Pirri, R. Reiter, Foundations for the situation calculus, Electronic Transactions on Artiﬁcial Intelligence 2 (1998) 159–178.
+[19] F. Lin, Embracing causality in specifying the indirect effects of actions, in: Proc. of IJCAI 95, 1995, pp. 1985–1991.
+[20] V.W. Marek, M. Truszczy´nski, Stable models and an alternative logic programming paradigm, in: K.R. Apt, V. Marek, M. Truszczy´nski,
+
+D.S. Warren (Eds.), The Logic Programming Paradigm: A 25 Years Perspective, Springer, 1999, pp. 375–398.
+
+[21] M. Mariën, R. Mitra, M. Denecker, M. Bruynooghe, Satisﬁability checking for PC(ID), in: G. Sutcliffe, A. Voronkov (Eds.), Proc. LPAR’05,
+
+in: Lecture Notes in Artiﬁcial Intelligence, vol. 3835, Springer, 2005, pp. 565–579.
+
+[22] N. McCain, H. Turner, Causal theories of action and change, in: Proc. of AAAI 97, 2007, pp. 460–465.
+[23] J. McCarthy, Circumscription—a form of nonmonotonic reasoning, Artiﬁcial Intelligence 13 (1980) 27–39.
+[24] J. McCarthy, Elaboration tolerance, in: COMMON SENSE 98, Symposium on Logical Formalizations of Commonsense Reasoning, January
+
+1998.
+
+[25] J. McCarthy, P.J. Hayes, Some philosophical problems from the standpoint of artiﬁcial intelligence, in: B. Meltzer, D. Michie (Eds.), Machine
+
+Intelligence 4, Edinburgh University Press, 1969, pp. 463–502.
+
+[26] S. McIlraith, An axiomatic solution to the ramiﬁcation problem (sometimes), Artiﬁcial Intelligence 116 (1–2) (2000) 87–121.
+[27] D. Mitchell, E. Ternovska, A framework for representing and solving NP search problems, in: Proceedings of the Twentieth National Confer-
+
+ence on Artiﬁcial Intelligence (AAAI-05), 2005, pp. 430–435.
+
+[28] Y.N. Moschovakis, Elementary Induction on Abstract Structures, North-Holland Publishing Company, Amsterdam, New York, 1974.
+[29] I. Niemelä, Logic programs with stable model semantics as a constraint programming paradigm, Annals of Mathematics and Artiﬁcial Intel-
+
+ligence 25 (3,4) (1999) 241–273.
+
+[30] N. Pelov, E. Ternovska, Reducing ID-logic to propositional satisﬁability, in: Proceedings of the Twenty First International Conference on
+
+Logic Programming (ICLP 2005), 2005.
+
+[31] F. Pirri, R. Reiter, Some contributions to the metatheory of the situation calculus, ACM 46 (3) (1999) 325–361.
+[32] R. Reiter, A logic for default reasoning, Artiﬁcial Intelligence 13 (1980) 81–132.
+[33] R. Reiter, The frame problem in the situation calculus: a simple solution (sometimes) and a completeness result for goal regression, in:
+V. Lifschitz (Ed.), Artiﬁcial Intelligence and Mathematical Theory of Computation: Papers in Honor of John McCarthy, Academic Press, San
+Diego, CA, 1991, pp. 359–380.
+
+[34] R. Reiter, Knowledge in Action: Logical Foundations for Describing and Implementing Dynamical Systems, MIT Press, 2001.
+[35] M. Shanahan, Solving the Frame Problem, MIT Press, 1997.
+
+360
+
+M. Denecker, E. Ternovska / Artiﬁcial Intelligence 171 (2007) 332–360
+
+[36] E. Ternovskaia, Causality via inductive deﬁnitions, in: Working Notes of “Prospects for a Commonsense Theory of Causation”, AAAI Spring
+
+Symposium Series, March 23–28, 1998.
+
+[37] E. Ternovskaia, Inductive deﬁnability and the situation calculus, in: Transaction and Change in Logic Databases, in: Lecture Notes in Computer
+
+Science, vol. 1472, Springer, 1998.
+
+[38] M. Thielscher, Ramiﬁcation and causality, Journal of Artiﬁcial Intelligence 89 (1997) 317–364.
+[39] M. Thielscher, Introduction to the ﬂuent calculus, Electronic Transactions on Artiﬁcial Intelligence 3–4 (1998) 179–192, http://www.ep.liu.
+
+se/ej/etai/1998/006/.
+
+[40] A. Van Gelder, An alternating ﬁxpoint of logic programs with negation, Journal of Computer and System Sciences 47 (1993) 185–221.
+[41] A. Van Gelder, K.A. Ross, J.S. Schlipf, The well-founded semantics for general logic programs, Journal of the ACM 38 (3) (1991) 620–650.
+[42] J. Vennekens, D. Gilis, M. Denecker, Splitting an operator: Algebraic modularity results for logics with ﬁxpoint semantics, ACM Transactions
+
+on Computational Logic (TOCL) 2006, submitted for publication.
+
+

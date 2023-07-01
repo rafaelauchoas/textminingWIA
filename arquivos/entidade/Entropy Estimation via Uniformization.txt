@@ -1,0 +1,8523 @@
+Journal Pre-proof
+
+Entropy Estimation via Uniformization
+
+Ziqiao Ao and Jinglai Li
+
+PII:
+
+DOI:
+
+S0004-3702(23)00100-5
+
+https://doi.org/10.1016/j.artint.2023.103954
+
+Reference:
+
+ARTINT 103954
+
+To appear in:
+
+Artiﬁcial Intelligence
+
+Received date:
+
+4 June 2022
+
+Revised date:
+
+1 June 2023
+
+Accepted date:
+
+3 June 2023
+
+Please cite this article as: Z. Ao and J. Li, Entropy Estimation via Uniformization, Artiﬁcial Intelligence, 103954,
+doi: https://doi.org/10.1016/j.artint.2023.103954.
+
+This is a PDF ﬁle of an article that has undergone enhancements after acceptance, such as the addition of a cover page and metadata, and
+formatting for readability, but it is not yet the deﬁnitive version of record. This version will undergo additional copyediting, typesetting and
+review before it is published in its ﬁnal form, but we are providing this version to give early visibility of the article. Please note that,
+during the production process, errors may be discovered which could affect the content, and all legal disclaimers that apply to the journal
+pertain.
+
+© 2023 Published by Elsevier.
+
+Entropy Estimation via Uniformization
+
+School of Mathematics, University of Birmingham, Birmingham B15 2TT, UK
+
+Ziqiao Ao, Jinglai Li
+
+Abstract
+
+Entropy estimation is of practical importance in information theory and statis-
+tical science. Many existing entropy estimators suﬀer from fast growing esti-
+mation bias with respect to dimensionality, rendering them unsuitable for high-
+dimensional problems. In this work we propose a transform-based method for
+high-dimensional entropy estimation, which consists of the following two main
+ingredients. Firstly, we provide a modiﬁed k-nearest neighbors (k-NN) entropy
+estimator that can reduce estimation bias for samples closely resembling a uni-
+form distribution. Second we design a normalizing ﬂow based mapping that
+pushes samples toward the uniform distribution, and the relation between the
+entropy of the original samples and the transformed ones is also derived. As a
+result the entropy of a given set of samples is estimated by ﬁrst transforming
+them toward the uniform distribution and then applying the proposed estima-
+tor to the transformed samples. The performance of the proposed method is
+compared against several existing entropy estimators, with both mathematical
+examples and real-world applications.
+
+Keywords: entropy estimation, k nearest neighbor estimator, normalizing ﬂow,
+uniformization
+2010 MSC: 00-01, 99-00
+
+1. Introduction
+
+5
+
+Entropy, a fundamental concept in information theory, has found applica-
+tions in various ﬁelds such as physics, statistics, signal processing, and machine
+learning. For example, in the statistics and data science contexts, various ap-
+plications rely critically on the estimation of entropy, including goodness-of-ﬁt
+testing [1, 2], sensitivity analysis [3], parameter estimation [4, 5], and Bayesian
+experimental design [6, 7].
+
+In this work we focus on the continuous version of entropy that takes the
+
+form,
+
+(cid:2)
+
+H(X) = −
+
+log[px(x)]px(x)dx,
+
+(1)
+
+Email addresses: zxa029@bham.ac.uk (Ziqiao Ao), j.li.10@bham.ac.uk (Jinglai Li)
+
+Preprint submitted to Journal of LATEX Templates
+
+June 7, 2023
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+50
+
+where px(x) is the probability density function (PDF) of random variable X.
+Despite the rather simple deﬁnition, entropy only admits an analytical expres-
+sion for a limited family of distributions and needs to be evaluated numerically
+in general. When the distribution of interest is analytically available, in princi-
+ple its entropy can be estimated by numerical integration schemes such as the
+Monte Carlo method. However, in many real-world applications, the distribu-
+tion of interest is not analytically available, and one has to estimate the entropy
+from the realizations drawn from the target distribution, which makes it diﬃcult
+or even impossible to directly compute the entropy via numerical integration.
+
+Entropy estimation has attracted considerable attention from various com-
+munities in the last a few decades, and numerous methods have been developed
+to directly estimate entropy from realizations. In this work we only consider
+non-parametric approaches which do not assume any parametric model of the
+target distribution, and those methods can be broadly classiﬁed into two cate-
+gories. The ﬁrst class of methods, are known as the plug-in estimators, which
+ﬁrst estimate the underlying probability density, and then compute the integral
+in Eq. (1) using numerical integration or Monte Carlo (see [8] for a detailed
+description). Some examples of density estimation approaches that have been
+studied for plug-in methods are kernel density estimator [9, 10, 11, 12], his-
+togram estimator [13, 10] and ﬁeld-theoretic approach [14]. A major limitation
+of this type of methods is that they rely on an eﬀective density estimation, which
+is a diﬃcult problem in its own right, especially when the dimensionality of the
+problem is high. A diﬀerent strategy is to directly estimate the entropy from the
+independent samples of the random variable. Popular methods falling in this
+category include the sample-spacing [15] and the k-nearest neighbors (k-NN)
+[16, 17] based estimators. The latter is particularly appealing among the exist-
+ing estimation methods thanks to its theoretical and computational advantages
+and has been widely used in practical problems. Eﬀorts have been constantly de-
+voted to extending and improving the k-NN methods, and some recent variants
+and extensions of the methods are [18, 19, 20]. It is also worth mentioning that
+there are many other types of direct entropy estimators available. For example,
+Ariel and Louzoun [21] decoupled the target entropy to a sum of the entropy of
+marginals, which is estimated using one-dimensional methods, and the entropy
+of copula, which is estimated recursively by splitting the data along statistically
+dependent dimensions. Kandasamy et al.
+[22] suggested a leave-one-out tech-
+nique for the von Mises expansion based estimator [23]. We also note that in
+certain applications the main purpose is to minimize or maximize the quantity
+of entropy, and in this case entropy gradient estimation strategies [24, 25] have
+been explored to avoid direct entropy estimation.
+
+It is well known that, entropy estimation becomes increasingly more diﬃ-
+cult as the dimensionality grows, and such diﬃculty is mainly due to the es-
+timation bias, which decays very slowly with respect to sample size for high-
+dimensional problems. For example in many popular approaches including the
+k-NN method [16], the estimation bias decays at the rate of O(N −γ/d) where
+N is the sample size, d is the dimensionality, and γ is a positive constant
+[26, 22, 27, 28]. As a result, very few, if not none, of the existing entropy
+
+2
+
+55
+
+60
+
+65
+
+70
+
+75
+
+80
+
+85
+
+90
+
+estimation methods can eﬀectively handle high-dimensional problems without
+making strong assumptions about the smoothness of the underlying distribu-
+tion [22]. Indeed, the well-known minimax bias results (e.g., [29, 30]) indicate
+that without the strong smoothness assumption [22], the curse of dimensional-
+ity is unavoidable. However, eﬀorts can still be made to reduce the diﬀerence
+between the actual estimation bias and the theoretical bound.
+
+The main goal of this work is to provide an eﬀective entropy estimation
+approach which can achieve faster bias decaying rate under mild smoothness
+assumption, and thus can eﬀectively deal with high-dimensional problems. The
+method presented here consists of two main ingredients. First propose two trun-
+cated k-NN estimators based on those by [16] and [17] respectively, and also
+provide the bounds of the estimation bias in these estimators. Interestingly our
+theoretical results suggest that the estimators achieve zero bias for uniform dis-
+tributions, while there is no such a result for any existing k-NN based estimators,
+according to the bias analysis available to date [27, 31, 32]. This property oﬀers
+the possibility to signiﬁcantly improve the performance of entropy estimation
+by mapping the data points toward a uniform distribution, a procedure that we
+refer to as uniformization. Therefore the second main ingredient of the method
+is to conduct the uniformization of the data points, with the normalizing ﬂow
+(NF) technique [33, 34]. Simply speaking, NF constructs a sequence of invertible
+and diﬀerentiable mappings that transform a simple base distribution such as
+standard Gaussian into a more complicated distribution whose density function
+may not be available. Speciﬁcally we use the Masked Autoregressive Flow [35],
+a NF algorithm originally developed for density estimation, combined with the
+probability integral transform, to push the original data points towards the uni-
+form distribution. We then estimate the entropy of the resulting near-uniform
+data points with the proposed truncated k-NN estimators, and derive that of
+the original ones accordingly (by adding an entropic correction term due to the
+transformation). Therefore, by combining the truncated k-NN estimators and
+the normalizing ﬂow model, we are able to decode a complex high-dimensional
+distribution represented by the realizations, and obtain an accurate estimation
+of its entropy.
+
+The rest of the paper is organized as follows. In Section 2, we describe the
+traditional k-NN based methods of entropy estimation and their convergence
+properties. In Section 3, we introduce the truncated k-NN estimators for dis-
+tributions with compact support, and then show how to combine these new
+estimators with the NF-based uniformization procedure to estimate the entropy
+of general distributions. Numerical examples and applications are presented in
+Sections 4 and Section 5 respectively to demonstrate the eﬀectiveness of the
+proposed methods. Finally, in Section 6, we summarize our ﬁndings and discuss
+some future research directions.
+
+95
+
+2. k-NN Based Entropy Estimation
+
+We provide a brief introduction to two commonly used k-NN based entropy
+estimators in this section. We start with the original k-NN entropy estimator
+
+3
+
+100
+
+proposed in [16], where the k-th nearest neighbor is contained in the smallest
+possible closed ball. Next, we introduce a popular variant of the k-NN estimator
+proposed in [17], and this method uses the smallest possible hyper-rectangle to
+cover at least k points. We ﬁnally discuss some theoretical analysis of estimation
+errors in the estimators.
+
+2.1. Kozachenko-Leonenko Estimator
+
+Recall the deﬁnition of entropy in Eq. (1). Given a density estimator (cid:3)px(x)
+i=1 drawn from px(x), the
+
+for px(x) and a set of N i.i.d. samples S = {x(i)}N
+entropy of the random variable X can be estimated as follows:
+
+(cid:3)H(X) =− N −1
+
+N(cid:4)
+
+i=1
+
+log (cid:3)px(x(i)).
+
+(2)
+
+The Kozachenko-Leonenko (KL) estimator depends on a local uniformity as-
+sumption to obtain the estimate (cid:3)px(x). For each x(i), one ﬁrst identiﬁes the
+k-nearest neighbors (in terms of the p-norm distance) of it, and deﬁnes the
+smallest closed ball covering all these k neighbors as:
+
+B(x(i), (cid:3)i/2) = {x ∈ Rd
+
+(cid:5)
+(cid:5) (cid:3)x − x(i)(cid:3)p ≤ (cid:3)i/2},
+
+where (cid:3)i be twice the distance between x(i) and its k-th nearest neighbor among
+the set S. We shall refer to the closed ball B(x(i), (cid:3)i/2) as a cell centered at x(i),
+and let qi be the mass of the cell B(x(i), (cid:3)i/2) , i.e.,
+
+(cid:2)
+
+qi((cid:3)i) =
+
+x∈B(x(i),(cid:3)i/2)
+
+px(x)dx.
+
+It can be derived that the expectation value of log qi over (cid:3)i is given by
+
+E(log qi) = ψ(k) − ψ(N ),
+
+(3)
+
+where ψ(x) = Γ(cid:2)(x)
+then assumes that the density is constant in B(x(i), (cid:3)i), which gives
+
+Γ(x) with Γ(x) being the Gamma function [17]. KL estimator
+
+qi((cid:3)i) ≈ cd(cid:3)d
+
+i px(x(i)),
+
+(4)
+
+where d is the dimension of X and
+
+cd = Γ(1 +
+
+1
+p
+
+)d/Γ(1 +
+
+d
+p
+
+),
+
+is the volume of the d-dimensional unit ball with respect to p-norm. Combining
+(3) and (4) one can get an estimate of the log-density at each sample point,
+
+log (cid:3)px(x(i)) = ψ(k) − ψ(N ) − log cd − d log (cid:3)i.
+
+(5)
+
+Plugging the above estimates for i = 1, ..., N into (2) yields the KL estimator:
+
+(cid:3)HKL(X) =− ψ(k) +ψ (N ) + log cd +
+
+d
+N
+
+N(cid:4)
+
+i=1
+
+log (cid:3)i.
+
+(6)
+
+4
+
+2.2. KSG Estimator
+
+As is mentioned earlier, the Kraskov-St¨ogbauer-Grassberger (KSG) estima-
+tor is an important variant of ˆHKL. Unlike KL estimator that is based on closed
+balls, KSG estimator uses hyper-rectangles to form the cells at each data point.
+Namely one chooses the ∞-norm as the distance metric (i.e p = ∞), and as
+a result the cell B(x(i), (cid:3)i/2) becomes a hyper-cube with side length (cid:3)i. Next,
+we allow the hyper-cube to become a hyper-rectangle: i.e., the cells admit dif-
+ferent side lengths along diﬀerent dimensions. Speciﬁcally, for j = 1, ..., d, we
+deﬁne (cid:3)i,j to be twice of the distance between x(i) and its k-th nearest neighbor
+along dimension j, and the cell centered at x(i) covering its k-nearest neighbors
+becomes
+
+B(x(i), (cid:3)i,1:d/2) = {x = (x1, ..., xd) | |xj − x(i)
+j
+
+| ≤(cid:3) i,j/2,
+for j = 1, ..., d},
+
+(7)
+
+where (cid:3)i,1:d = ((cid:3)i,1, ..., (cid:3)i,d). This change leads to a diﬀerent formula for comput-
+ing the mass of the cell B(x(i), (cid:3)i,1:d/2),
+
+E(log qi) ≈ ψ(k) −
+
+d − 1
+k
+
+− ψ(N ).
+
+(8)
+
+It is worth noting that the equality in Eq. (3) is replaced by approximate equality
+in Eq. (8), because a uniform density within the rectangle has to be assumed
+to obtain Eq. (8) (see Lemma 2 in Appendix A.2 for details). Using a similar
+local assumption as Eq. (4), the KSG estimator is derived as,
+
+(cid:3)HKSG(X) =− ψ(k) +ψ (N ) +
+
+d − 1
+k
+
++
+
+1
+N
+
+N(cid:4)
+
+d(cid:4)
+
+i=1
+
+j=1
+
+log (cid:3)i,j.
+
+(9)
+
+105
+
+110
+
+115
+
+120
+
+We note that the KSG method was actually developed in the context of esti-
+mating mutual information [17], and has been reported to outperform the KL
+estimator in a wide range of problems [27]. As has been shown above, it is
+straightforward to extend it to entropy estimation, and our numerical experi-
+ments also suggest that it has competitive performance as an entropy estimator,
+which will be demonstrated in Section 4.
+
+2.3. Convergence Analysis
+
+Another important issue is to analyze the estimation errors in these entropy
+estimators and especially how they behave as the sample size increases. In most
+of the k-NN based estimators including the two mentioned above, the variance is
+generally well controlled, decaying at a rate of O(N −1) with N being the sample
+size, while the main issue lies on the estimation bias. In fact, the bias of estima-
+tor (cid:3)HKL has been well studied, but that of (cid:3)HKSG receives very little attention.
+Previous results related to the former are listed as follows. The original [16]
+paper established the asymptotic unbiasedness for k = 1 while [36] obtained the
+same result for general k. For distributions with unbounded support, [37] proved
+
+5
+
+Figure 1: The schematic illustration of the truncated estimator. The shaded area is that
+removed from the k-NN cell.
+
+) ford = 1.
+
+that the bias bound decays at a rate of O( 1√
+N
+to higher dimensions, obtaining a bias bound of O(N − 1
+d ) up to polylogarithmic
+factors. For distributions compactly supported, usually densities satisfying the
+β-H¨older condition are considered. [32] gave a quick-and-dirty upper bound of
+bias, O(N −β), for a simple class of univariate densities supported on [0, 1] and
+d ) (β ∈ (0, 2])
+bounded away from zero.
+for general d with some additional conditions on the boundary of support. We
+reinstate that all these works obtained a variance bound of O(N −1).
+
+[31] proved the bias is around O(N − β
+
+[27] generalized it
+
+It should be noted that the bias bounds given by previous studies typically
+depend on some properties of target densities, such as smoothness parameter
+and Hessian matrix, providing insights that these estimators perform well on
+certain distributions. This motivates the idea that one can transform the given
+data points toward a desired distribution for a more accurate entropy estimation,
+which is detailed in next section.
+
+125
+
+130
+
+135
+
+3. Uniformizing Mapping Based Entropy Estimation
+
+In this section, we present the proposed approach in detail. As is mentioned
+earlier, it consists of two main ingredients: a truncated version of the k-NN
+entropy estimators, and a transformation that can map data points toward a
+uniform distribution.
+
+140
+
+3.1. Truncated KL/KSG Estimators
+
+For compactly supported distributions, a signiﬁcant source of bias comes
+from the boundary of the support, where the k-NN cells are constructed in-
+cluding areas outside of the support of the distribution density [31]. Intuitively
+
+6
+
+speaking, incorrectly including such areas results in an underestimate of the den-
+sities, leading to bias in the estimator. We thus propose a method to reduce the
+estimation bias by excluding the areas outside of the distribution support, and
+remarkably the resulting estimator enjoy certain convergence properties which
+enable us to design the NF based estimation approach. The only additional
+requirement for using these estimators is that the bound of support of density
+should be speciﬁed. Without loss of generality, we suppose the target density
+is supported on the unit cube Q := [0, 1]d in Rd. The procedure of our method
+is as follows: we ﬁrst determine all the cells using either KL or KSG, then ex-
+amine whether each k-NN cell covers area out of the distribution support, and
+if so, truncate the cell at the boundary to exclude such area (see Fig. 1 for
+a schematic illustration). Mathematically the truncated KL (tKL) estimator
+(with ∞-norm), is given by
+
+(cid:3)HtKL(X) = −ψ(k) + ψ(N ) +
+
+1
+N
+
+N(cid:4)
+
+d(cid:4)
+
+i=1
+
+j=1
+
+log ξi,j,
+
+(10)
+
+where
+
+j + (cid:3)i/2, 1} − max{x(i)
+and the truncated KSG (tKSG) esitmator is given by
+
+ξi,j = min{x(i)
+
+j
+
+− (cid:3)i/2, 0};
+
+(cid:3)HtKSG(X) =− ψ(k) +ψ (N ) + (d − 1)/k +
+
+1
+N
+
+N(cid:4)
+
+d(cid:4)
+
+i=1
+
+j=1
+
+log ζi,j,
+
+(11)
+
+where
+
+ζi,j = min{x(i)
+
+j + (cid:3)i,j/2, 1} − max{x(i)
+
+j
+
+− (cid:3)i,j/2, 0}.
+
+Next we shall theoretically analyze the bias of the truncated estimators.
+Our analysis relies on some assumptions on the density function px, which are
+summarized as below:
+
+Assumption 1. The distribution px satisﬁes:
+(a) px is continuous and supported on Q;
+(b) px is bounded away from 0, i.e., C1 = inf
+x∈Q
+(c) The gradient of px is uniformly bounded on Qo, i.e., C2 = sup
+x∈Qo
+
+px(x) > 0;
+
+∞.
+
+||(cid:2)px(x)||1 <
+
+First we consider the bias of estimator (cid:3)HtKL and the following theorem states
+
+that, the bias in (cid:3)HtKL is bounded and vanishes at the rate of O(N − 1
+
+d ).
+
+145
+
+150
+
+Theorem 1. Under Assumption 1 and for any ﬁnite k and d, the bias of the
+truncated KL estimator is bounded by
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKL(X)] − H(X)
+
+(cid:5)
+(cid:5) ≤
+
+C2
+C 1+1/d
+1
+
+(cid:7) 1
+d .
+
+(cid:6) k
+N
+
+7
+
+The variance of the truncated KL estimator is bounded by
+
+Var[ (cid:3)HtKL(X)] ≤ C
+
+1
+N
+
+,
+
+for some C > 0.
+
+Proof. We provide a skeleton proof here, where the complete proof including
+the notations is detailed in Appendix A.3 and Appendix A.4.
+
+Proof of the bias bound for the truncated KL estimator proceeds as follows.
+
+1. Show that
+
+E[ (cid:3)HtKL(X)] = −E
+
+(cid:8)
+
+log
+
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+
+(cid:9)
+
+.
+
+2. Bound the following diﬀerence by
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) log p(x) − log
+
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+
+(cid:5)
+(cid:5)
+(cid:5) ≤ C2
+(cid:5)
+2C1
+
+(cid:3)k.
+
+(12)
+
+(13)
+
+3. Note that H(X) = −E(log p(x)), and using Eq. (12), Eq. (13) and the
+upper bound of E((cid:3)k) obtained from Lemma 4, we can derive that the
+bias E[ (cid:3)HtKL(X)] is bounded by
+(cid:5)
+(cid:5)E[ (cid:3)HtKL(X)] − H(X)
+
+(cid:7) 1
+d .
+
+(cid:5)
+(cid:5) ≤
+
+(14)
+
+C2
+C 1+1/d
+1
+
+(cid:6) k
+N
+
+155
+
+Proof of the variance bound for the truncated KL estimator proceeds as fol-
+
+lows.
+
+1. Let αi =
+
+(cid:10)
+
+d
+
+j=1 log ξi,j and let α∗
+
+i (for i = 2, ..., N ) be the estimators with
+
+sample x(1) removed. Then, by the Efron-Stein inequality [38],
+
+Var[ (cid:3)HtKL(X)] = Var
+
+(cid:11)
+
+1
+N
+
+N(cid:4)
+
+i=1
+
+(cid:12)
+
+(cid:11)(cid:13)
+
+αi
+
+≤ 2N E
+
+1
+N
+
+N(cid:4)
+
+i=1
+
+αi − 1
+N
+
+N(cid:4)
+
+i=2
+
+α∗
+i
+
+(cid:14)2(cid:12)
+
+.
+
+2. Let 1Ei be the indicator function of the event Ei = {(cid:3)k(x(1)) (cid:7)= (cid:3)∗
+k(x(1)) is twice the k-NN distance of x(1) when α∗
+
+(15)
+k(x(1))},
+i are used. Then
+
+αi −
+
+(cid:14)2
+
+1
+N
+
+N(cid:4)
+
+i=2
+
+α∗
+i
+
+(cid:13)
+
+≤ (1 + Ck,d)
+
+α2
+
+1 + 2
+
+(cid:14)
+
+1Ei(α2
+
+i + α∗2
+i )
+
+,
+
+N(cid:4)
+
+i=2
+
+(16)
+
+where Ck,d is a constant.
+
+3. Since αi and α∗
+
+upper bounds of the following three expectations: E[α2
+and (N − 1)E[1E2α∗2
+2 ].
+
+i are identically distributed, we only need to derive the
+1], (N − 1)E[1E2α2
+2]
+
+160
+
+8
+
+where (cid:3)∗
+we show that
+(cid:13)
+
+N(cid:4)
+
+N 2
+
+1
+N
+
+i=1
+
+4. Finally we obtain the bound of the variance of (cid:3)HtKL(X)
+
+Var[ (cid:3)HtKL(X)] ≤ C
+
+1
+N
+
+,
+
+(17)
+
+for some C > 0.
+
+Note that C2 = 0 when px is uniform on Q, and the following corollary
+
+follows directly:
+
+165
+
+Corollary 1. Under the assumption in Theorem 1, if X is uniformly distributed
+on Q, then the truncated KL estimator is unbiased.
+
+170
+
+175
+
+This corollary is the theoretical foundation of the proposed method, as it
+suggests that if one can transform the data points into a uniform distribution,
+the tKL method can yield an unbiased estimate.
+In reality, it is usually im-
+possible to map the data point exactly into a uniform distribution to achieve
+the unbiased estimate. To this end, Theorem 1 suggests that, as long as the
+transformed samples are close to a uniform distribution in the sense that C2 is
+small, the transformation can still signiﬁcantly reduce the bias. Since the main
+contribution of the mean-square estimation error comes from the bias (as the
+variance decays at the rate of O(N −1)), reducing the bias therefore leads much
+more accurate estimation of the entropy.
+
+We next consider the bias of the tKSG estimator. The second theorem
+shows that the expectation of (cid:3)HtKSG has the same limiting behavior up to a
+polylogarithmic factor in N .
+
+Theorem 2. Under Assumption 1 and for any ﬁnite k and d, the bias of the
+truncated KSG estimator is bounded by
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKSG(X)] − H(X)
+
+(cid:5)
+(cid:5) ≤ C
+
+(log N )k+2
+C k+1
+1 N
+
+1
+d
+
+for some C > 0. The variance of the truncated KSG estimator is bounded by
+Var[ (cid:3)HtKSG(X)] ≤ C (cid:5) (log N )k+2
+
+,
+
+N
+
+180
+
+for some C (cid:5) > 0.
+
+Proof. Again, we only provide a skeleton proof here, with the complete details
+given in Appendix A.5 and Appendix A.6.
+
+Proof of the bias bound for the truncated KSG estimator proceeds as follows.
+1. Suppose that (cid:15)P , (cid:15)p, and (cid:15)q(cid:3)
+
+x1
+k ,...,(cid:3)
+
+xd
+k
+
+(x) are deﬁned as in Lemma 2 with
+d
+j=1 log ζi,j are identically
+
+(cid:10)
+
+d , and by Lemma 2 and the fact that
+
+l = p(x)− 1
+distributed, we have
+E[ (cid:3)HtKSG(X)] = E
+x∼p
+
+(cid:8)
+
+E
+P
+
+log ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+− E
+x∼p
+
+E
+(cid:2)P
+
+(cid:6)
+
+(cid:8)
+
+log
+
+p(x)(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+. (18)
+
+9
+
+2. We separate the d-dimensional unit cube Q into two subsets, Q = Q1 +Q2,
+(cid:6)
+
+(cid:7) 1
+d , andQ 2 = Q − Q1.
+
+185
+
+where Q1 := [ aN
+
+2 , 1 − aN
+
+2 ]d, aN =
+
+2k log N
+C1N
+
+3. Note that H(X) =− E(log p(x)), and we can then decompose the bias
+
+into three terms according to the above separation of unit cube:
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKSG(X)] − H(X)
+(cid:5)
+(cid:5)
+(cid:7)(cid:9)
+(cid:6)
+(cid:5)
+(cid:5) E
+x∼p
+
+· · ·ζ xd
+k
+
+ζ x1
+k
+
+log
+
+(cid:8)
+
+=
+
+E
+P
+≤I1 + I2 + I3,
+
+(cid:5)
+(cid:5)
+
+(cid:6)
+
+(cid:8)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+− E
+x∼p
+
+E
+(cid:2)P
+
+(19)
+
+with
+
+I1 =
+
+I2 =
+
+I3 =
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q2
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q1
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q
+
+(cid:8)
+
+log
+
+E
+P :(cid:3)k<aN
+
+(cid:6)
+
+(cid:6)
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:9)
+
+(cid:7)(cid:9)
+
+(cid:8)
+
+log
+
+(cid:6)
+
+log
+
+ζ x1
+k
+
+· · · ζ xd
+k
+
+(cid:7)(cid:9)
+
+E
+P :(cid:3)k<aN
+(cid:8)
+
+E
+P :(cid:3)k≥aN
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) +
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q2
+
+E
+(cid:2)P :(cid:3)k<aN
+(cid:8)
+
+− E
+x∈Q1
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) +
+
+E
+(cid:2)P :(cid:3)k<aN
+(cid:8)
+
+E
+(cid:2)P :(cid:3)k≥aN
+
+(cid:6)
+
+(cid:8)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+(cid:6)
+
+log
+
+(cid:3)x1
+k
+
+· · · (cid:3)xd
+k
+
+(cid:7)(cid:9)
+
+(cid:6)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+(20)
+means taking expectation under the probability measure P
+
+where
+over (cid:3)xj
+
+E
+P :(cid:3)k<aN
+k < aN , j = 1, ..., d.
+
+4. Finally, by bounding the three terms separately, we obtain
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKSG(X)] − H(X)
+
+(cid:5)
+(cid:5) ≤ C
+
+(log N )k+2
+C k+1
+1 N
+
+1
+d
+
+,
+
+(21)
+
+for some C > 0.
+
+190
+
+1. Let βi =
+
+(cid:10)
+
+Proof of variance bound for the truncated KSG estimator proceeds as ﬂlows.
+
+d
+
+j=1 log ζi,j, and deﬁne β∗
+
+with sample x(1) removed. Next we show that (N − 1)E[1E2β2
+1)E[1E2β∗2
+that E[β2
+(cid:8)
+2. Separate E
+
+2 ] are of the same order as E[β2
+1 ] =O ((log N )k+2), which is done in Steps 2 and 3.
+
+(cid:9)
+
+i (for i = 2, ..., N ) to be the estimators
+2 ] and (N −
+1 ]. As such we only need to prove
+
+β2
+1
+
+into two parts,
+(cid:8)
+
+(cid:9)
+
+E
+
+β2
+1
+
+= E
+x∈Q
+
+E
+P :(cid:3)k<aN
+
+(cid:9)
+
+(cid:8)
+
+β2
+1
+
++ E
+x∈Q
+
+E
+P :(cid:3)k≥aN
+
+(cid:8)
+
+(cid:9)
+
+,
+
+β2
+1
+
+(22)
+
+where aN =
+
+(cid:6)
+
+(cid:7) 1
+d .
+
+2k log N
+C1N
+
+3. By bounding the two parts separately, we obtain the bound of the expec-
+
+tation of β2
+1
+
+195
+
+for some C9 > 0.
+
+E[β2
+
+1 ] ≤ C9(log N )k+2,
+
+(23)
+
+10
+
+4. With the above bound, we can obtain the bound of the variance of (cid:3)HtKSG(X)
+Var[ (cid:3)HtKSG(X)] ≤ C (cid:5) (log N )k+2
+
+(24)
+
+,
+
+N
+
+for some C (cid:5) > 0.
+
+200
+
+205
+
+210
+
+215
+
+As one can see from Theorem 2, while the uniform distribution leads to zero
+bias for (cid:3)HtKL, we can not obtain the same result for (cid:3)HtKSG, which means no
+theoretical justiﬁcation for mapping the data points toward a uniform distri-
+bution for this estimator. That said, the tKSG estimator and Theorem 2 are
+still useful, and the reason for that is two-fold. First as is mentioned earlier, no
+existing result on the bound of bias is available for the KSG estimator to the
+best of our knowledge, and to this end our analysis on tKSG is the ﬁrst known
+bias bound for this type of estimators, and may provide useful information for
+understanding the convergence property of them. More importantly, our numer-
+ical experiments demonstrate that mapping the data points toward a uniform
+distribution does signiﬁcantly improve the performance of tKSG as well. In fact,
+we have found that tKSG can achieve the same or slightly better results than
+tKL on the transformed samples in our test cases.
+
+3.2. Estimating Entropy via Transformation
+
+As is mentioned earlier, based on the interesting convergence properties of
+the truncated estimators in particularly tKL, we want to estimate the entropy
+of a given set of samples by mapping them toward a uniform distribution. To
+implement this idea, an essential question to ask is that, how the entropy of the
+transformed samples relates to that of the original ones. Proposition 1 provides
+an answer to this question.
+
+Proposition 1 ([39]). Let f be a mapping: Rd → Rd, X be random variable
+deﬁned on Rd following distribution px, and Z = f (X). If f is bijective and
+diﬀerentiable, we have
+
+(cid:2)
+
+H(X) =H (Z) +
+
+pz(z) log
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) det
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)dz,
+
+∂f −1(z)
+∂z
+
+(25)
+
+where pz(z) is the distribution of Z.
+
+Therefore given a data set S = {x(i))}N
+
+i=1 and a mapping Z = f (X), from
+
+Eq. (25) we can construct an entropy estimator of X as,
+
+(cid:3)H(X) = (cid:3)H(Z) +
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) det
+
+log
+
+∂f −1(z(i))
+∂z
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+1
+n
+
+n(cid:4)
+
+i=1
+
+(26)
+
+where (cid:3)H(Z) is an entropy estimator ofZ (either tKL or tKSG) based on the
+transformed samples SZ = {z(i) = f (x(i))}n
+
+i=1.
+
+220
+
+11
+
+We refer to such a mapping f (·) as a uniformizing mapping (UM) and the
+resulting methods as UM based entropy estimators where the main procedure
+is outlined in Algorithm 1. A central question in the implementation of Algo-
+rithm 1 is obviously how to construct a UM which can push the samples toward
+a uniform distribution, which is discussed in next section.
+
+The bias of the UM based estimators rely on the property of the UM (or
+
+equivalently the NF), on which we make the following assumption:
+
+225
+
+Assumption 2. Let S = {x(i)}N
+struct the UM and pS
+sup
+z∈Qo
+a positive integer M and a positive real number ¯C < 1 such that:
+
+i=1 be the set of i.i.d samples used to con-
+2 =
+0; (2) There exist
+
+z be the resulting density of Z in Eq. (26). Denote C N
+
+z (z)||1, and assume that C N
+
+2 satisﬁes: (1) C N
+2
+
+P−→
+N→∞
+
+||(cid:2)pS
+
+∀N > M, C N
+2
+
+≤ ¯C, a.s.
+
+Based on Theorem 1 and Theorem 2, we can obtain the bias bounds and the
+
+MSE bounds of the UM based estimators.
+
+Corollary 2. Suppose that the density function of the original distribution is
+diﬀerentiable and the UM satisﬁes Assumption 2. The bias of UM-tKL estimator
+is bounded by
+
+(cid:5)
+(cid:5)E[ (cid:3)HUM−tKL(X)] − H(X)
+
+(cid:5)
+(cid:5) ≤ C N
+
+UM−tKL
+
+(cid:7) 1
+d ,
+
+(cid:6) k
+N
+
+where lim
+N→∞
+
+C N
+
+UM−tKL = 0. The MSE of UM-tKL estimator is bounded by
+
+E[( (cid:3)HUM−tKL(X) − H(X))2] ≤ C1
+
+1
+N
+
++ DN
+
+UM− tKL
+
+(cid:7) 2
+d ,
+
+(cid:6) k
+N
+
+(27)
+
+(28)
+
+230
+
+where C1 is a positive constant and lim
+N→∞
+
+DN
+
+UM− tKL = 0.
+
+Proof. See Appendix B.
+
+Corollary 3. Suppose that the density function of the original distribution is
+diﬀerentiable and the UM satisﬁes Assumption 2. The bias of UM-tKSG esti-
+mator is bounded by
+
+(cid:5)
+(cid:5)E[ (cid:3)HUM−tKSG(X)] − H(X)
+(cid:7)
+(1+ ¯C)d+1
+
+(1+ ¯C)
+
+(cid:6)
+
+where CUM− tKSG = C
+of UM-tKSG estimator is bounded by
+
+(1− ¯C)k+1
+
+(cid:5)
+(cid:5) ≤ CUM− tKSG
+
+(log N )k+2
+N
+
+1
+d
+
+,
+
+(29)
+
+and C is a positive constant. The MSE
+
+E[( (cid:3)HUM−tKSG(X) − H(X))2] ≤ C2
+
+(log N )k+2
+N
+
+where C2 is a positive constant and DN
+
+UM− tKSG =
+
+(cid:16)
+
+C
+
+12
+
++ DN
+
+UM− tKSG
+
+(log N )2(k+2)
+N
+(cid:7)
+(1+ ¯C)d+1
+
+(cid:17)2
+
+2
+d
+
+,
+
+(30)
+
+.
+
+(1− ¯C)k+1
+
+(cid:6)
+
+(1+ ¯C)
+
+Proof. See Appendix C.
+
+Algorithm 1 UM based entropy estimator
+Input: a set of i.i.d samples: SX = {x(i)};
+Output: an entropy estimate (cid:3)H(X);
+
+• compute a uniformizing map f (·);
+
+• let SZ = {z(i) = f (x(i)), i = 1, ..., n};
+• estimate (cid:3)H(Z) from SZ using Eq. (10) or Eq. (11);
+• compute (cid:3)H(X) using Eq. (26).
+
+3.3. Constructing UM via Normalizing Flow
+
+We discuss in this section how to construct a UM via the NF method. First
+since the image of f is [0, 1]d, we assume that f is in the form of f = Φ ◦ g where
+g : Rd → Rd is learned and Φ : Rd → [0, 1]d is prescribed. Recall that pz is the
+distribution of Z = f (X) withX following px, and we want the function g by
+minimize the Kullback-Leibler divergence (KLD) between pz and the uniform
+distribution pu:
+
+(cid:2)
+
+D(pz|pu) :=
+
+pz(z) log
+
+min
+g∈Ω
+
+(cid:11)
+
+pz(z)
+pu(z)
+
+(cid:12)
+
+dz,
+
+(31)
+
+235
+
+where z = Φ ◦ g(x) and Ω is a suitable function space. Solving Eq. (31) directly
+poses some computational diﬃculty as the calculation involves the function Φ,
+the choice of which may aﬀect the computational eﬃciency. To simplify the
+computation, we recall the following proposition:
+
+Proposition 2 ([34]). Let T : Y → Z be a bijective and diﬀerentiable transfor-
+mation, pz(z) be the distribution obtained by passing py(y) through T , and πz(z)
+be the distribution obtained by passing πy(y) through T . Then the equality
+
+D(πy(y)||py(y)) = D(πz(z)||pz(z))
+
+(32)
+
+holds.
+
+We now construct the mapping Φ with the cumulative distribution func-
+tion of the standard normal distribution, a technique known as the probability
+integral transform, yielding, for a given y ∈ Rd,
+
+Φ(y) = (φ1(y1), ..., φd(yd)), φi(yi) =
+
+1
+2
+
+(1 + erf(
+
+y√
+2
+
+)),
+
+where erf(·) is the error function. It should be clear that if y follows a standard
+normal distribution, z = Φ(y) follows a uniform distribution in [0, 1]d, and vice
+
+13
+
+versa. Now applying Proposition 2, we can show that Eq. (31) is equivalent to
+
+D(py(y)|q(y)),
+
+min
+g∈Ω
+
+(33)
+
+where y = g(x) follows distribution py(·) andq (·) is the standard normal distri-
+bution. Now assume that g(·) is invertible and let its inverse be h = g−1. We
+also assume that both g and h are diﬀerentiable. Applying Proposition 2 to
+Eq. (33) with T = h, we ﬁnd that Eq. (33) is equivalent to
+
+min
+h∈Ω−1
+
+D(px(x)|qh(x)),
+
+(34)
+
+where Ω−1 = {g−1|g ∈ Ω} and qh is the distribution obtained by passing q
+through the mapping h:
+
+qh(x) = q
+
+(cid:6)
+
+h−1(x)
+
+(cid:13)
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) det
+
+(cid:14) (cid:5)
+(cid:5)
+(cid:5)
+(cid:5).
+
+∂h−1
+∂x
+
+(35)
+
+Eq. (34) essentially says that we want to push a standard normal distribution
+q toward a target distribution px, and therefore solving Eq. (34) falls naturally
+into the framework of NF. Speciﬁcally, NF aims to build such a mapping h
+by composing multiple simple mappings: h = h1 ◦ ... ◦ hK . Each hk needs to
+be a diﬀeomorphism: namely it is invertible and both it and its inverse are
+diﬀerentiable, which ensures that their composition h is also a diﬀeomorphism.
+Next by plugging in the data, we can rewrite Eq. (34) as a maximum likelihood
+problem:
+
+max
+h=(h1,...,hK )
+
+Epx[log qh(x)] :≈
+
+1
+N
+
+N(cid:4)
+
+i=1
+
+log qh(x(i)).
+
+(36)
+
+As is mentioned earlier, the intermediate mapping hi is usually taken to be of
+a simple parametrized form and so that its gradient and inverse are easy to
+compute. Once h1, ..., hK are computed, the function g can be obtained as
+
+g = (h1 ◦ · · · ◦ hK )−1 = h−1
+
+K
+
+◦ · · · ◦ h−1
+1 ,
+
+(37)
+
+and recall that in Eq. (13) in the main paper we also need the det-Jacobian of
+mapping g−1 (i.e., h), which can be calculated as,
+
+det
+
+∂g−1(y)
+∂y
+
+= det
+
+∂h1(y1)
+∂y1
+
+◦ · · · ◦ det
+
+∂hK(yK)
+∂yK
+
+,
+
+(38)
+
+240
+
+where yK = y, y0 = x and yk−1 = hk(yk) for k = 1, ..., K.
+
+The NF methods depend critically on the component layers, the choice of
+which has to be balanced between computational eﬃciency and representing
+ﬂexibility. In this paper, we use a special version of NF, the Masked Autoregres-
+sive Flow (MAF) [35] that is originally designed for density estimation. Since
+the purpose of MAF is to estimate the density px, it is speciﬁcally designed to
+eﬃciently evaluate the inverse mappings, which is thus particularly useful for
+
+245
+
+14
+
+250
+
+255
+
+260
+
+265
+
+our application. We note, however, our method does not rely on any speciﬁc
+implementation of NF.
+
+Once the mapping h(·) (or equivalently g−1(·)) is obtained, it can be inserted
+directly into Algorithm 1 to estimate the sought entropy. In practice, the sam-
+ples are split into two sets, where one of them is used to construct the UM and
+the other is used to estimate the entropy.
+
+4. Numerical Experiments
+
+Before diving into the applications, we conduct several numerical compar-
+isons of the proposed estimators using mathematical examples. The code for re-
+producing these examples can be found in https://github.com/ziq-ao/NFEE.
+
+4.1. An Illustrating Example for the Truncated Estimators
+
+Here we use a toy example to demonstrate the improvement of the truncated
+estimators over the na¨ıve version. Speciﬁcally, the test example is an indepen-
+dent multivariate Beta distributions B(b, b) with dimensionality d and shape
+parameter b. In the numerical experiments, the dimensionality is varied from 1
+to 40 and the parameter b takes three values 1, 1.5 and 2. In each setup, we
+generate 1000 samples from the distribution and use KL, KSG, tKL and tKSG
+to estimate the entropy. All experiments are repeated 100 times and the Root-
+mean-square-error (RMSE) of estimates are computed. In Fig. 2, we plot the
+RMSE (on a logarithmic scale) against the dimensionality d. From this ﬁgure,
+we can see that the truncated methods (blue lines) signiﬁcantly outperform the
+na¨ıve ones (red lines) in all cases, indicating that the truncation technique can
+improve the performance of the KL/KSG estimators for compactly supported
+distributions.
+
+E
+S
+M
+R
+
+103
+
+102
+
+101
+
+100
+
+10-1
+
+10-2
+
+tKL, b=1
+KL, b=1
+tKL, b=1.5
+KL, b=1.5
+tKL, b=2
+KL, b=2
+
+tKSG, b=1
+KSG, b=1
+tKSG, b=1.5
+KSG, b=1.5
+tKSG, b=2
+KSG, b=2
+
+5
+
+10
+
+15
+
+20
+d
+
+25
+
+30
+
+35
+
+40
+
+Figure 2: truncated estimators vs non-truncated estimators for multidimensional Beta distri-
+butions with various shape parameters b.
+
+270
+
+15
+
+UM-tKL
+UM-tKSG
+KL
+KSG
+
+101
+
+100
+
+E
+S
+M
+R
+
+10-1
+
+10
+
+20
+d
+
+30
+
+40
+
+UM-tKL
+UM-tKSG
+KL
+KSG
+
+101
+
+100
+
+10-1
+
+E
+S
+M
+R
+
+10-2
+
+0.5
+
+1
+
+1.5
+
+2
+
+N
+
+2.5 3
+104
+
+Figure 3: Left: RMSE plotted against the dimensionality d. Right: RMSE (on a logarithmic
+scale) plotted against the sample size N .
+
+4.2. Multivariate Normal Distribution
+
+To validate the idea of UM based entropy estimator, a natural question to
+ask is that how it works with a perfect NF transformation, that yields exactly
+normally distributed samples. To answer this question, we ﬁrst conduct the nu-
+merical tests with the standard multivariate normal distribution, corresponding
+to the situation that one has done a perfect NF (in this case the function g in
+Section 3.3 is chosen to be identity map).
+
+Speciﬁcally we test the four methods: KL, KSG, UM-tKL and UM-tKSG,
+and we conduct two sets of tests: in the ﬁrst one we ﬁx the sample size to be 1000
+and vary the dimensionality, while in the second one we ﬁx the dimensionality
+to be 40 and vary the sample size. All the tests are repeated 100 times and the
+RMSE of the estimates are calculated. In Fig. 3 (left), we plot the RMSE (on
+a logarithmic scale) as a function of the dimensionality. One can see from this
+ﬁgure that, as the dimensionality increases, the estimation error in KL and KSG
+grows signiﬁcantly faster than that in the two UM based ones, with the error in
+KL being particularly large. Next in Fig. 3 (right) we plot the RMSE against
+the sample size N (note that the plot is on a log-log scale) for d = 40, which
+shows that for this high-dimensional case, the two UM based estimators yield
+much lower and faster-decaying RMSE than those two estimators on the original
+samples. Overall these results support the theoretical ﬁndings in Section 3.1 that
+the estimation error can be signiﬁcantly reduced by mapping the target samples
+toward a uniform distribution.
+
+4.3. Multivariate Rosenbrock Distribution
+
+In this example we shall see how the proposed method performs when NF
+is included. Speciﬁcally our example is the Rosenbrock type of distributions –
+the standard Rosenbrock distribution is 2-D and widely used as a testing exam-
+ple for various of statistical methods. Here we consider two high-dimensional
+extensions of the 2-D Rosenbrock [40]: the hybrid Rosenbrock (HR) and the
+even Rosenbrock (ER) distributions. The details of the two distributions in-
+cluding their density functions are provided in Appendix D.2. The Rosenbrock
+
+275
+
+280
+
+285
+
+290
+
+295
+
+300
+
+16
+
+distribution is strongly non-Gaussian, and that can be demonstrated by Fig. 4
+(left) which shows the samples drawn from 2-D Rosenbrock. As a comparison,
+Fig. 4 (right) shows the samples that have been transformed toward a uniform
+distribution and used in entropy estimation.
+
+Original samples
+
+UM-transformed samples
+
+1
+
+0.5
+
+0
+
+0
+
+0
+
+5
+
+0.5
+
+1
+
+20
+
+10
+
+0
+-5
+
+305
+
+310
+
+315
+
+320
+
+325
+
+Figure 4: Left: the original samples drawn from a 2-D Rosenbrock distribution; Right: the
+UM-transformed samples used in the entropy estimation.
+
+In this example we compare the performance of seven estimators: in addition
+to the four used in the previous example, we include an estimator only using
+NF (details in SI) as well as two state-of-the-art entropy estimators: CADEE
+[21] and the von-Mises based estimator [22]. First we test how the estimators
+scale with respect to dimensionality, where the sample size is taken to be N =
+500d. With each method, the experiment is repeated 20 times and the RMSE is
+calculated. The RMSE against the dimensionality d for both test distributions is
+plotted in Figs. 5 (a) and (b). One can observe here that in most cases, the UM
+based methods (especially UM-tKSG) oﬀer the best performance. An exception
+is that CADEE performs better in low dimensional cases for ER, but its RMSE
+grows much higher than that of the UM methods in the high-dimensional regime
+(d >15). Our second experiment is to ﬁx the dimensionality at d = 10 and vary
+the sample size, where the RMSE is plotted against the sample size for both HR
+and ER in Figs. 5 (c) and (d). The ﬁgures show clearly that the RMSE of the
+UM based estimators decays faster than other methods in both examples, with
+the only exception being CADEE in the small sample (≤ 104) regime of ER.
+It is also worth noting that, though it is not justiﬁed theoretically, UM-tKSG
+seems to perform slightly better than UM-tKL in all the cases.
+
+4.4. Multivariate Rosenbrock Distribution with Discontinuous Density
+
+Recall that Corollaries 2 and 3 assume the diﬀerentiability of the original
+density functions, which is often not satisﬁed by practice. Thus, it is also of inter-
+est to examine the performance of the proposed methods for distributions with
+discontinuous densities. To this end, we modify the multivariate Rosenbrock
+distributions studied in Section 4.3, so that their densities are discontinuous on
+the boundaries of their supports (see Appendix D.2 for the details), and repeat
+
+17
+
+E
+S
+M
+R
+
+102
+
+101
+
+100
+
+10-1
+
+101
+
+E
+S
+M
+R
+
+(a)
+
+(b)
+
+E
+S
+M
+R
+
+100
+
+NF
+CADEE
+von-Mises
+
+20
+
+UM-tKL
+UM-tKSG
+KL
+KSG
+
+10
+
+d
+(c)
+
+5
+
+10
+
+15
+
+20
+
+d
+(d)
+
+101
+
+100
+
+E
+S
+M
+R
+
+10-1
+
+103
+
+104
+
+N
+
+100
+
+103
+
+104
+
+N
+
+Figure 5: Top: RMSE vs. dimensionality for HR (a) and ER (b); Bottom: RMSE vs. sample
+size for HR (c) and ER (d).
+
+330
+
+335
+
+the comparisons conducted in Section 4.3. The results are shown in Figs. 6. For
+the modiﬁed HR (in Fig. 6 (a) and (c)), only the von-Mises estimator achieves a
+smaller RMSE than the UM based ones in the low-dimensional regime (d≤10),
+while the UM based estimators perform the best in the high-dimensional regime.
+For modiﬁed ER (in Fig. 6 (b) and (d)), the UM based estimators are inferior
+to CADEE but outperform any other methods in most cases.
+
+5. Application Examples
+
+In this section, we consider two applications involving entropy estimation,
+
+in which our methods are compared with the existing ones.
+
+5.1. Application to Entropy Rate Estimation
+
+Our ﬁrst application example is to estimate the diﬀerential entropy rate
+of a continuous-valued time series. Shannon entropy rate [41] measures the
+uncertainty of a stochastic process X = {Xi}i∈N. For a stationary process, it is
+deﬁned as,
+
+¯H(X ) = lim
+t→∞
+
+H(Xt | Xt−1, ..., X1),
+
+(39)
+
+340
+
+where H(· | ·) is the conditional entropy of two random variables.
+In this
+example, we consider the stochastic processes that satisfy the following two
+assumptions:
+
+18
+
+101
+
+E
+S
+M
+R
+
+100
+
+10-1
+
+6
+5
+4
+3
+
+2
+
+1
+
+E
+S
+M
+R
+
+103
+
+(a)
+
+(b)
+
+NF
+CADEE
+von-Mises
+
+20
+
+UM-tKL
+UM-tKSG
+KL
+KSG
+
+10
+
+d
+(c)
+
+101
+
+E
+S
+M
+R
+
+100
+
+10-1
+
+E
+S
+M
+R
+
+100
+
+20
+
+10
+
+d
+(d)
+
+104
+
+N
+
+103
+
+104
+
+N
+
+Figure 6: Top: RMSE vs. dimensionality for modiﬁed HR (a) and ER (b); Bottom: RMSE
+vs. sample size for modiﬁed HR (c) and ER (d).
+
+• First X is a conditionally stationary process of order p: there exists a ﬁxed
+positive integer p such that, for any integer t > p, the conditional density
+function of Xt given Xt−1 = xt−1, ..., Xt−p = xt−p satisﬁes
+
+p(Xt = xt | Xt−1 = xt−1, ..., Xt−p = xt−p) = f (xt | xt−1, ..., xt−p),
+
+(40)
+
+where f is a ﬁxed conditional density function independent from t.
+
+• Second X is a Markov process of order p: there exists a positive integer p
+
+such that, for any integer t > p,
+
+p(Xt = xt | Xt−1 = xt−1, ..., X1 = x1)
+
+= p(Xt = xt | Xt−1 = xt−1, ..., Xt−p = xt−p.)
+
+(41)
+
+Under these assumptions, the entropy rate of X can be calculated as,
+
+¯H = H(Xt | X(t−1):(t−p)) = H(Xt:(t−p)) − H(X(t−1):(t−p)),
+
+(42)
+
+where Xt:(t−p) = (Xt, Xt−1, ..., Xt−p) and so on. Note here that t can be taken
+to be any integer > p, and for simplicity we can take it to be t = p + 1, and as
+a result Eq. (42) is simpliﬁed to,
+
+¯H = H(Xt | X(t−1):(t−p)) =H (X(p+1):1) − H(Xp:1).
+
+19
+
+Suppose that we have a T -step (with T > p) observation of X : {xt}T
+can compute its entropy rate as follows [42]:
+
+t=1, and we
+
+ˆH = (cid:3)H(X(p+1):1) − (cid:3)H(Xp:1),
+
+345
+
+where (cid:3)H(X(p+1):1) and (cid:3)H(Xp:1) are estimated with a desired estimator from
+the observation {xt}T
+
+t=1.
+
+In this example, we consider three autoregressive models of orders 3, 7 and
+
+15 respectively, which are given by
+
+AR(3) : Xt = −1.35 + 0.5Xt−1 + 0.4X 2
+AR(7) : Xt = −1.35 + 0.5Xt−1 + 0.3X 2
+
+− 0.3Xt−3 + (cid:3)t,
+− 0.3Xt−7 + (cid:3)t,
+AR(15) : Xt = −1.35 + 0.5Xt−1 + 0.05(Xt−5 + Xt−6 + Xt−7)2
+−0.005(Xt−11 + Xt−12 + Xt−13)2 − 0.1Xt−15 + (cid:3)t,
+
+t−5
+
+t−2
+
+(43a)
+
+(43b)
+
+(43c)
+
+where (cid:3)t ∼ N (0, (0.03)2) is white noise. Fig. 7 shows the simulated snapshots of
+the three models. We implemented the procedure described above to estimate
+the entropy rate of these three models where the entropy is estimated with the
+seven estimators used in Section 4. On the other hand, since the conditional
+density functions are analytically available in this example, the entropy rate can
+also be directly estimated via the standard Monte Carlo integration, which will
+be used as the ground truth. We apply the aforementioned entropy estimators
+to compute the entropy rate with a simulated sequence of 10, 000 steps. With
+each method, 20 repeated trials are conducted and the RMSE is calculated. The
+results are reported in Table 1, from which we make the following observations.
+The performance of the von-Mises estimator appears to be the best for the
+AR(3) model, however, all estimators yield very small Root Mean Squared Error
+(RMSE) suggesting that this problem is not particularly challenging. For the
+AR(7) model, the UM-based methods have smaller RMSE than the others, and
+for the AR(15) model, the two UM-based methods and KSG perform better
+than the other three. Overall, UM-KSG results in the smallest RMSE for both
+AR(7) and AR(15).
+
+350
+
+355
+
+360
+
+Method UM-tKL UM-tKSG
+AR(3)
+0.029
+AR(7)
+0.67
+AR(15)
+1.15
+
+0.051
+0.43
+0.68
+
+KL
+0.027
+1.23
+1.51
+
+KSG
+0.032
+0.90
+0.98
+
+NF
+0.12
+0.95
+1.61
+
+CADEE
+0.31
+2.40
+4.14
+
+von-Mises
+0.016
+0.70
+1.42
+
+Table 1: RMSE of entropy rate estimations based on entropy estimators for the autoregressive
+model. The smallest (best) RMSE value is shown in bold.
+
+5.2. Application to Optimal Experimental Design
+
+In this section, we apply entropy estimation to an optimal experimental
+design (OED) problem. Simply put, the goal of OED is to determine the optimal
+experimental conditions (e.g., locations of sensors) that maximize certain utility
+
+20
+
+t
+
+X
+
+t
+
+X
+
+0
+
+-1
+
+-2
+
+4
+2
+0
+-2
+
+0
+
+50
+
+0
+
+50
+
+AR(3)
+
+100
+t
+
+AR(7)
+
+100
+t
+
+AR(15)
+
+150
+
+200
+
+150
+
+200
+
+t
+
+X
+
+4
+2
+0
+-2
+
+0
+
+50
+
+100
+t
+
+150
+
+200
+
+Figure 7: Snapshots of the simulated time series.
+
+function associated with the experiments. Mathematically let λ ∈ D be design
+parameters representing experimental conditions, θ be the parameter of interest,
+and Y be the observed data. An often used utility function is the entropy of the
+data Y , resulting in the so-called maximum entropy sampling method (MES) [6]:
+
+U (λ) :=H (Y |λ),
+
+max
+λ∈D
+
+(44)
+
+365
+
+370
+
+375
+
+and therefore evaluating U (λ) becomes an entropy estimation problem. This
+utility function is equivalent to the mutual entropy criterion under certain con-
+ditions [43]. This formulation is particularly useful for problems with expensive
+or intractable likelihoods, as the likelihoods are not needed if the utility function
+is computed via entropy estimation. A common application of OED is to deter-
+mine the observation times for stochastic processes so that one can accurately
+estimate the model parameters and here we provide such an example, arising
+from the ﬁeld of population dynamics.
+
+Speciﬁcally we consider the Lotka-Volterra (LV) predator-prey model [44, 45].
+Let x and y be the populations of prey and predator respectively, and the LV
+model is given by
+
+˙x = ax − xy,
+
+˙y = bxy − y,
+
+where a and b are respectively the growth rates of the prey and the predator.
+In practice, often the parameters a and b are not known and need to be esti-
+mated from the population data. In a Bayesian framework, one can assign a
+prior distribution on a and b, and infer them from measurements made on the
+
+21
+
+Figure 8: Top: some sample data paths of (x, y); Bottom: the optimal observation times
+obtained by the eight methods.
+
+380
+
+385
+
+population (x, y). Here we assume that the prior for both a and b is a uniform
+distribution U [0.5, 4].
+In particular we assume that the pair (x + (cid:3)x, y + (cid:3)y),
+where (cid:3)x, (cid:3)y ∼ N (0, 0.01) are independent observation noises, is measured at
+d = 5 time points located within the interval [0, 10], and the goal is to deter-
+mine the observation times for the experiments. As is mentioned earlier, we shall
+determine the observation times using the MES method. Namely, the design
+parameter in this example is λ = (t1, ..., td), the data Y is the pair (x+(cid:3)x, y +(cid:3)y)
+measured at t1, ..., td, and we want to ﬁnd λ that maximizes the entropy H(Y |λ).
+
+Method UM-tKL UM-tKSG CADEE
+NMC
+(SE)
+RMSE
+
+-1.45
+(0.0073)
+0.48
+
+0.73
+
+0.86
+
+Equidistant
+-2.73
+(0.0074)
+—
+
+KL
+-1.65
+(0.0072)
+3.60
+
+KSG
+-1.56
+(0.0076)
+1.05
+
+NF
+-1.48
+(0.0072)
+0.88
+
+von-Mises
+-1.81
+(0.0049)
+1.31
+
+Table 2: The reference entropy values of the observation time placements obtained by using
+all the methods. The smallest (best) entropy value is shown in bold.
+
+390
+
+395
+
+A common practice in such problems is not to optimize the observation times
+directly and instead parametrize them using the percentiles of a prescribed dis-
+tribution to reduce the optimization dimensionality [46]. Here we use a Beta
+distribution, resulting in two distribution parameters to be optimized (see [46]
+and Appendix D.4 for further details). We solve the resulting optimization
+problem with a grid search where the entropy is evaluated by the seven afore-
+mentioned estimators each with 10,000 samples. We plot in Fig. 8 the optimal
+observation time placements computed with the seven aforementioned estima-
+tors, as well as the equidistant placement for a comparison purpose. Also shown
+in the ﬁgure are some sample paths of the population (x, y) where we can see
+that the population samples are generally subject to larger variations near the
+two ends and relative smaller ones in the middle. Regarding the optimization
+
+22
+
+400
+
+405
+
+410
+
+415
+
+420
+
+425
+
+results, we see that the optimal time placements obtained by the two UM based
+estimators and CADEE are the same, while they are diﬀerent from the results
+of other methods. To validate the optimization results, we compute a reference
+entropy value for the optimal placement obtained by each method, using Nested
+Monte Carlo (NMC) (see [47] and Appendix D.5 for details) with a large sample
+size (105 ×105), and show the results in Table 2. Note that though the NMC can
+produce a rather accurate entropy estimate, it is too expensive to use directly in
+this OED problem. Using the reference values as the ground truth, we can fur-
+ther compute the RMSE of these estimates (over 20 repetitions), which are also
+reported in Table 2. From the table one observes that the placement of obser-
+vation times computed by the two UM methods and CADEE yields the largest
+entropy values, which indicates that these three methods clearly outperform all
+the other estimators in this OED problem. Moreover, from the RMSE results
+we can see that the UM based methods (especially UM-tKSG) yield smaller
+RMSE than CADEE, suggesting that they are more statistically reliable than
+CADEE.
+
+6. Conclusion
+
+In summary, we have presented a uniformization based entropy estimator,
+and also provided some theoretical analysis of it. We believe the proposed
+entropy estimator can be useful for a wide range of real-world applications.
+Some improvements and extensions of the method are possible. First while our
+theoretical results provide some justiﬁcation for the method, further analysis
+is needed to establish the convergence rate and understand the estimation bias.
+Additionally, the method may be extended to estimate other density functionals,
+such as the Renyi entropy and the Kullback-Leibler divergence. Finally in this
+work the proposed method is demonstrated only with synthetic data, and it is
+therefore sensible to further examine the method with real-world data sets. We
+will explore these research problems in future studies.
+
+7. Acknowledgments
+
+430
+
+This work was partially supported by the China Scholarship Council (CSC).
+The authors would also like to thank Dr. Alexander Kraskov for discussion
+about the KSG estimator.
+
+References
+
+[1] O. Vasicek, A test for normality based on sample entropy, Journal of the
+
+Royal Statistical Society: Series B (Methodological) 38 (1) (1976) 54–59.
+
+435
+
+[2] M. N. Goria, N. N. Leonenko, V. V. Mergel, P. L. Novi Inverardi, A new
+class of random vector entropy estimators and its applications in testing
+statistical hypotheses, Journal of Nonparametric Statistics 17 (3) (2005)
+277–297.
+
+23
+
+440
+
+[3] S. Azzi, B. Sudret, J. Wiart, Sensitivity analysis for stochastic simulators
+using diﬀerential entropy, International Journal for Uncertainty Quantiﬁ-
+cation 10 (1).
+
+[4] B. Ranneby, The maximum spacing method. an estimation method related
+to the maximum likelihood method, Scandinavian Journal of Statistics
+(1984) 93–112.
+
+445
+
+[5] E. Wolsztynski, E. Thierry, L. Pronzato, Minimum-entropy estimation in
+
+semi-parametric models, Signal Processing 85 (5) (2005) 937–949.
+
+[6] P. Sebastiani, H. P. Wynn, Maximum entropy sampling and optimal
+bayesian experimental design, Journal of the Royal Statistical Society: Se-
+ries B (Statistical Methodology) 62 (1) (2000) 145–157.
+
+450
+
+455
+
+[7] Z. Ao, J. Li, An approximate KLD based experimental design for mod-
+els with intractable likelihoods, in: International Conference on Artiﬁcial
+Intelligence and Statistics, PMLR, 2020, pp. 3241–3251.
+
+[8] J. Beirlant, E. J. Dudewicz, L. Gy¨orﬁ, E. C. Van der Meulen, Nonparamet-
+ric entropy estimation: An overview, International Journal of Mathematical
+and Statistical Sciences 6 (1) (1997) 17–39.
+
+[9] H. Joe, Estimation of entropy and other functionals of a multivariate den-
+sity, Annals of the Institute of Statistical Mathematics 41 (4) (1989) 683–
+697.
+
+[10] P. Hall, S. C. Morton, On the estimation of entropy, Annals of the Institute
+
+460
+
+of Statistical Mathematics 45 (1) (1993) 69–88.
+
+[11] K. R. Moon, K. Sricharan, K. Greenewald, A. O. Hero III, Ensemble esti-
+
+mation of information divergence, Entropy 20 (8) (2018) 560.
+
+[12] G. Pichler, P. J. A. Colombo, M. Boudiaf, G. Koliander, P. Piantanida, A
+diﬀerential entropy estimator for training neural networks, in: International
+Conference on Machine Learning, PMLR, 2022, pp. 17691–17715.
+
+465
+
+[13] L. Gy¨orﬁ, E. C. Van der Meulen, Density-free convergence properties of
+various estimators of entropy, Computational Statistics & Data Analysis
+5 (4) (1987) 425–436.
+
+[14] W.-C. Chen, A. Tareen, J. B. Kinney, Density estimation on small data
+
+470
+
+sets, Physical review letters 121 (16) (2018) 160605.
+
+[15] E. G. Miller, A new class of entropy estimators for multi-dimensional den-
+sities, in: 2003 IEEE International Conference on Acoustics, Speech, and
+Signal Processing, 2003. Proceedings.(ICASSP’03)., Vol. 3, IEEE, 2003, pp.
+III–297.
+
+475
+
+[16] L. Kozachenko, N. N. Leonenko, Sample estimate of the entropy of a ran-
+
+dom vector, Problemy Peredachi Informatsii 23 (2) (1987) 9–16.
+
+24
+
+480
+
+485
+
+490
+
+495
+
+500
+
+505
+
+[17] A. Kraskov, H. St¨ogbauer, P. Grassberger, Estimating mutual information,
+
+Physical review E 69 (6) (2004) 066138.
+
+[18] S. Gao, G. Ver Steeg, A. Galstyan, Eﬃcient estimation of mutual informa-
+tion for strongly dependent variables, in: Artiﬁcial intelligence and statis-
+tics, 2015, pp. 277–286.
+
+[19] W. M. Lord, J. Sun, E. M. Bollt, Geometric k-nearest neighbor estimation
+of entropy and mutual information, Chaos: An Interdisciplinary Journal of
+Nonlinear Science 28 (3) (2018) 033114.
+
+[20] T. B. Berrett, R. J. Samworth, M. Yuan, et al., Eﬃcient multivariate en-
+tropy estimation via k-nearest neighbour distances, Annals of Statistics
+47 (1) (2019) 288–318.
+
+[21] G. Ariel, Y. Louzoun, Estimating diﬀerential entropy using recursive copula
+
+splitting, Entropy 22 (2) (2020) 236.
+
+[22] K. Kandasamy, A. Krishnamurthy, B. Poczos, L. A. Wasserman, J. M.
+Robins, Nonparametric von mises estimators for entropies, divergences and
+mutual informations., in: NIPS, Vol. 15, 2015, pp. 397–405.
+
+[23] L. T. Fernholz, Von Mises calculus for statistical functionals, Vol. 19,
+
+Springer Science & Business Media, 2012.
+
+[24] L. Wen, H. Bai, L. He, Y. Zhou, M. Zhou, Z. Xu, Gradient estimation
+of information measures in deep learning, Knowledge-Based Systems 224
+(2021) 107046.
+
+[25] J. H. Lim, A. Courville, C. Pal, C.-W. Huang, Ar-dae: towards unbiased
+neural entropy gradient estimation, in: International Conference on Ma-
+chine Learning, PMLR, 2020, pp. 6061–6071.
+
+[26] A. Krishnamurthy, K. Kandasamy, B. Poczos, L. Wasserman, Nonparamet-
+ric estimation of renyi divergence and friends, in: International Conference
+on Machine Learning, PMLR, 2014, pp. 919–927.
+
+[27] W. Gao, S. Oh, P. Viswanath, Demystifying ﬁxed k-nearest neighbor infor-
+mation estimators, IEEE Transactions on Information Theory 64 (8) (2018)
+5629–5661.
+
+[28] K. Sricharan, D. Wei, A. O. Hero, Ensemble estimators for multivariate
+entropy estimation, IEEE transactions on information theory 59 (7) (2013)
+4374–4388.
+
+510
+
+[29] Y. Han, J. Jiao, T. Weissman, Y. Wu, Optimal rates of entropy estimation
+over lipschitz balls, The Annals of Statistics 48 (6) (2020) 3228–3250.
+
+[30] L. Birg´e, P. Massart, Estimation of integral functionals of a density, The
+
+Annals of Statistics (1995) 11–29.
+
+25
+
+515
+
+520
+
+525
+
+530
+
+[31] S. Singh, B. P´oczos, Finite-sample analysis of ﬁxed-k nearest neighbor den-
+sity functional estimators, in: Advances in neural information processing
+systems, 2016, pp. 1217–1225.
+
+[32] G. Biau, L. Devroye, Lectures on the nearest neighbor method, Vol. 246,
+
+Springer, 2015.
+
+[33] D. Rezende, S. Mohamed, Variational inference with normalizing ﬂows, in:
+International Conference on Machine Learning, PMLR, 2015, pp. 1530–
+1538.
+
+[34] G. Papamakarios, E. Nalisnick, D. J. Rezende, S. Mohamed, B. Laksh-
+minarayanan, Normalizing ﬂows for probabilistic modeling and inference,
+Journal of Machine Learning Research 22 (57) (2021) 1–64.
+
+[35] G. Papamakarios, T. Pavlakou, I. Murray, Masked autoregressive ﬂow for
+density estimation, in: Advances in Neural Information Processing Systems,
+2017, pp. 2338–2347.
+
+[36] H. Singh, N. Misra, V. Hnizdo, A. Fedorowicz, E. Demchuk, Nearest neigh-
+bor estimates of entropy, American journal of mathematical and manage-
+ment sciences 23 (3-4) (2003) 301–321.
+
+[37] A. B. Tsybakov, E. Van der Meulen, Root-n consistent estimators of en-
+tropy for densities with unbounded support, Scandinavian Journal of Statis-
+tics (1996) 75–83.
+
+[38] B. Efron, C. Stein, The jackknife estimate of variance, The Annals of Statis-
+
+535
+
+tics (1981) 586–596.
+
+[39] S. Ihara, Information theory for continuous systems, Vol. 2, World Scientiﬁc,
+
+1993.
+
+[40] F. Pagani, M. Wiegand, S. Nadarajah, An n-dimensional rosenbrock distri-
+
+bution for mcmc testing, arXiv preprint arXiv:1903.09556.
+
+540
+
+[41] C. E. Shannon, A mathematical theory of communication, The Bell system
+
+technical journal 27 (3) (1948) 379–423.
+
+[42] D. Darmon, Speciﬁc diﬀerential entropy rate estimation for continuous-
+
+valued time series, Entropy 18 (5) (2016) 190.
+
+[43] M. C. Shewry, H. P. Wynn, Maximum entropy sampling, Journal of applied
+
+545
+
+statistics 14 (2) (1987) 165–170.
+
+[44] A. J. Lotka, Elements of physical biology, Williams & Wilkins, 1925.
+
+[45] V. Volterra, Variazioni e ﬂuttuazioni del numero d’individui in specie ani-
+
+mali conviventi, C. Ferrari, 1927.
+
+26
+
+550
+
+555
+
+560
+
+565
+
+570
+
+575
+
+580
+
+585
+
+[46] E. G. Ryan, C. C. Drovandi, M. H. Thompson, A. N. Pettitt, Towards
+bayesian experimental design for nonlinear models that require a large num-
+ber of sampling times, Computational Statistics & Data Analysis 70 (2014)
+45–60.
+
+[47] K. J. Ryan, Estimating expected information gains for experimental designs
+with application to the random fatigue-limit model, Journal of Computa-
+tional and Graphical Statistics 12 (3) (2003) 585–603.
+
+[48] M. Hardy, Combinatorics
+
+of partial derivatives,
+
+arXiv preprint
+
+math/0601149.
+
+[49] L. Dinh, J. Sohl-Dickstein, S. Bengio, Density estimation using real NVP,
+in: 5th International Conference on Learning Representations, ICLR 2017,
+Toulon, France, April 24-26, 2017, Conference Track Proceedings, 2017.
+
+[50] M. Germain, K. Gregor, I. Murray, H. Larochelle, Made: Masked autoen-
+coder for distribution estimation, in: International Conference on Machine
+Learning, PMLR, 2015, pp. 881–889.
+
+[51] G. Loaiza-Ganem, Y. Gao, J. P. Cunningham, Maximum entropy ﬂow net-
+works, in: 5th International Conference on Learning Representations, ICLR
+2017, Toulon, France, April 24-26, 2017, Conference Track Proceedings,
+OpenReview.net, 2017.
+
+[52] T. Rainforth, R. Cornish, H. Yang, A. Warrington, F. Wood, On nesting
+monte carlo estimators, in: International Conference on Machine Learning,
+PMLR, 2018, pp. 4267–4276.
+
+Appendix A. Proofs of Theorem 1 and Theorem 2
+
+Here we provide proofs of Theorems 1&2. We follow closely the framework
+from [31] and [27] of ﬁnite-sample analysis of ﬁxed k nearest neighbor entropy
+estimators. They both gave a bias bound of roughly O(
+) (γ is some posi-
+tive constant) and a variance bound of roughly O( 1
+N ) for the entropy estimator
+(cid:3)HKL, under some mild assumptions. Similarly here we prove that the proposed
+(cid:3)HtKL and (cid:3)HtKSG also have such bias and variance bounds. More interestingly,
+our analysis relates the bias bound of (cid:3)HtKL to the gradient of density function.
+
+(cid:7)γ/d
+
+1
+N
+
+(cid:6)
+
+Appendix A.1. Deﬁnitions and assumptions
+
+In this section, we introduce some notations and assumptions that the proofs
+rely on. As is mentioned in the main paper, we only consider distributions with
+densities supported on the unit cube in Rd. Let Q := [0, 1]d denote the unit cube
+in d-dimensional Euclidean space Rd and P denote an unknown μ-absolutely
+continuous Borel probability measure, where μ is the Lebesgue measure. Let
+p : Q → [0, ∞) be the density of P .
+
+27
+
+590
+
+595
+
+600
+
+605
+
+610
+
+615
+
+Deﬁnition 1 (Twice the k-NN distance for cubes). Suppose {x(i)}N −1
+is set
+i=1
+of N − 1 i.i.d. samples from P . We deﬁne twice the maximum-norm k-NN
+distance for cubes by (cid:3)k(x) = 2||x − x∗||∞, where x∗ is the k-nearest element
+amongst {x(i)}N −1
+i=1
+
+to x with respect to ∞-norm.
+
+Deﬁnition 2 (Twice the k-NN distance for rectangles). Suppose {x(1(cid:2)), ..., x(k(cid:2))}
+is set of the k nearest elements amongst {x(i)}N −1
+to x with respect to ∞-norm.
+i=1
+We deﬁne twice the k-NN distance in the marginal direction xj by (cid:3)xj
+k (x) =
+|, where x∗j is the k-nearest element amongst {x(1(cid:2)), ..., x(k(cid:2))} in the
+2|xj − x
+marginal direction xj to x. It should be noted that (cid:3)k(x) = max
+1≤j≤d
+
+(cid:3)xj
+k (x).
+
+∗j
+j
+
+Deﬁnition 3 (Truncated twice the k-NN distance). Since we only consider
+densities supported on the unit cube, we deﬁne so-called truncated distance for
+convenience. In the cubic case, we deﬁne truncated twice the k-NN distance in
+the marginal direction xj by ξxj
+k (x) = min{xj +(cid:3)k(x)/2, 1}−max{xj −(cid:3)k(x)/2, 0}.
+In the rectangular case, such distance in the marginal direction xj is deﬁned by
+k (x) = min{xj + (cid:3)xj
+ζ xj
+Deﬁnition 4 (r-cell). We deﬁne the r-cell centered at x by B(x; r) ={x (cid:5) ∈ Rd :
+||x(cid:5) − x||∞ < r} in the cubic case, and by B(x; r1:d) =
+
+k (x)/2, 1} −max {xj − (cid:3)xj
+
+k (x)/2, 0}.
+
+{x(cid:5) ∈ Rd : |x(cid:5)
+j
+
+− xj| <
+
+d(cid:18)
+
+rj} in the rectangular case.
+
+j=1
+
+Deﬁnition 5 (Truncated r-cell). We deﬁne the truncated r-ball centered at x
+by B(x; r) = Q ∩B (x; r) in the cubic case, and by B(x; r1:d) = Q ∩B (x; r1:d) in
+the rectangular case.
+
+Deﬁnition 6 (Mass function). We deﬁne the mass of the cell B(x; r/2) as a
+function with respect to r, which is given by pr(x) = P (B(x; r/2)), and deﬁne
+the mass of the cell B(x; r1:d/2) as a function with respect to r1, ..., rd, which is
+given by qr1,...,rd (x) = P (B(x; r1:d/2)).
+
+Assumption 3. We make the following assumptions:
+
+(a) p is continuous and supported on Q;
+(b) p is bounded away from 0, i.e., C1 = inf
+x∈Q
+(c) The gradient of p is uniformly bounded on Qo, i.e., C2 = sup
+x∈Qo
+
+p(x) > 0;
+
+∞.
+
+||(cid:2)p(x)||1 <
+
+Appendix A.2. Preliminary lemmas
+
+Here, we present some lemmas that support the proofs of the main results.
+
+Lemma 1 ([17]). The expectation of log p(cid:3)k (x) satisﬁes
+
+E[log p(cid:3)k (x)] = ψ(k) − ψ(N ).
+
+28
+
+Lemma 2. Let (cid:15)P be the probability measure of a uniform distribution supported
+ld , x ∈ S be
+on a d-dimensional (hyper-)cubic area S := B(x; l/2), and (cid:15)p(x) = 1
+the density function. Deﬁne (cid:15)qr1,...,rd (x) = (cid:15)P (B(x; r1/2, ..., rd/2)) and (cid:15)pr(x) =
+(cid:15)P (B(x; r/2)). Then, we have
+
+E[log (cid:15)q(cid:3)
+
+x1
+k ,...,(cid:3)
+
+xd
+k
+
+(x)] = ψ(k) − d − 1
+k
+
+− ψ(N ),
+
+where (cid:3)xj
+
+k , j = 1, ..., d are deﬁned as Deﬁnition 2 after replacing P by (cid:15)P .
+
+Proof. The probability density function for ((cid:3)x1
+
+k , ..., (cid:3)xd
+
+k ) is given by,
+
+fN,k(r1, ..., rd) =
+
+(N − 1)!
+k!(N − k − 1)!
+
+×
+
+∂d((cid:15)qk
+r1,...,rd )
+∂r1 · · ·∂r d
+
+× (1 − (cid:15)prm )N −k−1,
+
+(A.1)
+
+rj [17]. Then we have
+
+where (cid:15)pr = (cid:15)P (B(x; r/2)), and rm = max
+1≤j≤d
+(cid:14)
+
+(cid:13)
+
+(cid:2)
+
+(cid:2)
+
+E[log (cid:15)q(cid:3)
+(cid:2)
+
+l
+
+x1
+k ,...,(cid:3)
+(cid:2)
+
+xd
+k
+(cid:13)
+
+l
+
+=
+
+=
+
+· · ·
+
+0
+0
+(cid:14)
+(cid:13)
+N − 1
+k
+N − 1
+k
+
+(cid:13)
+
+(cid:14)
+
+(x)] =
+
+N − 1
+k
+(cid:2)
+
+l
+
+(cid:14)
+
+0
+
+·
+
+kd 1
+ld
+(cid:2)
+
+· · ·
+
+(cid:2)
+
+0
+
+1
+
+l
+
+· · ·
+(cid:6)
+
+∂d
+
+l
+
+·
+(cid:7)
+
+∂d((cid:15)qk
+r1,...,rd )
+∂r1 · · · ∂rd
+1
+ld rd
+1
+ld rd
+
+N − 1
+k
+0
+ld r1 · · · rd)k
+( 1
+∂r1 · · ·∂r d
+1
+ld r1 · · ·r d)k−1(1 −
+(u1 · · ·u d)k−1(1 − ud
+
+· (1 −
+
+(
+
+l
+
+0
+
+(cid:2)
+
+1
+
+0
+
+=
+
+kd
+
+· · ·
+
+m)N −k−1 log(u1 · · ·u d)du1 · · ·du d,
+(A.2)
+where the last equality comes from the change of variables ui = 1
+l ri, i = 1, ..., d.
+Note that the integrand is symmetric under a permutation of the labels 1, ..., d,
+and so we have
+
+0
+
+· (1 − (cid:15)prm )N −k−1 log (cid:15)qr1,...,rd dr1 · · ·dr d
+
+m)N −k−1 log(
+
+m)N −k−1 log(
+
+1
+ld r1 · · ·r d)dr1 · · ·dr d
+1
+ld r1 · · · rd)dr1 · · ·dr d
+
+E[log (cid:15)q(cid:3)
+(cid:13)
+
+x1
+k ,...,(cid:3)
+N − 1
+k
+
+=dkd
+
+(x)]
+
+xd
+k
+(cid:14) (cid:2)
+
+1
+
+(cid:13)
+
+0
+
+dud
+
+uk−1
+d
+
+(1 − ud
+
+d)N −k−1
+
+0
+
+0
+
+(cid:2)
+
+ud
+
+(cid:2)
+
+ud
+
+· · ·
+
+(u1 · · ·u d−1)k−1 log(u1 · · ·u d)du1 · · ·du d−1
+
+(cid:14)
+
+(A.3)
+Computing the integral over u1, ..., ud−1 using the symmetry again, we obtain
+
+(cid:2)
+
+ud
+
+0
+
+(cid:2)
+
+· · ·
+(cid:2)
+
+=(d − 1)
+
+=I1 + I2,
+
+ud
+
+(u1 · · ·u d−1)k−1 log(u1 · · ·u d)du1 · · ·du d−1
+
+(cid:2)
+
+ud
+
+0
+ud
+
+· · ·
+
+(u1 · · · ud−1)k−1 log u1du1 · · ·du d−1 + log um
+
+0
+
+0
+
+29
+
+(cid:2)
+
+ud
+
+(cid:2)
+
+ud
+
+· · ·
+
+0
+
+0
+
+(u1 · · ·u d−1)k−1du1 · · ·du d−1
+
+(A.4)
+
+where I1 is the ﬁrst term and I2 is the second term. By basic calculus, we have
+
+(cid:13) (cid:2)
+
+ud
+
+(cid:14)d−2
+
+(u2)k−1du2
+
+log u1du1
+
+I1 = (d − 1)
+
+= (d − 1)
+
+(cid:2)
+
+ud
+
+0
+(cid:6) 1
+k
+
+uk
+d
+
+uk−1
+1
+(cid:7)d−1
+
+(log ud − 1
+k
+
+0
+
+),
+
+and
+
+which yield I1 + I2 = ( 1
+change the variables by t = ud
+
+k uk
+
+d
+
+. Plug this into Eq (A.3) and
+
+(cid:7)d−1
+
+uk
+d
+
+I2 = log ud(
+(cid:7)d−1(cid:6)
+
+1
+k
+d log ud − d−1
+k
+d, and we ﬁnally have
+
+,
+(cid:7)
+
+(A.5)
+
+(A.6)
+
+E[log (cid:15)q(cid:3)
+(cid:13)
+
+x1
+k ,...,(cid:3)
+
+xd
+k
+(cid:14) (cid:2)
+
+(x)]
+
+=dk
+(cid:13)
+
+=k
+
+N − 1
+k
+N − 1
+k
+
+(cid:14) (cid:2)
+
+0
+1
+
+=ψ(k) −
+
+− ψ(N ).
+
+0
+d − 1
+k
+
+1
+
+ukd−1
+d
+
+(1 − ud
+
+d)N −k−1
+(cid:6)
+
+(cid:6)
+
+d log ud − d − 1
+k
+(cid:7)
+d − 1
+k
+
+dt
+
+(cid:7)
+
+dud
+
+(A.7)
+
+tk−1(1 − t)N −k−1
+
+log t −
+
+Lemma 3 (Lemma 3 in [31]). Suppose p satisﬁes Assumption (a) and (b).
+Then, for any x ∈ Q and r >
+
+, we have
+
+(cid:7)1/d
+
+(cid:6)
+
+k
+C1N
+
+P((cid:3)k(x) > r) ≤ e−C1rdN
+
+(cid:6) eC1rdN
+k
+
+(cid:7)k
+
+.
+
+Lemma 4 (Lemma 4 in [31]). Suppose p satisﬁes Assumption (a) and (b).
+Then, for any x ∈ Q and α > 0, we have
+
+E[(cid:3)α
+
+k (x)] ≤ (1 +
+
+α
+d
+
+(cid:6) k
+C1N
+
+)
+
+(cid:7) α
+d .
+
+Lemma 5. Suppose p satisﬁes Assumption 3, then, for any x ∈ Q and array
+(r1, ..., rd) that satisfy
+
+(cid:19)
+
+xj + rj
+2
+xj − rj
+2
+
+≤ 1, if xj ≤ 1
+2
+≥ 0, if xj > 1
+2
+
+for j = 1, ..., d, we have
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+∂dqr1,...,rd (x)
+∂r1 · · ·∂r d
+
+−
+
+1
+(cid:3)d
+j=1 1j
+2
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤
+
+p(x)
+
+1
+
+(cid:3)d
+2
+
+j=1 1j +1
+
+and
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+∂uqr1,...,rd (x)
+∂r1 · · · ∂ru
+
+−
+
+1
+(cid:3)u
+j=1 1j
+2
+
+(cid:6)
+B(xu+1:d;
+
+p(x)μ
+
+ru+1
+2
+
+, ...,
+
+rd
+2
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤
+
+)
+
+30
+
+C2rm,
+
+1
+
+(cid:3)u
+2
+
+j=1 1j +1
+
+(cid:6)
+
+C2rmμ
+
+B(xu+1:d;
+
+ru+1
+2
+
+, ...,
+
+(cid:7)
+
+,
+
+)
+
+rd
+2
+
+620
+
+2 , xj + rj
+
+rj and 1j is the indicator function admitting the value
+
+where u < d, rm = max
+1≤j≤d
+1 if [xj − rj
+2 ] intersects [0, 1] and 0 otherwisely.
+Proof. For the sake of convenience, we only discuss the case when x ∈ [0, 1
+2 ]d
+and 1j = 1 for j = 1, ..., n ≤ u. The proof for other cases can be obtained by
+permuting the labels 1, ..., d. By the deﬁnition of qr1,...,rd (x), we have
+
+qr1,...,rd (x) =
+
+(cid:2)
+
+(cid:2)
+
+x1+r1/2
+
+x1−r1/2
+
+x1+r1/2
+
+=
+
+0
+
+(cid:2)
+
+(cid:2)
+
+· · ·
+
+· · ·
+
+xd+rd/2
+
+xd−rd/2
+
+xn+rn/2
+
+p(x(cid:5)
+
+1, ..., x(cid:5)
+
+d)dx(cid:5)
+
+d
+
+· · ·dx (cid:5)
+1
+
+(cid:2)
+
+xn+1+
+
+rn+1
+2
+
+(cid:2)
+
+· · ·
+
+xd+rd/2
+
+xd−rd/2
+
+p(x(cid:5)
+
+1, ..., x(cid:5)
+
+d)dx(cid:5)
+
+d
+
+· · · dx(cid:5)
+1,
+
+0
+
+xn+1−
+
+rn+1
+2
+
+(A.8)
+and the partial derivative of it with respect to the ﬁrst n variables is given by
+
+∂nqr1,...,rd (x)
+∂r1 · · ·∂r n
+xn+1+
+1
+2n
+
+xn+1−
+
+(cid:2)
+
+rn+1
+2
+
+rn+1
+2
+
+=
+
+(cid:2)
+
+· · ·
+
+xd+rd/2
+
+xd−rd/2
+
+p(x1 +
+
+r1
+2
+
+, ..., xn +
+
+rn
+2
+
+, x(cid:5)
+
+n+1, ..., x(cid:5)
+
+d)dx(cid:5)
+
+d
+
+· · · dx(cid:5)
+
+n+1.
+
+(A.9)
+Next we obtain the partial derivative of qr1,...,rd (x) with respect to the ﬁrst u
+variables
+
+xu+1+ru+1/2
+
+(cid:2)
+
+∂uqr1,...,rd (x)
+∂r1 · · ·∂r u
+1
+2u
+1
+2u
+
+B(xu+1:d;
+
+(cid:2)
+
+=
+
+=
+
+xu+1−ru+1/2
+
+ru+1
+2
+
+(cid:2)
+
+· · ·
+
+xd+rd/2
+
+xd−rd/2
+
+p(x1 +
+
+r1
+2
+
+, ..., xn +
+
+rn
+2
+
+, xn+1 ±
+
+rn+1
+2
+
+, ..., xu ±
+
+ru
+2
+
+, x(cid:5)
+
+u+1, ..., x(cid:5)
+
+d)dx(cid:5)
+
+u+1
+
+· · ·dx (cid:5)
+d
+
+p(x1 +
+
+r1
+2
+
+, ..., xn +
+
+rn
+2
+
+, xn+1 ±
+
+rn+1
+2
+
+, ..., xu ±
+
+ru
+2
+
+,...,
+
+rd
+2 )
+
+, x(cid:5)
+
+u+1, ..., x(cid:5)
+
+d)dx(cid:5)
+
+u+1
+
+· · ·dx (cid:5)
+d,
+
+(A.10)
+
+where the notation p(..., x ± r
+
+2 , ...) = p(..., x + r
+
+2 , ...) +p( ..., x − r
+
+2 , ...).
+
+Finally, we have
+
+∂uqr1,...,rd (x)
+∂r1 · · ·∂r u
+(cid:2)
+
+−
+
+B(xu+1:d;
+
+ru+1
+2
+
+,...,
+
+rd
+2 )
+
+p(x)μ
+
+1
+(cid:3)u
+j=1 1j
+2
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)p(x1 +
+
+(cid:6)
+
+B(xu+1:d;
+
+r1
+2
+
+, ..., xn +
+
+ru+1
+2
+rn
+2
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+)
+
+rd
+2
+
+, ...,
+
+, xn+1 ±
+
+rn+1
+2
+
+, ..., xu ±
+
+ru
+2
+
+, x(cid:5)
+
+u+1, ..., x(cid:5)
+d)
+
+− 2u−np(x)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)dx(cid:5)
+
+u+1
+
+· · ·dx (cid:5)
+d
+
+(cid:2)
+
+2u−n
+2u
+1
+2n+1 C2rmμ
+
+(cid:6)
+
+B(xu+1:d;
+
+ru+1
+2
+
+,...,
+
+B(xu+1:d;
+
+C2
+
+rd
+2 )
+ru+1
+2
+
+rm
+2
+
+dx(cid:5)
+
+u+1
+
+· · · dx(cid:5)
+d
+
+, ...,
+
+(cid:7)
+
+,
+
+)
+
+rd
+2
+
+31
+
+(A.11)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+1
+2u
+
+≤
+
+≤
+
+=
+
+which completes the proof for u < d.
+
+Particularly, we have
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+∂dqr1,...,rd (x)
+∂r1 · · ·∂r d
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤
+
+p(x)
+
+−
+
+1
+(cid:3)d
+j=1 1j
+2
+
+1
+
+(cid:3)d
+2
+
+j=1 1j +1
+
+C2rm.
+
+(A.12)
+
+Lemma 6. Suppose p satisﬁes Assumption 3, then, for any x ∈ Q and r that
+satisfy
+
+(cid:19)
+
+xj + r
+2
+xj − r
+2
+
+≤ 1, if x ≤ 1
+2
+≥ 0, if x > 1
+2
+
+for j = 1, ..., d, we have
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)pr(x) − p(x)μ
+
+(cid:6)
+
+B(x;
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤ C2
+
+r
+2
+
+)
+
+r
+2
+
+B(x;
+
+r
+2
+
+),
+
+and
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+dpr(x)
+dr
+
+−
+
+d(cid:4)
+
+j=1
+
+1
+21j
+
+(cid:6)
+
+p(x)μ
+
+B(xˆj;
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤
+
+r
+2
+
+)
+
+d(cid:4)
+
+j=1
+
+(cid:6)
+
+1
+
+21j +1 C2rμ
+
+B(xˆj;
+
+(cid:7)
+
+,
+
+)
+
+r
+2
+
+625
+
+where m < d and 1j is the indicator function admitting the value 1 if [xj −
+2 , xj + r
+r
+Proof. By the deﬁnition of pr(x), we have
+
+2 ] intersects [0, 1] and 0 otherwiesly.
+
+(cid:2)
+
+pr(x) =
+
+B(x; r
+
+2 )
+
+It then follows that,
+
+p(x(cid:5)
+
+1, ..., x(cid:5)
+
+d)dx(cid:5)
+
+d
+
+· · ·dx (cid:5)
+1.
+
+(A.13)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)pr(x) − p(x)μ
+(cid:2)
+(cid:5)
+(cid:5)p(x(cid:5)
+
+B(x; r
+
+2 )
+
+(cid:2)
+
+(cid:6)
+
+B(x;
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+r
+2
+
+)
+
+1, ..., x(cid:5)
+
+d) − p(x)
+
+C2
+
+r
+2
+
+dx(cid:5)
+d
+
+· · ·dx (cid:5)
+1
+
+≤
+
+≤
+
+2 )
+
+B(x; r
+r
+2
+
+B(x;
+
+r
+2
+
+),
+
+=C2
+
+(cid:5)
+(cid:5)dx(cid:5)
+
+d
+
+· · · dx(cid:5)
+1
+
+(A.14)
+
+which completes proof of the ﬁrst inequality. For the second inequality, one can
+easily see that
+
+pr(x) = qr,...,r(x).
+
+(A.15)
+
+32
+
+Now using Lemma 5, we obtain
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+dpr(x)
+dr
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+d(cid:4)
+
+≤
+
+≤
+
+j=1
+d(cid:4)
+
+j=1
+
+−
+
+d(cid:4)
+
+j=1
+
+1
+21j
+
+(cid:6)
+
+p(x)μ
+
+B(xˆj;
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+r
+2
+
+)
+
+∂qr1,...,rd (x)
+∂rj
+
+(cid:5)
+(cid:5)
+(cid:5)
+
+− 1
+21j
+
+(cid:6)
+
+p(x)μ
+
+B(xˆj;
+
+r1:d=r
+
+(cid:7)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+r
+2
+
+)
+
+(A.16)
+
+(cid:6)
+
+1
+
+21j +1 C2rμ
+
+B(xˆj;
+
+(cid:7)
+
+.
+
+)
+
+r
+2
+
+Appendix A.3. Proof of bias bound for the truncated KL estimator
+Proof. Note that
+
+d
+j=1 log ξi,j are identically distributed, then we have
+
+(cid:10)
+
+E[ (cid:3)HtKL(X)] = −ψ(k) + ψ(N ) +
+
+= −ψ(k) + ψ(N ) +E
+
+N(cid:4)
+
+(cid:8) d(cid:4)
+
+E
+
+(cid:9)
+
+log ξi,j
+
+1
+N
+
+i=1
+(cid:8) d(cid:4)
+
+j=1
+
+(cid:9)
+
+log ξxj
+
+k (x)
+
+j=1
+
+= −E[log p(cid:3)k (x)] + E[log μ(B(x; ξx1
+(cid:9)
+
+(cid:8)
+
+k /2, ..., ξxd
+
+k /2))]
+
+= −E
+
+log
+
+= −E
+
+(cid:8)
+
+log
+
+P (B(x; (cid:3)k/2))
+k /2, ..., ξxd
+(cid:9)
+
+μ(B(x; ξx1
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+
+,
+
+k /2))
+
+(A.17)
+
+where the third equality is from Lemma 1 and the ﬁfth equality is due to the
+fact that p is supported on Q. Note that
+
+C1 ≤
+
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+
+≤ sup
+x∈Q
+
+p(x) < ∞,
+
+(A.18)
+
+and we have
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) log p(x) − log
+
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)p(x) −
+
+1
+C1
+
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+(cid:2)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+≤
+
+≤
+
+≤
+
+1
+C1μ(B(x; (cid:3)k/2))
+1
+C1μ(B(x; (cid:3)k/2))
+
+|p(x) − p(x(cid:5))|dx(cid:5)
+
+(A.19)
+
+B(x;(cid:3)k/2)
+
+(cid:2)
+
+B(x;(cid:3)k/2)
+
+C2||x − x(cid:5)||∞dx(cid:5)
+
+≤ C2
+2C1
+
+(cid:3)k.
+
+33
+
+Finally, using Lemma 4, the bias bound of E[ (cid:3)HtKL(X)] can be obtained by
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKL(X)] − H(X)
+
+(cid:5)
+(cid:5)
+
+(cid:8)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) log p(x) − log
+
+E
+
+≤ E
+x∼p
+≤ C2
+2C1
+≤ C2
+
+E
+x∼p
+
+E[(cid:3)k]
+(cid:7) 1
+(cid:6) k
+d ,
+N
+
+C 1+1/d
+1
+
+P (B(x; (cid:3)k/2))
+μ(B(x; (cid:3)k/2))
+
+(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+(A.20)
+
+which completes the proof.
+
+630
+
+Appendix A.4. Proof of variance bound for the truncated KL estimator
+d
+j=1 log ξi,j. We then deﬁne
+Proof. For the sake of convenience, we deﬁne αi =
+α(cid:5)
+i, i = 1, ..., N as the estimators after x(1) is resampled and α∗
+i , i = 2, ..., N as
+the estimators after x(1) is removed. Then, by the Efron-Stein inequality [38],
+
+(cid:10)
+
+(cid:11)
+
+1
+N
+(cid:11)(cid:13)
+
+Var[ (cid:3)HtKL(X)] = Var
+
+≤
+
+E
+
+N
+2
+
+1
+N
+
+(cid:12)
+
+αi
+
+N(cid:4)
+
+i=1
+
+N(cid:4)
+
+αi −
+
+1
+N
+
+αi − 1
+N
+
+(cid:14)2(cid:12)
+
+N(cid:4)
+
+α(cid:5)
+i
+
+i=1
+N(cid:4)
+
+α∗
+i
+
+i=2
+N(cid:4)
+
+(cid:14)2
+
+(cid:13)
+
++
+
+(cid:14)2(cid:12)
+
+.
+
+α∗
+i
+
+1
+N
+
+αi − 1
+N
+
+i=1
+
+i=2
+
+(cid:11)(cid:13)
+
+1
+N
+(cid:11)(cid:13)
+
+i=1
+N(cid:4)
+
+i=1
+N(cid:4)
+
+≤ N E
+
+= 2N E
+
+1
+N
+
+N(cid:4)
+
+i=1
+
+α(cid:5)
+i
+
+− 1
+N
+
+N(cid:4)
+
+i=2
+
+α∗
+i
+
+(cid:14)2(cid:12)
+
+Let 1Ei be the indicator function of the event Ei = {(cid:3)k(x(1)) (cid:7)= (cid:3)∗
+k(x(1)) is twice thek -NN distance of x(1) when α∗
+(cid:3)∗
+N(cid:4)
+
+i are used. Then,
+
+N(cid:4)
+
+N(cid:4)
+
+(cid:13)
+
+(cid:14)
+
+N
+
+1
+N
+
+αi −
+
+1
+N
+
+i=1
+
+i=2
+
+α∗
+i
+
+= α1 +
+
+1Ei (αi − α∗
+
+i ).
+
+(A.22)
+
+(A.21)
+k(x(1))}, where
+
+By Cauchy-Schwarz inequality, we have
+
+(cid:13)
+
+N 2
+
+1
+N
+
+N(cid:4)
+
+i=1
+
+αi − 1
+N
+
+N(cid:4)
+
+i=2
+
+α∗
+i
+
+(cid:14)2
+
+(cid:13)
+
+≤
+
+1 +
+
+N(cid:4)
+
+i=2
+
+1Ei
+
+(cid:13)
+
+i=2
+
+(cid:14)(cid:13)
+
+α2
+
+1 +
+
+N(cid:4)
+
+i=2
+
+(cid:14)
+
+1Ei (αi − α∗
+
+i )2
+
+N(cid:4)
+
+i=2
+
+1Ei (αi − α∗
+
+i )2
+
+(cid:14)
+
+(cid:14)
+
+N(cid:4)
+
+i=2
+
+1Ei(α2
+
+i + α∗2
+i )
+
+,
+
+(A.23)
+
+≤ (1 + Ck,d)
+
+α2
+
+1 +
+
+(cid:13)
+
+≤ (1 + Ck,d)
+
+α2
+
+1 + 2
+
+34
+
+where Ck,d is the constant such that x1 is amongst the k-nearest neighbors of
+at most Ck,d other samples. Note that αi and α∗
+i are identically distributed, we
+only need to bound
+
+E[α2
+
+1],
+
+(N − 1)E[1E2α2
+2],
+
+(N − 1)E[1E2α∗2
+2 ].
+
+Bound of (A.24a):
+We separate (A.24a) into two parts,
+(cid:8)
+
+(cid:9)
+
+(cid:8)
+
+E
+
+α2
+1
+
+= E
+x∈Q
+
+E
+P :(cid:3)k<aN
+
+α2
+1
+
+(cid:9)
+
++ E
+x∈Q
+
+E
+P :(cid:3)k≥aN
+
+(cid:8)
+
+(cid:9)
+
+,
+
+α2
+1
+
+(A.24a)
+
+(A.24b)
+
+(A.24c)
+
+(A.25)
+
+where aN =
+
+(cid:6)
+
+(cid:7) 1
+d .
+
+2k log N
+C1N
+
+First, we consider the bound of the ﬁrst term in Eq (A.25). For any x ∈ Q,
+
+(cid:6)
+
+(cid:8)
+
+log
+
+ξx1
+k
+
+· · ·ξ xd
+k
+
+(cid:7)(cid:9)2
+
+dr.
+
+(A.26)
+
+(cid:9)
+
+(cid:8)
+
+α2
+1
+
+E
+P :(cid:3)k<aN
+(cid:2)
+aN
+
+fN,k(r)
+
+(cid:14)
+
+(cid:13)
+
+=
+
+0
+
+N − 1
+k
+
+where fN,k(r) =k
+
+· dpr
+dr
+
+· pk−1
+r
+
+· (1 − pr)N −k−1 [17]. Note that for
+
+suﬃciently large N ,
+
+(cid:2)
+
+aN
+
+(cid:6)
+
+[log
+
+0
+
+(cid:2)
+
+aN
+
+(cid:8)
+
+≤
+
+log
+
+(cid:7)(cid:9)2
+
+dr
+
+ξx1
+k
+(cid:6) r
+2
+
+· · ·ξ xd
+k
+(cid:7)(cid:9)2
+
+· · · r
+2
+
+0
+
+≤C3
+
+(log N )3
+N 1/d
+
+,
+
+dr
+
+(A.27)
+
+for some C3 > 0, we now focus on bounding fN,k(r). By basic calculus, we can
+see that
+
+(cid:13)
+
+(cid:14)
+
+k
+
+N − 1
+k
+
+· pk−1
+r
+
+· (1 − pr)N −k−1 ≤ C4N,
+
+(A.28)
+
+for some C4 > 0 andp r ∈ (0, 1). Also, by Lemma 6, we have dpr
+≤ C5
+dr
+some C5 > 0 and r < aN . Therefore, the pdf term can be bounded by
+
+log N
+N for
+
+fN,k(r) ≤ C4C5 log N.
+
+Combining Eq (A.27) and Eq (A.29), we can bound Eq (A.26) by:
+
+(cid:9)
+
+(cid:8)
+
+α2
+1
+
+E
+P :(cid:3)k<aN
+
+≤ C3C4C5
+
+(log N )4
+N 1/d
+
+≤ C6,
+
+(A.29)
+
+(A.30)
+
+35
+
+for some C6 > 0. Thus, the ﬁrst term in Eq (A.25) is bounded by
+
+E
+x∈Q
+
+E
+P :(cid:3)k<aN
+
+(cid:8)
+
+(cid:9)
+
+α2
+1
+
+≤ C6.
+
+(A.31)
+
+Now we consider the second term in Eq (A.25). For (cid:3)k ≥ aN and suﬃciently
+
+large N , we have
+
+(cid:6)
+
+(cid:8)
+
+log
+
+ξx1
+k
+
+· · ·ξ xd
+k
+
+(cid:7)(cid:9)2 ≤
+
+(cid:8)
+
+(cid:6)
+
+≤ d2
+
+log
+(cid:8)
+
+(cid:3)k/2 · · · (cid:3)k/2
+(cid:7)(cid:9)2
+(cid:6) aN
+2
+≤ C7(log N )2,
+
+log
+
+(cid:7)(cid:9)2
+
+(A.32)
+
+for some C7 > 0. Using Lemma 3 and Eq (A.32), the second term in Eq (A.25)
+can be bounded by
+
+E
+x∈Q
+
+E
+P :(cid:3)k≥aN
+
+(cid:9)
+
+(cid:8)
+
+α2
+1
+
+= E
+x∈Q
+
+E
+P :(cid:3)k≥aN
+
+(cid:6)
+
+(cid:8)
+
+log
+
+ξx1
+k
+
+· · ·ξ xd
+k
+
+(cid:7)(cid:9)2
+
+(cid:11)
+
+(cid:12)
+
+≤ C7(log N )2 · P ((cid:3)k ≥ aN )
+
+(A.33)
+
+≤ C8
+
+(log N )k+2
+N 2k
+
+,
+
+for some C8 > 0.
+
+Combining Eq (A.31) and Eq (A.33), the expectation of α2
+
+1 is bounded by
+
+E[α2
+
+1] ≤ C9,
+
+(A.34)
+
+for some C9 > 0.
+
+635
+
+Bound of (A.24b):
+Since the event E2 is equivalent to the event that x(1) is amongst the k-NN
+N −1 . Additionally, since E2 is
+
+of x(2), E[1E2] = P{x(1) ∈ B(x(2); (cid:3)k(x(2))} = k
+independent of (cid:3)k(x(2)), (A.24b) is therefore bounded as
+
+(N − 1)E[1E2α2
+
+2] ≤ (N − 1)E[1E2]E[α2
+
+2] ≤ kC9,
+
+(A.35)
+
+where the second inequality is from Eq (A.34).
+
+Bound of (A.24c):
+Using the independence between E2 and (cid:3)∗
+
+of x(2) after x(1) is removed), we can bound (A.24c) as
+2 ] ≤ (N − 1)E[1E2]E[α∗2
+
+(N − 1)E[1E2α∗2
+
+k(x(2)) (twice thek -NN distance
+
+2 ] ≤ kC10,
+
+(A.36)
+
+for some C10 > 0, where the second inequality is obtained from Eq (A.34) when
+the sample size is reduced to N − 1.
+
+Finally we obtain the bound of the variance of (cid:3)HtKL(X)
+
+Var[ (cid:3)HtKL(X)] ≤ C11
+
+1
+N
+
+,
+
+(A.37)
+
+640
+
+for some C11 > 0.
+
+36
+
+Appendix A.5. Proof of bias bound for the truncated KSG estimator
+Proof. We separate the d-dimensional unit cube Q into two subsets, Q = Q1 +
+(cid:7) 1
+(cid:6)
+Q2, where Q1 := [ aN
+d , and Q2 = Q − Q1. Suppose
+that (cid:15)P , (cid:15)p, and (cid:15)q(cid:3)
+d , and by
+Lemma 2 and the fact that
+
+(x) are deﬁned as in Lemma 2 with l = p(x)− 1
+
+d
+j=1 log ζi,j are identically distributed, we have
+
+2 ]d, aN =
+
+2 , 1 − aN
+
+2k log N
+C1N
+
+x1
+k ,...,(cid:3)
+
+(cid:10)
+
+xd
+k
+
+E[ (cid:3)HtKSG(X)] = −ψ(k) +ψ (N ) + (d − 1)/k +
+(cid:8)
+(cid:8)
+
+(cid:9)
+
+= E
+x∼p
+= E
+x∼p
+
+E
+P
+E
+P
+
+(cid:8)
+
+log ζ x1
+k
+
+· · ·ζ xd
+k
+
+log ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+− E
+x∼p
+− E
+x∼p
+
+E
+(cid:2)P
+E
+(cid:2)P
+
+(cid:8)
+
+log (cid:15)q(cid:3)
+(cid:6)
+
+log
+
+N(cid:4)
+
+(cid:8) d(cid:4)
+
+E
+
+(cid:9)
+
+log ζi,j
+
+1
+N
+
+i=1
+
+j=1
+(cid:9)
+
+x1
+k ,...,(cid:3)
+
+xd
+k
+
+p(x)(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(A.38)
+
+(cid:7)(cid:9)
+
+.
+
+We decompose the bias into three terms and bound them separately:
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKSG(X)] − H(X)
+(cid:5)
+(cid:5)
+(cid:7)(cid:9)
+(cid:6)
+(cid:5)
+(cid:5) E
+x∼p
+
+· · ·ζ xd
+k
+
+ζ x1
+k
+
+(cid:8)
+
+=
+
+log
+
+E
+P
+≤I1 + I2 + I3,
+
+(cid:5)
+(cid:5)
+
+(cid:6)
+
+(cid:8)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+− E
+x∼p
+
+E
+(cid:2)P
+
+(A.39)
+
+with
+
+I1 =
+
+I2 =
+
+I3 =
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q2
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q1
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q
+
+(cid:6)
+
+(cid:8)
+
+log
+
+ζ x1
+k
+
+· · · ζ xd
+k
+
+E
+P :(cid:3)k<aN
+
+E
+P :(cid:3)k<aN
+(cid:8)
+
+E
+P :(cid:3)k≥aN
+
+(cid:8)
+
+(cid:6)
+
+log
+
+ζ x1
+k
+
+· · · ζ xd
+k
+
+(cid:6)
+
+log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) +
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q2
+
+(cid:7)(cid:9)
+
+(cid:7)(cid:9)
+
+E
+(cid:2)P :(cid:3)k<aN
+(cid:8)
+
+− E
+x∈Q1
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) +
+
+E
+(cid:2)P :(cid:3)k<aN
+(cid:8)
+
+E
+(cid:2)P :(cid:3)k≥aN
+
+(cid:6)
+
+(cid:8)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+(cid:6)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:6)
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+(A.40)
+means taking expectation under the probability measure P over
+
+E
+where
+P :(cid:3)k<aN
+(cid:3)xj
+k < aN , j = 1, ..., d.
+Bound of I1:
+For any x ∈ Q2,
+(cid:8)
+
+(cid:6)
+
+ζ x1
+k
+
+· · · ζ xd
+k
+
+(cid:7)(cid:9)
+
+E
+P :(cid:3)k<aN
+(cid:2)
+aN
+
+log
+(cid:2)
+
+aN
+
+=
+
+· · ·
+
+0
+
+0
+
+fN,k(r1, ..., rd) log
+
+(cid:6)
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)
+
+dr1 · · ·dr d.
+
+(A.41)
+
+where fN,k(r1, ..., rd) =
+
+(cid:13)
+
+(cid:14)
+
+N − 1
+k
+
+· ∂d(qk
+
+r1,...,rd
+∂r1···∂rd
+
+)
+
+· (1 − prm )N −k−1, and rm =
+
+37
+
+max
+1≤j≤d
+(cid:2)
+
+aN
+
+0
+
+(cid:2)
+
+aN
+
+0
+
+(cid:2)
+
+aN
+
+0
+
+≤
+
+≤
+
+rj [17]. Note that for suﬃciently large N , we have,
+
+(cid:2)
+
+aN
+
+0
+
+(cid:2)
+
+aN
+
+0
+
+(cid:2)
+
+aN
+
+· · ·
+
+· · ·
+
+· · ·
+
+0
+
+(cid:2)
+
+(cid:5)
+(cid:5) log
+(cid:5)
+(cid:5) log
+(cid:5)
+(cid:5) log
+
+aN
+
+(cid:6)
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:5)
+(cid:5)dr1 · · ·dr d
+
+(cid:6) r1
+2
+
+(cid:6)
+
+(cid:7)(cid:5)
+(cid:5)dr1 · · ·dr d
+
+· · · rd
+2
+(cid:7)(cid:5)
+(cid:5)dr1 · · ·dr d +
+(cid:13) (cid:2)
+
+aN
+
+r1 · · ·r d
+
+· · ·
+
+(cid:2)
+
+aN
+
+0
+
+(cid:2)
+
+aN
+
+0
+(cid:14)d
+
+d log 2dr1 · · · drd
+
+= − d(aN )d−1
+(cid:7)2
+
+(cid:6)
+
+≤C3
+
+log N
+C1N
+
+log rdr + d log 2
+
+dr
+
+0
+
+0
+
+,
+
+(A.44)
+
+(A.45)
+
+(A.42)
+for some C3 > 0. We now focus on bounding fN,k(r1, ..., rd). We omit the
+subscripts of qr1,...,rd for simplicity from now. By the multivariate version of
+Fa`a di Bruno’s formula [48], one obtains
+
+∂d(qk)
+∂r1 · · ·∂r d
+
+=
+
+(cid:4)
+
+π∈Π
+
+d|π|qk
+(dq)|π|
+
+·
+
+(cid:20)
+
+B∈π
+
+∂|B|q(cid:21)
+
+j∈B ∂rj
+
+,
+
+(A.43)
+
+where π runs through the set Π of all partitions of the set 1, ..., d. By Lemma 5,
+we have
+
+∂|B|q(cid:21)
+
+j∈B ∂rj
+
+≤ p(x)rd−|B|
+
+m
+
++ C2rd−|B|+1
+m
+
+,
+
+which implies that
+
+(cid:20)
+
+B∈π
+
+∂|B|q(cid:21)
+
+j∈B ∂rj
+
+≤ M r(|π|−1)d
+m
+
+,
+
+where M = p∗d + 1 and p∗ = sup
+x∈Q
+
+p(x). Therefore, for |π| ≤k and rm ≤ aN we
+
+38
+
+can bound fN,k(r1, ..., rd) as
+
+(cid:13)
+
+(cid:4)
+
+fN,k(r1, ..., rd) =
+
+(cid:14)
+
+N − 1
+k
+
+· d|π|qk
+(dq)|π|
+
+·
+
+(cid:20)
+
+B∈π
+
+∂|B|q(cid:21)
+
+j∈B ∂rj
+
+· (1 − prm )N −k−1
+
+(N − 1)!
+(k − |π|)!(N − k − 1)!
+
+qk−|π|(1 − prm )N −k−1M r(|π|−1)d
+
+m
+
+M · N kpk−|π|
+
+rm
+
+(1 − prm )N −k−1r(|π|−1)d
+
+m
+
+CM · N |π|r(|π|−1)d
+
+m
+
+π∈Π
+(cid:4)
+
+π∈Π
+(cid:4)
+
+π∈Π
+(cid:4)
+
+π∈Π
+(cid:4)
+
+π∈Π
+
+≤
+
+≤
+
+≤
+
+≤
+
+CM
+
+(cid:13)
+
+(cid:13)
+
+(cid:14)|π|−1
+
+N
+
+2k log N
+C1
+
+(cid:14)k−1
+
+N,
+
+2k log N
+C1
+
+≤|Π|CM
+
+(A.46)
+where the third inequality is due to the fact that pk−|π|(1−p)N −k−1 ≤ CN −k+|π|
+for p ∈ [0, 1]. Combining Eq (A.46) and Eq (A.42), we can bound the expecta-
+tion in Eq (A.41) by
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+P :(cid:3)k<aN
+
+(cid:8)
+
+(cid:6)
+
+log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:6)
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤ C4
+
+(cid:7)k+1
+
+log N
+C k
+1
+
+(A.47)
+
+for some C4 > 0. It follows that the ﬁrst term of I1 is bounded by
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+x∈Q2
+
+E
+P :(cid:3)k<aN
+
+(cid:6)
+
+(cid:8)
+
+log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) ≤ C4
+
+(cid:6)
+
+(cid:6)
+
+≤ C4
+
+E
+x∈Q2
+
+[1]
+
+p∗μ(x ∈ Q2)
+
+(cid:7)k+1
+
+(cid:7)k+1
+
+log N
+C k
+1
+
+log N
+C k
+1
+
+(cid:6)
+
+(cid:7)k+1
+
+log N
+C k
+1
+(cid:6)
+
+≤ p∗C4
+
+= (d + 1)p∗C4
+
+(d + 1)aN
+(cid:7)k+1
+
+log N
+C k
+1
+
+(cid:6) 2k log N
+C1N
+
+(cid:7) 1
+d .
+
+(A.48)
+Since (cid:15)P is a sepcial case of P , the second term of I1 can also be bounded by the
+same order. Thus, I1 is bounded by
+
+(cid:6)
+
+|I1| ≤C 5
+
+(cid:7)k+2
+
+log N
+C k+1
+
+1 N
+
+,
+
+1
+d
+
+(A.49)
+
+645
+
+for some C5 > 0.
+Bound of I2:
+
+39
+
+For any x ∈ Q1 and (cid:3)xj
+
+k < aN , j = 1, ..., d, it is easy to see that ζ xj
+
+k = (cid:3)xj
+k .
+
+Thus, I2 can be bounded and rewritten as
+
+I2 ≤ E
+x∈Q1
+
+= E
+
+x∈Q1
+
+(cid:8)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) E
+P :(cid:3)k<aN
+(cid:5)
+(cid:2)
+(cid:5)
+(cid:5)
+(cid:5)
+
+aN
+
+· · ·
+
+0
+
+0
+
+(cid:6)
+
+log
+(cid:2)
+
+aN
+
+(cid:6)
+
+(cid:7)(cid:9)
+
+(cid:8)
+
+(cid:6)
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+− E
+
+log
+
+(cid:3)x1
+k
+
+· · ·(cid:3) xd
+k
+
+(cid:2)P :(cid:3)k<aN
+fN,k(r1, ..., rd) − (cid:15)fN,k(r1, ..., rd)
+
+(cid:7)(cid:9)
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+(cid:6)
+
+(cid:7)
+
+log
+
+r1 · · ·r d
+
+(cid:7)
+
+dr1 · · ·dr d
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+where (cid:15)fN,k(r1, ..., rd) =
+the subscripts of (cid:15)qr1,...,rd in the following analysis. Since we have
+
+r1,...,rd
+∂r1···∂rd
+
+)
+
+∂d((cid:2)qk
+
+(cid:13)
+
+(cid:14)
+
+N − 1
+k
+
+(A.50)
+· (1 − (cid:15)prm )N −k−1. Again, we omit
+
+(cid:2)
+
+aN
+
+(cid:2)
+
+aN
+
+· · ·
+
+0
+
+(cid:6)
+
+≤C3
+
+0
+(cid:7)2
+
+,
+
+log N
+C1N
+
+(cid:6)
+
+(cid:5)
+(cid:5) log
+
+r1 · · · rd
+
+(cid:7)(cid:5)
+(cid:5)dr1 · · ·dr d
+
+(A.51)
+
+from (A.42), we now focus on bounding fN,k(r1, ..., rd) − (cid:15)fN,k(r1, ..., rd). Recall
+the Fa`a di Bruno’s formula in Eq (A.43), and we have
+
+∂|B|q(cid:21)
+
+j∈B ∂rj
+
+(1 − prm )N −k−1
+
+p(x)r1 · · ·r d + O(r1 · · · rdrm)
+(cid:20)
+(cid:20)
+
+(cid:7)(cid:6)
+
+p(x)
+
+rj + O(rm
+
+rj)
+
+1 − p(x)rd
+m
+
+(cid:7)k−|π|
+
+(cid:7)N −k−1
+
+− O(rd+1
+m )
+
+B∈π
+
+(cid:14)
+
+j∈ (cid:4)B
+(cid:6)
+
+j∈ (cid:4)B
+(cid:7)k−|π|(cid:6)
+
+1 + O(rm)
+
+(cid:7)k−|π| (cid:20)
+
+(cid:6)
+
+(cid:20)
+
+(cid:7)
+
+rj
+
+p(x)
+
+p(x)r1 · · ·r d
+
+(cid:7)(cid:6)
+
+(cid:7)N −k−1(cid:6)
+
+1 + O(rm)
+(cid:6)
+
+p(x)r1 · · ·r d
+
+1 − p(x)rd
+m
+(cid:20)
+(cid:7)k−|π| ·
+
+(cid:6)
+
+p(x)
+
+1 − O(rd+1
+m )
+(cid:20)
+(cid:7)
+
+rj
+
+B∈π
+
+j∈ (cid:4)B
+(cid:7)N −k−1
+
+=
+
+=
+
+=
+
+=
+
+fN,k(r1, ..., rd)
+(cid:14)
+(cid:4)
+
+(cid:13)
+
+∂|π|qk
+(∂q)|π|
+
+(cid:20)
+
+B∈π
+(cid:6)
+
+k!
+(k − |π|)!
+(cid:20)
+(cid:6)
+
+N − 1
+k
+
+(cid:14)
+
+N − 1
+k
+
+×
+
+π∈Π
+(cid:4)
+
+(cid:13)
+
+π∈Π
+
+(cid:13)
+
+(cid:4)
+
+π∈Π
+
+N − 1
+k
+
+(cid:13)
+
+(cid:4)
+
+π∈Π
+
+(cid:14)
+
+N − 1
+k
+
+(cid:13)
+
+(cid:4)
+
+=
+
+π∈Π
+
+(cid:14)
+
+N − 1
+k
+
+k!
+(k − |π|)!
+(cid:6)
+
+×
+
+k!
+(k − |π|)!
+
+×
+∂|π|(cid:15)qk
+(∂ (cid:15)q)|π|
+(cid:6)
+
+(cid:6)
+
+1 − p(x)rd
+m
+
+(cid:7)N −k−1 ·
+
+(cid:6)
+
+B∈π
+
+1 + O(rm)
+
+j∈ (cid:4)B
+(cid:7)k(cid:6)
+
+(cid:20)
+
+·
+
+B∈π
+
+∂|B|(cid:15)q(cid:21)
+j∈B ∂rj
+
+(cid:7)k(cid:6)
+
+· (1 − (cid:15)prm )N −k−1 ·
+
+(cid:7)N −k−1
+
+1 − O(rd+1
+m )
+(cid:6)
+
+1 + O(rm)
+
+(cid:7)N −k−1
+
+(cid:7)k(cid:6)
+
+1 − O(rd+1
+m )
+
+(cid:7)N −k−1
+
+= (cid:15)fN,k(r1, ..., rd) ·
+
+1 +O (rm)
+
+1 − O(rd+1
+m )
+
+(A.52)
+where the second equality is from Lemma 5 and Lemma 6 and the ﬁfth equality
+is from the fact that (cid:15)q = p(x)r1 · · ·r d and (cid:15)prm = p(x)rd
+m for x ∈ Q1 and rm ≤ aN .
+
+40
+
+By Eq (A.52), we obtain the bound of the diﬀerence fN,k(r1, ..., rd)− (cid:15)fN,k(r1, ..., rd)
+
+|fN,k(r1, ..., rd) − (cid:15)fN,k(r1, ..., rd)|
+(cid:5)
+(cid:5)
+(cid:6)
+(cid:5)
+(cid:5)
+
+1 − O(rd+1
+m )
+
+1 + O(rm)
+
+(cid:7)k(cid:6)
+
+(cid:7)N −k−1 − 1
+
+=
+
+≤C6rm
+(cid:13)
+
+≤C6
+
+(cid:15)fN,k(r1, ..., rd)
+
+2k log N
+C1N
+
+(cid:14) 1
+d
+
+|Π|CM
+
+(cid:13)
+
+2k log N
+C1
+
+(cid:14)k−1
+
+N,
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)
+
+(cid:15)fN,k(r1, ..., rd)
+
+(A.53)
+
+for some C6 > 0, where the last inequality is from Eq (A.46) and the fact that
+(cid:15)P is a special case of P . Combining Eq (A.53) and Eq (A.51), we obtain the
+bound of I2
+
+I2 ≤ C3C6
+
+≤ C7
+
+(cid:13)
+
+2k log N
+C1N
+(log N )k+2
+C k+1
+1 N
+
+1
+d
+
+,
+
+(cid:14) 1
+
+d
+
+|Π|CM
+
+(cid:13)
+
+2k log N
+C1
+
+(cid:14)k−1
+
+(cid:6)
+
+(cid:7)2
+
+log N
+C1
+
+E
+x∈Q1
+
+[1]
+
+(A.54)
+
+for some C7 > 0, as E
+x∈Q1
+
+[1] ≤ 1.
+
+650
+
+Bound of I3:
+To bound the ﬁrst term of I3, we need to bound
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+E
+P :(cid:3)k≥aN
+
+ﬁrst. Note that the event {(cid:3)k ≥ aN } is equivalent to that there is at least one
+j ∈ {1, ..., d} such that (cid:3)xj
+≥ aN , and by the symmetry of the equation, the
+k
+expectation over this set can be rewritten as
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · · ζ xd
+k
+
+E
+P :(cid:3)k≥aN
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+=
+
+d(cid:4)
+
+i=1
+
+C i
+d
+
+P :
+
+Consider each term in Eq (A.55)
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+.
+
+(A.55)
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+≤
+
+P :
+
+P :
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xi
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
++
+
+P :
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ xi+1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+.
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+For (cid:3)xj
+k
+
+≥ aN , j = 1, ..., i and suﬃciently large N , we have
+
+(cid:6)
+
+(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xi
+k
+
+(cid:7)(cid:5)
+(cid:5) ≤
+
+k /2
+
+(cid:6)
+
+(cid:5)
+(cid:5) log
+(cid:5)
+(cid:5) log
+
+≤
+
+k /2 · · · (cid:3)xi
+(cid:3)x1
+(cid:5)
+(cid:6) aN
+(cid:5)
+2
+≤ C8 log N,
+
+(cid:7)i
+
+(cid:7)(cid:5)
+(cid:5)
+
+(A.56)
+
+(A.57)
+
+41
+
+for some C8 > 0. Using Lemma 3 and Eq (A.57), the ﬁrst term of Eq (A.56)
+can be bounded by
+(cid:8)(cid:5)
+(cid:5) log
+
+≤ C8 log N · P{(cid:3)k,1:i ≥ aN , (cid:3)k,i:d < aN }
+
+(cid:7)(cid:5)
+(cid:5)
+
+(cid:19)
+
+E
+
+(cid:6)
+
+(cid:9)
+
+ζ x1
+k
+
+· · ·ζ xi
+k
+
+P :
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+≤ C8 log N · P {(cid:3)k ≥ aN }
+
+≤ C9
+
+(log N )k+1
+N 2k
+
+,
+
+(A.58)
+
+For some C9 > 0.
+
+Now consider the second term of Eq (A.56). Like Eq (A.42), the integration
+
+with respect to Lebesgue measure can be bounded as
+
+(cid:2)
+
+1
+
+· · ·
+
+(cid:2)
+
+1
+
+(cid:13) (cid:2)
+
+aN
+
+aN
+
+aN
+≤ −( d − i)(aN )d−i−1
+
+0
+
+(cid:2)
+
+aN
+
+· · ·
+(cid:2)
+
+0
+aN
+
+(cid:6)
+
+(cid:5)
+(cid:5) log
+
+ζ xi+1
+k
+
+· · ·ζ xd
+k
+
+log rdr + (d − i) log 2(
+
+(cid:14)
+
+drd · · ·dr i
+
+(cid:7)(cid:5)
+(cid:5)dri+1 · · ·dr d
+(cid:2)
+
+aN
+
+dr)d−i
+
+≤C10 log N,
+
+0
+
+0
+
+(A.59)
+for some C10 > 0. Again using the multivariate version of Fa`a di Bruno’s
+formula, we can bound fN,k(r1, ..., rd) for |π| ≤k and rm ≥ aN as
+
+(cid:13)
+
+(cid:4)
+
+fN,k(r1, ..., rd) =
+
+(cid:14)
+
+N − 1
+k
+
+·
+
+d|π|qk
+(dq)|π|
+
+·
+
+(cid:20)
+
+B∈π
+
+∂|B|q(cid:21)
+
+j∈B ∂rj
+
+· (1 − prm )N −k−1
+
+(N − 1)!
+(k − |π|)!(N − k − 1)!
+
+(N − 1)!
+(k − |π|)!(N − k − 1)!
+
+qk−|π|(1 − prm )N −k−1M r(|π|−1)d
+
+m
+
+(1 − C1ad
+
+N )N −k−1M
+
+π∈Π
+(cid:4)
+
+π∈Π
+(cid:4)
+
+π∈Π
+
+≤
+
+≤
+
+≤C11
+
+1
+N k ,
+
+(A.60)
+for some C11 > 0. Therefore, combining Eq (A.59) and Eq (A.60) leads to the
+bound of the second term of Eq (A.56)
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ xi+1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+≤ C10C11
+
+log N
+N k ,
+
+(A.61)
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+P :
+
+which is a larger bound then Eq (A.58). As a result we can bound Eq (A.56) by
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+P :
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+≤ C10C11
+
+log N
+N k .
+
+(A.62)
+
+42
+
+Given Eq (A.62), we are now able to estimate Eq (A.55) and then the ﬁrst term
+of I3 by the same bound up to a constant. Similarly, we can also bound the
+second term of I3 by O
+
+. Thus, I3 can be bounded by
+
+(cid:6)
+
+(cid:7)
+
+log N
+N k
+
+I3 ≤ C12
+
+log N
+N k ,
+
+(A.63)
+
+for some C12 > 0.
+
+Finally, combining the upper bounds of I1, I2 and I3, we obtain that the
+
+bias is bounded by
+
+(cid:5)
+(cid:5)E[ (cid:3)HtKSG(X)] − H(X)
+
+(cid:5)
+(cid:5) ≤ C13
+
+(log N )k+2
+C k+1
+1 N
+
+1
+d
+
+,
+
+(A.64)
+
+for some C13 > 0.
+
+d
+
+(cid:10)
+
+Appendix A.6. Proof of variance bound for the truncated KSG estimator
+j=1 log ζi,j, and deﬁne β(cid:5)
+Proof. We let βi =
+i, i = 1, ..., N as the estimators
+after x(1) is resampled and β∗
+i , i = 2, ..., N as the estimators after x(1) is removed.
+It should be noted that this proof can be completed by following the roadmap
+in Appendix A.4, and the only issue that needs to be validated here is that
+E[β2
+
+1 ] =O ((log N )k+2).
+Again, we separate E
+(cid:9)
+
+(cid:8)
+
+(cid:8)
+
+(cid:9)
+
+β2
+1
+
+into two parts,
+
+E
+
+β2
+1
+
+= E
+x∈Q
+
+(cid:9)
+
+(cid:8)
+
+β2
+1
+
+E
+P :(cid:3)k<aN
+
++ E
+x∈Q
+
+E
+P :(cid:3)k≥aN
+
+(cid:8)
+
+(cid:9)
+
+,
+
+β2
+1
+
+(A.65)
+
+where aN is deﬁned as in Appendix A.5.
+
+First, we consider the bound of the ﬁrst term in Eq (A.65). For any x ∈ Q,
+
+E
+P :(cid:3)k<aN
+(cid:2)
+aN
+
+(cid:8)
+
+β2
+1
+(cid:2)
+
+(cid:9)
+
+aN
+
+fN,k(r1, ..., rd)
+
+(cid:6)
+
+(cid:8)
+
+log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:9)2
+
+dr1 · · · drd,
+
+(A.66)
+
+· · ·
+
+=
+
+0
+
+0
+
+(cid:14)
+
+(cid:13)
+
+N − 1
+k
+
+· ∂d(qk
+
+r1,...,rd
+∂r1···∂rd
+
+)
+
+·(1−prm)N −k−1, and rm = max
+1≤j≤d
+
+rj
+
+655
+
+660
+
+Note that for suﬃciently large N , we have,
+
+aN
+
+(cid:8)
+
+(cid:6)
+
+log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:9)2
+
+dr1 · · ·dr d
+
+where fN,k(r1, ..., rd) =
+
+[17].
+
+(cid:2)
+
+aN
+
+(cid:2)
+
+· · ·
+
+· · ·
+
+0
+
+(cid:2)
+
+aN
+
+≤
+
+0
+
+(cid:2)
+
+aN
+
+(cid:8)
+
+log
+
+0
+(cid:2)
+
+aN
+
+0
+(cid:2)
+
+aN
+
+(cid:8)
+
+· · ·
+
+log
+
+=d
+
+≤C3
+
+0
+(log N )3
+N
+
+0
+
+,
+
+(cid:6) r1
+2
+(cid:6) r1
+2
+
+(cid:7)(cid:9)2
+
+dr1 · · ·dr d
+
+· · · rd
+2
+
+(cid:7)(cid:9)2
+
+dr1 · · ·dr d + d(d − 1)
+
+43
+
+(cid:2)
+
+aN
+
+(cid:2)
+
+aN
+
+· · ·
+
+0
+
+0
+
+log
+
+(cid:7)
+
+(cid:6) r1
+2
+
+log
+
+(cid:7)
+
+(cid:6) r2
+2
+
+dr1 · · · drd
+
+(A.67)
+
+for some C3 > 0. Recall Eq (A.46), and we can bound Eq (A.66) as:
+(cid:8)
+
+(cid:9)
+
+E
+P :(cid:3)k<aN
+
+β2
+1
+
+≤ C4(log N )k+2,
+
+for some C4 > 0. Thus, the ﬁrst term in Eq (A.65) is bounded by
+
+E
+x∈Q
+
+E
+P :(cid:3)k<aN
+
+(cid:9)
+
+(cid:8)
+
+β2
+1
+
+≤ C4(log N )k+2.
+
+Now we consider the second term in Eq (A.65).
+Like the bound analysis of I3 in Appendix A.5, we can rewrite
+
+as
+
+(cid:9)
+
+(cid:8)
+
+β2
+1
+
+=
+
+E
+P :(cid:3)k≥aN
+
+d(cid:4)
+
+i=1
+
+C i
+d
+
+P :
+
+(cid:8)
+
+(cid:9)
+
+.
+
+β2
+1
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+(A.68)
+
+(A.69)
+
+(cid:9)
+
+(cid:8)
+
+β2
+1
+
+E
+P :(cid:3)k≥aN
+
+(A.70)
+
+Consider each term of Eq (A.55)
+(cid:8)
+
+(cid:9)
+
+β2
+1
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+P :
+(cid:13)
+
+≤2
+
+P :
+
+For (cid:3)xj
+k
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xi
+k
+
+(cid:7)(cid:5)
+(cid:5)2(cid:9)
+
++
+
+P :
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ xi+1
+k
+
+· · ·ζ xd
+k
+
+(cid:14)
+
+(cid:7)(cid:5)
+(cid:5)2(cid:9)
+
+≥ aN , j = 1, ..., i and suﬃciently large N , we have
+(cid:7)(cid:5)
+(cid:5)2 ≤
+
+(cid:6)
+
+(cid:6)
+
+(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xi
+k
+
+k /2
+
+(cid:5)
+(cid:5) log
+(cid:5)
+(cid:5) log
+
+≤
+
+k /2 · · · (cid:3)xi
+(cid:3)x1
+(cid:5)
+(cid:6) aN
+(cid:5)2
+2
+
+(cid:7)i
+
+(cid:7)(cid:5)
+(cid:5)2
+
+(A.71)
+
+(A.72)
+
+≤ C5(log N )2,
+
+for some C5 > 0. Using Lemma 3 and Eq (A.72), the ﬁrst term of Eq (A.71)
+can be bounded by
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · · ζ xi
+k
+
+(cid:7)(cid:5)
+(cid:5)2(cid:9)
+
+≤ C5(log N )2 · P{(cid:3)k,1:i ≥ aN , (cid:3)k,i:d < aN }
+
+(cid:19)
+
+P :
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+≤ C5(log N )2 · P {(cid:3)k ≥ aN }
+≤ C6,
+
+(A.73)
+
+for some C6 > 0.
+
+Now consider the second term of Eq (A.71). Like Eq (A.67), the integration
+
+44
+
+with respect to Lebesgue measure is bounded as
+
+(cid:2)
+
+1
+
+· · ·
+
+(cid:2)
+
+1
+
+(cid:13) (cid:2)
+
+aN
+
+(cid:2)
+
+aN
+
+· · ·
+
+(cid:6)
+
+(cid:5)
+(cid:5) log
+
+aN
+≤C7,
+
+aN
+
+0
+
+0
+
+ζ xi+1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:5)
+(cid:5)2
+
+(cid:14)
+
+dri+1 · · · drd
+
+drd · · ·dr i
+
+(A.74)
+for some C7 > 0. Therefore, combining Eq (A.74) and the PDF bound in
+Eq (A.60) leads to the bound of the second term of Eq (A.71)
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ xi+1
+k
+
+· · ·ζ xd
+k
+
+(cid:7)(cid:5)
+(cid:5)2(cid:9)
+
+≤ C8,
+
+(A.75)
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+P :
+
+for some C8 > 0. As a result we can bound Eq (A.71) by
+
+(cid:6)
+
+(cid:8)(cid:5)
+(cid:5) log
+
+ζ x1
+k
+
+· · ·ζ xd
+k
+
+(cid:9)
+
+(cid:7)(cid:5)
+(cid:5)
+
+≤ C6 + C8.
+
+(A.76)
+
+(cid:19)
+
+E
+
+(cid:3)k,1:i ≥ aN
+(cid:3)k,i:d < aN
+
+P :
+
+665
+
+Given Eq (A.76), we are now able to estimate Eq (A.70) and then the second
+term of Eq (A.65) by the same bound up to a constant.
+
+Finally, the expectation of β2
+
+1 is bounded as
+
+E[β2
+
+1 ] ≤ C9(log N )k+2,
+
+(A.77)
+
+for some C9 > 0. Following the same procedure in Appendix A.4, we can obtain
+the bound of the variance of (cid:3)HtKSG(X)
+
+Var[ (cid:3)HtKSG(X)] ≤ C10
+
+(log N )k+2
+N
+
+,
+
+(A.78)
+
+for some C10 > 0.
+
+Appendix B. Proof of Corollary 2
+
+Proof. Given a UM f , the density of the original distribution satisﬁes the change
+of variable formula,
+
+px(x) = pz(f (x))g(x),
+
+(B.1)
+
+(cid:5)
+(cid:5)
+(cid:5)det ∂f (x)
+∂x
+
+(cid:5)
+(cid:5)
+(cid:5) is diﬀerentiable and positive for any x ∈ Rd ([35, 49]).
+
+where g(x) =
+Recall that px is diﬀerentiable, and it follows that,
+
+pz(z) =
+
+px(f −1(z))
+g(f −1(z)))
+
+,
+
+(B.2)
+
+is also diﬀerentiable for any z ∈ Qo. Thus, the supreme C N
+2
+random variable.
+
+670
+
+is a well deﬁned
+
+45
+
+Since pS
+
+z is a diﬀerentiable density function deﬁned on Q, there exists a
+
+z∗ ∈ Q such that pS
+
+z (z∗) = 1. By mean value theorem, we have
+
+z (z)|
+z (ξ) · (z∗ − z)|
+z (ξ)||1 · ||z∗ − z||∞
+
+|1 − pS
+≤|(cid:2)pS
+≤||(cid:2)pS
+≤C N
+2 ,
+
+(B.3)
+
+where ξ is some vector in Q. Thus, we have
+
+1 − C N
+2
+
+≤ pN
+
+x (x) ≤ 1 + C N
+2 .
+
+(B.4)
+
+Now deﬁne C N
+
+1 = inf
+z∈Q
+
+pS
+z (z). For N > M , the bias can then be bounded by
+
+(cid:5)
+(cid:5)E[ (cid:3)HUM−tKL(X)] − H(X)
+
+(cid:5)
+(cid:5)
+
+≤EUM
+(cid:8)
+
+≤E
+
+(C N
+
+(cid:5)
+(cid:5)
+
+(cid:5)
+(cid:5)EX [ (cid:3)HUM−tKL(X)] − H(X)
+(cid:7) 1
+C N
+2
+1 )1+1/d
+(cid:6) k
+N
+
+(cid:9)(cid:6) k
+N
+
+(cid:7) 1
+d ,
+
+d
+
+≤C N
+
+UM− tKL
+
+(B.5)
+
+≤ ¯C, a.s.
+
+where C N
+
+UM− tKL =
+
+1
+
+(1− ¯C)1+1/d E[C N
+
+2 ]. Note that C N
+2
+
+E[C N
+
+2 ] = 0 and therefore lim
+N→∞
+
+UM− tKL = 0.
+
+P−→
+N→∞
+
+0 andC N
+2
+C N
+
+for any N > M , we have lim
+N→∞
+
+The MSE can be bounded by
+
+E[( (cid:3)HUM−tKL(X) − H(X))2]
+
+≤2E[( (cid:3)HUM−tKL(X) − EX [ (cid:3)HUM−tKL(X)])2] + 2E[(EX [ (cid:3)HUM−tKL(X)] − H(X))2]
+=2EUMEX [( (cid:3)HUM−tKL(X) − EX [ (cid:3)HUM−tKL(X)])2] + 2EUM[(EX [ (cid:3)HUM−tKL(X)] − H(X))2]
+
+Note that when N > M , C N
+we can bound the ﬁrst term of Eq. (B.6) by
+
+1 and C N
+
+(B.6)
+2 satisfy Assumption 3. Then by Theorem 1,
+
+2EUMEX [( (cid:3)HUM−tKL(X) − EX [ (cid:3)HUM−tKL(X)])2] ≤ C1
+
+1
+N
+
+,
+
+(B.7)
+
+for some C1 > 0. The second term of Eq. (B.6) can be bounded by
+
+2EUM[(EX [ (cid:3)HUM−tKL(X)] − H(X))2]
+(cid:9)(cid:6) k
+N
+
+(C N
+
+(cid:7) 2
+d
+
+(cid:8)
+
+≤2E
+
+2 )2
+(C N
+1 )2(1+1/d)
+(cid:7) 2
+(cid:6) k
+d
+N
+
+≤DN
+
+UM− tKL
+
+46
+
+(B.8)
+
+where DN
+for any N > M . Thus, the MSE is bounded by
+
+(1− ¯C)2(1+1/d) E[(C N
+
+UM− tKL =
+
+2
+
+2 )2]. Again, we have, lim
+N→∞
+
+DN
+
+UM− tKL = 0
+
+E[( (cid:3)HUM−tKL(X) − H(X))2] ≤ C1
+
+1
+N
+
++ DN
+
+UM− tKL
+
+(cid:7) 2
+d .
+
+(cid:6) k
+N
+
+(B.9)
+
+Appendix C. Proof of Corollary 3
+
+Proof. For N > M , the bias can be bounded by
+
+(cid:6)
+
+(cid:5)
+(cid:5)E[ (cid:3)HUM−tKSG(X)] − H(X)
+(¯pS
+z )d + 1
+C k+1
+1
+
+(cid:9) (log N )k+2
+N
+
+(cid:8) ¯pS
+z
+
+(cid:5)
+(cid:5)
+
+(cid:7)
+
+1
+d
+
+≤CE
+
+≤CUM− tKSG
+
+(log N )k+2
+N
+
+1
+d
+
+,
+
+(C.1)
+
+(cid:6)
+
+(cid:7)
+(1+ ¯C)d+1
+
+(1+ ¯C)
+
+where C is a positive constant, ¯pS
+
+(1− ¯C)k+1
+Similarly as the proof of Corollary 2 and by Theorem 2, we can bound the MSE
+by
+
+pS
+z (z) and CUM− tKSG = C
+
+z = sup
+z∈Q
+
+.
+
+E[( (cid:3)HUM−tKSG(X) − H(X))2] ≤ C2
+
+(log N )k+2
+N
+
+where C2 is a positive constant and DN
+
+UM− tKSG =
+
+(cid:16)
+
+C
+
++ DN
+
+UM− tKSG
+
+(log N )2(k+2)
+N
+(cid:7)
+(1+ ¯C)d+1
+
+(cid:17)2
+
+2
+d
+
+,
+
+(C.2)
+
+.
+
+(1− ¯C)k+1
+
+(cid:6)
+
+(1+ ¯C)
+
+Appendix D. Further details of the numerical examples
+
+675
+
+Appendix D.1. Implementation details of the estimators
+
+680
+
+The setup of MAF: We use a MAF built by 10 autoregressive layers [50]
+for Hybrid Rosenbrock distribution and one built by 5 autoregressive layers
+for Even Rosenbrock distribution and the application of experimental design.
+Each layer has two hidden layers of 50 units and tanh nonlinearities. In each
+experiment, half of the samples are used to train the MAF model and the other
+half are used to estimate the entropy.
+
+The implementation of CADEE and non-Mises estimator: The two
+estimators are implemented using the code provided by [21] and [22] with the
+default parameters.
+
+47
+
+685
+
+Appendix D.2. The two multivariate Rosenbrock distributions
+
+Hybrid Rosenbrock Distribution. The density of the hybrid Rosenbrock
+
+distribution is given by
+
+π(x) ∝ exp
+
+⎧
+⎨
+
+⎩
+
+−a(x1 − μ)2 −
+
+n2(cid:4)
+
+n1(cid:4)
+
+j=1
+
+i=2
+
+bj,i(xj,i − x2
+
+j,i−1)2
+
+⎫
+⎬
+⎭ ,
+
+(D.1)
+
+where the dimensionality of x is d = (n1 − 1)n2 + 1. The variable xj,1 = x1 for
+j = 1, ..., n2. The normalization constant of Eq. (D.1) is
+
+(cid:21)
+
+√
+
+a
+
+(cid:28)
+
+bj,i
+
+.
+
+n1,n2
+i=2,j=1
+πd/2
+
+(D.2)
+
+In this experiment, we set μ = 1.0, a = 1.0, bj,i = 0.1 for all i and j, n1 = 4
+and n2 ranging from 1 to 7. This setting forms a class of distributions with
+dimensions ranging from 4 to 22.
+
+Even Rosenbrock Distribution. The density of the even Rosenbrock
+
+distribution is given by
+
+π(x) ∝ exp
+
+⎧
+⎨
+
+⎩
+
+−
+
+d/2(cid:4)
+
+(cid:29)
+
+i=1
+
+(x2i−1 − μ2i−1)2 − ci
+
+(cid:6)
+
+x2i − x2
+
+2i−1
+
+(cid:30)
+
+(cid:7)2
+
+⎫
+⎬
+⎭ ,
+
+(D.3)
+
+690
+
+695
+
+where the dimensionality d must be an even number. The normalization con-
+stant for Eq. (D.3) is
+
+d/2
+i=1
+πd/2
+In this experiment, we set μ2i−1 = 0, ci = 12.5 fori = 1, ..., d/2 withd ranging
+from 2 to 22. This setting forms a class of distributions with dimensions ranging
+from 2 to 22.
+
+(D.4)
+
+ci
+
+.
+
+(cid:21)
+
+√
+
+Hybrid Rosenbrock Distribution with Discontinuous Density. The
+density of the hybrid Rosenbrock distribution with discontinuous density is given
+by
+
+π(x) = unifpdf(x1, μ,
+
+(cid:31)
+
+1
+8a
+
+) ×
+
+n2(cid:20)
+
+n1(cid:20)
+
+j=1
+
+i=2
+
+unifpdf(xj,i, x2
+
+j,i−1,
+
+(cid:31)
+
+1
+8b
+
+)
+
+(D.5)
+
+where unifpdf(x, α, β) is the pdf of the continuous uniform distribution on the
+interval [α−β, α+β], evaluated at the values in x, and where the dimensionality
+of x is d = (n1 − 1)n2 + 1. The variable xj,1 = x1 for j = 1, ..., n2.
+
+In this experiment, we set μ = 1.0, a = 1.0, bj,i = 0.1 for all i and j, n1 = 4
+and n2 ranging from 1 to 7. This setting forms a class of distributions with
+dimensions ranging from 4 to 22.
+
+Even Rosenbrock Distribution with Discontinuous Density. The
+density of the even Rosenbrock distribution with discontinuous density is given
+
+48
+
+by
+
+π(x) =
+
+d/2(cid:20)
+
+(cid:8)
+
+i=1
+
+unifpdf(x2i−1, μ2i−1, 0.5) × unifpdf(x2i, x2
+
+2i−1, ci)
+
+(cid:9)
+
+,
+
+(D.6)
+
+where the dimensionality d must be an even number.
+
+700
+
+In this experiment, we set μ2i−1 = 0, ci = 0.025 for i = 1, ..., d/2 withd
+ranging from 2 to 22. This setting forms a class of distributions with dimensions
+ranging from 2 to 22.
+
+Appendix D.3. Entropy estimator only using NF
+
+In this section we describe a simpliﬁed version of the proposed method, which
+estimate the entropy only using NF (without the truncated entropy estimators).
+To start with, we recall Eq. (12) in the main paper,
+
+(cid:2)
+
+H(X) =H (Z) +
+
+pz(z) log
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) det
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5)dz.
+
+∂f −1(z)
+∂z
+
+(D.7)
+
+The main idea of this simpliﬁed method is to assume that the transformed
+random variable Z exactly follows a uniform distribution and as a result H(Z) =
+0. Therefore the entropy of X is estimated as,
+
+ˆHN F (X) =
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5) det
+
+log
+
+∂f −1(z(i))
+∂z
+
+(cid:5)
+(cid:5)
+(cid:5)
+(cid:5),
+
+1
+n
+
+n(cid:4)
+
+i=1
+
+(D.8)
+
+705
+
+where z(i) = f (x(i)). A limitation of this method is quite obvious – the trans-
+formed random variable Z is usually not uniformly distributed and simply taking
+its entropy to be zero will undoubtedly introduce bias, which is demonstrated
+by the numerical examples in the main paper.
+It should also be noted that,
+while not in the context of entropy estimation, a NF based approach has been
+used for maximum entropy modeling [51].
+
+Appendix D.4. The Beta scheme for parametrizing the observation times
+
+In the optimal experimental design (OED) example, we use a lower dimen-
+sional parameterization scheme to reduce the dimensionality of the optimiza-
+tion problem [46]. In particular we use the Beta scheme [46] to allocate the
+placements of the observation times. Speciﬁcally, let Q(·, α, β) be the quantile
+function of the beta distribution with shape parameters α and β, and the d
+observation times λ = (t1, ..., td) in the time interval [0, T ] are allocated as,
+
+ti = T · Q(
+
+i
+d + 1
+
+, α, β),
+
+i = 1, ..., d.
+
+(D.9)
+
+710
+
+As such the d-dimensional variable λ is parametrized by α > 0 and β > 0.
+
+49
+
+Appendix D.5. Nested Monte Carlo
+
+Here we describe the Nested Monte Carlo (NMC) approach that is used
+to estimate the entropy in the experimental design example. Recall that the
+entropy of interest is H(Y ) (here for simplicity we omit the design parameter
+λ):
+
+(cid:2)
+
+H(Y ) =
+
+log p(y)p(y)dy,
+
+(D.10)
+
+which can be estimated via Monte Carlo (MC):
+
+H(Y ) ≈ − 1
+M
+
+M(cid:4)
+
+i=1
+
+log p(y(i)),
+
+(D.11)
+
+where y(i) are drawn from p(y). A diﬃculty here is that we do not have an
+explicit expression of p(y). Note however that in this example the likelihood
+p(y|θ) and the prior p(θ) are available and we can therefore write
+
+(cid:2)
+
+p(y) =
+
+p(y|θ)p(θ)dθ.
+
+(D.12)
+
+It follows that p(y) can also be estimated via MC:
+
+p(y(i)) ≈
+
+1
+N
+
+N(cid:4)
+
+j=1
+
+p(y(i)|θ(j)),
+
+(D.13)
+
+where θ(j) are drawn from p(θ). Combining Eq. (D.13) and Eq. (D.11), we
+obtain an estimator of H(Y ), which is referred to as the NMC method [47]. In
+particular, Eq. (D.13) is usually referred to as the inner MC and Eq. (D.11) is
+referred to as the outer one. Since the theoretical results in [47, 52] show that
+the mean squared error of NMC estimator decays at a rate of O( 1
+N ), we
+can obtain an accurate evaluation of H(Y ) with a suﬃciently large number of
+samples, and in the numerical example we use M = N = 1 × 105. We emphasize
+that such a large number of samples is not computationally feasible to use in
+the experimental design procedure, and thus in the example we have to resort
+to other entropy estimation methods.
+
+M + 1
+
+715
+
+720
+
+50
+
+(cid:24)(cid:286)(cid:272)(cid:367)(cid:258)(cid:396)(cid:258)(cid:410)(cid:349)(cid:381)(cid:374)(cid:3)(cid:381)(cid:296)(cid:3)(cid:349)(cid:374)(cid:410)(cid:286)(cid:396)(cid:286)(cid:400)(cid:410)(cid:400)(cid:3)
+(cid:3)(cid:3)
+(cid:1409)(cid:3)(cid:100)(cid:346)(cid:286)(cid:3)(cid:258)(cid:437)(cid:410)(cid:346)(cid:381)(cid:396)(cid:400)(cid:3)(cid:282)(cid:286)(cid:272)(cid:367)(cid:258)(cid:396)(cid:286)(cid:3)(cid:410)(cid:346)(cid:258)(cid:410)(cid:3)(cid:410)(cid:346)(cid:286)(cid:455)(cid:3)(cid:346)(cid:258)(cid:448)(cid:286)(cid:3)(cid:374)(cid:381)(cid:3)(cid:364)(cid:374)(cid:381)(cid:449)(cid:374)(cid:3)(cid:272)(cid:381)(cid:373)(cid:393)(cid:286)(cid:410)(cid:349)(cid:374)(cid:336)(cid:3)(cid:296)(cid:349)(cid:374)(cid:258)(cid:374)(cid:272)(cid:349)(cid:258)(cid:367)(cid:3)(cid:349)(cid:374)(cid:410)(cid:286)(cid:396)(cid:286)(cid:400)(cid:410)(cid:400)(cid:3)(cid:381)(cid:396)(cid:3)(cid:393)(cid:286)(cid:396)(cid:400)(cid:381)(cid:374)(cid:258)(cid:367)(cid:3)(cid:396)(cid:286)(cid:367)(cid:258)(cid:410)(cid:349)(cid:381)(cid:374)(cid:400)(cid:346)(cid:349)(cid:393)(cid:400)(cid:3)
+(cid:410)(cid:346)(cid:258)(cid:410)(cid:3)(cid:272)(cid:381)(cid:437)(cid:367)(cid:282)(cid:3)(cid:346)(cid:258)(cid:448)(cid:286)(cid:3)(cid:258)(cid:393)(cid:393)(cid:286)(cid:258)(cid:396)(cid:286)(cid:282)(cid:3)(cid:410)(cid:381)(cid:3)(cid:349)(cid:374)(cid:296)(cid:367)(cid:437)(cid:286)(cid:374)(cid:272)(cid:286)(cid:3)(cid:410)(cid:346)(cid:286)(cid:3)(cid:449)(cid:381)(cid:396)(cid:364)(cid:3)(cid:396)(cid:286)(cid:393)(cid:381)(cid:396)(cid:410)(cid:286)(cid:282)(cid:3)(cid:349)(cid:374)(cid:3)(cid:410)(cid:346)(cid:349)(cid:400)(cid:3)(cid:393)(cid:258)(cid:393)(cid:286)(cid:396)(cid:856)(cid:3)
+(cid:3)(cid:3)
+(cid:1407)(cid:3)(cid:100)(cid:346)(cid:286)(cid:3)(cid:258)(cid:437)(cid:410)(cid:346)(cid:381)(cid:396)(cid:400)(cid:3)(cid:282)(cid:286)(cid:272)(cid:367)(cid:258)(cid:396)(cid:286)(cid:3)(cid:410)(cid:346)(cid:286)(cid:3)(cid:296)(cid:381)(cid:367)(cid:367)(cid:381)(cid:449)(cid:349)(cid:374)(cid:336)(cid:3)(cid:296)(cid:349)(cid:374)(cid:258)(cid:374)(cid:272)(cid:349)(cid:258)(cid:367)(cid:3)(cid:349)(cid:374)(cid:410)(cid:286)(cid:396)(cid:286)(cid:400)(cid:410)(cid:400)(cid:876)(cid:393)(cid:286)(cid:396)(cid:400)(cid:381)(cid:374)(cid:258)(cid:367)(cid:3)(cid:396)(cid:286)(cid:367)(cid:258)(cid:410)(cid:349)(cid:381)(cid:374)(cid:400)(cid:346)(cid:349)(cid:393)(cid:400)(cid:3)(cid:449)(cid:346)(cid:349)(cid:272)(cid:346)(cid:3)(cid:373)(cid:258)(cid:455)(cid:3)(cid:271)(cid:286)(cid:3)(cid:272)(cid:381)(cid:374)(cid:400)(cid:349)(cid:282)(cid:286)(cid:396)(cid:286)(cid:282)(cid:3)
+(cid:258)(cid:400)(cid:3)(cid:393)(cid:381)(cid:410)(cid:286)(cid:374)(cid:410)(cid:349)(cid:258)(cid:367)(cid:3)(cid:272)(cid:381)(cid:373)(cid:393)(cid:286)(cid:410)(cid:349)(cid:374)(cid:336)(cid:3)(cid:349)(cid:374)(cid:410)(cid:286)(cid:396)(cid:286)(cid:400)(cid:410)(cid:400)(cid:855)(cid:3)
+(cid:3)
+
+(cid:3)
+(cid:3)(cid:3)
+(cid:3)(cid:3)
+(cid:3)(cid:3)
+(cid:3)
+
+

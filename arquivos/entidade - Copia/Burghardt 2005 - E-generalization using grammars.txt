@@ -1,0 +1,3060 @@
+Artiﬁcial Intelligence 165 (2005) 1–35
+
+www.elsevier.com/locate/artint
+
+E-generalization using grammars
+
+Jochen Burghardt
+
+Institute for Computer Architecture and Software Technology, Berlin, Germany
+
+Received 11 January 2003
+
+Available online 14 March 2005
+
+Abstract
+
+We extend the notion of anti-uniﬁcation to cover equational theories and present a method based
+on regular tree grammars to compute a ﬁnite representation of E-generalization sets. We present
+a framework to combine Inductive Logic Programming and E-generalization that includes an ex-
+tension of Plotkin’s lgg theorem to the equational case. We demonstrate the potential power of
+E-generalization by three example applications: computation of suggestions for auxiliary lemmas in
+equational inductive proofs, computation of construction laws for given term sequences, and learning
+of screen editor command sequences.
+ 2005 Elsevier B.V. All rights reserved.
+
+Keywords: Equational theory; Generalization; Inductive logic programming
+
+1. Introduction
+
+Many learning techniques in the ﬁeld of symbolic Artiﬁcial Intelligence are based on
+adopting the features common to the given examples, called selective induction in the
+classiﬁcation of [14], for example. Syntactical anti-uniﬁcation reﬂects these abstraction
+techniques in the theoretically elegant domain of term algebras.
+
+In this article, we propose an extension, called E-anti-uniﬁcation or E-generalization,
+which also provides a way of coping with the well-known problem of representation
+change [12,29]. It allows us to perform abstraction while modeling equivalent represen-
+tations using appropriate equations between terms. This means that all equivalent repre-
+sentations are considered simultaneously in the abstraction process. Abstraction becomes
+insensitive to representation changes.
+
+0004-3702/$ – see front matter  2005 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2005.01.008
+
+2
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+In 1970, Plotkin and Reynolds [30,31,33] introduced the notion of (syntactical) anti-
+uniﬁcation of terms as the dual operation to uniﬁcation: while the latter computes the most
+general common specialization of the given terms, if it exists, the former computes the
+most special generalization of them, which always exists and is unique up to renaming. For
+example, using the usual 0-s representation of natural numbers and abbreviating s(s(0)) to
+s2(0), the terms 0 ∗ 0 and s2(0) ∗ s2(0) anti-unify to x ∗ x, retaining the common function
+symbol ∗ as well as the equality of its arguments.
+
+While extensions of uniﬁcation to equational theories and classes of them have been
+investigated [17,20,36], anti-uniﬁcation has long been neglected in this respect, except for
+the theory of associativity and commutativity [32] and so-called commutative theories [1].
+For an arbitrary equational theory E, the set of all E-generalizations of given terms is
+usually inﬁnite. Heinz [2,22] presented a specially tailored algorithm that uses regular tree
+grammars to compute a ﬁnite representation of this set, provided E leads to regular congru-
+ence classes. However, this work has never been internationally published. In this paper,
+we try to make up for this neglect, giving an improved presentation using standard gram-
+mar algorithms only, and adding some new theoretical results and applications (Sections 4,
+5.3 below).
+
+In general, E-anti-uniﬁcation provides a means to ﬁnd correspondences that are only
+detectable using an equational theory as background knowledge. By way of a simple ex-
+ample, consider the terms 0 and s4(0). Anti-unifying them purely syntactically, without
+considering an equational theory, we obtain the term y, which indicates that there is no
+common structure. If, however, we consider the usual deﬁning equations for (+) and (∗),
+see Fig. 1 (left), the terms may be rewritten nondeterministically as shown in Fig. 1 (right),
+and then syntactically anti-uniﬁed to x ∗ x as one possible result. In other words, it is
+recognized that both terms are quadratic numbers.
+
+Expressed in predicate logic, this means we can learn a deﬁnition p(x ∗ x) from the ex-
+amples p(0) and p(s4(0)). Other possible results are p(s4(0) ∗ x), and, less meaningfully,
+p(x + y ∗ z). The closed representation of generalization sets by grammars allows us to
+ﬁlter out generalizations with certain properties that are undesirable in a given application
+context.
+
+After some formal deﬁnitions in Section 2, we introduce our method of E-generalization
+based on regular tree grammars in Section 3 and brieﬂy discuss extensions to more so-
+phisticated grammar formalisms. As a ﬁrst step toward integrating E-generalization into
+Inductive Logic Programming (ILP), we provide, in Section 4, theorems for learning de-
+terminate or nondeterminate predicate deﬁnitions using atoms or clauses. In Section 5,
+we present applications of determinate atom learning in different areas, including induc-
+
+1.
+
+2.
+
+3.
+
+4.
+
+x + 0 = x
+
+x + s(y) = s(x + y)
+
+x ∗ 0 = 0
+
+0
+
+=E
+
+0 ∗ 0
+
+s4(0) =E s2(0) ∗ s2(0)
+
+syn. anti-un.
+
+syn. anti-un.
+
+x ∗ s(y) = x ∗ y + x
+
+y
+
+x ∗ x
+
+Fig. 1. Equations deﬁning (+) and (∗) (left). E-generalization of 0 and s4(0) (right).
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+3
+
+tive equational theorem-proving, learning of series-construction laws and user support for
+learning advanced screen-editor commands. Section 6 draws some conclusions.
+
+2. Deﬁnitions
+
+We assume familiarity with the classical deﬁnitions of terms, substitutions [13], and
+Horn clauses [24]. The cardinality of a ﬁnite set S is denoted by #S. A signature Σ is a
+set of function symbols f , each of which has a ﬁxed arity; if some f is nullary, we call
+it a constant. Let V be an inﬁnite set of variables. TV denotes the set of all terms over Σ
+and a given V ⊆ V. For a term t, var(t) denotes the set of variables occurring in t; if it is
+empty, we call t a ground term. We call a term linear if each variable occurs at most once
+in it.
+
+By {x1 (cid:3)→ t1, . . . , xn (cid:3)→ tn}, or {xi (cid:3)→ ti | 1 (cid:1) i (cid:1) n}, we denote a substitution that maps
+each variable xi to the term ti . We call it ground if all ti are ground. We use the postﬁx
+notation tσ for application of σ to t, and σ τ for the composition of σ (to be applied ﬁrst)
+and τ (second). The domain of σ is denoted by dom σ . A term t is called an instance of a
+term t (cid:5) if t = t (cid:5)σ for some substitution σ . In this case, we call t more special than t (cid:5), and
+t (cid:5) more general than t. We call t a renaming of t (cid:5) if σ : V → V is a bijection.
+
+A term t is called a syntactical generalization of terms t1 and t2, if there exist substitu-
+tions σ1 and σ2 such that tσ1 = t1 and tσ2 = t2. In this case, t is called the most speciﬁc
+syntactical generalization of t1 and t2, if for each syntactical generalization t (cid:5) of t1 and t2
+there exists a substitution σ (cid:5) such that t = t (cid:5)σ (cid:5). The most speciﬁc syntactical generalization
+of two terms is unique up to renaming; we also call it their syntactical anti-uniﬁer [30].
+
+An equational theory E is a ﬁnite set of equations between terms. (=E) denotes the
+= {t (cid:5) ∈ T{} |
+smallest congruence relation that contains all equations of E. Deﬁne [t]
+E
+t (cid:5) =E t} to be the congruence class of t in the algebra of ground terms. The congruence
+class of a term is usually inﬁnite; for example, using the equational theory from Fig. 1, we
+= {t (cid:5) ∈ Tdom σ | t (cid:5)σ =E t} denote the set
+have [0]
+E
+of all terms congruent to t under σ .
+
+= {0, 0 ∗ s(0), 0 + 0 ∗ 0, . . .}. Let [t]σ
+E
+
+(cid:1)
+
+A congruence relation (=1) is said to be a reﬁnement of another congruence relation
+(=2), if ∀t, t (cid:5) ∈ TV : t =1 t (cid:5) ⇒ t =2 t (cid:5). In Section 5.1, we need the deﬁnition t1 ≡E t2 if
+t1σ =E t2σ for all ground substitutions σ with var(t1) ∪ var(t2) ⊆ dom σ ; this is equivalent
+to the equality of t1 and t2 being inductively provable [13, Section 3.2].
+We call an n-ary function symbol f a constructor if n functions π f
+i (t) =E ti) ↔ t =E f (t1, . . . , tn). The π f
+
+1 , . . . , π f
+n exist such
+that ∀t, t1, . . . , tn : (
+i are called selectors
+associated to f . As usual, we assume additionally that f (s1, . . . , sn) (cid:12)=E g(t1, . . . , tm) (cid:12)=E
+x for any two constructors f (cid:12)= g, any variable x and arbitrary terms si, tj . On this assump-
+tion, some constants can also be called constructors. No selector can be a constructor. If f
+is a constructor, then [f (t1, . . . , tn)]
+E
+
+E, . . . , [tn]
+
+= f ([t1]
+
+i=1 π f
+
+A term t is called a constructor term if it is built from constructors and variables only.
+Let t and t (cid:5) be constructor terms. If tσ1 =E tσ2, then ∀x ∈ var(t): xσ1 =E xσ2. If tσ =E t (cid:5),
+then tσ (cid:5) = t (cid:5) for some σ (cid:5) such that xσ (cid:5) is a constructor term and xσ (cid:5) =E xσ for each x ∈ V.
+A (nondeterministic) regular tree grammar [10,37] is a triple G = (cid:13)Σ, N , R(cid:14). Σ is
+a signature, N is a ﬁnite set of nonterminal symbols and R is a ﬁnite set of rules
+
+E).
+
+n
+
+4
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+of the form N ::= f1(N11, . . . , N1n1) | . . . | fm(Nm1, . . . , Nmnm) or, abbreviated, N ::=
+m
+i=1 fi(Ni1, . . . , Nini ). Each fi(Ni1, . . . , Nini ) is called an alternative of the rule. We as-
+sume that for each nonterminal N ∈ N , there is exactly one deﬁning rule in R with N as
+its left-hand side.
+
+Given a grammar G and a nonterminal N ∈ N , the language LG(N) produced by N
+is deﬁned in the usual way as the set of all ground terms derivable from N as the start
+symbol. We omit the index G if it is clear from the context. We denote the total number of
+alternatives in G by #G.
+
+In Section 4, we will use the following predicate logic deﬁnitions. To simplify no-
+tation, we sometimes assume all predicate symbols to be unary. An n-ary predicate p(cid:5)
+can be simulated by a unary p using an n-ary tupling constructor symbol and deﬁning
+p((cid:13)t1, . . . , tn(cid:14)) ⇔ p(cid:5)(t1, . . . , tn). An n-ary predicate p is called determinate wrt some back-
+ground theory B if there is some k such that wlog each of the arguments k + 1, . . . , n
+has only one possible binding, given the bindings of the arguments 1, . . . , k [25, Sec-
+tion 5.6.1]. The background theory B may be used to deﬁne p, hence p’s determinacy
+depends on B. Similar to the above, we sometimes write p(t1, . . . , tn) as a binary pred-
+icate p((cid:13)t1, . . . , tk(cid:14), (cid:13)tk+1, . . . , tn(cid:14)) to reﬂect the two classes of arguments. For a binary
+determinate predicate p, the relation {(cid:13)s, t(cid:14) | s, t ∈ T{} ∧ B |= p(s, t)} corresponds to a
+function g. We sometimes assume that g is deﬁned by equations from a given E, i.e., that
+B |= (p(s, t) ↔ g(s) =E t).
+
+A literal has the form p(t) or ¬p(t), where p is a predicate symbol and t is a term.
+We consider a negation to be part of the predicate symbol. We say that the literals L1
+and L2 ﬁt if both have the same predicate symbol, including negation. We extend (=E)
+to literals by deﬁning p(t1) =E p(t2) if t1 =E t2. For example, (¬divides((cid:13)1 + 1, 5(cid:14))) =E
+(¬divides((cid:13)2, 5(cid:14))) if 1 + 1 =E 2.
+
+A clause is a ﬁnite set C = {L1, . . . , Ln} of literals, with the meaning C ⇔ L1 ∨· · ·∨Ln.
+We consider only nonredundant clauses, i.e., clauses that do not contain congruent liter-
+als. For example, {p(x + 0), p(x)} is redundant if x + 0 =E x. We write C1 ⊆E C2 if
+∀L1 ∈ C1 ∃L2 ∈ C2: L1 =E L2; if C2 is nonredundant, L2 is uniquely determined by L1.
+We say that C1 E-subsumes C2 if C1σ ⊆E C2 for some σ . In this case, the conjunction
+of E and C1 implies C2; however, there are other cases in which E ∧ C1 |= C2 but C1
+does not E-subsume C2. For example, {¬p(x), p(f (x))} implies, but does not subsume,
+{¬p(x), p(f (f (x)))}, even for an empty E.
+
+A Horn clause is a clause {p0(t0), ¬p1(t1), . . . , ¬pn(tn)} with exactly one positive lit-
+eral. It is also written as p0(t0) ← p1(t1) ∧ · · · ∧ pn(tn). We call p0(t0) the head literal,
+and pi(ti) a body literal for i = 1, . . . , n. Like [25, Section 2.1], we call the Horn clause
+constrained if var(t0) ⊇ var(t1, . . . , tn).
+We call a Horn clause p0(s0, t0) ←
+
+m
+i=1 qi(ti) semi-determinate
+wrt some background theory B if all pi are determinate wrt B, all variables xi are dis-
+tinct and do not occur in s0, var(si) ⊆ var(s0) ∪ {x1, . . . , xi−1}, and var(t1, . . . , tm) ⊆
+var(s0, x1, . . . , xn). Semi-determinacy for clauses is a slight extension of determinacy de-
+ﬁned by [25, Section 5.6.1], as it additionally permits arbitrary predicates qi . On the other
+hand, [25] permits xi = xj for i (cid:12)= j ; however, pi(si, xi) ∧ pj (sj , xi) can be equivalently
+transformed into pi(si, xi) ∧ pj (sj , xj ) ∧ xi =E xj .
+
+(cid:1)
+n
+i=1 pi(si, xi) ∧
+
+(cid:1)
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+5
+
+3. E-generalization
+
+We treat the problem of E-generalization of ground terms by standard algorithms on
+regular tree grammars. Here, we also give a rational reconstruction of the original approach
+from [22], who provided monolithic specially tailored algorithms for E-anti-uniﬁcation.
+We conﬁne ourselves to E-generalization of two terms. All methods work similarly for the
+simultaneous E-generalization of n terms.
+
+3.1. The core method
+
+Deﬁnition 1 (E-generalization). For an equational theory E, a term t is called an E-
+generalization, or E-anti-uniﬁer, of terms t1 and t2 if there exist substitutions σ1 and σ2
+such that tσ1 =E t1 and tσ2 =E t2. In Fig. 1 (right), we had t1 = 0, t2 = s4(0), t = x ∗ x,
+σ1 = {x (cid:3)→ 0}, and σ2 = {x (cid:3)→ s2(0)}.
+
+As in uniﬁcation, a most special E-generalization of arbitrary terms does not normally
+exist. A set G ⊆ TV is called a set of E-generalizations of t1 and t2 if each member is an
+E-generalization of t1 and t2. Such a G is called complete if, for each E-generalization t
+of t1 and t2, G contains an instance of t.
+
+As a ﬁrst step towards computing E-generalization sets, let us weaken Deﬁnition 1 by
+ﬁxing the substitutions σ1 and σ2. We will see below, in Sections 4 and 5, that the weakened
+deﬁnition has important applications in its own right.
+
+Deﬁnition 2 (Constrained E-generalization). Given two terms t1, t2, a variable set V , two
+substitutions σ1, σ2 with dom σ1 = dom σ2 = V and an equational theory E, deﬁne the set
+of E-generalizations of t1 and t2 wrt σ1 and σ2 as {t ∈ TV | tσ1 =E t1 ∧ tσ2 =E t2}. This
+set equals [t1]σ1
+E
+
+∩ [t2]σ2
+E .
+
+If we can represent the congruence class [t1]
+
+E as some regular tree language
+LG1(N1) and LG2(N2), respectively, we can immediately compute the set of constrained
+E-generalizations [t1]σ1
+E : The set of regular tree languages is closed wrt union,
+E
+intersection and complement, as well as under inverse tree homomorphisms, which cover
+
+E and [t2]
+
+∩ [t2]σ2
+
+t1
+
+t2
+
+(cid:5)
+(cid:1)(cid:1)(cid:2)
+(cid:3)(cid:3)(cid:4)
+(cid:5)
+
+E
+
+[t1]
+E
+
+[t2]
+E
+
+σ1
+
+(cid:2)
+·······
+
+·······
+(cid:4)
+
+σ2
+
+(cid:3)(cid:3)(cid:4)
+(cid:5)
+
+(cid:5)
+(cid:1)(cid:1)(cid:2)
+
+[t1]σ1
+E
+
+[t2]σ2
+E
+
+(cid:3)(cid:3)(cid:4)
+(cid:1)(cid:1)(cid:2) [t1]σ1
+
+E
+
+∩ [t2]σ2
+E
+
+(cid:5) t
+
+Constrained E-generalization:
+Unconstrained E-generalization:
+
+σ1, σ2 externally prescribed
+σ1, σ2 computed from [t1]
+
+E, [t2]
+
+E
+
+Fig. 2. E-generalization using tree grammars.
+
+6
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+substitution application as a special case. Fig. 2 gives an overview of our method for com-
+puting the constrained set of E-generalizations of t1 and t2 wrt σ1 and σ2 according to
+Deﬁnition 2:
+
+• From ti and E, obtain a grammar for the congruence class [ti]
+
+E, if one exists; the
+
+discussion of this issue is postponed to Section 3.2 below.
+• Apply the inverse substitution σi to the grammar for [ti]
+
+E to get a grammar for
+[ti]σi
+E , using some standard algorithm, e.g., that from [10, Theorem 7 in Section 1.4].
+This algorithm takes time O(#N · size(σi)) for inverse substitution application, where
+size(σi) =
+size(xσi) is the total number of function symbols occurring in σi .
+E , using the product-automaton
+
+• Compute a grammar for the intersection [t1]σ1
+E
+
+∩ [t2]σ2
+
+x∈dom σi
+
+construction, e.g., from [10, Section 1.3], which takes time O(#N1 · #N2).
+
+• Each member t of the resulting tree language is an actual E-generalization of t1 and
+
+(cid:2)
+
+t2. The question of enumerating that language is discussed later on.
+
+Based on this result, we show how to compute the set of unconstrained E-generalizations
+of t1 and t2 according to Deﬁnition 1, where no σi is given. It is sufﬁcient to compute
+two ﬁxed universal substitutions τ1 and τ2 from the grammars for [t1]
+E and to
+let them play the role of σ1 and σ2 in the above method (cf. the dotted vectors in Fig. 2).
+Intuitively, we introduce one variable for each pair of congruence classes and map them to
+a kind of normalform member of the ﬁrst and second class by τ1 and τ2, respectively.
+
+E and [t2]
+
+We give below a general construction that also accounts for auxiliary nonterminals not
+representing a congruence class, and state the universality of τ1, τ2 in a formal way. For
+E share the same grammar G;
+the sake of technical simplicity, we assume that [t1]
+this can easily be achieved by using the disjoint union of the grammars for [t1]
+E.
+
+E and [t2]
+
+E and [t2]
+
+Deﬁnition 3 (Normal form). Let an arbitrary tree grammar G = (cid:13)Σ, N , R(cid:14) be given.
+A non-empty set of nonterminals N ⊆ N is called maximal if
+L(N) (cid:12)= {}, but
+(cid:3)
+(cid:5) (cid:1) N. Deﬁne Nmax = {N ⊆ N | N (cid:12)= {}, N maximal}. Choose
+
+N ∈N(cid:5) L(N) = {} for each N
+
+N ∈N
+
+(cid:3)
+
+some arbitrary but ﬁxed
+
+• maximal N(t) ⊇ {N ∈ N | t ∈ L(N)} for each t ∈
+• maximal N(t) for each t ∈ TV \
+• ground term t(N) ∈
+
+N ∈N L(N),
+L(N) for each N ∈ Nmax.
+
+(cid:4)
+
+(cid:3)
+
+N ∈N
+
+(cid:4)
+
+N ∈N L(N),
+
+The mappings N(·) and t(·) can be effectively computed from G. We abbreviate t = t(N(t));
+this is a kind of normalform of t. Each term not in any L(N), in particular each nonground
+term, is mapped to some arbitrary ground term, the choice of which does not matter. For
+a substitution σ = {x1 (cid:3)→ t1, . . . , xn (cid:3)→ tn}, deﬁne σ = {x1 (cid:3)→ t1, . . . , xn (cid:3)→ tn}. We always
+have xσ = xσ .
+
+Lemma 4 (Substitution normalization). For all N ∈ N , t ∈ TV , and σ ,
+
+(1) t ∈ L(N) ⇒ t ∈ L(N), and
+(2) tσ ∈ L(N) ⇒ tσ ∈ L(N).
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+7
+
+Proof. From the deﬁnition of N(·) and t(·), we get t ∈ L(N) ⇒ N ∈ N(t) and N ∈ N ⇒
+t(N) ∈ L(N), respectively.
+
+(1) Hence, t ∈ L(N) ⇒ N ∈ N(t) ⇒ t ∈ L(N).
+(2) Induction on the structure of t:
+
+• If t = x ∈ V and xσ ∈ L(N), then xσ = xσ ∈ L(N) by 1.
+• Assuming N ::= . . . f (N11, . . . , N1n) | . . . | f (Nm1, . . . , Nmn) . . ., we have
+
+f (t1, . . . , tn) σ ∈ L(N)
+
+⇒ ∃i (cid:1) m ∀j (cid:1) n: tj σ ∈ L(Nij )
+⇒ ∃i (cid:1) m ∀j (cid:1) n: tj σ ∈ L(Nij )
+⇒ f (t1, . . . , tn) σ ∈ L(N)
+
+by Deﬁnition L(·)
+by Induction Hypothesis
+(cid:1)
+by Deﬁnition L(·)
+
+Lemma 5 (Universal substitutions). For each grammar G, we can effectively compute two
+substitutions τ1, τ2 that are universal for G in the following sense. For any two substitu-
+tions σ1, σ2, a substitution σ exists such that for i = 1, 2, we have ∀t ∈ Tdom σ1∩ dom σ2
+∀N ∈ N : tσi ∈ L(N) ⇒ tσ τi ∈ L(N ).
+
+Proof. Let v(N1, N2) be a new distinct variable for each N1, N2 ∈ Nmax. Deﬁne τi =
+{v(N1, N2) (cid:3)→ t(Ni) | N1, N2 ∈ Nmax} for
+let σ =
+{x (cid:3)→ v(N(xσ1), N(xσ2)) | x ∈ dom σ1 ∩ dom σ2}. Then σ τi and σi coincide on var(t),
+and hence tσi ∈ L(N) ⇒ tσ τi ∈ L(N) by Lemma 4.2. (cid:1)
+
+i = 1, 2. Given σ1 and σ2,
+
+Example 6. We apply Lemma 5 to the grammar G consisting of the topmost three rules
+in Fig. 3. The result will be used in Example 8 to compute some set of E-generalizations.
+We have Nmax = {{N0, Nt }, {N1, Nt }}, since, e.g., 0 ∈ L(N0) ∩ L(Nt ) and s(0) ∈
+L(N1) ∩ L(Nt ), while L(N0) ∩ L(N1) = {}. We choose
+
+(cid:5)
+
+N(t) =
+
+t({N0, Nt }) = 0,
+t({N1, Nt }) = s(0).
+We abbreviate, e.g., v({N0, Nt }, {N1, Nt }) to v01. This way, we obtain
+
+if t ∈ L(N0),
+else,
+
+{N0, Nt }
+{N1, Nt }
+
+and
+
+(cid:7)
+(cid:6)
+v00 (cid:3)→ 0, v01 (cid:3)→ 0, v10 (cid:3)→ s(0), v11 (cid:3)→ s(0)
+(cid:7)
+(cid:6)
+v00 (cid:3)→ 0, v01 (cid:3)→ s(0), v10 (cid:3)→ 0, v11 (cid:3)→ s(0)
+
+τ1 =
+τ2 =
+
+and
+
+.
+
+Given t = x ∗ y, σ1 = {x (cid:3)→ 0 + 0, y (cid:3)→ 0} and σ2 = {x (cid:3)→ s(0), y (cid:3)→ s(0) ∗ s(0)} for
+example, we obtain a proper instance v01 ∗ v01 of t using τ1 and τ2:
+
+L(N0) (cid:22) (0+0) ∗ 0
+L(N0) (cid:22) 0 ∗ 0
+
+σ1←− x ∗ y
+τ1←− v01 ∗ v01
+
+σ2−→ s(0) ∗ (s(0)∗s(0)) ∈ L(N1)
+τ2−→ s(0) ∗ s(0)
+∈ L(N1).
+
+The computation of universal substitutions is very expensive because it involves com-
+puting many tree-language intersections to determine the mappings N(·) and t(·). Assume
+N = Nc ∪ No, where Nc comprises nc nonterminals representing congruence classes and
+No comprises no other ones. A maximal set N may contain at most one nonterminal
+
+8
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+(cid:9)
+
+(cid:8)
+
+from Nc and an arbitrary subset of No; however, no maximal N may be a proper sub-
+set of another one. By some combinatorics, we get (nc + 1) ·
+as an upper bound
+on #Nmax. Hence, the cardinality of dom τi is bounded by the square of that number. In
+our experience, no is usually small. In most applications, it does not exceed 1, resulting
+in # dom τi (cid:1) (nc + 1)2. Computing the τi requires no + 1 grammar intersections in the
+worst case, viz. when No ∪ {Nc} for some Nc ∈ Nc is maximal. In this case, dom τi is
+rather small. Since the time for testing emptiness is dominated by the intersection compu-
+o (cid:1) #Gno+1, we get a time upper bound of
+tation time, and (nc + 1) ·
+O(#Gno+1) for computing the τi .
+
+(cid:1) (nc + 1) · nno/2
+
+no
+no/2
+
+no
+no/2
+
+(cid:9)
+
+(cid:8)
+
+If the grammar is deterministic, then each nonterminal produces a distinct congruence
+class [26, Section 2], and we need compute no intersection at all to obtain τ1 and τ2. We get
+# dom τi = #N 2. In this case, N(·), t(·), and v(·, ·) can be computed in linear time from G.
+However, in general a nondeterministic grammar is smaller in size than its deterministic
+counterpart.
+
+Theorem 7 (Unconstrained E-generalization). Let an equational theory E and two ground
+terms t1, t2 be given. Let G = (cid:13)Σ, N , R(cid:14) be a tree grammar and N1, N2 ∈ N such that
+LG(Ni) = [ti]
+E is a complete
+set of E-generalizations of t1 and t2. A regular tree grammar for it can be computed from
+G in time O(#G2 + #Gno+1).
+
+E for i = 1, 2. Let τ1, τ2 be as in Lemma 5. Then, [t1]τ1
+
+∩ [t2]τ2
+
+E
+
+∩ [t2]τ2
+
+Proof. If t ∈ [t1]τ1
+E , then tτ1 =E t1 and tτ2 =E t2, i.e., t is an E-generalization of t1
+E
+and t2. To show the completeness, let t be an arbitrary E-generalization of t1 and t2, i.e.,
+∩ [t2]τ2
+tσi =E ti for some σi . Obtain σ from Lemma 5 such that tσ τi ∈ [ti]
+E
+contains the instance tσ of t. (cid:1)
+
+E. Then [t1]τ1
+
+E
+
+Since the set of E-generalizations resulting from our method is given by a regular tree
+grammar, it is necessary to enumerate some terms of the corresponding tree language in
+order to actually obtain some results. Usually, there is a notion of simplicity (or weight),
+depending on the application E-generalization is used in, and it is desirable to enumerate
+the simplest terms (with least weight) ﬁrst. The minimal weight of a term in the language
+of each nonterminal can be computed in time O(#G · log #G) by [6]. After that, it is easy
+to enumerate a nonterminal’s language in order of increasing weight in time linear to the
+output size using a simple PROLOG program.
+
+Example 8. To give a simple example, we generalize 0 and s(0) wrt the equational theory
+from Fig. 1. Fig. 3 shows all grammars that will appear during the computation. For now,
+assume that the grammar G deﬁning the congruence classes [0]
+E is already
+given by the topmost three rules in Fig. 3. In Example 10 below, we discuss in detail how
+it can be obtained from E. Nevertheless, the rules of G are intuitively understandable even
+now; e.g., the rule for N0 in the topmost line reads: A term of value 0 can be built by the
+constant 0, the sum of two terms of value 0, the product of a term of value 0 and any other
+term, or vice versa. Similarly, L(N1) = [s(0)]
+E and L(Nt ) = T{}. In Example 6, we already
+computed the universal substitutions τ1 and τ2 from G.
+
+E and [s(0)]
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+9
+
+0
+
+|v10
+
+v10|v11
+
+| N0 ∗Nt
+
+| N0 +N0
+
+s(N0) | N0 +N1 | N1 +N0
+
+0| s(Nt ) | Nt +Nt
+|N0∗ +N0∗
+|0
+|s(N0∗)|N0∗ +N1∗|N1∗ +N0∗
+
+N0 ::=
+N1 ::=
+Nt ::=
+N0∗::=v00|v01
+N1∗::=
+Nt∗ ::=v00|v01|v10|v11|0|s(Nt∗)| Nt∗ +Nt∗
+|N∗0 +N∗0
+N∗0::=v00
+N∗1::=
+|s(N∗0)|N∗0 +N∗1|N∗1 +N∗0
+|v11
+N∗t ::=v00|v01|v10|v11|0|s(N∗t )| N∗t +N∗t
+N00::=v00
+N01::=
+v01
+N0t ::=v00|v01
+Nt0 ::=v00
+Nt1 ::=
+|v11
+Ntt ::=v00|v01|v10|v11|0| s(Ntt ) | Ntt +Ntt
+
+| Nt ∗N0
+| N1 ∗N1
+| Nt ∗Nt
+|N0∗ ∗Nt∗|Nt∗ ∗N0∗
+|N1∗ ∗N1∗
+| Nt∗ ∗Nt∗
+|N∗0 ∗N∗t |N∗t ∗N∗0
+|N∗1 ∗N∗1
+| N∗t ∗N∗t
+|N00 +N00| N00 ∗Ntt |N0t ∗Nt0|Nt0 ∗N0t | Ntt ∗N00
+|N01 ∗Nt1|Nt1 ∗N01
+|N00 +N01|N01 +N00
+| N0t ∗Ntt | Ntt ∗N0t
+| N0t +N0t
+| Nt0 ∗Ntt | Ntt ∗Nt0
+| Nt0 +Nt0
+| Nt1 ∗Nt1
+|s(Nt0)| Nt0 +Nt1 | Nt1 +Nt0
+| Ntt ∗Ntt
+
+|v10
+
+|0
+|0
+
+v01
+
+v01
+
+|0
+
+|0
+
+Fig. 3. Grammars G (top), Gτ1 , Gτ2 and G12 (bottom) in Examples 8 and 10.
+
+Fig. 3 shows the grammars Gτ1 and Gτ2 resulting from inverse substitution application,
+deﬁning the nonterminals N0∗, N1∗, Nt∗ and N∗0, N∗1, N∗t , respectively. For example,
+LGτ1 (N0∗) = [0]τ1
+E , where the rule for N0∗ is obtained from that for N0 by simply including
+all variables that are mapped to a member of LG(N0) by τ1. They appear as new constants,
+i.e., ΣGτ1 = ΣGτ2 = ΣG ∪ {v00, . . . , v11}. For each t ∈ LGτ1 (N0∗), we have tτ1 =E 0.
+
+The bottommost 6 rules in Fig. 3 show the intersection grammar G12 obtained from a
+kind of product-automaton construction and deﬁning N00, . . . , Ntt . We have LG12(Nij ) =
+LGτ1 (Ni) ∩ LGτ2 (Nj ) for i, j ∈ {0, 1, t}. By Theorem 7, LG12 (N01) is a complete set of E-
+generalizations of 0 and s(0) wrt E. We have, e.g., N01 → N01 ∗ Nt1 → v01 ∗ v01, showing
+that 0 and s(0) are both quadratic numbers, and (v01 ∗ v01)τ1 = 0 ∗ 0 =E 0, (v01 ∗ v01)τ2 =
+s(0) ∗ s(0) =E s(0). By repeated application of the rules N01 ::= . . . N01 ∗ Nt1 . . . and
+Nt1 ::= . . . Nt1 ∗ Nt1 . . . , we can obtain any generalization of the form v01 ∗ · · · ∗ v01, with
+arbitrary paranthesation. By way of a less intuitive example, we have v01 ∗ s(v10 + v10) ∈
+LG12(N01).
+
+3.2. Setting up grammars for congruence classes
+
+[t1]
+
+E was deferred in Section 3.1. It is discussed below.
+
+The question of how to obtain a grammar representation of the initial congruence classes
+E and [t2]
+Procedures that help to compute a grammar representing the congruence class of a
+ground term are given, e.g., in [26, Section 3]. This paper also provides a criterion for
+an equational theory inducing regular tree languages as congruence classes:
+
+Theorem 9 (Ground equations [26]). An equational theory induces regular congruence
+classes iff it is the deductive closure of ﬁnitely many ground equations E.
+
+Proof. To prove the if direction, start with a grammar consisting of a rule Nf (t1,...,tn) ::=
+f (Nt1, . . . , Ntn) for each subterm f (t1, . . . , tn) occurring in E. For each equation
+
+10
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+(t1 =E t2) ∈ E, fuse the nonterminals Nt1 and Nt2 everywhere in the grammar. Then suc-
+cessively fuse every pair of nonterminals whose rules have the same right-hand sides. The
+result is a deterministic grammar G such that t1 =E t2 iff t1, t2 ∈ LG(N) for some N . In
+addition to this nonoptimal but intuitive algorithm, McAllester gives an O(n · log n) algo-
+rithm based on congruence closure [15], where n is the written length of E. The proof of
+the only if direction need not be sketched here. (cid:1)
+
+In order to compute a complete set of E-generalizations of two given ground terms t1
+and t2, we do not need all congruence classes to be regular; it is sufﬁcient that those of t1
+and t2 are. More precisely, it is sufﬁcient that (=E) is a reﬁnement of some congruence
+relation (=G) with ﬁnitely many classes only, such that [ti]
+E
+
+= [ti]G for i = 1, 2.
+
+i>n
+
+E, . . . , [sn(0)]
+
+Example 10. Let Σ = {0, s, (+), (∗)}, and let E be the equational theory from Fig. 1.
+To illustrate the application of Theorem 9, we show how to obtain a grammar deﬁning
+[0]
+E for arbitrary n ∈ N. Obviously, (=E) itself has inﬁnitely many congru-
+ence classes. However, in order to consider the terms 0, . . . , sn(0) only, the relation (=G),
+(cid:4)
+[si(0)]
+E and C =
+E, . . . , [sn(0)]
+deﬁned by the classes [0]
+E , is sufﬁcient. This rela-
+(cid:4)
+n
+tion is, in fact, a congruence wrt 0, s, (+), and (∗): in a term t ∈
+E, a member
+i=0
+tc of C can occur only in some subterm of the form 0 ∗ tc or similar, which always equals
+0, regardless of the choice of tc.
+
+For n = 1, we may choose a representative term 0, s(0), and c for the classes [0]
+
+E,
+[s(0)]
+E , and C, respectively. We may instantiate each equation from Fig. 1 with all possi-
+ble combinations of representative terms, resulting in 3 + 32 + 3 + 32 ground equations.
+After adding the equation c = s(s(0)), we may apply Theorem 9 to obtain a determin-
+istic grammar Gd with LGd (N0) = [0]
+E , and LGd (Nc) = C. The
+equations’ ground instances, and thus Gd , can be built automatically. The grammar Gd is
+equivalent to G from Fig. 3 (top), which we used in Example 8. The latter is nondetermin-
+istic for the sake of brevity. It describes [0]
+E by N0 and N1, respectively, while
+L(Nt ) = [0]
+E
+
+E, LGd (Ns(0)) = [s(0)]
+
+E and [s(0)]
+
+∪ [s(0)]
+E
+
+[si(0)]
+
+∪ C.
+
+In [2, Corollary 16], another sufﬁcient criterion is given. Intuitively, it allows us to
+construct a grammar from each equational theory that describes only operators building up
+larger values (normal forms) from smaller ones:
+
+Theorem 11 (Constructive operators). Let E be given by a ground conﬂuent and
+Noetherian term-rewriting system. For each term t ∈ T{}, let nf (t) denote its unique
+normal form; let NF be the set of all normal forms. Let (≺) be a well-founded partial
+ordering on NF with a ﬁnite branching degree, and let ((cid:24)) be its reﬂexive closure. If
+ti (cid:24) nf (f (t1, . . . , tn)) for all f ∈ Σ, t1, . . . , tn ∈ NF and i = 1, . . . , n, then for each t ∈ T{},
+the congruence class [t]
+
+E is a regular tree language.
+
+Proof. Deﬁne one nonterminal Nt for each normal-form term t ∈ NF. Whenever t =E
+f (t1, . . . , tn) for some t1, . . . , tn ∈ NF, include an alternative f (Nt1, . . . , Ntn) into the
+right-hand side of the rule for Nt . Since ti (cid:24) t for all i, there are only ﬁnitely many such
+alternatives. This results in a ﬁnite grammar G, and we have LG(Nnf (t)) = [t]
+E for all
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+11
+
+terms t. Let ai denote the number of i-ary function symbols in Σ and m denote the maxi-
+m
+i=0 ai · #NFi normal-form computations to build G, which
+mal arity in Σ. Then we need
+has a total of these many alternatives and #NF rules. Its computation takes O(#G) time. (cid:1)
+
+(cid:2)
+
+By way of an example, consider the theory E consisting of only equations 1. and 2. in
+Fig. 1. E is known to be ground-conﬂuent and Noetherian and to lead to NF = {sn(0) |
+n ∈ N}. Deﬁning si(0) ≺ sj (0) ⇔ i < j , we observe that si(0) (cid:24) si+j (0) = nf (si(0) +
+sj (0)); similarly, sj (0) (cid:24) nf (si(0) + sj (0)) and si(0) (cid:24) nf (s(si (0))). Hence, E leads to
+regular congruence classes by Theorem 11. For example, there are just ﬁve ways to obtain a
+term of value s3(0) from normal-form terms using s and (+). Accordingly, N3 ::= s(N2) |
+N3 + N0 | N2 + N1 | N1 + N2 | N0 + N3 deﬁnes [s3(0)]
+
+E.
+
+If their respective preconditions are met, Theorems 9 and 11 allow us to automatically
+compute a grammar describing the congruence classes wrt a given theory E. In practice,
+with Theorem 9 we have the problem that E is rarely given by ground equations only, while
+Theorem 11 requires properties that are sufﬁcient but not necessary. For example, not even
+for the whole theory from Fig. 1 is there an ordering such that si(0) (cid:24) 0 = nf (si(0) ∗ 0)
+and 0 (cid:24) si(0) = nf (0 + si(0)).
+
+So far, it seems best to set up a grammar scheme for a given E manually. For exam-
+ple, for E from Fig. 1, it is easy to write a program that reads n ∈ N and computes a
+grammar describing the congruence classes [0]
+E: The grammar consists of
+the rules for N0 and Nt from Fig. 3 (top) and one rule Ni ::= s(Ni−1) |
+j =0Nj + Ni−j |
+i
+j ·k=iNj ∗ Nk for each i = 1, . . . , n. Similarly, grammar schemes for the theory of list
+operators like append, reverse, etc. and other theories can be implemented.
+
+E, . . . , [sn(0)]
+
+The lack of a single algorithm that computes a grammar for each E from a sufﬁciently
+large class of equational theories restricts the applicability of our E-generalization method
+to problems where E is not changed too often. Using grammar schemes, this restriction can
+be relaxed somewhat. The grammar-scheme approach is also applicable to theories given
+by conditional equations or even other formulas, as long as they lead to regular congruence
+classes and the schemes are computable.
+
+A further problem is that not all equational theories lead to regular congruence classes.
+Consider, for example, subtraction (−) on natural numbers. We have 0 =E si(0) − si(0) for
+all i ∈ N. Assume that (=E) is a reﬁnement of some (=G) with ﬁnitely many classes; then
+si(0) =G sj (0) for some i (cid:12)= j . If (=G) is a congruence relation, 0 =G si(0) − si(0) =G
+= [0]G is impossible. Thus, if an
+si(0) − sj (0), although 0 (cid:12)=E si(0) − sj (0). Hence, [0]
+E
+operator like (−) is deﬁned in E, we cannot E-generalize using our method.
+
+However, we can still compute an approximation of the E-generalization set in such
+cases by artiﬁcially cutting off grammar rules after a maximum number of alternatives.
+This will result in a set that still contains only correct E-generalizations but that is usually
+incomplete. For example, starting from the grammar rules
+
+N0 ::= 0
+N1 ::=
+N2 ::=
+
+| N0 − N0 | N1 − N1 | N2 − N2
+
+s(N0) | N1 − N0 | N2 − N1
+s(N1) | N2 − N0 ,
+
+12
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+we obtain only E-generalization terms t whose evaluation never exceeds the value 2 on
+any subterm’s instance. Depending on the choice of the cut-off point, the resulting E-
+generalization set may sufﬁce for a given application.
+
+To overcome the limited expressiveness of pure regular tree grammars, it would be de-
+sirable to extend the results of Section 3.1 to automata with equality tests. However, for
+automata with equality tests between siblings [4,10] or, equivalently, shallow systems of
+sort constraints [38], we have the problem that this language class is not closed under
+inverse substitution application [4, Section 5.2]. For reduction automata [9,10] and gener-
+alized reduction automata [8], it seems to be still unknown whether they are closed under
+inverse substitution application. Moreover, the approach using universal substitutions τ1, τ2
+n
+j =1 tj ∈ L(Nij ) ⇒ f (t1, . . . , tn) ∈ L(N), which is
+strongly depends on the fact that
+needed in the proof of Lemma 4(2). In other words, the rule N ::= . . . f (Ni1, . . . , Nin)
+is not allowed to have additional constraints. For these reasons, our approach remains lim-
+ited to ordinary regular tree grammars, i.e., those without any equality constraints. The
+following lemma shows that we cannot ﬁnd a more sophisticated grammar formalism that
+can handle all equational theories, anyway.
+
+(cid:1)
+
+Lemma 12 (General uncomputability of E-generalization). There are equational theories
+E such that it is undecidable whether the set of constrained E-generalizations for certain
+t1, t2, σ1, σ2 is empty. Such a set cannot be represented by any grammar formalism that is
+closed wrt language intersection and allows testing for emptiness.
+
+Proof. We encode a version of Post’s correspondence problem into an E-generalization
+problem for a certain E. Let a set {(cid:13)a1, b1(cid:14), . . . , (cid:13)an, bn(cid:14)} of pairs of nonempty strings over
+a ﬁnite alphabet A be given. It is known to be undecidable whether there exists a sequence
+1, i2, . . . , im such that m (cid:2) 1 and a1 · ai2
+· · · bim [35, Section 2.7], where
+· · · aim
+“·” denotes string concatenation. Let Σ = A ∪ {1, . . . , n} ∪ {(·), f, a, b}, and let E consist
+of the following equations:
+
+= b1 · bi2
+
+(x · y) · z = x · (y · z),
+f (a, x · i, y · ai) = f (a, x, y)
+f (b, x · i, y · bi) = f (b, x, y)
+
+for i = 1, . . . , n,
+for i = 1, . . . , n,
+
+where x, y, and z are variables. Then, the congruence class [f (a, 1, a1)]
+E and [f (b, 1, b1)]
+E
+equals the set of all admitted Post sequences of ai and bi , respectively. Let σ1 = {x (cid:3)→ a}
+∩
+and σ2 = {x (cid:3)→ b},
+[f (b, 1, b1)]σ2
+
+then the set of constrained E-generalizations [f (a, 1, a1)]σ1
+E
+
+E is nonempty iff the given correspondence problem has a solution. (cid:1)
+
+4. Learning predicate deﬁnitions
+
+In this section, we relate E-generalization to Inductive Logic Programming (ILP),
+which seems to be the closest approach to machine learning. We argue in favor of an
+outsourcing of equational tasks from Horn program induction algorithms, similar to what
+has long been common practice in the area of deduction. From a theoretical point of
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+13
+
+B (cid:12)|= F +
+Necessity:
+B ∧ h |= F +
+Sufﬁciency:
+B ∧ h (cid:12)|= false
+Weak Consistency:
+Strong Consistency: B ∧ h ∧ F − (cid:12)|= false
+
+Fig. 4. Requirements for hypothesis generation according to Muggleton [28].
+
+view, a general-purpose theorem-proving algorithm is complete wrt equational formulas,
+too, if all necessary instances of the congruence axioms s =E t ⇒ f (s) =E f (t) and
+s =E t ∧ p(s) ⇒ p(t) are supplied. However, in practice it proved to be much more ef-
+ﬁcient to handle the equality predicate (=E) separately using specially tailored methods,
+like E-uniﬁcation for ﬁxed, or paramodulation for varying E.
+
+Similarly, we show that integrating E-anti-uniﬁcation into an ILP algorithm helps to
+restrict the hypotheses-language bias and thus the search space. In particular, learning of
+determinate clauses can be reduced to learning of atoms using generalization wrt an E
+deﬁning a function for each determinate predicate.
+
+We investigate the learning of a deﬁnition of a new predicate symbol p in four different
+settings. In all cases, we are given a conjunction F ⇔ F + ∧ F − of positive and negative
+ground facts, and a background theory B describing an equational theory E. In this section,
+we always assume that E leads to regular congruence classes. We generate a hypothesis
+h that must explain F using B. From Inductive Logic Programming, up to four require-
+ments for such a hypothesis are known [28, Section 2.1]. They are listed in Fig. 4. More
+precisely, the Necessity requirement does not impose a restriction on h, but forbids any
+generation of a (positive) hypothesis, provided the positive facts are explainable without it.
+Muggleton remarks that this requirement can be checked by a conventional theorem prover
+before calling hypothesis generation. The Weak and Strong Consistency requirements co-
+incide if there are no negative facts; otherwise, the former is entailed by the latter. In [16,
+Section 5.2.4], only Sufﬁciency (called Completeness there) and Strong Consistency are
+required.
+
+We show under which circumstances E-generalization can generate a hypothesis satis-
+fying the Sufﬁciency and both Consistency requirements. The latter are meaningful in an
+equational setting only if we require that (=E) is nontrivial, i.e., ∃x, y: ¬ x =E y. Without
+this formula, false could not even be derived from an equational theory, however nonsen-
+sical.
+
+Given E, we require our logical background theory B to entail the reﬂexivity, symmetry
+and transitivity axiom for (=E), a congruence axiom for (=E) wrt each function f ∈ Σ
+and each predicate p occurring in B, the universal closure of each equation in E, and
+the nontriviality axiom for (=E). As a more stringent alternative to the Necessity require-
+ment, we assume that B is not contradictory and that the predicate symbol p for which a
+deﬁnition has to be learned does not occur in B, except in p’s congruence axiom.
+
+To begin with, we investigate the learning of a deﬁnition of a unary predicate p by an
+¬p(ti). For sets T +, T − of
+
+i=1 p(ti) and F − ⇔
+
+atom h ⇔ p(t). Let F + ⇔
+ground terms and an arbitrary term t, deﬁne
+
+m
+i=n+1
+
+(cid:1)
+n
+
+(cid:1)
+
++
+
+−
+
+h
+
+h
+
+(t, T
+
+(t, T
+
++
+
+−
+
+) ⇔ ∀t
+) ⇔ ∀t
+
+(cid:5) ∈ T
+(cid:5) ∈ T
+
++ ∃χ: tχ =E t
+− ∀χ: tχ (cid:12)=E t
+
+(cid:5)
+
+(cid:5)
+
+.
+
+and
+
+14
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+We name the substitutions χ instead of σ in order to identify them as given by h
+in the proofs below.
+
++ and h
+
+−
+
+Lemma 13 (Requirements). Let ti, t (cid:5)
+arbitrary term. Let F + ⇔
+n
+and T − = {tn+1, . . . , tm}. Then:
+
+(cid:1)
+
+i be ground terms for i = 1, . . . , m and let t be an
+¬p(ti). Let T + = {t1, . . . , tn}
+
+i=1 p(ti) and F − ⇔
+
+m
+i=n+1
+
+(cid:1)
+
+1) ∨ · · · ∨ p(t (cid:5)
+(1) B ∧ p(t) |= p(t (cid:5)
+(2) B ∧ p(t) |= F + iff h
++(t, T +).
+(3) B ∧ p(t) ∧ F − (cid:12)|= false iff h
+
+n(cid:5)) iff tσ =E t (cid:5)
+−(t, T −).
+
+i for some i, σ .
+
+Proof.
+
+(1) The if direction is trivial. To prove the only if direction, observe that B has a Herbrand
+model containing no instances of p. If we add the set {p(t (cid:5)(cid:5)) | ∃σ ground: tσ =E t (cid:5)(cid:5)}
+to that model, we get a Herbrand model of B ∧ p(t). In this model, p(t (cid:5)
+1) ∨ · · · ∨ p(t (cid:5)
+n(cid:5) )
+holds only if some p(t (cid:5)
+i ) holds, since they are all ground. This implies in turn that p(t (cid:5)
+i )
+is among the p(t (cid:5)(cid:5)), i.e., tσ =E t (cid:5)
+
+i for some ground substitution σ .
+1) ∨ · · · ∨ p(t (cid:5)
+
+n(cid:5)), paraphrasing Strong Consistency as
+
+(2) Follows from (1) for n(cid:5) = 1.
+(3) Follows from (1) for ¬F − ⇔ p(t (cid:5)
+
+B ∧ p(t) (cid:12)|= ¬F −. (cid:1)
+
+The following Lemma 14, and Lemma 20 below for the determinate case, are the work-
+horses of this section. They show how to apply E-generalization to obtain a hypotheses
+term set from given positive and negative example term sets. In the theorems based on
+these lemmas, we only need to enclose the hypotheses terms as arguments to appropriate
+predicates.
+
+Lemma 14 (Hypotheses). For each ﬁnite set T + ∪ T − of ground terms, we can compute a
+regular set H = H14(T +, T −) such that for all t ∈ TV :
+
+t ∈ H ⇒ h
+∃σ : tσ ∈ H ⇐ h
+
++
+
++
+
+(t, T
+
+(t, T
+
++
+
++
+
+−
+
+−
+
+) ∧ h
+) ∧ h
+
+(t, T
+
+(t, T
+
+−
+
+−
+
+),
+
+).
+
+and
+
+Proof. Let T + = {t1, . . . , tn}, let G be a grammar deﬁning [t1]
+E. Obtain the
+universal substitutions τ1, . . . , τn for G from Lemma 5. All τi have the same domain. Using
+the notations from Deﬁnition 3, let
+
+E, . . . , [tn]
+
+The set S is ﬁnite, but large; it has #N #N n
+(cid:4)
+
+(cid:7)
+σ | dom σ = dom τ1 ∧ ∀x ∈ dom σ ∃N ∈ Nmax: xσ = t(N)
+.
+(cid:3)
+n
+i=1
+
+E and H − =
+E. Deﬁne H = H + \ H −; all these sets are regular tree languages and can
+
+elements. Deﬁne H + =
+
+[ti]τi
+
+[t (cid:5)]σ
+
+t (cid:5)∈T −
+
+S =
+
+σ∈S
+
+max
+
+(cid:4)
+
+max
+
+(cid:6)
+
+be computed using standard grammar algorithms.
+
+• For t ∈ H , we trivially have h
+
+−(t, T −) does not hold, i.e.,
++(t, T +). Assume that h
+tσ =E t (cid:5) for some σ and t (cid:5) ∈ T −. Since var(t) ⊆ dom τ1 by construction, we may
+
+15
+
+⇒
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+• If h
+
+⇒ t ∈ [t (cid:5)]σ
+
+assume wlog dom σ = dom τ1; hence σ ∈ S. From Lemma 4(2), we get tσ ∈ [t (cid:5)]
+E
+tσ ∈ [t (cid:5)]
+E
++(t, T +) ∧ h
+
+−(t, T −), then tχi =E ti for some χi , i = 1, . . . , n. Using Lemma 5,
+E for some
+
+E , hence tσ ∈ H +. If we had tσ ∈ [t (cid:5)]σ (cid:5)
+
+we get some σ such that tσ ∈ [ti]τi
+t (cid:5) ∈ T − and σ (cid:5) ∈ S, then tσ σ (cid:5) =E t (cid:5), contradicting h
+
+E, contradicting t /∈ H −.
+
+−(t, T −). (cid:1)
+
+Theorem 15 (Atomic deﬁnitions). Let t1, . . . , tm be ground terms. Let F + ⇔
+and F − ⇔
+such that
+
+n
+i=1 p(ti)
+¬p(ti) be given. We can compute a regular set H = H15(F +, F −)
+
+m
+i=n+1
+
+(cid:1)
+
+(cid:1)
+
+• each p(t) ∈ H is a hypothesis satisfying the Sufﬁciency and the Strong Consistency
+
+• for each hypothesis satisfying these requirements and having the form p(t), we have
+
+requirement wrt F +, F −; and
+
+p(tσ ) ∈ H for some σ .
+
+Proof. Deﬁne T + = {ti | i = 1, . . . , n} and T − = {ti | i = n+1, . . . , m}. By Lemma 13(2)
+and (3), p(t) is a hypothesis satisfying the Sufﬁciency and the Strong Consistency re-
+−(t, T −), respectively. By Lemma 14, we may thus choose
+quirement iff h
+H = {p(t) | t ∈ H14(T +, T −)}, which is again a regular tree language. (cid:1)
+
++(t, T +) and h
+
+The time requirement of the computation from Theorem 15 grows very quickly if neg-
+ative examples are given. Even for deterministic grammars, up to (m − n) · #N #N n
+inverse
+substitution applications are needed, each requiring a renamed copy of the original gram-
+mar. If only positive examples are given, the time complexity is O(#Gn + #Gno+1), which
+allows nontrivial practical applications.
+
+= LG(N0) and [s(0)]
+E
+
+By way of an example, consider again the equational theory E from Fig. 1. Let F + ⇔
+0 (cid:1) 0 ∧ 0 (cid:1) s(0) and F − ⇔ true be given. In Example 8, we already computed a grammar
+G describing [0]
+= LG(N1), see Fig. 3 (top). The congruence
+E
+class of, say, (cid:13)0, 0(cid:14) could be deﬁned by the additional grammar rule N(cid:13)0,0(cid:14) ::= (cid:13)N0, N0(cid:14).
+Instead of that rule, we add N0(cid:1)0 ::= (N0 (cid:1) N0) to the grammar, anticipating that any
+(cid:13)t1, t2(cid:14) ∈ H14 will be transformed to (t1 (cid:1) t2) ∈ H15 by Theorem 15, anyway. Similarly,
+we add the rule N0(cid:1)1 ::= (N0 (cid:1) N1). The universal substitutions we obtain following the
+construction of Lemma 14 are simply τ1 and τ2 from Example 8. We do not extend them to
+also include variables like v({N0(cid:1)0}, {N0(cid:1)1}) = v0(cid:1)0,0(cid:1)1 in their domain because neither
+v0(cid:1)0,0(cid:1)1 ∈ H15 nor v(cid:13)0,0(cid:14),(cid:13)0,1(cid:14) ∈ H14 would make sense. From a formal point of view,
+retaining the τi from Example 8 restricts H15 and H14 to predicates and terms of the form
+t1 (cid:1) t2 and (cid:13)t1, t2(cid:14), respectively.
+
+After lifting the extended G wrt τ1, τ2, we obtain the grammar G12 from Fig. 3 (bottom),
+extended by some rules like N0(cid:1)0,0(cid:1)1 ::= (N00 (cid:1) N01). By Theorem 15, each element of
+H15(F +, F −) = LG12(N0(cid:1)0,0(cid:1)1) is a hypothesis satisfying the Sufﬁciency and the Strong
+Consistency requirement. Using the variable naming convention from Example 8, members
+of H15 are, e.g.:
+
+1. v00 (cid:1) v01
+2. v00 (cid:1) v01 ∗ v01
+
+3. v00 ∗ v00 (cid:1) v01
+4. v00 ∗ v01 (cid:1) v11 ∗ v01
+
+5. 0 (cid:1) v01
+6. v00 (cid:1) v00 + v01.
+
+16
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+Hypothesis 1 intuitively means that ((cid:1)) relates every possible pair of terms. Hypotheses 2
+and 3 indicate that F + was chosen too speciﬁcally, viz. all examples had quadratic numbers
+as the right or left argument of ((cid:1)). Similarly, hypothesis 5 reﬂects the fact that all left
+arguments are actually zero. While 0 (cid:1) x is a valid law, x (cid:1) y ⇔ x =E 0 is not a valid
+deﬁnition. Similarly, no variant of x (cid:1) x can be found in H15 because it does not cover the
+second example from F +. Hypothesis 6 is an acceptable deﬁnition of the ((cid:1)) relation on
+natural numbers; it corresponds to x (cid:1) y ⇔ ∃z ∈ N : y =E x + z. If we take F + as above,
+but F − ⇔ s(0) (cid:12)(cid:1) 0, we get S as the set of all 24 substitutions with domain {v00, . . . , v11}
+and range {0, s(0)}. The resulting grammar for H15 is too large to be shown here. H15 still
+contains hypotheses 5 and 6 from above, but no longer 1 to 4.
+
+We now demonstrate how E-generalization can be incorporated into an existing Induc-
+tive Logic Programming method to learn clauses. To be concrete, we chose the method
+of relative least general generalization (r-lgg), which originates from [30] and forms the
+basis of the GOLEM system [27]. We show how to extend it to deal with a given equational
+background theory E.
+
+Theorem 16 (Clausal deﬁnitions). Let two ground clauses C1 and C2 be given. We can
+compute a regular set H = lggE(C1, C2) such that:
+
+• each C ∈ H is a clause that E-subsumes C1 and C2; and
+• each clause E-subsuming both C1 and C2 also subsumes an element of H .
+
+i.e., h
+
+If {p1(t1), . . . , pm(tm)} ∈ H ,
+
+Proof. Let M = {(cid:13)L1, L2(cid:14) | L1 ∈ C1 ∧ L2 ∈ C2 ∧ L1 ﬁts L2}. Assuming M =
+{(cid:13)pi(t1i), pi(t2i)(cid:14) | i = 1, . . . , m}, let T + = {(cid:13)t11, . . . , t1m(cid:14), (cid:13)t21, . . . , t2m(cid:14)} and T − = {}.
+Let H = {{pi(ti) | i = 1, . . . , m} | (cid:13)t1, . . . , tm(cid:14) ∈ H14(T +, T −)}. H is again a regular tree
+language, because the regular H14(T +, T −) is the image of H under the tree homomor-
+phism that maps {p1(x1), . . . , pm(xm)} to (cid:13)x1, . . . , xm(cid:14), cf. [10, Theorem 7 in Section 1.4].
+then {p1(t1χi), . . . ,
+pm(tmχi)} ⊆E Ci for i = 1, 2, where χi are the substitutions from the deﬁnition of
++. Conversely, let some clause C E-subsume both C1 and C2. We assume wlog
+h
+C = {p1(t1), . . . , pn(tn)} and tj σi =E tij for some σi for i = 1, 2 and j = 1, . . . , n. By
+Lemma 5, some σ exists such that tj σ τi =E tij . Choosing t (cid:5)
+= tj σ for j = 1, . . . , n and
+j
+t (cid:5)
+= v(N(t1j ), N(t2j )) for j = n + 1, . . . , m, we obtain t (cid:5)
+j τi =E tij for j = 1, . . . , m. Hence,
+j
++((cid:13)t (cid:5)
+h
+
+(cid:14), T +, T −) holds, i.e., Cσ ⊆ {p1(t (cid:5)
+
++((cid:13)t1, . . . , tm(cid:14), T +, T −),
+
+To compute H , the grammar deﬁning all [tij ]
+
+E must be extended to also deﬁne
+E. Since only nonterminals for congruence classes are added, no additional
+
+[(cid:13)ti1, . . . , tim(cid:14)]
+language intersections are necessary to compute the extended τi . (cid:1)
+
+1), . . . , pm(t (cid:5)
+
+1, . . . , t (cid:5)
+
+m)} ∈ H .
+
+m
+
+For an empty E, we have lggE(C1, C2) = {lgg(C1, C2)}, and Theorem 16 implies
+Plotkin’s lgg theorem [30, Theorem 3] as a special case. In the terminology of Fig. 4,
+we have F + ⇔ C1 ∧ C2 and F − ⇔ true. The Consistency requirement is satisﬁed if some
+predicate symbol p different from (=E) occurs in both C1 and C2 but not in B, except
+for p’s congruence axiom. In this case, each hypothesis h will have the form p(. . .) ∨ . . . ,
+hence B ∧ h cannot be contradictory. The set lggE(C1, C2) is a subset of, but is not equal
+to, the set of all hypothesis clauses satisfying Sufﬁciency. Usually, there are other clauses
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+17
+
+that imply both C1 and C2 but do not E-subsume both. The same limitation applies to
+Plotkin’s syntactical lgg.
+
+Theorems 16 and 15 share a special case: lggE({p(t1)}, {p(t2)}) from Theorem 16
+equals H15(p(t1) ∧ p(t2), true) from Theorem 15. In this case, Theorem 15 is stronger
+because it ensures that the result set contains all sufﬁcient hypotheses. On the other hand,
+Theorem 16 allows a more general form of both hypotheses and examples.
+
+To illustrate Theorem 16, consider a well-known example about learning family re-
+lations. We use the abbreviations d—daughter, p—parent, f—female, e—eve, g—george,
+h—helen, m—mary, n—nancy, and t—tom. Let the background knowledge K ⇔ p(h, m) ∧
+p(h, t) ∧ p(g, m) ∧ p(t, e) ∧ p(n, e) ∧ f (h) ∧ f (m) ∧ f (n) ∧ f (e) and the positive ex-
+amples F1 ⇔ d(m, h) and F2 ⇔ d(e, t) be given. By generalizing relative to K, i.e., by
+computing lgg((F1 ← K), (F2 ← K)), and by eliminating all body literals containing a
+variable not occurring in the head literal, the clausal deﬁnition of the daughter relation
+d(vme, vht) ← p(vht, vme) ∧ f (vme) ∧ K results.
+
+In addition, using the abbreviation s–spouse, let the equations E = {s(g) = h, s(h) =
+g, s(n) = t, s(t) = n} be given. The congruence classes of, e.g., g and h can be described
+by Ng ::= g | s(Nh) and Nh ::= h | s(Ng). We obtain by Theorem 16 all clauses of the
+form d(vme, tht) ← p(t (cid:5)
+ht, vme) ∧ p(tgn, vme) ∧ f (vme) for any tht, t (cid:5)
+E and
+tgn ∈ [g]τ1
+E . In order to obtain a constrained clause as before, we ﬁrst choose some
+E
+tht for the head literal, and then choose t (cid:5)
+∩Tvar(tht)
+and [g]τ1
+∩ Tvar(tht), respectively. We use the standard intersection algorithm for tree
+E
+grammars mentioned in Section 3.1 for ﬁltering, which in this case requires linear time in
+∩ [n]τ2
+the grammar size for [h]τ1
+E . Choosing the smallest solutions for tht,
+E
+t (cid:5)
+ht, and tgn, we obtain d(vme, vht) ← p(vht, vme) ∧ p(s(vht), vme) ∧ f (vme), which reﬂects
+the fact that our background knowledge did not describe any concubinages.
+
+ht and tgn from the ﬁltered sets [h]τ1
+
+E and [g]τ1
+
+∈ [h]τ1
+E
+
+∩ [n]τ2
+E
+
+∩[t]τ2
+E
+
+∩ [n]τ2
+
+∩ [t]τ2
+
+∩ [t]τ2
+
+ht
+
+E
+
+E
+
+1, t (cid:5)
+
+1) ∧ p(s(cid:5)
+
+Below, we prove a learning theorem similar to Theorem 15, but that yields only
+those atomic hypotheses p(s, t) that deﬁne a determinate predicate p. Formally, we
+are looking for those p(s, t) that satisfy ∀s(cid:5)
+|=
+p(s(cid:5)
+2)) ⇒ (B |= t (cid:5)
+2). In such cases, we say that the hypothesis p(s, t)
+is determinate. Determinacy of a hypothesis is essentially a semantic property [25, Sec-
+tion 5.6.1]; it is even undecidable for certain background theories. In order to compute the
+set of all determinate hypotheses, we have to make a little detour by deﬁning a notion of
+weak determinacy, which is equivalent to a simple syntactic criterion (Lemma 18).
+
+2: (B ∧ p(s, t) ∧ s(cid:5)
+
+=E s(cid:5)
+2
+
+=E t (cid:5)
+
+1, s(cid:5)
+
+2, t (cid:5)
+
+1, t (cid:5)
+
+1, t (cid:5)
+
+1
+
+1
+
+Since B does not imply anything about p except its congruence property, we as-
+sume B ⇔ B(cid:5)(cid:5) ∧ (∀x, y, x(cid:5), y(cid:5): x =E x(cid:5) ∧ y =E y(cid:5) ∧ p(x, y) → p(x(cid:5), y(cid:5))), where p does
+not occur in B(cid:5)(cid:5). We replace the full congruence axiom about p by a partial one: B(cid:5) ⇔
+B(cid:5)(cid:5) ∧ (∀x, y, y(cid:5): y =E y(cid:5) ∧ p(x, y) → p(x, y(cid:5))). We call a hypothesis p(s, t) weakly deter-
+minate if ∀s(cid:5), t (cid:5)
+2). For example,
+using E from Fig. 1, p(x ∗ y, x + y) is a weakly, but not ordinarily, determinate hypothesis.
+We deﬁne for sets T +, T − of ground-term pairs and arbitrary terms s, t:
+
+2: (B(cid:5) ∧ p(s, t) |= p(s(cid:5), t (cid:5)
+
+2)) ⇒ (B(cid:5) |= t (cid:5)
+
+1) ∧ p(s(cid:5), t (cid:5)
+
+=E t (cid:5)
+
+1, t (cid:5)
+
+1
+
++
+
+−
+
+h
+
+h
+
+(s, t, T
+
+(s, t, T
+
++
+
+−
+
+) ⇔ ∀(cid:13)s
+) ⇔ ∀(cid:13)s
+
+(cid:5)
+
+(cid:5)
+
+(cid:5)(cid:14) ∈ T
+(cid:5)(cid:14) ∈ T
+
+, t
+
+, t
+
++ ∃σ : sσ = s
+− ∀σ : sσ (cid:12)= s
+
+(cid:5) ∧ tσ =E t
+(cid:5) ∨ tσ (cid:12)=E t
+
+(cid:5)
+
+(cid:5)
+
+.
+
+and
+
+We have a lemma similar to Lemma 13, with a similar proof, which is omitted here.
+
+18
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+Lemma 17 (Weak requirements). Let si, ti, s(cid:5)
+i, t (cid:5)
+Let F + ⇔
+m
+i=n+1
+and T − = {(cid:13)sn+1, tn+1(cid:14), . . . , (cid:13)sm, tm(cid:14)}. Then:
+
+i=1 p(si, ti) and F − ⇔
+
+(cid:1)
+n
+
+(cid:1)
+
+i be ground terms and s, t arbitrary terms.
+¬p(si, ti). Let T + = {(cid:13)s1, t1(cid:14), . . . , (cid:13)sn, tn(cid:14)}
+
+(1) B(cid:5) ∧ p(s, t) |= p(s(cid:5)
+1, t (cid:5)
+(2) B(cid:5) ∧ p(s, t) |= F + iff h
+(3) B(cid:5) ∧ p(s, t) ∧ F − (cid:12)|= false iff h
+
+1)∨· · ·∨p(s(cid:5)
++(s, t, T +).
+
+n(cid:5) , t (cid:5)
+−(s, t, T −).
+
+n(cid:5)) iff sσ =s(cid:5)
+
+i
+
+∧ tσ =E t (cid:5)
+
+i for some i, σ .
+
+Lemma 18 (Syntactic criterion).
+
+(1) If var(t) ⊆ var(s), then the hypothesis p(s, t) is weakly determinate.
+(2) Each weakly determinate hypothesis p(s, t) has a weakly determinate instance
+
+p(sσ, tσ ) with var(tσ ) ⊆ var(sσ ) and B(cid:5) |= p(s, t) ↔ p(sσ, tσ ).
+
+Proof.
+
+1) ∧ p(s(cid:5), t (cid:5)
+
+(1) If B(cid:5) ∧ p(s, t) |= p(s(cid:5), t (cid:5)
+
+∧ tσ2 =E t (cid:5)
+2
+by Lemma 17(2). Hence, σ1 and σ2 coincide on var(s) ⊇ var(t), and we get t (cid:5)
+=E
+1
+tσ1 = tσ2 =E t (cid:5)
+2.
+
+2), we have sσ1 = s(cid:5) = sσ2 ∧ tσ1 =E t (cid:5)
+
+(2) Deﬁne σ = {x (cid:3)→ a | x ∈ var(t) \ var(s)}, where a is an arbitrary constant. Then
+var(tσ ) ⊆ var(sσ ) by construction. Since B(cid:5) |= p(s, t) → p(sσ, tσ ), we have the sit-
+uation that p(sσ, tσ ) is again weakly determinate.
+Since sσ = s, B(cid:5) ∧ p(s, t) |= p(s, t) ∧ p(s, tσ ). Since p(s, t) is weakly determinate,
+this implies t =E tσ . Since B(cid:5) ensures that p is E-compatible in its right argument,
+we have B(cid:5) ∧ p(sσ, tσ ) |= p(s, t). (cid:1)
+
+1
+
+Lemma 19 (Equivalence for constructor terms). Let s be a constructor term.
+
+(1) p(s, t) is a weakly determinate hypothesis iff it is a determinate one.
+(2) B ∧ p(s, t) |= p(s(cid:5), t (cid:5)) iff B(cid:5) ∧ p(s, t) |= p(s(cid:5), t (cid:5)), if s(cid:5) is an instance of s.
+(3) B ∧ p(s, t) |= p(s(cid:5), t (cid:5)) iff B(cid:5) ∧ p(s, t) |= p(s(cid:5), t (cid:5)), if s(cid:5) is a constructor term.
+
+Proof. All if directions follow from B |= B(cid:5).
+
+(1) Obtain some σ from Lemma 18(2) such that p(sσ, tσ ) is again weakly determi-
+nate, var(sσ ) ⊇ var(tσ ), and B(cid:5) |= p(s, t) ↔ p(sσ, tσ ). From the latter, we get
+B |= p(s, t) ↔ p(sσ, tσ ).
+1) ∧ p(s(cid:5)
+Hence, if B ∧ p(s, t) ∧ s(cid:5)
+=E
+1
+s(cid:5)
+2 for some σ1, σ2 by Lemma 13(2). Since s
+2
+is a constructor term, we have xσ σ1 =E xσ σ2 for each x ∈ var(sσ ) ⊇ var(tσ ). Hence,
+t (cid:5)
+1
+
+=E s(cid:5)
+|= p(s(cid:5)
+1, t (cid:5)
+2
+∧ tσ σ2 =E t (cid:5)
+=E sσ σ2 and tσ σ1 =E t (cid:5)
+1
+
+2) holds, we have sσ σ1 =E s(cid:5)
+
+=E tσ σ1 =E tσ σ2 =E t (cid:5)
+2.
+
+(2) Obtain sχ =E s(cid:5) and tχ =E t (cid:5) for some χ from Lemma 13(2) and the deﬁnition of h
+
++.
+Since sσ (cid:5) = s(cid:5) for some σ (cid:5), we have sσ (cid:5) =E sχ . Since s is a constructor term, we have
+xσ (cid:5) =E xχ for all x ∈ var(s) ⊇ var(t). Hence, tσ (cid:5) =E tχ =E t (cid:5). By Lemma 17(2), this
+implies B(cid:5) ∧ p(s, t) |= p(s(cid:5), t (cid:5)).
+
+2, t (cid:5)
+
+1
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+19
+
+(3) Follows from (2), since sχ =E s(cid:5) implies that s(cid:5) is an instance of s. (cid:1)
+
+Lemma 19 ends our little detour. It ensures that weak and ordinary determinacy coincide
+if we supply only constructor terms to the input argument of a hypothesis p. On the one
+hand, this is a restriction because we cannot learn a hypothesis like p(x ∗ x, x), which
+deﬁnes a partial function realizing the integer square root. On the other hand, it is often
+desirable that a hypothesis correspond to an explicit deﬁnition, i.e., that it can be applied
+like a rewrite rule to a term s by purely syntactical pattern matching. Tuples built using
+the operator (cid:13). . .(cid:14) are the most frequently occurring special cases of constructor terms. For
+example, a hypothesis p((cid:13)x, y(cid:14), x + 2 ∗ y) may be preferred to p((cid:13)2 ∗ x, y(cid:14), 2 ∗ (x + y))
+because the former is explicit and implies the latter wrt E from Fig. 1. Lemma 19(2) allows
+us to instantiate (cid:13)x, y(cid:14) from the former hypothesis arbitrarily, even with non-constructor
+terms like (cid:13)2 ∗ 1, z1 + z2(cid:14).
+
+The following lemma corresponds to Lemma 14, but leads to reduced time complex-
+ity. It does not need to compute universal substitutions because it uses constrained E-
+generalization from Deﬁnition 2. It still permits negative examples, handling them more
+efﬁciently than Lemma 14. They may make sense even if only determinate predicates are
+to be learned because they allow us to exclude certain undesirable hypotheses without
+committing to a ﬁxed function behavior.
+
+Lemma 20 (Weakly determinate hypotheses). For each ﬁnite set of ground term pairs
+T + ∪ T −, we can compute a regular set H = H20(T +, T −) such that for all s, t ∈ TV :
+
+(cid:13)s, t(cid:14) ∈ H ⇒ h
++
+∃σ : (cid:13)sσ, tσ (cid:14) ∈ H ⇐ h
+
++
+
+(s, t, T
+
+(s, t, T
+
++
+
++
+
+−
+
+−
+
+) ∧ h
+) ∧ h
+
+(s, t, T
+
+(s, t, T
+
+−
+
+−
+
+) ∧ var(s) ⊇ var(t),
+) ∧ var(s) ⊇ var(t).
+
+and
+
+Proof. Assume T + = {(cid:13)si, ti(cid:14) | i = 1, . . . , n} and T − = {(cid:13)si, ti(cid:14) | i = n+1, . . . , m}. For
+{1, . . . , n} ⊆ I ⊆ {1, . . . , m}, let sI be the most speciﬁc syntactical generalization of {si |
+i ∈ I }, with sI σI,i = si for each i ∈ I . Such an I is called maximal if ∀{1, . . . , n} ⊆ I (cid:5) ⊆
+{1, . . . , m}: sI = sI (cid:5) ⇒ I (cid:5) ⊆ I , where (=) denotes term equality up to renaming.
+
+For example, if T + = {(cid:13)a + a, ta(cid:14)} and T − = {(cid:13)b + b, tb(cid:14), (cid:13)b + c, tc(cid:14)}, then {1, 2} and
+{1, 2, 3} are maximal, but {1, 3} is not. Since s{1,2} = x + x can be instantiated to a + a and
+b + b, we must merely ensure that t{1,2}{x (cid:3)→ a} (cid:12)=E ta and t{1,2}{x (cid:3)→ b} (cid:12)=E tb in order
+−(s{1,2}, t{1,2}, T −). However, for s{1,3} = x + y, it is not sufﬁcient to ensure
+to obtain h
+t{1,3}{x (cid:3)→ a, y (cid:3)→ a} (cid:12)=E ta and t{1,3}{x (cid:3)→ b, y (cid:3)→ c} (cid:12)=E tc. Since s{1,3} happens to be
+−(s{1,3}, t{1,3}, T −) could be violated if t{1,3}{x (cid:3)→ b, y (cid:3)→ b}
+instantiable to b+b as well, h
+=E tb. Therefore, only generalizations sI of maximal I should be considered.
+i∈I,i>n
+
+E . Each
+E, . . . , [tm]
+such set TI can be computed from [t1]
+E by standard tree grammar algorithms.
+Given the grammar for each TI , it is easy to compute a grammar for their tagged union
+H = {(cid:13)sI , tI (cid:14) | I ∈ I ∧ tI ∈ TI }. To prove the properties of H , ﬁrst observe the following:
+
+Let I be the set of all maximal I . For I ∈ I, let TI =
+
+(cid:3)
+n
+i=1
+
+[ti]σI,i
+E
+
+[ti]σI,i
+
+(cid:4)
+
+\
+
+(1) We always have var(tI ) ⊆ dom σI,1 ⊆ var(sI ). The ﬁrst inclusion follows from tI ∈
+
+TI ⊆ [t1]σI,1
+
+E , the second from the deﬁnition of σI,1.
+
+20
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+(2) If I is maximal and sI σ = si for some i ∈ {1, . . . , m} and σ , then i ∈ I :
+
+Since sI σI,j = sj for j ∈ I and sI σ = si , the term sI is a common generalization
+of the set {sj | j ∈ I } ∪ {si}. Hence, its most special generalization, viz. sI ∪{i}, is an
+instance of sI . Conversely, sI ∪{i} is trivially a common generalization of {sj | j ∈ I };
+hence sI is an instance of sI ∪{i}. Therefore, sI ∪{i} = sI , which implies i ∈ I because I
+is maximal.
+
+• If s, t are given such that h
+
+• If I ∈ I and tI ∈ TI , then trivially sI σI,i = si and tI σI,i =E ti for each i (cid:1) n. Assume
+sI σ = si and tI σ =E ti for some σ and some i > n. By (2), we have i ∈ I , and there-
+fore sI σI,i = si . Hence, σI,i and σ coincide on var(sI ) ⊇ var(tI ), using (1). We get
+tI σI,i = tI σ =E ti , which contradicts tI /∈ [ti]σI,i
+E .
+−(s, t, T −) hold, let I = {1, . . . , n} ∪
++(s, t, T +) and h
+= si}. Then, s is a common generalization of {si | i ∈ I }, and
+
+{i | n < i (cid:1) m ∧ ∃σ (cid:5)
+we have sσ = sI for some σ .
+We show I ∈ I: Let I (cid:5) be such that sI (cid:5) = sI and let i ∈ I (cid:5), then sσ σI (cid:5),i = sI σI (cid:5),i =
+sI (cid:5)σI (cid:5),i = si , hence i ∈ I . Since i was arbitrary, we have I (cid:5) ⊆ I , i.e., I is maximal.
+For i (cid:1) n, we have sσ σI,i = sI σI,i = si = sσi . In other words, σ σI,i and the σi ob-
++(s, t, T +) coincide on var(s) ⊇ var(t). Hence, tσ σI,i = tσi =E ti , i.e.,
+tained from h
+tσ ∈ [ti]σI,i
+E . For i > n and i ∈ I , we still have sσ σI,i = si , as above. Hence tσ cannot
+be a member of [ti]σI,i
+
+E . Therefore, (cid:13)sσ, tσ (cid:14) ∈ H . (cid:1)
+
+i : sσ (cid:5)
+
+i
+
+Theorem 21 (Atomic determinate deﬁnitions). Let F + ⇔
+(cid:1)
+
+i=1 p(si, ti) and F − ⇔
+¬p(si, ti) be given such that each ti is ground and each si is a ground constructor
+
+m
+i=n+1
+
+term. Then, we can compute a regular set H = H21(F +, F −) such that
+
+(cid:1)
+n
+
+• each p(s, t) ∈ H is a determinate hypothesis satisfying the Sufﬁciency and the Strong
+
+Consistency requirement wrt F +, F −; and
+
+• for each determinate hypothesis satisfying these requirements and having the form
+
+p(s, t) with s a constructor term, we have p(sσ, tσ ) ∈ H for some σ .
+
+Proof. Let T + = {(cid:13)si, ti(cid:14) | i = 1, . . . , n} and T − = {(cid:13)si, ti(cid:14) | i = n + 1, . . . , m}. Deﬁne
+H = {p(s, t) | (cid:13)s, t(cid:14) ∈ H20(T +, T −)}, which is again a regular tree language.
+
+• If p(s, t) ∈ H , then (cid:13)s, t(cid:14) ∈ H20(T +, T −), i.e., h
+
+−(s, t, T −) and var(s) ⊇
+var(t) hold. By Lemma 18(1), p(s, t) is weakly determinate; by Lemma 17(2) and (3),
+it satisﬁes the requirements wrt B(cid:5). By construction of Lemma 20, s is a constructor
+term. Hence, by Lemma 19(1) and (3), p(s, t) is determinate and satisﬁes the require-
+ments wrt B, respectively.
+
++(s, t, T +), h
+
+• Let p(s, t) be a determinate hypothesis satisfying the requirements wrt B, where s
+is a constructor term. By Lemma 19(1) and (3), it is also weakly determinate and
+satisﬁes the requirements wrt B(cid:5), respectively. Obtain σ from Lemma 18(2) such
+that p(sσ, tσ ) additionally satisﬁes var(tσ ) ⊆ var(sσ ). By Lemma 17(2) and (3), we
+−(sσ, tσ, T −), respectively. By Lemma 20, we have
+then have h
+(cid:13)sσ σ (cid:5), tσ σ (cid:5)(cid:14) ∈ H20(T +, T −) for some σ (cid:5), i.e., p(sσ σ (cid:5), tσ σ (cid:5)) ∈ H .
+
++(sσ, tσ, T +) and h
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+21
+
+To compute H , the union of up to (m − n) · 2m−n, the intersection of n and the difference
+between two grammars are needed. No additional grammar intersection is necessary to
+compute any universal substitution. (cid:1)
+
+Examples of the application of Theorem 21 are given in Section 5.
+We now show that learning a semi-determinate clause by lgg can be simulated by learn-
+ing an equivalent constrained clause using E-generalization. By analogy to the above,
+obtain the background theory B(cid:5) from B by replacing the full congruence axiom for p0
+with a partial one. Lemma 22 shows how a semi-determinate clause C can be transformed
+into an equivalent constrained clause dlr(C). Theorem 23 simulates lgg-learning of C by
+lggc
+
+E-learning of dlr(C).
+
+(cid:1)
+
+Lemma 22 (Determinate literal removal). Let a semi-determinate clause C ⇔ (p0(s0, t0) ←
+(cid:1)
+n
+m
+i=1 qi(ti)) be given such that pi(si, xi) ⇔ gi(si) =E xi . Let σ =
+i=1 pi(si, xi) ∧
+m
+i=1 qi(tiσ )) is a con-
+
+{xn (cid:3)→ gn(sn)} . . . {x1 (cid:3)→ g1(s1)}. Then, dlr(C) ⇔ (p0(s0σ, t0σ ) ←
+strained clause that deﬁnes the same relation for p0 wrt B(cid:5), and hence also wrt B.
+
+(cid:1)
+
+Proof. From the properties of semi-determinacy, we have s0σ = s0. Since p0 does not
+occur in B(cid:5) outside its partial congruence axiom, we can use the following property of SLD
+resolution [11]: B(cid:5) ∧ (p0(s0, t0) ← C) |= p0(s, t) iff s0σ (cid:5) = s ∧ t0σ (cid:5) =E t and B(cid:5) |= Cσ (cid:5)
+for some σ (cid:5). A similar property holds for dlr(C).
+
+The proofs of both directions are based on establishing xiσ σ (cid:5) =E xiσ (cid:5). This property
+follows from pi(siσ (cid:5), xiσ (cid:5)) and the deﬁnitions of gi and σ , when (B(cid:5) ∧ C |= p0(s, t)) ⇒
+(B(cid:5) ∧ dlr(C) |= p0(s, t)) is proved. When the converse direction is shown, it is established
+by extending σ (cid:5) to var(dlr(C)) ∪ {x1, . . . , xn} deﬁning xiσ (cid:5) = xiσ σ (cid:5). (cid:1)
+
+Theorem 23 (Clausal determinate deﬁnitions). We use the abbreviation D = {¬pi(s, t) |
+s, t ∈ T{} ∧ pi determinate ∧ B(cid:5) |= pi(s, t)}. Let two ground Horn clauses C1 and C2 be
+given, such that each body literal of each Ci is entailed by B(cid:5) and is not an element of D.
+We can compute a regular tree language H = lggc
+
+E(C1, C2) such that:
+
+• each member C ∈ H is a constrained clause that E-subsumes C1 and C2;
+2) with C(cid:5)
+• and for each semi-determinate clause C ⊆ lgg(C1 ∪ C(cid:5)
+
+1, C2 ∪ C(cid:5)
+
+1, C(cid:5)
+
+2
+
+⊆ D,
+
+dlr(C) subsumes some member of H .
+
+Proof. For i = 1, 2, let p0(s0i, t0i) be the head literal of Ci . Let M be the set of
+all pairs (cid:13)L1, L2(cid:14) of body literals L1 from C1 and L2 from C2 such that L1 ﬁts L2.
+Assuming M = {(cid:13)qj (tj 1), qj (tj 2)(cid:14) | j = 1, . . . , k}, deﬁne T + = {(cid:13)s01, (cid:13)t01, t11, . . . , tk1(cid:14)(cid:14),
+(cid:13)s02, (cid:13)t02, t12, . . . , tk2(cid:14)(cid:14)} and T − = {}. Deﬁne H = {p0(s0, t0) ← q1(t1) ∧ · · · ∧ qk(tk) |
+(cid:13)s0, (cid:13)t0, t1, . . . , tk(cid:14)(cid:14) ∈ H20(T +, T −)}.
+
+H is again a regular tree language because H20(T +, T −) is the image of H un-
+der the tree homomorphism that maps the term p0(x0, y0) ← q1(y1) ∧ · · · ∧ qk(yk) to
+(cid:13)x0, (cid:13)y0, y1, . . . , yk(cid:14)(cid:14). Since T − = {}, the set H20(T +, T −) contains at least one element
+(cid:13)s0, (cid:13)t (cid:5)
+
+(cid:14)(cid:14), and the left component of an element of H20(T +, T −) is always s0.
+
+0, t (cid:5)
+
+1, . . . , t (cid:5)
+
+k
+
+22
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+• For each clause p0(s0, t0) ← q1(t1) ∧ · · · ∧ qk(tk) in H , we have var(s0) ⊇
++(s0, (cid:13)t0, t1, . . . , tk(cid:14), T +, T −) by Theorem 20. Hence,
+
+var(t0, t1, . . . , tk) and h
+{p0(s0, t0), ¬q1(t1), . . . , ¬qk(tk)}χi ⊆E Ci .
+
+• Assume
+(cid:8)
+(cid:9)
+p0(s0, t0) ← p1(s1, x1) ∧ · · · ∧ pn(sn, xn) ∧ q1(t1) ∧ · · · ∧ qm(tm)
+
+⊆ lgg(C1 ∪ C
+
+(cid:5)
+1, C2 ∪ C
+
+(cid:5)
+2)
+
+is a semi-determinate clause. Then, (¬qj (tj σi)) ∈ Ci for some σi —we assume
+wlog tj σi =E tj i . Moreover, ¬pj (sj σi, xj σi) is a member of C(cid:5)
+⊆ D, implying
+i
+is entailed by B(cid:5), where σ denotes the substitu-
+that xj σi =E gj (sj σi) = xj σ σi
+tion from dlr(C) computation by Lemma 22. Since dom σ = {x1, . . . , xn}, we have
+xσ σi =E xσi for all variables x. Therefore, tj σ σi =E tj σi =E tj i , and s0σ σi =
+s0σi = s0i because var(s0) is disjoint from the domain of σ . Hence, we can ex-
+tend the clause dlr(C) = {p0(s0σ, t0σ ), ¬q1(t1σ ), . . . , ¬qm(tmσ )} to some superset
+{p0(s0σ, t0σ ), ¬q1(t1σ ), . . . , ¬qm(tmσ ), ¬qm+1(t (cid:5)
++
+k)} that satisﬁes h
+and var(s0σ ) ⊇ var(tj σ ) ∪ var(t (cid:5)
+
+m+1), . . . , ¬qk(t (cid:5)
+j (cid:5)) and is therefore a member of H .
+
+To compute lggc
+ﬁne [(cid:13)s0i, (cid:13)t0i, t1i, . . . , tki(cid:14)(cid:14)]
+needed; no universal substitution needs to be computed. (cid:1)
+
+E must be extended by two rules to de-
+E as well. One intersection of the two extended grammars is
+
+E, the grammar deﬁning [tj i]
+
+The form of Theorem 23 differs from that of Theorem 16 because neither C nor dlr(C)
+need E-subsume the other. To establish some similarity between the second assertion of
+the two theorems, note that a subsumed clause deﬁning a predicate leads to a more speciﬁc
+deﬁnition that its subsuming clause. Let C(cid:5) subsume C1 and C2 and contain a nontrivial
+head literal p0(. . .). Then C(cid:5) also subsumes C = lgg(C1, C2). By Theorem 23, dlr(C) sub-
+sumes some member of lggc
+E(C1, C2). That member thus leads to a more speciﬁc deﬁnition
+of p0 than C(cid:5).
+
+In order to duplicate a most ﬂexible lgg approach, Theorem 23 allows a literal pre- and
+postselection strategy, to be applied before and after lgg computation, respectively. Both
+may serve to eliminate undesirable body literals from the lgg result clause. Preselection
+can be modeled using the Ci and C(cid:5)
+i , while postselection is enabled by choosing C (cid:2)
+lgg(C1 ∪ C(cid:5)
+2). In all cases, Theorem 23 provides a corresponding constrained
+clause from lggc
+E(C1, C2) is sufﬁcient wrt F + ⇔ C1 ∧ C2 and
+F − ⇔ true. Each such C is consistent if some predicate symbol q occurs in both C1 and
+C2, but not in B, except for its congruence axiom.
+
+E(C1, C2), which is equivalent to, or more speciﬁc than, C.
+
+Similar to Theorem 16, each C ∈ lggc
+
+1, C2 ∪ C(cid:5)
+
+Again similar to the nondeterminate case, H21(p0(s01, t01) ∧ p0(s02, t02), true) equals
+E({p0(s01, t01)}, {p0(s02, t02)}) from Theorem 23. In this common special case, Theo-
+lggc
+rem 21, but not Theorem 23, ensures that the result set contains all sufﬁcient hypotheses.
+On the other hand, Theorem 23 ensures that for each purely determinate clause, i.e., a
+clause without any nondeterminate qi in its body, lggc
+E(C1, C2) contains a clause leading
+to an equivalent, or more speciﬁc, deﬁnition of p0. In other words, lgg-learning of purely
+determinate clauses can be simulated by lggc
+
+E-learning of atoms.
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+23
+
+p0(b, bbb) ∧ p0(ε, b)
+
+a(ε, y) = y
+a(a(x, y), z) = a(x, a(y, z))
+
+a(x, ε) = x
+
+q(ε, d) ∧ q(b, d) ∧ q(c, e) ∧ q(bb, d) ∧ q(bc, e) ∧ q(bcb, e)
+
+F
+P a(ε, y, y)
+
+a([v | x], y, [v | z]) ← a(x, y, z)
+
+Kq
+Ka a(ε, ε, ε)
+a(ε, b, b)
+a(ε, bb, bb) ∧ a(b, b, bb) ∧ . . .
+a(ε, bbb, bbb) ∧ a(b, bb, bbb) ∧ . . .
+
+∧
+∧ a(b, ε, b)
+
+∧
+
+lgg p0(vb,ε, vbbb,b)
+
+← a(vb,ε, vb,ε, vbb,ε)
+∧ a(vbb,ε, b, vbbb,b)
+∧ q(vbb,ε, d)
+
+E
+
+G
+
+lggc
+E
+
+Nε ::= ε | a(Nε, Nε)
+Nb ::= b | a(Nε, Nb)
+| a(Nb, Nε)
+| a(Nb, Nb) . . .
+Nbb ::=
+a(Nε, Nbb)
+Nbbb ::=
+a(Nε, Nbbb) | a(Nb, Nbb). . .
+p0(vb,ε, a(a(vb,ε, vb,ε), b))
+
+← q(a(vb,ε, vb,ε), d)
+
+Fig. 5. Comparison of ILP using lgg and lggc
+E .
+
+Let us compare the ILP methods using lgg and lggc
+
+E in an example. Assume part of the
+background knowledge describes lists with an associative append operator and a neutral
+element ε (nil). Lines 2–3 of Fig. 5 show a Horn program P and an equational theory
+E, each of which formalizes that knowledge, where v, x, y, z denote variables, a denotes
+append and b, c, d, e below will denote some constants. Moreover, let a conjunction Kq of
+facts about a predicate q be given, as shown in the fourth line of Fig. 5. We abbreviated,
+e.g., q([b, c, b], [e]) to q(bcb, e). Let F ⇔ p0(b, bbb) ∧ p0(ε, b) be given. Let us assume
+for now that a preselection strategy chose K (cid:5)
+q
+
+⇔ q(ε, d) ∧ q(bb, d).
+E can use the ﬁrst part of background knowledge directly. Most ILP
+systems, including GOLEM, restrict background theories to sets of ground literals. Hence,
+they cannot directly use equality as background knowledge because this would require
+formulas like p0(x, y) ← eq(y, y(cid:5)) ∧ p0(x, y(cid:5)) in the background theory. While Plotkin’s
+lgg is also deﬁned for nonground clauses, it has not been deﬁned for clause sets like P .
+Moreover, since F contains only ground literals, all relevant arguments of body literals
+must be ground to obtain the necessary variable bindings in the generalized clause. Thus,
+we have to derive the conjunction Ka of all ground facts implied by P that could be relevant
+in any respect.
+
+Neither lgg nor lggc
+
+On the other hand, E has to be transformed into a grammar G in order to com-
+E. We can do this by Theorem 11 with (≺) as the lexicographic path ordering,
+pute lggc
+which is commonly used to prove termination of the rewrite system associated with E
+[13, Section 5.3]. Alternatively, we could instantiate a predeﬁned grammar scheme like
+i=0 a(Nx1...xi , Nxi+1...xn ). At least we do not have to rack our
+Nx1...xn
+brains over the question of which terms might be relevant—it is sufﬁcient to deﬁne the
+congruence classes of all terms occurring in F or K (cid:5)
+q .
+
+::= n=0 ε | n=1 x1 | n
+
+Lines 5–8 of Fig. 5 show the preprocessed form Ka and G of P and E, respectively.
+Observe that a ground literal a(s, t, u) in the left column corresponds to a grammar alter-
+native Nu ::= . . . a(Ns, Nt ) in the right one. It is plausible to assume that there are at least
+as many literals in Ka as there are alternatives in G. Next, we compute
+(cid:5)
+q ), (p0(ε, b) ← Ka ∧ K
+
+(cid:8)
+(p0(b, bbb) ← Ka ∧ K
+
+(cid:9)
+(cid:5)
+q )
+
+and
+
+lgg
+
+24
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+(cid:8)
+(p0(b, bbb) ← K
+
+lggc
+E
+
+(cid:5)
+q ), (p0(ε, b) ← K
+
+(cid:9)
+(cid:5)
+q )
+
+E
+
+E
+
+E
+
+E
+
+and apply some literal postselection strategy. A sample result is shown in the bottom part
+E results in the set of all terms p0(vb,ε, tbbb,b) ← q(tbb,ε, d)
+of Fig. 5. More precisely, lggc
+for any tbbb,b ∈ [bbb]{vb,ε(cid:3)→b}
+∩ [b]{vb,ε(cid:3)→ε}
+. The choice
+of tbbb,b and tbb,ε on the right-hand side in Fig. 5 corresponds to the choice of body literals
+about a on the left; both sides are equivalent deﬁnitions of p0. If the postselection strategy
+chooses a(vb,ε, b, vbb,b) ∧ a(vbb,b, vb,ε, vbbb,b) ∧ a(vb,ε, vb,ε, vbb,ε) on the left, we need
+only to choose tbbb,b = a(a(vb,ε, b), vb,ε) on the right to duplicate that result. However, if
+preselection chooses different literals about q, e.g., K (cid:5)
+⇔ q(bc, e) ∧ q(c, e), we have to
+q
+E and [c]
+recompute the grammar G to include deﬁnitions for [bc]
+
+and tbb,ε ∈ [bb]{vb,ε(cid:3)→b}
+
+∩ [ε]{vb,ε(cid:3)→ε}
+
+E result clause is always a constrained one, whereas lgg yields a determinate
+clause. The reason for the latter is that function calls have to be simulated by predicate
+calls, requiring extra variables for intermediate results. The deeper a term in the lggc
+E clause
+is nested, the longer the extra variable chains are in the corresponding lgg clause. If K (cid:5)
+⇔
+q
+true is chosen, lggc
+When the lggc
+
+E approach is used, the hypotheses search space is split. Literal pre- and
+postselection strategies need to handle nondeterminate predicates only. The preselected
+literals, i.e., K (cid:5)
+q , control the size and form of the grammar G. Choices of, e.g., tbbb,b ∈
+LG(Nbbb,b) can be made independently of pre- and postselection, each choice leading to
+the condensed equivalent of a semi-determinate clause.
+
+E yields an atom rather than a proper clause.
+
+The lggc
+
+E.
+
+Filtering of, e.g., LG(Nbbb,b) allows us to ensure additional properties of the result
+clause if they can be expressed by regular tree languages. For example, orienting each
+equation from E in Fig. 5 left to right generates a canonical term-rewriting system R.
+Since all terms in E are linear, a grammar GNF for the set of normal forms wrt R can be
+obtained automatically from E. Choosing, e.g., tbbb,b ∈ LG(Nbbb,b) ∩ LGNF (NNF) ensures
+that no redundant clause like p0(vb,ε, a(vb,ε, a(vb,ε, b))) ← q(a(vb,ε, vb,ε), d) can result.
+In classical ILP, there is no corresponding ﬁltering method of similar simplicity.
+
+5. Applications
+
+In this section, we apply E-generalization in three different areas. In all cases, we use
+the paradigm of learning a determinate atomic deﬁnition from positive examples only. As
+indicated in Section 4, this is the most restrictive paradigm, and it therefore allows the most
+efﬁcient algorithms. We intend to demonstrate that the notion of E-generalization can help
+to solve even comparatively ambitious tasks in Artiﬁcial Intelligence at the ﬁrst attempt.
+We make no claim to develop a single application to full maturity. Instead, we cover a
+variety of different areas in order to illustrate the ﬂexibility of E-generalization.
+
+5.1. Candidate lemmas in inductive proofs
+
+Auxiliary lemmas play an important role in automated theorem proving. Even in pure
+ﬁrst-order logic, where lemmas are not strictly necessary [18], proofs may become expo-
+nentially longer without them and are consequently harder to ﬁnd. In induction proofs,
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+25
+
+which exceed ﬁrst-order logic owing to the induction axiom(s), using lemmas may be un-
+avoidable to demonstrate a certain theorem.
+
+By way of a simple example, consider an induction proof of the multiplicative asso-
+ciativity law using the equational theory from Fig. 1. In the inductive case, after applying
+equation 4. from Fig. 1 and the induction hypothesis, the distributivity law is needed as
+a lemma in order to continue the proof. While this is obvious to a mathematically expe-
+rienced reader, an automated prover that does not yet know the law will get stuck at this
+point and require a user interaction because the actual term cannot be rewritten any further.
+In this simple example, where only one lemma is required, the cross-fertilization technique
+of [3] would sufﬁce to generate it automatically. However, this technique generally fails if
+several lemmas are needed.
+
+(cid:1)
+n
+
+In such cases, we try to simulate mathematical intuition by E-generalization in order to
+ﬁnd a useful lemma and allow the prover to continue; i.e., to increase its level of automa-
+tion. We consider the last term t1 obtained in the proof so far (x ∗ (y ∗ z(cid:5)) + x ∗ y in the
+example) and try to ﬁnd a new lemma that could be applied next by the prover. We are look-
+ing for a lemma of the form t1 ≡E t2 for some t2 such that ∀σ ground: t1σ =E t2σ holds.
+Using Theorem 21, we are able to compute the set of all terms t2 such that t1σ =E t2σ
+holds at least for ﬁnitely many given σ .
+
+We therefore choose some ground substitutions σ1, . . . , σn with var(t1) = {x, y, z(cid:5)} as
+their domain, and let F + ⇔
+i=1 p((cid:13)xσi, yσi, z(cid:5)σi(cid:14), t1σi). We then apply Theorem 21 to
+this F + and F − ⇔ true. (See Fig. 6, where the partial congruence property of p was used
+to simplify the examples in F +.) Using the notation from Lemma 20, we have just one I
+in I, viz. I = {1, . . . , n}, since we do not supply negative examples. Therefore, we only
+have to compute TI =
+
+The most speciﬁc syntactical generalization sI of {(cid:13)x, y, z(cid:5)(cid:14)σ1, . . . , (cid:13)x, y, z(cid:5)(cid:14)σn} need
+not be (cid:13)x, y, z(cid:5)(cid:14) again. However, we always have (cid:13)x, y, z(cid:5)(cid:14)σ (cid:5) = sI for some σ (cid:5). If we
+that are sufﬁciently different, we can ensure that σ (cid:5) has an inverse. This
+choose σi
+is the case in Fig. 6, where σ (cid:5) = {x (cid:3)→ v021, y (cid:3)→ v310, z(cid:5) (cid:3)→ v201}. By Theorem 21,
+B(cid:5) ∧ p((cid:13)x, y, z(cid:5)(cid:14), tI σ (cid:5)−1) implies p((cid:13)x, y, z(cid:5)(cid:14)σi, t1σi) for each tI ∈ TI and i = 1, . . . , n.
+Since it trivially also implies p((cid:13)x, y, z(cid:5)(cid:14)σi, tI σ (cid:5)−1σi), we obtain t1σi =E tI σ (cid:5)−1σi using
+determinacy.
+
+[t1σi]σi
+E .
+
+(cid:3)
+n
+i=1
+
+Therefore, deﬁning t2 = tI σ (cid:5)−1 ensures that t1 and t2 have the same value under each
+sample substitution σi . This is a necessary condition for t1 ≡E t2, but not sufﬁcient. Before
+using a lemma suggestion t1 ≡E t2 to continue the original proof, it must be checked for
+
+t1 =
+
+x ∗( y ∗ z(cid:5) )+ x ∗ y
+
+p((cid:13) xσi , yσi , z(cid:5)σi (cid:14),( x ∗( y ∗ z(cid:5) )+ x ∗ y ) σi )
+)
+)
+)
+
+F + ⇔ p((cid:13) 0 ,s3(0),s2(0)(cid:14),
+∧ p((cid:13)s2(0), s(0) , 0 (cid:14),
+∧ p((cid:13) s(0) , 0 , s(0) (cid:14),
+
+0
+s2(0)
+0
+
+H (cid:22)
+t2 =
+
+p((cid:13) v021 , v310 , v201 (cid:14), v021∗(v310∗v201 + v310 )
+x ∗( y ∗ z(cid:5) + y )
+
+)
+
+Fig. 6. Generation of lemma candidates by Theorem 21.
+
+26
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+validity by a recursive call to the induction prover itself. Two simple restrictions can help
+to eliminate unsuccessful hypotheses:
+
+• Usually, only those equations t1 ≡E t2 are desired that satisfy var(t2) ⊆ var(t1). For
+example, it is obvious that x ∗ (y ∗ z(cid:5)) + x ∗ y ≡E x + v123 is not universally valid. This
+restriction of the result set is already built into Theorem 21. Any lemma contradicting
+this restriction will not appear in the grammar language. However, all its instances that
+satisfy the restriction will appear.
+
+• Moreover, if E was given by a ground-convergent term-rewriting system R [13, Sec-
+tion 2.4], it makes sense to require t2 to be in normal form wrt R. For example,
+x ∗ (y ∗ z(cid:5)) + x ∗ y ≡E (x + 0) ∗ (y ∗ z(cid:5) + y ∗ s(0)) is a valid lemma, but redundant,
+compared with x ∗ (y ∗ z(cid:5)) + x ∗ y ≡E x ∗ (y ∗ z(cid:5) + y). The closed representation of
+the set TI as a regular tree language allows us to easily eliminate such undesired terms
+t2. For left-linear term-rewriting systems [13, Section 2.3], the set of all normal-form
+terms is always representable as a regular tree language; hence terms in non-normal
+form can be eliminated by intersection. For rewriting systems that are not left-linear,
+we may still ﬁlter out a subset of all non-normal-form terms. If desired by some appli-
+cation, TI could also be restricted to those terms tI that satisfy V (cid:5) ⊆ var(tI ) ⊆ V for
+arbitrarily given variable sets V (cid:5), V .
+
+The more sample instances are used, the more of the enumerated lemma candidates will be
+valid. However, our method does not lead to learnability in the limit [19] because normally
+any result language will still contain invalid equations—regardless of the number of sample
+substitutions. It does not even lead to PAC-learnability [39], there currently being no way to
+compute the number of sample substitutions depending on the required δ and (cid:8) accuracies.
+In the associativity law example from above, we get, among other equations, the lemma
+suggestion x ∗ (y ∗ z(cid:5)) + x ∗ y ≡E x ∗ (y ∗ z(cid:5) + y), which allows the prover to continue
+successfully. This suggestion appears among the ﬁrst ten, if TI is enumerated by increasing
+term size. Most of the earlier terms are variants wrt commutativity, like x ∗ (y ∗ z(cid:5)) + x ∗ y
+≡E (y + y ∗ z(cid:5)) ∗ x.
+
+Fig. 7 shows some examples of lemma candidates generated by our prototypical im-
+plementation (see Section 5.4). The column Theory shows the equational theory used. We
+distinguish between the truncating integer division (//) and the true division (/). For ex-
+ample, 7 // 3 =E 2, while 7/3 is not deﬁned. The grammar rules that realize these partial
+functions are something like N2 ::= . . . | N6 // N3 | N7 // N3 . . . | N6/N3. The integer re-
+mainder is denoted by (%). We embedded the two-element Boolean algebra {0, 1} into the
+natural numbers, with 1 corresponding to true. This allows us to model relations like (<)
+and logical connectives. The functions (↑) and (↓) compute the maximum and minimum of
+two numbers, respectively. The function dp doubles a natural number in 0-s representation,
+ap concatenates two lists in cons-nil representation, rv reverses a list, and ln computes its
+length as a natural number. The cube theory formalizes the six possible three-dimensional
+90◦-degree rotations of a cube, viz. left, right, up, down, clockwise and counter-clockwise,
+as shown in Fig. 8 (right).
+
+The column Lemma shows the corresponding lemma, its right-hand side having been
+supplied, its left-hand side generated by the above method. Note, for example, the differ-
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+27
+
+Lemma
+
+Theory
++,∗
+(x + y) + z = x + (y + z)
++,∗
+x ∗ (y + z) = x ∗ y + x ∗ z
++,∗
+x ∗ y = y ∗ x
++,∗
+(x ∗ y) ∗ z = x ∗ (y ∗ z)
++,∗
+(x ∗ y) ∗ z = x ∗ (y ∗ z)
+x/z + y/z = (x + y)/z
++,−,∗,/,//,%
++,−,∗,/,//,% ((x % z)+(y % z)) % z = (x + y) % z
+(x // y) ∗ y = x − (x % y)
++,−,∗,/,//,%
+x = (x ∗ y) // y
++,−,∗,/,//,%
++,∗,<
++,∗,<
++,∗,<,↑,↓
++,∗,<,↑,↓
++,∗,<,↑,↓
++,∗,dp
++,∗,dp
++,∗,dp
+¬,∧,∨,→
+¬,∧,∨,→
+ap,rv
+ap,rv
+ap,rv
+ap,rv
+
+dp(x) = x + x
+x ∗ dp(y) = dp(x ∗ y)
+¬(x ∧ y) ⇔ y → ¬x
+¬(x ∧ y) ⇔ ¬x ∨ ¬y
+
+x < y ⇔ x ∗ z < y ∗ z
+x < y ⇔ x + z < y + z
+x < y ⇔ x < x ↑ y
+x = x ↓(x ↑ y)
+
+ap(rv(x), rv(y)) = rv(ap(y, x))
+ap(x, ap(y, z)) = ap(ap(x, y), z)
+
+dp(x) + dp(y) = dp(x + y)
+
+(x ↑ y) + (x ↓ y) = x + y
+
+x = rv(rv(x))
+
+rv(rv(x)) = x
+
+ap,rv,ln
+ap,rv,ln
+
+cube
+cube
+
+ln(ap(x, y)) = ln(x) + ln(y)
+
+ln(cons(x, ap(y, z))) = s(ln(y) + ln(z))
+
+lf (cc(x)) = up(lf (x))
+lf (cc(x)) = cc(up(x))
+
+Fig. 7. Generated lemma candidates.
+
+Rhs
+
+1,1,3
+0,2,2
+0,0
+0,0,2
+0,0,2,4
+
+5,1,3
+0,1,1
+6,0,3
+2,1,3
+
+0,1,1
+0,1,1
+
+0,1,1
+3,0,3
+5,1,5
+
+2,4
+0,4
+0,0
+
+1,1,1,0
+1,1,1,0
+
+2,2,2
+3,3,2
+0,2
+0,2
+
+1,2
+2,3
+
+1,1
+1,1
+
+No
+
+6.
+10.
+3.
+31.
+3.
+
+2.
+1.
+1.
+4.
+
+3.
+20.
+
+6.
+7.
+2.
+
+2.
+4.
+13.
+
+1.
+6.
+
+1.
+1.
+4.
+1.
+
+4.
+10.
+
+1.
+2.
+
+Time
+
+21
+17
+0
+7
+22
+
+263324
+19206
+17304
+17014
+
+174958
+174958
+
+47128
+45678
+42670
+
+6
+1
+1
+
+308
+308
+
+89
+296
+1
+1
+
+4
+21
+
+18
+18
+
+ence between the lemmas x = rv(rv(x)) and rv(rv(x)) = x. The column Rhs indicates the
+size of t1σi for i = 1, . . . , n, which is a measure of the size of grammars to be intersected.
+For arithmetic and list theories, the value of each number t1σi and the length of each list
+t1σi is given, respectively. The column No shows the place in which the lemma’s right-hand
+side appeared in the enumeration sequence, while the column Time shows the required run-
+time in milliseconds (compiled PROLOG on a 933 MHz PC). Both depend strongly on the
+number and size of the example ground instances. The dependence of No can be seen in
+lines 4 and 5.
+
+The runtime also depends on the grammar connectivity. In a grammar that includes,
+e.g., (−) or (<), each nonterminal can be reached from any other, while in a grammar
+considering, e.g., only (+) and (∗), only nonterminals for smaller values and Nt can be
+reached. If the grammar deﬁnes Nt , N0, . . . , N6, computing [0]σ1
+E leads to
+E
+8 · 8 · 8 intersection nonterminals in the former case, compared with 2 · 3 · 3 in the latter. For
+
+∩ [1]σ2
+E
+
+∩ [1]σ3
+
+28
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+Fig. 8. Law computation by Theorem 21 (left). Cube rotations (right).
+
+this reason, runtimes are essentially independent of the Rhs sizes for the 2nd to 4th theory.
+The exception in line 6 is due to a larger input grammar.
+
+5.2. Construction laws of series
+
+A second application of E-generalization consists in the computation of construction
+laws for term series, as in ordinary intelligence tests. The method is also based on Theo-
+rem 21 and is explained below.
+
+For technical reasons, we write a series in reverse order as a cons-nil list, using an inﬁx
+“.” for the reversed cons to enhance readability. We consider sufﬁxes of this list and append
+a number denoting its length to each of them. We use a binary predicate p(l.s, n) to denote
+that the sufﬁx s of length l leads to n as the next series element. We apply Theorem 21 to
+the k last leads to relations obtained from the given series, see Fig. 8 (left), where k must
+be given by the user. Each result has the form p(l.s, n) and corresponds to a rewrite rule
+l.s (cid:2) n that computes the next term from a series sufﬁx and its length. By construction,
+the rewrite rule is guaranteed to compute at least the input terms correctly. A notion of
+correctness is not formally deﬁned for later terms, anyway.
+
+Fig. 9 shows some computed construction laws. Its ﬁrst line exactly corresponds to the
+example in Fig. 8 (left). The column Theory indicates the equational theory used. The
+ternary function if realizes if · then · else, with the deﬁning equations if (s(x), y, z) = y
+and if (0, y, z) = z, and the unary function ev returns s(0) for even and 0 for odd natural
+numbers. Using if and ev, two series can be interleaved (cf. line 5).
+
+The column Series shows the given term series, sn(0) being abbreviated to n. The num-
+ber k of sufﬁxes supplied to our procedure corresponds to the number of series terms to
+the right of the semi-colon. Any computed hypothesis must explain all these series terms,
+but none of the earlier ones. The column Law shows the computed hypothesis. The place
+within the series is denoted by vp, the ﬁrst term having place 0, the second place 1, and so
+on. The previous series term and the last but one are denoted by v1 and v2, respectively.
+The column No shows the place in which the law appeared in the enumeration sequence. In
+line 5, some formally smaller (wrt height) terms are enumerated before the term shown in
+Fig. 9, but are nevertheless equivalent to it. The column Time shows the required runtime in
+milliseconds on a 933 MHz machine, again strongly depending on k and the size of series
+terms.
+
+The strength of our approach does not lie in its ﬁnding a plausible continuation of a
+given series, but rather in building, from a precisely limited set of operators, a nonrecursive
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+29
+
+Fig. 9. Computed construction laws.
+
+algorithm for computing the next series terms. Human superiority in the former area is
+demonstrated in line 9, where no construction law was found. The strength of the approach
+in the latter area became clear by the series 0, 0; 1, 0, 0, 1, shown in line 7. We had not
+expected any construction law to exist at all, because the series has a period relative prime
+to 2 and the trivial solution v3 had been eliminated by the choice of k (a construction law
+must compute the ﬁrst 1 from the preceding 0s).
+
+It is decidable whether the result language H21 is ﬁnite; in such cases, we can make pre-
+cise propositions about all construction laws that can be expressed using the given signature
+and equational theory. For example, from line 9 we can conclude that no construction law
+can be built from the given operators.
+
+5.3. Generalizing screen editor commands
+
+By way of another application, we employed E-generalization for learning complex
+cursor-movement commands of a screen-oriented editor like UNIX vi. For each i, j ∈ N,
+let pi,j be a distinct constant denoting the position of a given ﬁle at column i and line j ; let
+P = {pi,j | i, j ∈ N}. For the sake of simplicity, we assume that the screen is large enough
+to display the entire contents of the ﬁle, so, we do not deal with scrolling commands for
+the present.
+
+Assuming the ﬁle contents to be given, cursor-movement commands can be modeled as
+partial functions from P to itself. For example, d(pi,j ) = pi,j +1 if j + 1 (cid:1) li, undeﬁned
+otherwise, models the down command, where li denotes the number of lines in the ﬁle.
+The constant H = p1,1 models the home command. Commands may depend on the ﬁle
+contents. For example,
+(cid:6)
+W (pi,j ) = min
+i
+
+(cid:7)
+(cid:5) (cid:1) co(j ) ∧ ch(pi(cid:5)−1,j ) ∈ SP ∧ ch(pi(cid:5),j ) /∈ SP
+,
+
+(cid:5) | i < i
+
+30
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+a b c d e f g h i j k l m n o p q r s t u v w
+
+1 CURSOR MOTIO N COMMANDS :
+2 l left
+3 r right
+4 u up
+5 d down
+
+H h ome
+m m atching ( )
+W n ext word
+B p rev word
+
+b2 ::= l(c2) | r(a2) | u(b3) | d(b1) .
+c2 ::= l(d2) | r(b2) | u(c3) | d(c1) |
+W(a2)|W(b2)| B(d2)...B(k2) .
+k2 ::= l(l2) | r(j2) | u(k3) | d(k1) |
+B(l2) |B(m2)| W(c2)...W(j2) .
+
+Fig. 10. Example ﬁle contents (left). Corresponding grammar excerpt (right).
+
+if the minimum is deﬁned, models the next word command, where co(j ), ch(p), and SP
+denote the number of columns of line j , the character at position p, and the set of space
+characters, respectively. From a given ﬁle contents, it is easy to compute a regular tree
+grammar G that describes the congruence classes of all its positions in time linear to the
+ﬁle size and the number of movement commands. Fig. 10 gives an example. For the sake
+of brevity, columns are “numbered” by lower-case letters, and, e.g., L(b2) = [pb,2]
+E. Note
+that the ﬁle contents happen to explain some movement commands.
+
+Using E-generalization, two or more cursor movements can easily be generalized to
+obtain a common scheme. Given the start and end positions, s1, . . . , sn and e1, . . . , en, we
+apply Theorem 21 to F + ⇔ p(s1, e1) ∧ · · · ∧ p(sn, en) and get a rule of the form p(x, t),
+where t ∈ T{x} is a term describing a command sequence that achieves each of these move-
+ments.
+
+For n = 1, we can compute the simplest term that transforms a given starting position
+into a given end position. This is useful to advise a novice user about advanced cursor-
+movement commands. Imagine, for example, that a user had typed the commands l, l, l,
+l, l, l, l, l, l to get from position pk,2 to pb,2. The term of least height obtained from Theo-
+rem 21, viz. p(x, l(B(x))), indicates that the same movement could have been achieved by
+simply typing the commands B, l. Each command could also be assigned its own degree
+of simplicity, reﬂecting, for example, the number of modiﬁer keys (like shift) involved, or
+distinguishing between simple and advanced commands. In the former case, the simplest
+term minimized the overall numbers of keys to be pressed.
+
+No grammar intersection is needed if n = 1. Moreover, the lifting of G can be done in
+constant time in this case. In the example, it is sufﬁcient to include an alternative . . . x . . .
+into the right-hand side of the rule for k2. Therefore, a simplest term can be computed
+in an overall time of O(#G · log #G). Changes in the ﬁle content require recomputation
+of the grammar and the minimum term sizes. In many cases, but not if, for example, a
+parenthesis is changed, local content changes require local grammar changes only. It thus
+seems worthwhile to investigate an incremental approach, which should also cover weight
+recomputation.
+
+For n > 1, the smallest term(s) in the result language may be used to implement an
+intelligent approach to repeat the last n movement command sequences. For example, the
+simplest scheme common to the movements p(pm,2, po,2) and p(pn,4, pv,4) wrt the ﬁle
+content of Fig. 10 is computed as p(x, d(W (u(x)))). Since the computation time grows
+exponentially with n, it should be small.
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+31
+
+In our prototypical implementation, we considered in all the vi commands h, j, k, l,
+H, M, L, +, -, w, b, e, W, B, E, 0, $, f, F, %, {, and } and renamed some of them to give them
+more suggestive identiﬁers. We allow search for single characters only. In order to consider
+nontrivial string search commands as well, the above approach should be combined with
+(string) grammar inference [23,34] to learn regular search expressions. Moreover, com-
+mands that change the ﬁle content should be included in the learning mechanism. And
+last but not least, a satisfactory user interface for these learning features is desirable, e.g.,
+allowing us to deﬁne command macros from examples.
+
+5.4. Prototypical implementation
+
+We built a prototypical implementation realizing the E-generalization method from
+Section 3.1 and the applications from Section 5. It comprises about 4,000 lines of PRO-
+LOG code. Fig. 11 shows its architecture, an arrow meaning that its source function uses
+its destination function. The application module allows us to learn series laws, candidate
+lemmas, and editor cursor commands (edt cmds). The anti-uniﬁcation module contains
+algorithms for syntactic (synt au), constrained (cs e-au) and unconstrained (uc e-au) E-
+anti-uniﬁcation. The grammar-generation module can compute grammars for a given ﬁle
+content (edt grm), for any set {t ∈ T | V ⊆ var(t) ⊆ W } (var grm), and for the set of nor-
+mal forms wrt E (nf grm). The grammar algorithms module allows us to test an L(N) for
+ﬁniteness, emptiness, and a given member t, to compute intersection and complement of
+two languages, to simplify a grammar, and to generate Nmax from Lemma 5 (max nt s) and
+a grammar for T{} (top nt). For the sake of clarity, we omitted the dashed lines around the
+pre- and postprocessing module. The former merely contains code to choose exm instances
+for lemma generation. The latter does term evaluation to normal form, and enumeration
+and minimal weight computation for L(N). The prototype still uses monolithic, specially
+tailored algorithms for E-anti-uniﬁcation, as originally given in [22], rather than the com-
+bination of standard grammar algorithms described in Section 3.1. For this reason, function
+intersect uses cs e-au as a special case, viz. σi = {}, rather than vice versa. However, all
+
+Fig. 11. Prototype architecture.
+
+32
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+other uses relations would remain unchanged in an implementation strictly based on this
+paper.
+
+All runtime ﬁgures given in this paper are taken from the prototype. Currently, an
+efﬁciency-oriented re-implementation in C is planned. Moreover, it will use the available
+memory more efﬁciently, thus allowing us to run larger examples than when using PRO-
+LOG. The PROLOG prototypical implementation and, in future, the C implementation can
+be downloaded from the web page http://swt.cs.tu-berlin.de/∼jochen/e-au.
+
+6. Conclusions and future work
+
+We presented a method for computing a ﬁnite representation of the set of E-
+generalizations of given terms and showed some applications. E-generalization is able to
+cope with representation change in abstraction, making it a promising approach to an old
+but not yet satisfactorily solved problem of Artiﬁcial Intelligence. Our approach is based
+on standard algorithms for regular tree grammars. It thus allows us to add ﬁltering compo-
+nents in a modular fashion, as needed by the surrounding application software. The closed
+form of an E-generalization set as a grammar and its simple mathematical characteriza-
+tion make it easy to prove formal quality properties if needed for an application. Using a
+standard grammar language enumeration algorithm, the closed form can be converted to a
+succession form.
+
+Our method cannot handle every equational theory E. To use the analogy with E-
+deduction, our method corresponds to something between E-uniﬁcation (concerned with a
+particular E in each case) and paramodulation (concerned with the class of canonical E).
+On the other hand, neither partial functions nor conditional equations basically prevent our
+method from being applicable.
+
+In order to demonstrate that E-generalization can be integrated into ILP learning meth-
+ods, we proved several ways of combining lgg-based ILP and E-generalization. Predicate
+deﬁnitions by atoms or clauses can be learned. If desired, the hypotheses space can be
+restricted to determinate hypotheses, resulting in faster algorithms. Learning of purely de-
+terminate clauses can be reduced to learning of atoms by E-generalization. An lgg-learner
+for constrained clauses with built-in E-generalization can learn a proper superclass, called
+semi-determinate predicates here. We provide completeness properties for all our hypothe-
+ses sets.
+
+Using E-generalization, the search space is split into two parts, one concerned with se-
+lection of nondeterminate literals, the other with selection of their argument terms. While
+the ﬁrst part is best handled by an elaborate strategy from classical ILP, the second can
+be left to a grammar language enumeration strategy. For example, the O(#G · log #G) al-
+gorithm to ﬁnd a term of minimal complexity within a tree language apparently has no
+corresponding selection algorithm for determinate literals in classical ILP. Separating both
+search space parts allows us to modularize the strategy algorithms and to use for each part
+one that best ﬁts the needs of the surrounding application.
+
+Experiments with our prototypical implementation showed that comparatively ambi-
+tious AI tasks are solvable at the ﬁrst attempt using E-generalization. We focus on sketch-
+ing applications in a number of different areas rather than on perfectly elaborating a single
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+33
+
+application. By doing so, we seek to demonstrate the ﬂexibility of E-generalization, which
+is a necessary feature for any approach to be related to intelligence. In [2, Section 8], further
+applications were sketched, including divergence handling in Knuth–Bendix completion,
+guessing of Hoare invariants, reengineering of functional programs, and strengthening of
+induction hypotheses. The method given in [5] to compute a ﬁnite representation of the
+complete equational theory describing a given set of ﬁnite algebras is essentially based on
+E-generalization, too. It is shown there that the complete theory can be used to implement
+fast special-purpose theorem provers for particular theories.
+
+Based on this experience, we venture to suggest that E-generalization is able to sim-
+ulate an important aspect of human intelligence, and that it is worth investigating further.
+In particular, the restrictions regular tree grammars impose on the background equational
+theory E should be relaxed. In this paper, we brieﬂy looked at some well-known represen-
+tation formalisms that are more expressive than regular tree grammars but with negative
+results. It remains to be seen whether there are other more expressive formalisms that can
+be used for E-generalization. The attempt should also be made to combine it with higher-
+order anti-uniﬁcation [21,40]. Such a combination is expected to allow recursive functions
+to be learned from examples.
+
+As indicated above, the applications of E-generalization could certainly be improved.
+Lemma generation should be integrated into a real induction prover, in particular to
+test its behavior in combination with the rippling method [7]. While rippling suggests
+checking homomorphic laws like f (g(t1), . . . , g(tn)) =E g(cid:5)(f (t1, . . . , tn)) for validity,
+E-generalization is able to suggest lemmas of arbitrary forms. Empirical studies on series-
+based intelligence tests, e.g., using geometrical theories about mirror, shift, rotate, etc.,
+should look for a saturation effect: Is there one single reasonable equational background
+theory that can solve a sufﬁciently large number of common tests? And can a reasonable
+intelligence quotient be achieved by that theory? Currently, we are investigating the use
+of E-generalization in analogical reasoning [12], a new application that does not ﬁt into
+the schemas described in Section 4. The aim is to allow problems in intelligence tests to
+be stated in other ways than mere linear series, e.g., to solve (A : B) = (C : X), where
+A, B, C are given terms and X is a term which should result from applying a rule to C that
+at the same time transforms A into B.
+
+Acknowledgements
+
+Ute Schmid, Holger Schlingloff and Ulrich Geske provided valuable advice on presen-
+
+tation.
+
+References
+
+[1] F. Baader, Uniﬁcation, weak uniﬁcation, upper bound, lower bound, and generalization problems, in: Proc.
+4th Conf. on Rewriting Techniques and Applications, in: Lecture Notes in Comput. Sci., vol. 488, Springer,
+Berlin, 1991, pp. 86–91.
+
+[2] J. Burghardt, B. Heinz, Implementing anti-uniﬁcation modulo equational theory, Arbeitspapier 1006, GMD,
+
+June 1996.
+
+34
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+[3] R.S. Boyer, J.S. Moore, A Computational Logic, Academic Press, New York, 1979.
+[4] B. Bogaert, S. Tison, Equality and disequality constraints on direct subterms in tree automata, in: Proc.
+
+STACS 9, in: Lecture Notes in Comput. Sci., vol. 577, Springer, Berlin, 1992, pp. 161–172.
+
+[5] J. Burghardt, Axiomatization of ﬁnite algebras, in: Proc. KI-2002, in: Lecture Notes in Artiﬁcial Intelligence,
+
+vol. 2479, Springer, Berlin, 2002, pp. 222–234.
+
+[6] J. Burghardt, Weight computation of regular tree languages, Technical Report 001, FIRST, December 2003.
+[7] A. Bundy, F. van Harmelen, A. Smaill, A. Ireland, Extensions to the rippling-out tactic for guiding inductive
+proofs, in: Proc. 10th CADE, in: Lecture Notes in Artiﬁcial Intelligence, vol. 449, Springer, Berlin, 1990,
+pp. 132–146.
+
+[8] A.-C. Caron, H. Comon, J.-L. Coquidé, M. Dauchet, F. Jacquemard, Pumping, cleaning and symbolic con-
+
+straints solving, in: Proc. ICALP, in: Lecture Notes in Comput. Sci., vol. 820, 1994, pp. 436–449.
+
+[9] A.-C. Caron, J.-L. Coquidé, M. Dauchet, Automata for reduction properties solving, J. Symbolic Com-
+
+put. 20 (2) (1995) 215–233.
+
+[10] H. Comon, M. Dauchet, R. Gilleron, F. Jacquemard, D. Lugiez, S. Tison, M. Tommasi, Tree automata
+
+techniques and applications. Available from http://www.grappa.univ-lille3.fr/tata, October 2001.
+[11] K.L. Clark, Predicate logic as a computational formalism, Research Report, Imperial College, 1979.
+[12] M. Dastani, B. Indurkhya, R. Scha, An Algebraic Method for Solving Proportional Analogy Problems,
+
+Dublin City University, Dublin, 1997.
+
+[13] N. Dershowitz, J.-P. Jouannaud, Rewrite systems, in: Handbook of Theoretical Computer Science, vol. B,
+
+Elsevier, Amsterdam, 1990, pp. 243–320.
+
+[14] T.G. Dietterich, R.S. Michalski, A Comparative Review of Selected Methods for Learning from Examples,
+
+Springer, Berlin, 1984, pp. 41–82.
+
+[15] P.J. Downey, R. Sethi, R.E. Tarjan, Variations on the common subexpression problem, J. ACM 27 (4) (1980)
+
+758–771.
+
+[16] S. Džeroski, Inductive Logic Programming and Knowledge Discovery in Databases, MIT Press, Cambridge,
+
+MA, 1996, pp. 117–152.
+
+[17] M. Fay, First-order uniﬁcation in an equational theory, in: Proc. 4th Workshop on Automated Deduction,
+
+1979.
+
+[18] G. Gentzen, Untersuchungen über das logische Schließen, 1932.
+[19] E.M. Gold, Language identiﬁcation in the limit, Inform. and Control 10 (1967) 447–474.
+[20] J.H. Gallier, W. Snyder, Complete sets of transformations for general E-uniﬁcation, Theoret. Comput.
+
+Sci. 67 (1989) 203–260.
+
+[21] R.W. Hasker, The replay of program derivations, PhD thesis, Univ. of Illinois at Urbana-Champaign, 1995.
+[22] B. Heinz, Anti-Uniﬁkation modulo Gleichungstheorie und deren Anwendung zur Lemmagenerierung, Doc-
+
+toral dissertation, TU Berlin, December 1995.
+
+[23] V. Honavar, R. Parekh, Grammar Inference, Automata Induction, and Language Acquisition, Marcel Dekker,
+
+New York, 1999.
+
+[24] R. Kowalski, Predicate logic as programming language, Memo 70, Dept. of Comp. Logic, School of Artif.
+
+Intell., Univ. Edinburgh, 1973.
+
+[25] N. Lavrac, S. Džeroski, Inductive Logic Programming: Techniques and Applications, Ellis Horwood, New
+
+York, 1994.
+
+[26] D. McAllester, Grammar rewriting, in: Proc. CADE-11, in: Lecture Notes in Artiﬁcial Intelligence, vol. 607,
+
+Springer, Berlin, 1992.
+
+[27] S. Muggleton, C. Feng, Efﬁcient induction of logic programs, in: Proc. 1st Conf. on Algorithmic Learning
+
+Theory, Tokyo, Omsha, 1990, pp. 368–381.
+
+[28] S. Muggleton, Inductive logic programming: Issues, results and the challenge of learning language in logic,
+
+Artiﬁcial Intelligence 114 (1999) 283–296.
+
+[29] S. O’Hara, A model of the redescription process in the context of geometric proportional analogy problems,
+in: Proc. AII ’92, Dagstuhl, Germany, in: Lecture Notes in Artiﬁcial Intelligence, vol. 642, Springer, Berlin,
+1992, pp. 268–293.
+
+[30] G.D. Plotkin, A note on inductive generalization, in: B. Meltzer, D. Michie (Eds.), Machine Intelligence,
+
+vol. 5, Edinburgh Univ. Press, 1970, pp. 153–163.
+
+[31] G.D. Plotkin, A further note on inductive generalization, in: B. Meltzer, D. Michie (Eds.), Machine Intelli-
+
+gence, vol. 6, Edinburgh Univ. Press, 1971, pp. 101–124.
+
+J. Burghardt / Artiﬁcial Intelligence 165 (2005) 1–35
+
+35
+
+[32] L. Pottier, Generalisation de termes en theorie equationelle, Cas associatif-commutatif, Report 1056, INRIA,
+
+1989.
+
+[33] J.C. Reynolds, Transformational systems and the algebraic structure of atomic formulas, in: B. Meltzer, D.
+
+Michie (Eds.), Machine Intelligence, vol. 5, Edinburgh Univ. Press, 1970, pp. 135–151.
+
+[34] Y. Sakakibara, Recent advances of grammatical inference, Theoret. Comput. Sci. 185 (1997) 15–45.
+[35] U. Schöning, Theoretische Informatik—kurzgefaßt, Spektrum-Hochschultaschenbuch, Heidelberg, 1997.
+[36] J.H. Siekmann, Universal Uniﬁcation, Univ. Kaiserslautern, 1985.
+[37] J.W. Thatcher, J.B. Wright, Generalized ﬁnite automata theory with an application to a decision problem of
+
+second-order logic, Math. Syst. Theory 2 (1) (1968).
+
+[38] T.E. Uribe, Sorted uniﬁcation using set constraints, in: Proc. CADE-11, in: Lecture Notes in Comput. Sci.,
+
+vol. 607, 1992, pp. 163–177.
+
+[39] L.G. Valiant, A theory of the learnable, Comm. ACM 27 (1984) 1134–1142.
+[40] U. Wagner, Combinatorically restricted higher order anti-uniﬁcation. Master’s thesis, TU Berlin, April 2002.
+
+

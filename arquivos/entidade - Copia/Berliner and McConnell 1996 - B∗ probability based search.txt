@@ -1,0 +1,11250 @@
+ELSEVIER 
+
+Artificial  Intelligence  86  (1996)  97-156 
+
+Artificial 
+Intelligence 
+
+B*  probability  based  search* 
+
+Hans  J.  Berliner*,  Chris  McConnell 
+
+School  of  Computer Science,  Carnegie Mellon  University, Pittsburgh, PA  15213,  USA 
+
+Received  August  1994; revised  June  1995 
+
+Abstract 
+
+We  describe  a  search  algorithm  for  two-player  games  that  relies  on  selectivity  rather  than 
+
+brute-force 
+
+to  achieve  success.  The  key  ideas  behind 
+(1)  stopping  when  one  alternative 
+is  clearly  better 
+(2)  focusing  the  search  on  the  place  where  the  most  progress  can  likely  be  made  toward 
+
+the  algorithm  are: 
+than  all  the  others,  and 
+
+stopping. 
+
+Critical 
+
+to  this  process  is  identifying  uncertainty 
+
+an  I-have-optimism-that-needs-to-be-investigated 
+
+is  its  optimistic  value,  based  on  some  measure  of  unexplored 
+that 
+
+about  the  ultimate  value  of  any  move. 
+is  the  best  estimate  of  the  real  value  of  a  move.  The  upper 
+The  lower  bound  on  uncertainty 
+potential.  This 
+bound 
+is  an  excellent 
+provides 
+guiding  force.  Uncertainty 
+is  represented  by  probability  distributions.  The  search  develops 
+those  parts  of  the  tree  where  moving  existing  bounds  would  be  most  likely  to  succeed  and 
+would  make 
+is  achieved 
+terminating 
+when  the  established 
+real  value  of  the  best  move  is so  good  that  the  likelihood  of  this  being 
+achieved  by  any  other  alternative 
+
+the  search.  Termination 
+
+the  most  progress 
+
+is  minimal. 
+
+attitude 
+
+toward 
+
+The  B*  probability  based  search  algorithm  has  been  implemented  on  the  chess  machine 
+
+Hitech.  En  route  we  have  developed  effective 
+
+l  producing  viable  optimistic  estimates 
+l  producing  cheap  probability  distribution 
+l  dealing  with  independence 
+l  dealing  with  the  graph  history  interaction  problem. 
+
+of  alternative  moves,  and 
+
+estimates 
+
+for: 
+techniques 
+to  guide  the  search, 
+
+to  measure  goodness, 
+
+the  implementation, 
+
+The  report  describes 
+against  brute-force  programs.  Test  data  indicate 
+that  expands 
+should  additional  power  become  available, 
+better 
+
+than  brute-force 
+
+techniques. 
+
+and  the  results  of  tests  including  games  played 
+that  B*  Hitech  is  better  than  any  searcher 
+that 
+
+the  B*  technique  will  scale  up  considerably 
+
+its  whole  tree  based  on  selectivity.  Further,  analysis  of  the  data  indicates 
+
+Keywords:  Probabilistic  B*;  Computer  chess;  Selective  search;  Two-person  games 
+
+* Corresponding  author. 
+*This  research  was  sponsored  in  part  by  the  National  Science  Foundation  under  Grant  Number 
+in  this  document  are  those  of  the  authors  and 
+IRI-9105202.  The  views  and  conclusions  contained 
+should  not  be  interpreted  as  representing 
+the  official  policies,  either  expressed  or  implied,  of  the  U.S. 
+Government  or  NSF. 
+
+0004-3702/96/$15.00  Copyright  0  1996 Published  by  Elsevier  Science  B.V.  All  rights  reserved 
+SSDI  0004-3702(95)00092-5 
+
+98 
+
+H.J.  Berliner,  C.  McConnell 
+
+i Artijiciul 
+
+Intelligence  86  (1996)  97-l.% 
+
+1.  Introduction 
+
+Research 
+
+is  crucial 
+
+in  many  AI  domains  has  focussed  on  tasks  that  two  and  three  year 
+olds  find  easy.  This  has  to  do  with  primitive  abilities  that  are  difficult  to  capture 
+algorithmically.  The  ability  to  recognize  patterns,  and  actuate  plans  based  upon 
+systems  have 
+such  patterns 
+it  is 
+trouble 
+an  office  scene  after  having  identified  a  few  key  objects.  They  have  similar  prob- 
+and  in  playing  chess.  The  issue  is  always  the  same; 
+lems  in  speech  understanding 
+if  we  only  had  more  patterns  and  a  plan  to  go  with  each,  we  would  be  in  good 
+shape. 
+
+recognizing  an  “office  scene”  because 
+
+low  level  behavior.  Computer 
+
+they  somehow  don’t  “get” 
+
+to  even 
+
+is  very  much  alike,  regardless  of  the  strength  of  the  player.  What 
+
+When  one  examines  verbal  protocols  of  chess  players  analyzing  chess  positions, 
+[13]  shows  that  the  form  of  the 
+one  is  struck  by  the  similarity  of  form.  DeGroot 
+is 
+analysis 
+different  by  player  level  is the  content; 
+the  stronger  players  look  at  better  moves. 
+Just  as  there  are  no  books  to  tell  a  human  how  to  recognize  an  office  scene,  so 
+there  are  no  books  to  tell  a  human  how  to  search.  There  are  many  chess  books 
+that  tell  you  what  to  look  for,  but  none  that  tell  you  how  to  process  what  you  look 
+at.  Apparently 
+
+such  things  are  taken  for  granted. 
+
+Thus  it  appears  that  humans  have  a  preferred 
+toward  comparing 
+
+form  of  chess  analysis.  This  form 
+the  presumed  best  move  with  the 
+In  this  paper,  we  show  how  meat  has  been  put  on  the  bones  of  this 
+in  ordinary  positions  and  how  they 
+
+is idea  driven,  and  is oriented 
+alternatives. 
+concept.  We  show  how  ideas  can  be  generated 
+compete 
+
+for  attention  until  the  best  idea  is  found. 
+
+a  mechanism 
+
+that  produces 
+
+As  we  develop 
+
+it,  an  idea  is  an  optimistic  concept 
+
+that  may  turn  out  to  be 
+feasible 
+if  some  other  things  work  out.  The  value  of  an  idea  is  represented  by  a 
+probability  distribution  of  the  likelihoods  of  the  values  it  could  aspire  to.  This 
+guides  a  selective  search,  and  is in  turn  modified  by  it.  This  paper 
+representation 
+the 
+develops 
+properties  of  human  search  trees  as  found  in  the  protocols  of  DeGroot.  An  idea 
+in  the  presence  of  other 
+is  generated 
+ideas.  An  idea  may  be  re-examined, 
+to 
+of  com- 
+other 
+to 
+parison  comes  up  again  and  again  in  human 
+that  a  better 
+our  stopping 
+rule  which  dictates 
+the 
+alternative 
+node 
+the 
+tree 
+in  the 
+stopping  decision. 
+
+refined, 
+ideas,  and  the  search  mechanism  does 
+
+also  allows  expanding 
+to  help  with 
+
+exists  than  the  present  one.  Comparison 
+
+and  processed  by  a  search  mechanism 
+
+importance 
+It  is  fundamental 
+
+termination  when  it  is  unlikely 
+
+it  all.  The 
+intelligence. 
+
+that  have  many  of 
+
+and  compared 
+
+re-evaluated 
+
+to  produce 
+
+evidence 
+
+is  most 
+
+search 
+
+likely 
+
+trees 
+
+that 
+
+in  machines 
+
+and  humans 
+
+Both 
+generated. 
+our  system, 
+certainly  generate 
+little  search  when  needed. 
+the  species-specific  hardware  best  supports. 
+
+ideas  are 
+there  are  questions 
+Ideas  are  certainly  related  to  the  semantics  of  the  situation  at  hand.  In 
+almost 
+(patterns)  supported  by  a 
+this  may  turn  out  to  be  a  question  of  what 
+
+by  shallow  search  probes.  Humans 
+
+ideas  from  already  learned  structure 
+
+ideas  are  produced 
+
+about  how 
+
+In  practice, 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijicial  Intelligence  86  (1996)  97-156 
+
+99 
+
+2.  The  history  of  selective  adversary  searching 
+
+When  one  examines 
+
+the  search  tree  of  a  contemporary 
+
+search,  one 
+is  impressed  with  the  sheer  magnitude  of  the  thing.  There  can  be  millions  of 
+that  no  good  chess  player 
+nodes,  more 
+would  ever  dream  of  examining.  How  is  one  to  get  a  search  that  makes  more 
+sense? 
+
+than  99%  of  which  represent  positions 
+
+brute-force 
+
+Those 
+
+search 
+
+In  an  effort 
+
+is  undeniable. 
+
+that  use  the  alpha-beta 
+
+the  efficiency  of  alpha-beta 
+
+to  guide  their  chess  programs  are  well 
+to  irrelevant  positions; 
+aware  of  the  fact  that  so  much  of  the  search  is  devoted 
+to  get  more  out 
+however, 
+of  additional  computing 
+time  as  it  becomes  available,  several  schemes  have  been 
+proposed  which  build  on  the  basic  alpha-beta  search.  There  is actually  a  spectrum 
+that  deal  with  how  to  decide  what  is  important  and  what  could  be 
+of  techniques 
+that  score  moves  as 
+ignored.  At  the  low-cost  end  of  the  spectrum  are  techniques 
+to  their  activeness  and  based  upon  such  scores  a  move  may  be  considered 
+to  be 
+to  varying  degrees.  At  the  high-cost  end  of  the  spectrum,  we  have  the 
+important 
+likely  bounds  on  the 
+B*  approach.  Here  probe  searches  are  done 
+value  of  a  subtree.  Such  schemes  go  collectively  by  the  name  of  selective  search 
+[l].  They  direct 
+to  be  important 
+subtrees.  Examples 
+
+the  power  of  the  search 
+
+into  what  is  hoped 
+
+to  establish 
+
+include: 
+
+is  to  go  to  some  finite  depth  (say  5  or  6),  and  then 
+l One  popular  scheme 
+expand  selectively 
+to  some  further  depth,  only  those  moves  that  are  deemed 
+“worthy”  of  further  attention.  This  scheme  has  some  merits,  but  fails  in 
+situations  where  a  leaf  position 
+(as  when  there  has  been  a 
+sacrifice  that  has  not  yet  been  recouped).  Such  positions  will  not  get  further 
+attention.  The  standard  notion  of  quiescence  search  of  leaf  nodes  will  be  to 
+the  investigation  of  captures  and  escapes  from  check.  Thus,  if 
+only  continue 
+such  moves  will  not  be 
+a  sacrifice  needs  to  be  followed  up  by  a  non-capture, 
+separately 
+included 
+because 
+
+in  the  quiescence 
+the  leaf  node  is  deemed  unworthy. 
+
+search,  nor  will  they  be  examined 
+
+is  in  transition 
+
+level.  It  can  be  applied  throughout 
+
+l Another  scheme  is forward  pruning  which  discards  moves  which  do  not  meet 
+the  tree  or  only 
+some  static  evaluation 
+full  width.  The  forward 
+after  some  basic  depth  has  already  been  searched 
+in  situations  where  good 
+prune  method  has  been  shown  to  fail  frequently 
+defense 
+of 
+the  characteristics 
+useful  defensive  moves.  Forward  pruning  was  one  of  the  earliest  heuristic 
+risk 
+in  applying  heuristics. 
+techniques.  Clearly, 
+is  always  some 
+than  in  almost  any  other 
+the  risk  in  forward  pruning  is far  greater 
+However, 
+technique, 
+since  a  static  analysis  of  a  move  fails  to  capture  much  of  what 
+could  be  important. 
+
+is  required  because 
+
+it  is  difficult 
+
+to  specify 
+
+there 
+
+l A  null  move  search  can  be  helpful  at  times  and 
+
+in  both 
+tournament  Hitech  and  B*  Hitech.  A  null  move  search  gives  the  side-on- 
+move  an  extra  move  before  doing  its  search.  This,  in  effect,  finds  out  what 
+to  avoid 
+threats 
+
+has,  We  use  this  in  tournament  Hitech 
+
+the  side-on-move 
+
+is  used 
+
+this 
+
+100 
+
+ti. J.  Berliner.  C’.  McConnell 
+
+/  Artijiciul  lnlelligence  X6  (1996)  97-1.56 
+
+searches.  when  a  shallow 
+
+search 
+
+sees  no  significant 
+
+null  move 
+the  optimistic 
+
+to  find 
+alpha-beta 
+
+(or  upper)  bound. 
+
+schemes 
+
+are  described 
+
+in  [2,  61. 
+
+are  deficient 
+
+the  analysis, 
+enough 
+
+in  that 
+and 
+include 
+
+to 
+
+look  for  certain 
+
+they 
+the  definitions 
+
+all  useful  moves. 
+
+impossible 
+singular 
+
+to  have  a  static  analysis  detect 
+extension 
+has  received  mixed 
+
+[2]  which 
+
+reviews 
+
+scheme 
+
+as  to  its  efficacy. 
+
+kinds 
+used  by  the 
+For 
+threats  of 
+so 
+
+seemed 
+
+that  are  “active”  may  not  be  counted 
+
+at  the  moment 
+
+is  called  “partial 
+
+In  this 
+as  a  full  ply.  For 
+at  0.5  ply  and  a  capture  of  the  queen  may 
+sum 
+
+is  carried  on  until 
+
+this  partial-ply 
+
+depths”. 
+
+0 
+
+0 
+
+paradigm 
+
+to  continue 
+are  not  broad 
+
+all  these  schemes 
+
+for  such  purposes. 
+
+it  is  essentially 
+in  3  moves.  The 
+
+doing  deep 
+threats.  We  USC it  in  B*  Hitech 
+Other  more  ambitious 
+selective 
+However, 
+of  moves  on  which 
+search 
+instance, 
+mate 
+promising 
+The  most  popular 
+scheme,  moves 
+instance. 
+be  counted 
+equals  or  exceeds 
+those 
+technique 
+has  now  been  under 
+success 
+of 
+tunately, 
+
+these  micros 
+
+a  check  may  be  counted 
+
+little  has  been  published 
+
+branches 
+
+intensive 
+
+scheme 
+
+attests 
+
+tree 
+
+the 
+
+of 
+
+as  0.7  ply.  Yet  the  search 
+the  specified 
+
+depth  of  the  search.  This 
+
+that  have 
+
+interesting 
+
+moves 
+
+is  used  by  the  most  successful  micro-processor 
+
+development 
+
+to 
+
+the  efficacy 
+
+for  7  or  more  years, 
+the  procedure. 
+
+of 
+
+on  this. 
+
+tends 
+in 
+
+to  elongate 
+This 
+them. 
+It 
+the 
+Unfor- 
+
+based  programs. 
+and 
+
+2.1.  The  necessary 
+
+conditions 
+
+for  a  truly  selective  search 
+
+There 
+(1) 
+
+are  two  basic  precepts 
+
+that  a  truly  selective 
+to  stop  when  a  clearly  best  alternative 
+
+search  must  obey. 
+
+is  done  by  comparison 
+
+and 
+
+is  independent 
+
+of  the  ultimate 
+
+exists  at  the  root. 
+value  of  the 
+
+It  must  be  able 
+This 
+best  move. 
+It  must  be  able 
+information 
+We  deal  with 
+the 
+
+(2) 
+
+ability 
+when 
+
+the  stopping 
+to  move 
+there 
+are 
+they  are  unable 
+
+to  focus 
+can  be  gained 
+
+the 
+toward 
+
+search 
+
+on 
+
+terminating 
+
+issue  first.  Most  brute-force 
+immediately 
+two 
+
+there 
+and  one 
+
+legal  moves. 
+
+when 
+
+the  place  where 
+the  search. 
+searches 
+is  only  one 
+
+leads 
+
+to  an 
+
+than  one 
+have  also  been  unable 
+
+realistic 
+
+to  discern 
+
+alternative.’  Many 
+
+this  and  continue 
+past 
+in  the  face  of  overwhelming 
+
+searching 
+selective 
+
+to  halt  even 
+
+is  only  one  good  alternative. 
+
+the  greatest 
+
+have  built 
+
+into 
+legal  move. 
+immediate 
+as  if  there 
+or  best-first 
+evidence 
+
+illustrate 
+
+the  issue.  consider  Fig.  1.  An  algorithm  must  convince 
+
+the  queen  with 
+is  a  search  of 
+
+the  pawn 
+I  node 
+
+is  the  only  sensible  move 
+
+in  our  current 
+
+program. 
+
+the  resulting 
+
+position 
+
+is  a  win  for  white  or  a  draw.  The  only 
+
+itself 
+
+that 
+(all  other  moves 
+It  does  not  matter 
+that 
+
+thing 
+
+them 
+However. 
+catastrophe. 
+existed  more 
+searches 
+that 
+
+there 
+
+To 
+capturing 
+lose).  This 
+whether 
+
+’  In  alpha-beta  Hitech.  WC  implemented 
+
+a  scheme 
+
+in  which  when  all  alternatives  except  one 
+
+lead  to 
+
+being  mated. 
+
+that  alternative  was  played  without 
+
+further  search.  However,  when 
+
+alternatives  are  very  poor  but  don’t 
+because 
+
+the  brute-force 
+
+search  continues 
+
+to  hope  for  miracles. 
+
+lead  to  mate. 
+
+this  is not  powerful  enough 
+
+to  terminate 
+
+the  catastrophic 
+the  search. 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+101 
+
+Fig.  1.  White 
+
+to  play. 
+
+matters 
+idea,  much  like  the  famous  alpha-beta 
+necessary 
+
+to  refute  an  inferior  move  once. 
+
+is that  any  other  move  except  the  capture,  c:b3,*  loses.  This  is an  essential 
+that  it  was  only 
+
+idea  [24]  which  showed 
+
+the 
+
+to  bound 
+
+lower  bounds 
+
+The  reason  that  the  BY algorithm  handles  such  situations  properly 
+
+likely  near-term  value  of  a  node. 
+an  optimistic  view  and  a  realistic  view  of  the  move.  The  search 
+
+is that  it  uses 
+It 
+upper  and 
+is 
+computes 
+is  at  least  as  good  as  the 
+terminated  when  the  realistic  view  of  one  alternative 
+to  find  that 
+optimistic  view  of  the  others. 
+the  move  c:b3  has  a  realistic  value  of  +l  pawn,  while  the  optimistic  values  of  all 
+the  other  moves  would  be  at  best  +l  pawn  (assuming  the  queen  did  not  move 
+away).  Since  the  realistic  values  of  these  other  alternatives  are  poor  (the  queen 
+that  c:b3  is best,  and  do 
+does  move  away),  it  is  easy  to  determine  algorithmically 
+it  very  quickly. 
+
+In  Fig.  1,  it  takes  one  node  expansion 
+
+is  much  more  complicated. 
+
+the  situation 
+In  Fig.  2  white 
+For  issue  (2)  above, 
+must  calculate  whether 
+the  check  Qb3,  which  forces  the  exchange  of  queens  leads 
+to  a  win  (it  does).  If  it  does  not,  then  white  would  be  foolish  to  give  away  his 
+is 
+existing  chances 
+the  follow-on,  Q:b3;  c:b3,  is  automatic.  We  know  of  no  other  actual  or 
+played, 
+the  dynamics  of  such 
+proposed 
+situations. 
+
+search  paradigm  except  B*  that  understands 
+
+for  a  win  by  such  a  move.  However, 
+
+the  first  move 
+
+once 
+
+of  the  board 
+
+are  numbered 
+
+to  top  from  “1” 
+
+’  In  this  paper  we  are  using 
+columns 
+from  bottom 
+its  destination.  When  a  pawn  moves, 
+that 
+f3  is  noted  as  Nf3.  Captures 
+file  captures 
+
+the  piece  on  b3. 
+
+takes  a  pawn 
+
+the  “algebraic” 
+from 
+
+chess  notation 
+
+for  describing  moves. 
+
+left  to  right 
+
+from  “a” 
+
+to  “h”,  and 
+
+In  this  notation, 
+the  rows  are  numbered 
+
+the 
+
+to  “8”.  A  move 
+
+is  described 
+the  piece  designation 
+
+by  indicating 
+is  skipped. 
+
+For 
+
+instance, 
+
+the  type  of  piece  moving 
+
+from  e2  to  e4  is  just  noted  as  “e4”.  An  opening  move 
+
+are  designated 
+
+by  “:“. 
+
+In  the  present 
+
+that 
+case,  c:b3  means: 
+
+takes  a  knight 
+
+and 
+an  opening  move 
+from  gl  to 
+the  pawn  of  the  c 
+
+102 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-1.56 
+
+Fig.  2.  White 
+
+to  play 
+
+2.2.  The  difficulties  with past  approaches 
+
+Before 
+
+in  the 
+
+selective 
+
+formulation, 
+
+several  other 
+
+the  B*  search 
+
+continued  examining 
+
+in  stopping  and  frequently 
+
+In  Harris’  method  [16]  the  value  of  each  node  was 
+
+his  algorithm  has  considerable 
+the  best  alternative 
+
+searches  were 
+[20]  developed  a  method  for  expanding  only  the  best  leaf 
+its  children.  However, 
+
+proposed.  Kozdrowicki 
+node 
+tree  and 
+difficulties 
+when  it  should  have  stopped. 
+bounded  by  uncertainty, 
+the  uncertainty  bounding  a  node  began  as  a  constant,  and  thus  could 
+However, 
+the  search  got  such  a 
+not  distinguish  a  “promising”  move  from  others.  Because 
+it  spent  much  of  its  time  on  meaningless  effort.  His  program  also 
+bad  start, 
+to  the  rising 
+in  computer  chess  tournaments, 
+competed 
+the  importance 
+alpha-beta  programs.  Both  these  formulations 
+of  competition 
+and  the  second  best  as  the 
+driving  force  when  to  stop  and  where  to  put  the  effort  directed  at  being  able  to 
+stop. 
+
+but  ultimately  succumbed 
+failed  to  consider 
+
+and  the  search  focussed  on  reducing 
+
+the  likely  best  alternative 
+
+that  uncertainty. 
+
+between 
+
+In  1972,  the  first  author  discovered 
+
+the  idea  that  a  node  need  not  have  a 
+singular  value,  but  could  have  value  bounds.  Up  to  that  time,  bounds  had  been 
+used  to  precisely  delimit 
+that  further  searches 
+could  return;  e.g.  alpha-beta  or  branch  and  bound.  These  bounds  reflected  what 
+had  been  learned 
+in  the  previously  executed  part  of  the  search.  However,  bounds 
+had  never  been  used  to  delimit  the  value  of  a  single  node  independent  of  search.’ 
+By  having  a  meaningful  but  heuristic  upper  and  lower  bound  on  the  value  of  a 
+
+the  range  of  meaningful  values 
+
+fact 
+
+‘The 
+that 
+with  what  has  happened 
+
+in  the  present 
+
+implementation 
+
+in  other  parts  of  the 
+
+we  use  searches 
+tree. 
+
+to  produce 
+
+bounds 
+
+has  nothing 
+
+to  do 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+103 
+
+it  becomes  possible 
+
+node, 
+competitor. 
+
+to  decide 
+
+that  the  best  node  is  better 
+
+than  its  closest 
+
+stopping 
+
+This  idea  resulted  in  the  B*  search  formulation 
+
+rule.  We  call  this  stopping 
+seldom  occurs,  so  we  define  separation 
+
+[5],  and  the  ability  to  implement 
+In  practice, 
+a  meaningful 
+separation 
+for 
+some  real  valued  X. The  original  B*  idea  was  to  try  to  increase  the  lower  bound  of 
+the  best  node  (the  ProveBest 
+strategy)  or  reduce  the  upper  bounds  of  competing 
+alternatives 
+
+strategy)  until  separation  was  obtained. 
+
+as  Prb(separution)  >x, 
+
+(the  DisproveRest 
+
+rule  separation. 
+
+There  were  a  number  of  problems  with  the  original  B*  formulation.  The 
+the  search  were  not  optimal,  and  this  was 
+decision  rules  about  where  to  continue 
+corrected  by  Palay  in  [25].  We  and  others  attempted 
+to  use  this  algorithm  on  a 
+variety  of  games,  but  without  great  success.  One  problem  was  that  the  bounds 
+For 
+were  estimated 
+into 
+instance, 
+the  optimistic  view.  However, 
+to  statically 
+detect  certain 
+(such  as  the  threat  of  mate  in  2  moves)  which  are  much 
+more  easily  found  by  search.  Estimation  errors  produce  wasted  analysis  effort, 
+that  important  moves  are  never  examined. 
+and  the  possibility 
+
+function. 
+to  have  the  notion  of  threat  incorporated 
+
+it  is  difficult  to  devise  an  algorithm 
+
+for  chess  it  is  important 
+
+using  a  potentially 
+
+static  evaluation 
+
+errorful 
+
+threats 
+
+the  backed-up 
+
+There  was  also  another 
+
+range  need  not  be  uniform.  This  is  because 
+
+issue  discussed  by  Palay.  Backing  up  bounds  to  measure 
+the  potential  of  a  subtree  fails  to  take  into  account  that  the  distribution  of  likely 
+the 
+values  within 
+If  many  nodes  in 
+bounds  of  the  parent  are  the  maximum  bounds  of  the  children. 
+the  subtree  have  values  near  one  bound, 
+the 
+it  more 
+realistic  value  of  that  subtree 
+that  bound.  Fig.  3  shows  the  problem. 
+Here  both  nodes  A  and  B  have  the  same  backed-up  bounds.  However,  node  A  is 
+since  the  maximizing  player  can  choose  among  three  good 
+clearly  to  be  preferred 
+the  others 
+alternatives.  Then  in  case  some  of  them  fail  to  live  up  to  expectations, 
+may  succeed.  The  subtree  of  node  B  does  not  allow  this;  everything 
+is  staked  on 
+the  success  of  the  left  most  node.4  The  examination  of  this  problem  showed  that  it 
+in  a  subtree.  The 
+to  measure 
+was  essential 
+
+to  use  distributions 
+
+the  potential 
+
+this  makes 
+
+is  nearer 
+
+likely 
+
+that 
+
+A  LO,  991 
+
+B 
+
+[‘Jr  991 
+
+A  A 
+
+[O,  991 
+
+LO,  991 
+
+991 
+
+t-20, 
+
+to, 
+
+401 
+
+[Or  991 
+
+Fig.  3.  Bounds  are  not  sufficient  to  portray  goodness. 
+
+[-40, 
+
+151 
+
+4 This  notion  has  been  variously  tapped 
+search,  and  the  idea  was  also  central  to  singular  extensions 
+
+[2]. 
+
+in  the  history  of  searching.  Slagle  (301 postulate 
+
+the  M  &  N 
+
+104 
+
+H.J.  Rerlinrr.  C‘.  McConnell 
+
+i  Artijicul  Intelligence  X6  (1996)  97-1Sh 
+
+distributions 
+the  same. 
+
+backed  up  for  A  and  13 will  be  quite  different,  while 
+
+the  ranges  are 
+
+2.3.  The  springboard 
+
+for  the  present  work 
+
+These  new 
+the  performance 
+contribution 
+
+insights 
+of 
+still  remains 
+
+in  a  thesis  by  Palay 
+
+resulted 
+the  B*  style  of  searching. 
+largely  unrecognized 
+
+[26]  which  decidedly 
+Unfortunately, 
+this 
+time. 
+
+at  this 
+
+improved 
+important 
+
+Palay  did  several 
+l Use  shallow 
+l Use  an  extra  move 
+
+things: 
+searches 
+
+to  produce 
+for  the  Player 
+
+quite  accurate 
+
+bounding 
+
+at  the  start  of  a  search 
+
+values. 
+to  get  optimistic 
+
+values. 
+l Introduce 
+
+and  partition 
+range 
+-The 
+
+the  notion 
+
+of  a  realistic 
+the  range  of  a  node 
+between 
+
+the  optimistic 
+
+of  the  Player  (the  one  whose 
+
+the  realistic 
+
+value  upward 
+
+domain 
+tries 
+
+to  move 
+range 
+
+-The 
+
+between 
+
+the  pessimistic 
+
+value 
+
+of  a  node, 
+
+value  as  part  of  the  structure 
+into 
+
+two  segments: 
+value 
+the 
+turn 
+
+and 
+
+realistic 
+
+value 
+it  is  to  move  at  the  root), 
+the  optimistic 
+toward 
+the 
+and 
+
+realistic 
+
+value 
+
+value. 
+
+is  the 
+and  he 
+
+is  the 
+
+produce 
+carries  more 
+a  given 
+
+domain  of  the  Opponent,  and  he  tries  to  move 
+toward 
+
+the  pessimistic 
+
+vaiuc. 
+
+the  realistic  value  downward 
+
+l Use  a  probability 
+
+distribution 
+
+instead  of  a  range  as  the  value  of  a  node, 
+
+and 
+
+a  calculus 
+
+for  backing 
+
+up  distributions. 
+
+A  probability 
+
+distribution 
+
+information 
+
+than  a  range. 
+
+it  expresses  where 
+
+the  action 
+
+is  within 
+
+range.  This 
+
+for  making 
+
+good  decisions. 
+
+is  invaluable 
+with  a  fundamental 
+
+text  of  chess 
+of  the  day 
+to 
+time  was  scaled  according 
+
+test 
+
+this  and  the  chess  machine  Belle 
+
+on  a  VAX-780.  When 
+
+the  programs 
+
+Palay  did  experiments 
+used  by  all 
+
+being 
+experiments 
+power  between 
+(the  best  chess  computer 
+Belle 
+faster, 
+problems 
+it  was  not  clear  what 
+time, 
+program 
+do  some  problems 
+these.  B*  with  probabilities 
+
+considerably 
+
+tactics 
+
+to  the  difference 
+[12],  it  was  a  close  competitor 
+
+[28]  that  was 
+their  prowess.  He  did  his 
+in 
+to 
+simple 
+the 
+At 
+the 
+to.  We  also  had 
+and  it  did  well  on 
+
+set.  It  solved 
+
+some  deep  problems. 
+
+in  nature, 
+
+at  the  time)  on  the  problem 
+to  solve 
+but 
+
+failed 
+
+the 
+
+latter 
+
+problem  was  due 
+
+that  were  more  positional 
+destined 
+seemed 
+
+for  a  bright 
+
+future. 
+
+We  built 
+
+the  chess  machine  Hitech 
+
+[14]  to  serve  as  the  B*  searcher.  However, 
+
+Hitech  was  so  good  when 
+this 
+lofty  motivation 
+Computer 
+pursue 
+
+both  approaches 
+
+Science  Department 
+
+faded 
+
+in  parallel. 
+
+it  first  came  up  doing 
+and  Palay 
+
+quickly, 
+
+at  CMU. 
+
+In 
+
+straight 
+took 
+retrospect, 
+
+alpha-beta 
+
+another 
+
+it  was 
+
+search, 
+job  outside 
+foolish 
+
+not 
+
+that 
+the 
+to 
+
+Palay’s  work 
+l Probability 
+l Values  computed 
+
+left 
+based 
+
+representations 
+by  shallow 
+
+things 
+
+in  the  following 
+
+state: 
+are  better 
+
+than  a  simple 
+
+range. 
+
+searches 
+
+arc  considerably 
+
+better 
+
+than  statically 
+
+computed 
+-  Realistic 
+question. 
+-  In  order 
+moves 
+
+judgements. 
+values  can  be  obtained 
+
+by  doing  shallow 
+
+searches 
+
+on  the  node 
+
+in 
+
+for  optimism 
+
+to  work, 
+
+it  is  necessary 
+
+to  have  a  rank  ordering 
+
+of 
+
+in  order  of  likelihood 
+
+of  success  and 
+
+impact 
+
+if  successful.  Optimistic 
+
+H. J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+105 
+
+values  were  obtained  by  allowing  the  side-on-move  an  extra  move  to  start. 
+This  implemented 
+the  time  tested  notion  of  threat,  as  that  which  would 
+happen 
+-  It  is  impossible 
+
+if  your  opponent  did  not  respond.  However: 
+
+the  value  of  a  check  by  giving  the  checking 
+
+to  estimate 
+
+side  an  extra  move,  as  he  would  merely  capture 
+
+the  king. 
+
+*  A  mate  threat  is also  difficult  to  deal  with.  Clearly,  mate  threats  are  very 
+checks,  pawn 
+
+potent,  but  where  do  they  fit  in  with  various  captures, 
+promotions, 
+
+etc. 
+
+l Palay’s  approach 
+
+involved 
+
+a  SELECT 
+
+phase  during  which 
+
+the  Player 
+to  find  the  best  move  at  the  root.  Then  a  VERIFY 
+to  exercise  his  optimism  on  the  selected  move. 
+the  move 
+the  SELECT  phase  was  begun  anew.  This  mechanism 
+
+exercised  his  optimism 
+phase  allowed  the  Opponent 
+If  the  selected  move  remained  best  after  the  VERIFY, 
+made.  Otherwise, 
+worked  well;  however, 
+-  How  is separation 
+closely  competitive 
+
+there  were  still  many  issues  to  be  resolved: 
+
+in  the  usual  case  where  there  are  several 
+
+to  be  achieved 
+alternatives? 
+
+it  became 
+
+-What 
+data? 
+
+is  the  best  way  to  efficiently 
+
+represent 
+
+and  back  up  probabilistic 
+
+-  How  to  use  the  probability  distributions 
+
+to  decide  which  move  to  process 
+
+next  considering  such  things  as: 
+*  How  does  one  deal  effectively  with  distributions 
+-  How  can  one  prevent  one  preferred 
+
+alternative 
+
+that  overlap? 
+
+from  getting  all  the 
+
+attention? 
+
+-  How 
+
+to  make  a  complete  program  of  all  this;  one  that  not  only  solves 
+its  time 
+search 
+
+tactical5  problems  but  plays  a  whole  game, 
+resources, 
+trees  from  one  move  to  the  next,  and  other  things. 
+
+including  managing 
+time,  saving  pertinent 
+
+thinking  ahead  on  its  opponent’s 
+
+In  1991,  as  Hitech  was  being  surpassed  by  other  chess  programs, 
+
+various  people  who  had  worked  on  it  had  graduated  or  gone  elsewhere, 
+author  determined 
+There  had  been  some  papers 
+none  had  been  linked  to  a  successful  program. 
+weaknesses 
+
+to  make  one  last  attempt  at  making 
+[23,  291  on  new  approaches 
+
+in  the  B*  approach  were,  and  how  they  could  be  remedied. 
+
+It  was  desired 
+
+and  the 
+the  senior 
+the  B*  concept  work. 
+to  this  problem,  but 
+the 
+to  see  where 
+
+3.  The  new  B*  search 
+
+3.1.  Search  depth  and  the  evaluation  space 
+
+Let  us  look  at  certain  problems  of  searching.  One  can  think  of  a  search  space  as 
+
+is  one  in  which  the  correctness  of  a  move  is  decided  solely  based  upon  the 
+
+5A  tactical  problem 
+material  balance  at  the  end  of  principal  variation. 
+‘In 
+alpha-beta  Hitech,  brute-force  Hitech  and 
+program, 
+
+this  paper,  we  shall  be  referring 
+
+that  may  be  germane 
+
+to  the  existing  context. 
+
+to  the  established  Hitech  program  variously  as  Hitech  5.6, 
+tournament  Hitech.  These  are  all  attributes  of  this 
+
+106 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificiul  Intelligence  86  (1996)  97-06 
+
+a  surface  with  geological 
+location 
+the  surface, 
+function 
+it  should  be  possible 
+terrain. 
+the 
+space.  But 
+changes 
+lowest  point. 
+
+in  gradient 
+
+For  a  searcher 
+sufficient 
+
+ridges 
+
+programs 
+the  origin.  This 
+
+over 
+Brute-force 
+from 
+probability 
+after  crossing 
+the  space.  The  probability 
+high.  Thus, 
+this  approach 
+that  cause  a  surface 
+
+on 
+
+it.  The  X  and  Y  coordinates 
+
+define 
+
+the 
+
+on 
+at  point  X, , Y;  (the  height  of  the  geological 
+
+the  Z  coordinate 
+
+features 
+and 
+
+to  have  a  marble 
+This  would  be  the  case 
+in  complex 
+
+domains 
+
+roll  from  any  given  point 
+function 
+if  our  evaluation 
+are  bound 
+
+that  make 
+
+for  the  marble 
+
+there 
+life  difficult 
+
+feature). 
+
+is  the  value  of  the  evaluation 
+In  an  idea1  domain 
+to  the  low  point 
+defined 
+to  be  ridges.  Ridges 
+is  trying 
+that 
+
+a  smooth 
+introduce 
+to  find  the 
+
+in 
+
+to  successfully 
+to  have 
+
+navigate 
+some 
+
+such  a  surface, 
+
+it  must  be  able 
+
+idea  of  where 
+
+progress 
+
+the  strategy  of  searching 
+adopt 
+is  good  because  with  each  additional 
+
+to  the  largest  possible 
+
+that  one  is  looking  over 
+
+the  last  ridge 
+
+is  increased. 
+
+the  last  ridge  a  marble  would 
+
+that  an  additional 
+is  based  on  a  coarse  understanding 
+
+smoothly 
+roll 
+ply  will  find  the  last  ridge 
+
+to  the 
+
+to  see 
+is  to  be  made. 
+radius 
+the 
+that 
+in 
+is  not  very 
+
+lowest  point 
+
+ply  of  lookahead, 
+It  is  presumed 
+
+of  the  properties 
+
+ridges. 
+to  have 
+to  have  a  “strategic” 
+
+of  the  surface 
+
+It  is  possible 
+the  Z  coordinate 
+strategy  would  be  able  to  implement 
+of  the  terrain 
+100  miles 
+one 
+on  the  surface  at  a  given 
+to  come  by. 
+not  be  easy 
+
+that  could  outdo  a  searcher 
+radius 
+
+regardless 
+
+outlook 
+but  also 
+
+that  would  pay  attention 
+to  some 
+
+compass 
+
+an  idea  such  as  “head  North-East 
+
+not  only 
+
+direction. 
+
+to 
+Such  a 
+for  at  least 
+strategy; 
+to  the  height  of  the  places 
+strategies  may 
+
+is  a  long-term 
+
+correct 
+
+you  encounter”. 
+
+That 
+
+paying 
+from 
+
+attention 
+
+only 
+
+the  origin.  Of  course, 
+
+So  the  real  question 
+knowledge 
+is  over 
+
+“strategic” 
+know  what 
+hopeless 
+possible 
+and  the  other 
+that 
+
+problem 
+to  have 
+
+for  a  searching 
+is  required 
+
+for 
+
+program 
+
+that  goes  to  depth  D  is:  how  much 
+it  to  navigate  well?  Since  one  can  never 
+
+the  next 
+
+ridge  until  one  has 
+
+looked, 
+
+for  which  at  best  heuristic 
+
+two  apparently 
+
+identical 
+
+approximations 
+leading 
+
+states;  one 
+
+to  nothing.  Yet  both  have  been  achieved  by  following 
+
+this  appears 
+
+are  possible. 
+
+to  be  a 
+It  is 
+to  some  great  gain 
+some  strategy 
+
+is  as  yet  not  successful. 
+
+So  a  selective 
+hopes 
+searcher.  This  can  be  successful 
+
+searcher 
+to  be  able 
+
+taking 
+to  peer 
+
+by 
+
+selective 
+
+extension 
+
+strategies 
+
+two  extremes 
+
+are: 
+
+directions 
+brute-force 
+various 
+search.  The 
+
+small 
+
+steps 
+
+in  what 
+
+over  more  meaningful 
+as  demonstrated 
+in  connection 
+
+used 
+
+ridges 
+
+appear 
+
+to  be  good 
+the 
+than 
+by  the  success  of  the 
+with 
+
+the  alpha-beta 
+
+(1)  a  smooth 
+(2)  a  highly 
+
+space  where 
+
+searching 
+
+is  clearly  better, 
+further 
+space.  where  having  any  clue  as  to  where 
+
+the  ridges  are  to 
+
+ridged 
+be  found  will  be  a  win. 
+that 
+
+flat, 
+specific  knowledge 
+
+seem 
+
+It  would 
+domain 
+be  explored. 
+achieving 
+the  predefined 
+development. 
+
+It  should 
+of  some  goal. 
+
+halting 
+
+spaces 
+
+can  be  avoided 
+
+featureless 
+so  that 
+be  noted 
+It  is  very  risky  to  do  this  in  the  alpha-beta 
+of  the  search  may 
+
+there  are  always  some 
+that 
+
+the  very  notion 
+
+the  strategy 
+
+interesting 
+of  strategy 
+
+at  various 
+
+by  having 
+
+enough 
+
+paradigm 
+
+directions 
+implies 
+
+to 
+the 
+since 
+stages  of 
+the 
+
+find 
+paradigm 
+
+Thus, 
+
+in  the  alpha-beta 
+
+it  is  very  difficult 
+
+to  assess 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+107 
+
+success  of  a  partially 
+be  fully  implemented. 
+
+implemented 
+
+strategy,  since  it  is  not  certain  whether 
+
+it  can 
+
+The  correct  way  to  implement  a  strategic  outlook 
+
+is with  bounding  values.  This 
+is  exactly  what  B*  provides.  Then  even  shallow  searches  can  follow  a  strategic 
+idea  until  it  either  proves  successful,  shows  itself  to  be  unsuccessful,  or  must  be 
+abandoned  because  of  resource 
+search  has 
+no  notion  of  potential, 
+result  it  finds  at  its  search 
+horizon.  This  is  why  the  B*  approach  should  be  preferred.  We  have  as  yet  only 
+in  Section  3.10.  This  whole 
+implemented 
+problem 
+
+a  few  strategies  which  are  discussed 
+
+is  discussed  at  length  in  [9]. 
+
+and  must  abide  by  whatever 
+
+limitations.  A  brute-force 
+
+alpha-beta 
+
+to  integrate 
+theory 
+
+3.2.  Some  considerations 
+
+The 
+
+initial  goal  of  the  research  was  to  see  if  it  was  possible 
+
+to  keep 
+
+If  it  were  desirable 
+
+the  fewest  nodes  conspire 
+
+it  is  useful  to  think  of  conspiracies 
+
+theory  [23]  into  B*.  The  idea  behind  conspiracy 
+
+of  the  root  from  changing  by  a  certain  amount 
+to  make  such  a  change, 
+
+is 
+McAllester’s  conspiracy 
+to  keep  the  value  of 
+that  there  are  a  certain  number  of  leaf  nodes  that  conspire 
+in  a  certain 
+some  descendant 
+then  the  easiest  change  to 
+direction. 
+effect  would  be  the  one  where 
+this  from 
+happening.  The  senior  author  quickly  found  out  that  this  would  not  work,  and 
+found  out  something  very  important  about  why  the  conspiracy  approach  has  not 
+worked. 
+While 
+
+in  the  above  way,  and  to  plan  to 
+in  practice  this  does  not  work. 
+attack  the  conspiracy  with  the  fewest  conspirators, 
+Conspiracies 
+fall  into  buckets.  There  are  buckets  of  conspiracies  of  magnitude  1, 
+of  magnitude  2,  magnitude  3,  etc.  In  chess  (and  we  would  assume  in  almost  all 
+there  are  lots  of  potential  conspiracies,  and  the  number  of  conspiracies 
+domains), 
+large.  Thus,  when  dealing  with  con- 
+of  magnitude  2  is  usually  already  quite 
+them  in  some  quasi-random  order, 
+spiracies  of  magnitude  2,  one  must  examine 
+that  is  easiest  to  break  is  quite  small.  It 
+and  the  chances  of  finding  the  conspiracy 
+is  like  a  breadth-first 
+search  of  conspiracies,  with  no  other  clue  as  to  what  might 
+make  a  given  conspiracy  easy  to  break.  This  is  the  reason  for  the  failure  of  the 
+the 
+conspiracy  approach 
+weakest  conspiracy  of  a  given  magnitude.7 
+
+is  no  good  method  for  deciding 
+
+in  game  playing.  There 
+
+What  was  needed  was  a  more  real  valued  approach;  Palay’s  probability  based 
+B*.  Here  moves  can  be  ranked 
+than 
+being  lumped  into  a few  conspiracy  buckets.  This  leads  to  much  better  discrimina- 
+tion.  We  therefore 
+on  improving  probability  based  B*  and  refining 
+its  details. 
+
+in  order  of  likelihood 
+
+concentrated 
+
+to  succeed; 
+
+rather 
+
+’ In  passing  it  is  worth  noting  that  this  is  very  similar  to  the  problem 
+being  efficient.  What  happens 
+expanded,  and  with  the  original  A*  formulation 
+promise. 
+
+that  keeps  the  A*  search  from 
+is  that  long  lists  of  similar  valued  nodes  are  accumulated  waiting  to  be 
+it  is  impossible  to  discriminate  which  has  the  greatest 
+
+108 
+
+H. J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  X6  (1996)  97-1.56 
+
+3.3.  Representation  of  a  node 
+
+The  principal  elements  of  a  B*  node  are: 
+l the  RealVal,  which  is  the  best  estimate  of  the  true  value  of  the  nodeP 
+l the  OptVal,  which  is  the  optimistic  value  of  the  node  for  the  side-on-move, 
+backed 
+l the  PessVal,  which  is  the  optimistic  value  for  the  side-not-on-move, 
+
+up  from  its  subtree,’  and 
+
+l the  OptPrb,  which 
+
+is  the  probability 
+
+that  a  certain 
+
+target  value  can  be 
+
+achieved  by  future  searches  of  the  subtree  rooted  at  this  node. 
+
+The  side-to-move  at  the  root  is the  Player,  and  the  other  side  is the  Opponent.  We 
+also  use  the  SELECT  and  VERIFY  phases  as  described  by  Palay. 
+
+3.4.  Backing  up  of  values 
+
+it  is  the  Player;  and  during 
+
+In  this  algorithm 
+the  SELECT  phase, 
+Opponent.  The  forcing  player 
+where  Forcer  has  a choice,  the  best  alternative 
+player, 
+they  must  all  be  refuted. 
+
+there  is always  one  side  that  is trying  to  do  the  forcing.  During 
+it  is  the 
+is  called  the  Forcer.  When  backing  up  to  a  node 
+is always  backed  up.  For  the  other 
+that  is  backed  up,  since 
+
+it  is  an  ANDing  of  alternatives 
+
+the  VERIFY  phase 
+
+the  Obstructor, 
+
+RealVal 
+
+is  backed  up  normally 
+
+to  parent.  OptVals  are  only 
+computed 
+for  the  Forcer  leaf  nodes.  OptVals  for  one  side  are  the  PessVals  for  the 
+other  and  are  thus  backed  up.  The  most  complicated  backing  up  occurs  with 
+OptPrbs.  When  the  backed  up  value  is  an  AND,  the  OptPrbs  of  the  child  nodes 
+are  multiplied;  otherwise, 
+
+the  best  is  backed  up. 
+
+from  child 
+
+3.5.  Overview  of  the  probability  based  B”  search 
+
+Before 
+
+launching 
+
+version  in  which  we  do  not  attempt 
+how  it  works.  This  is followed  by  an  actual  search  example.  We  urge  the  reader 
+read  the  algorithm 
+
+into  a  full  description  of  the  algorithm,  we  present  a  stylized 
+to  define  constructs  but  merely  give  a  feel  for 
+to 
+
+lightly  together  with  the  example. 
+
+integer 
+SELECT:  while 
+
+TargetVal ; 
+
+(RealVal(BestMoveAtRoot)< 
+
+OptVal(AnyOtherMoveAtRoot)) 
+
+{ 
+
+sense 
+
+values 
+
+is  the  relatively 
+
+a  game-theoretic 
+
+that  permit  ordering 
+
+“In 
+Win/Lose/Draw 
+values 
+This 
+deep  search  of  (say)  10  ply. 
+‘) It  should  be  noted  here 
+can  be  achieved 
+which  can  be  achieved 
+
+a  node 
+are  unlikely 
+
+can  only  have 
+three 
+to  be  found  by  the  search.  Therefore, 
+
+values:  Win.  Lose,  or  Draw.  However, 
+
+leaves  by  goodness. 
+
+Palay 
+
+in  [26]  discusses 
+
+the  Oracular 
+
+stable  value 
+
+that  a  node  would  have  on  the  existing  valuation 
+
+it  is  necessary 
+
+to  have 
+value  of  a  node. 
+scale  based  upon  a 
+
+that  all  the  Vals  are  the  result  of  alpha-beta 
+
+it  is  important 
+
+to  recognize 
+
+searches, 
+that 
+
+so  they  represent  what 
+that 
+the  OptVal 
+
+is  only 
+
+against  best  resistance. 
+
+Thus. 
+against  best  resistance. 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijkial  Intelligence  86  (1996)  97-156 
+
+109 
+
+TargetVal=(OptVal(2ndBest)+RealVal(Best))/2; 
+Select  Root Node  with greatest  OptPrb; 
+Trace down the  child subtree selecting 
+
+For  Player-to-Move  nodes,  child  with 
+1argestOptPrb 
+For  Opponent-to-Move  nodes,  child  with 
+bestRealVa1 
+
+Until arriving 
+ataleafnode; 
+Get RealVal for eachChildNode  of this leaf; 
+If  it  is a Player-to-Move  node  get  OptVals  for  each 
+Child; 
+Back upvalues; 
+if (EffortLimitsExceeded)  Break; 
+
+> 
+
+TargetVal=RealVal(2ndBestMoveAtRoot)-1; 
+VERIFY:  while (RealVal(BestMoveAtRoot)>=TargetVal) 
+
+{ 
+Select Reply  Nodewithgreatest  OptPrb; 
+Trace down  the  child subtree selecting 
+
+For Opponent-to-Move  nodes, child with  largest 
+OptPrb 
+For Player-to-Move  nodes, childwithbest  Real- 
+Val 
+
+Until arriving ataleafnode; 
+Get RealVal for eachChildNode  of this leaf; 
+If it is an Opponent-to-Move  node get OptVals for each 
+Child; 
+Back upvalues; 
+if (EffortLimitsExceeded)  GoTo MakeMove;  !! It passed 
+inspection. 
+1 
+
+!!  Selectedmovewas  refuted. 
+
+GoTo SELECT; 
+MakeMove: 
+
+3.6. A  search  example 
+
+In  this  example  we  show  how  a  simple  search  could  progress  through 
+
+the  search 
+is  done  and  how  the  backing  up  works.  The 
+is  shown  in  both  table  and  graphical  form.  The  table  headings  should  be 
+except  for  Prt  which  is the  parent  of  a  node.  Fig.  6 has  the  legend 
+the  path  to  the  node  to  be  expanded.  Within  each 
+is used  for  selecting  the  node  to 
+
+phases,  showing  how  node  selection 
+example 
+self-explanatory 
+for  trees.  Solid  lines  indicate 
+node,  the  top  number  (either  RealVal  or  OptPrb) 
+expand. 
+
+The  initial  expansion  of  the  root  produces  3  nodes  that  are  in  competition 
+
+for 
+is  to  play  at  the  root,  and  he  is  named 
+
+best.  As  usual, 
+
+the  maximizing  player 
+
+110 
+
+H.J.  Berliner,  C’.  McConnell 
+
+I  Artificrul  Intelligence  X6  (19Y6)  97-156 
+
+Node  Depth/Prt 
+A 
+B 
+C 
+
+0 
+0 
+0 
+
+OptVal 
+100 
+40 
+25 
+
+RealVal 
+20 
+18 
+10 
+
+PessVal 
+Undef. 
+Undef. 
+Undef. 
+
+TargetVal 
+30 
+30 
+30 
+
+OptPtb 
+875 
+:455 
+,000 
+
+Fig.  4.  initialization. 
+
+PLAYER.  He  is  pitted  against 
+The  OptVals 
+is  backed 
+
+and  RealVals 
+up  from  descendant 
+
+the  minimizing 
+
+player  who  is  named  OPPONENT. 
+
+are  produced 
+
+nodes, 
+
+by  probe 
+it  is  undefined 
+
+at  this  time. 
+
+searches, 
+
+and  since 
+
+the  PessVal 
+
+TargetVal, 
+RealVal(Best))/2 
+TargetVal) 
+RealVal. 
+
+which 
+
+is  defined 
+
+in 
+
+Section 
+
+evaluates 
+
+to  30.  OptPrbs 
+
+are  computed 
+
+Fig.  4  shows 
+
+this 
+
+by  linear 
+initialization. 
+
+approximation 
+
+3.9.3 
+(probability 
+
+as 
++ 
+(OptVal(2ndBest) 
+of  moving  RealVal  up  to 
+to 
+
+from  OptVal 
+
+in  the  range 
+
+Since  we  are 
+
+in 
+
+selected 
+RealVal 
+The 
+
+for  expansion. 
+up  to  TargetVal. 
+result  of  expanding 
+
+the  SELECT 
+Intuitively, 
+
+and  OptVals 
+
+Figs.  5  and  6  show 
+node  A  has  produced 
+of  each  of  these  are 
+
+the  node  with 
+
+phase, 
+this  is  the  node  with  the  best  chance  of  moving 
+node  A. 
+the  tree  after  expanding 
+
+the  highest  OptOrb 
+
+is 
+
+from 
+
+three 
+inherited 
+
+successors,  D,  E,  and  F. 
+the 
+are 
+the  most 
+the 
+
+the  parent; 
+the  alternatives 
+to  get 
+node.  The  OptPrbs 
+
+that 
+is  trying 
+
+are 
+
+who 
+
+are  computed 
+
+by  doing  probe 
+
+searches.  Note 
+
+in  order 
+
+The  PessVals 
+RealVals 
+listed 
+negative 
+probability 
+represent 
+Therefore, 
+F  had  RealVals 
+lower 
+the  expansion 
+
+for 
+
+the  Opponent, 
+
+is  the  most  promising 
+the  Player  can  achieve  TargetVal 
+
+of  goodness 
+value.  Thus,  D 
+
+that 
+an  AND 
+situation 
+they  are  multiplied 
+
+since 
+
+any 
+
+and  the  value 
+
+the  OptPrb 
+
+indicate 
+
+that 
+
+this  node 
+
+that  were  better 
+and 
+thus 
+of  node  D. 
+
+can  be 
+
+selected 
+
+in  this  subtree.  These  OptPrbs 
+the  Opponent. 
+
+by 
+is  backed  up  to  node  A.  If  node  E  or 
+these  values  would 
+Fig.  7  shows 
+
+is  less  promising. 
+
+than 
+
+the  present  TargetVal, 
+
+The  SELECT 
+
+phase  now  continues 
+
+by  tracing 
+
+down 
+
+Backing 
+
+by  the  best  RealVal 
+
+(node  A),  followed 
+
+depths 
+D  is  expanded. 
+which 
+D  as  well  as  the  PessVals  of  nodes  D,  E,  and  F.  Since  RealVal(Best) 
+TargetVal 
+
+the  OptVal  and  RealVal  of  node  A  have  changed, 
+
+these  values  up  to  node  A  produces 
+
+it  the  OptPrbs. 
+
+at  odd  depths 
+
+is  recomputed, 
+
+and  with 
+
+the  best  OptPrb 
+
+at  even 
+(node  D).  So  node 
+in  Fig.  7  in 
+and  the  RealVal  of  node 
+has  changed, 
+
+the  table 
+
+At  this  point  node  A  is  the  overwhelming 
+
+favorite 
+
+root.  However. 
+is  conceivable 
+complete 
+
+there 
+that 
+separation. 
+
+is  still  some  overlap  between  RealVal(A) 
+a  bit  of 
+spend 
+
+the 
+For  this  reason,  we  have  a  parameter 
+
+search 
+
+could 
+
+quite 
+
+to  be  the  best  choice  at  the 
+It 
+and  OptVal(B). 
+to  get 
+trying 
+called  MinAct.  which 
+
+time 
+
+Node  Depth/Prt 
+A 
+B 
+C 
+D 
+E 
+F 
+
+0 
+0 
+0 
+l/A 
+l/A 
+l/A 
+
+OptVal 
+100 
+40 
+25 
+Undef. 
+Undef. 
+Undef. 
+
+RealVal 
+20 
+18 
+10 
+20 
+60 
+80 
+
+PessVal 
+Undef. 
+Un&f. 
+Undef. 
+100 
+100 
+100 
+
+TargetVal 
+30 
+30 
+30 
+30 
+30 
+30 
+
+QkPrb 
+_ 875 
+.455 
+.ooo 
+,875 
+1.00 
+1.00 
+
+Fig.  5.  SELECT  after  expanding  A 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijkial  Intelligence  86  (1996)  97-156 
+
+111 
+
+Fig.  6.  LEGEND; 
+
+SELECT  after  expanding  A. 
+
+to  still  be  in 
+is  originally  set  to  0.15.  No  node  whose  OptPrb  <  MinAct  is deemed 
+the 
+contention.  As  the  search  continues, 
+the  likeli- 
+search  gets  shorter,  MinAct 
+hood 
+the 
+that  marginal  possibilities  will  be  examined.  As  the  search  develops, 
+TargetVal  may  take  on  many  values  and  this  will  change  the  OptPrbs  usually  in 
+the  direction  of  lowering 
+that 
+MinAct 
+
+increases.  We  have  found 
+
+and  the  time  available 
+
+them  as  RealVal(Best) 
+
+labor  saving  device. 
+
+is  an  excellent 
+
+to  complete 
+
+is  gradually 
+
+increased, 
+
+reducing 
+
+thereby 
+
+the  OPPONENT 
+
+Since  no  other  node  at  the  root  except  A  has  an  OptPrb  >  MinAct, 
+is  now  over.  The  search  now  moves 
+to  use  his  optimism 
+
+the  initial 
+into  the  VERIFY  phase 
+SELECT  phase 
+where 
+that  may 
+to  find  moves 
+upset  the  analysis  as  it  now  stands.  The  node  selection  algorithm  now  reverses  the 
+is 
+selection  procedure 
+selected,  and  at  odd  depths  the  node  with  the  best  OptPrb.  This  is  because  now 
+the  OPPONENT 
+
+the  node  with  the  best  RealVal 
+
+is  exercising  his  optimism. 
+
+in  that  at  even  depths 
+
+attempts 
+
+The  first  step  here 
+
+turn  to  play.  In  this  example, 
+
+OPPONENT’s 
+G,  H,  and  Z  inherit  PessVal  from  D.  Fig.  8  shows  the  situation  after 
+computations.  Remember 
+that  for  OPPONENT, 
+nodes  D,  E,  and  F  have  been  juxtaposed 
+that  the  objective 
+
+is  to  compute  OptVals  for  all  the  nodes  at  which  it  was 
+these  are  nodes  D,  E,  and  F.  Nodes 
+these 
+negative  values  look  best.  Thus, 
+to  reflect  their  goodness.  Note  further 
+is not  as  good 
+
+in  the  VERIFY  phase  is to  show  that  RealVal(A) 
+
+Node  Depth/Prt 
+A 
+B 
+C 
+D 
+E 
+F 
+G 
+H 
+I 
+
+0 
+0 
+0 
+1/A 
+1/A 
+1/A 
+2/D 
+2/D 
+2/D 
+
+OptVal 
+76 
+40 
+25 
+Undef . 
+Undef . 
+Undef. 
+76 
+36 
+32 
+
+RealVal 
+34 
+18 
+10 
+34 
+60 
+80 
+34 
+12 
+16 
+
+PessVal 
+Undef. 
+Undef. 
+Undef. 
+16 
+100 
+100 
+Undef. 
+Undef. 
+Undef. 
+
+TargetVal 
+37 
+37 
+37 
+37 
+37 
+37 
+37 
+37 
+37 
+
+OptPrb 
+.929 
+.136 
+.ooo 
+.929 
+1.00 
+1.00 
+.929 
+.ooo 
+.ooo 
+
+Fig.  7.  SELECT  after  expanding  D. 
+
+112 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificial  Intelligence  X6  (19%)  97-1.56 
+
+Depth/Prt 
+
+0 
+0 
+0 
+
+l/A 
+l/A 
+l/A 
+2/D 
+2/D 
+2/D 
+
+0ptVal 
+76 
+40 
+25 
+-80 
+0 
+40 
+76 
+36 
+32 
+
+RealVal 
+34 
+18 
+10 
+80 
+34 
+60 
+34 
+12 
+16 
+
+Peasval 
+-80 
+Ulldef. 
+Undef . 
+100 
+76 
+
+100 
+0 
+0 
+0 
+
+TargetVal 
+17 
+17 
+17 
+
+17 
+17 
+
+17 
+17 
+17 
+17 
+
+OptPrb 
+Undef . 
+Undef  . 
+Undef  _ 
+.606 
+.500 
+.ooo 
+.500 
+1.00 
+1.00 
+
+Fig.  X.  VERIFY 
+
+initiahzation 
+
+second 
+to  17  would  be  sufficient 
+
+The 
+
+to  set  TargetVal 
+Now  OptPrb 
+
+as  RealVal(2ndBest). 
+RealVal(A) 
+effective 
+computed. 
+RealVal 
+to  TargetVal. 
+tree  at  the  end  of  the  SELECT 
+start  of  the  VERIFY 
+The  descendant 
+
+on  the  right. 
+
+best  RealVal 
+to  show 
+to  RealVal(2ndBest) 
+the  probability 
+is 
+
+that 
+
+is 
+
+that 
+it  is  not  best.  Therefore, 
+
+of  B, 
+
+-  1.  Then 
+
+the  OptPrbs 
+
+the  OPPONENT 
+for  VERIFY. 
+
+Fig.  8  shows 
+
+the  tree’s  values 
+
+can  be  seen  on  the  left,  and 
+
+the  same 
+
+so 
+
+reducing 
+it  is  most 
+can  be 
+lower 
+In  Fig.  9,  the 
+tree  at  the 
+
+can 
+
+Fig.  10.  Again, 
+of  the  descendant 
+
+of  node  A  that  has 
+note 
+
+that 
+
+the  OptPrb 
+
+the  highest  OptPrb 
+
+being  backed 
+
+is  F.  Expanding 
+
+F 
+to  F  is  the 
+up 
+the  PessVals  of  even  depth 
+
+nodes.  Also  note 
+
+that 
+
+d 
+
+for  selecting 
+
+for  the  OPPONENT. 
+the  next  node 
+
+no  es  are  the  OptVals 
+the  algorithm 
+D  (best  OptPrb), 
+and  backing 
+phase,  we  back  up 
+
+RealVal), 
+OptPrbs, 
+VERIFY 
+product 
+the  next  node  expansion  we  get:  A,  D,  G,  M.  Expanding  M  and  backing 
+
+to  expand,  we  get  A  (best 
+the 
+G,  computing 
+the 
+that  during 
+the 
+take 
+and 
+in  Figs.  9  and  11.  For 
+up  the 
+
+up  values,  we  get  Fig.  12  (remember 
+
+tree  at  this  point  can  be  seen 
+
+at  even  depths).  The 
+
+G  (best  RealVal). 
+
+from  odd  depths, 
+
+the  best  OptPrb 
+
+Expanding 
+
+produces 
+product 
+(PLAYER) 
+Applying 
+
+Fig.  Y.  SELECT 
+
+to  VERIFY 
+
+transition 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+113 
+
+Node  Depth/P* 
+A 
+B 
+
+0 
+0 
+0 
+l/A 
+l/A 
+l/A 
+2/D 
+2/D 
+2/D 
+2/F 
+
+2/F 
+2/F 
+
+Optval 
+76 
+40 
+25 
+0 
+-80 
+40 
+76 
+36 
+32 
+100 
+100 
+100 
+
+RealVal 
+34 
+18 
+10 
+34 
+80 
+60 
+34 
+12 
+16 
+80 
+60 
+50 
+
+PessVal 
+-80 
+Undef. 
+ml&f. 
+76 
+100 
+100 
+0 
+0 
+0 
+-80 
+-80 
+-80 
+
+TargetVal 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+
+OptPrb 
+Undef. 
+Undef. 
+Undaf. 
+.500 
+.313 
+.ooo 
+.500 
+1.00 
+1.00 
+.606 
+.693 
+.746 
+
+Fig.  10.  VERIN 
+
+after  expanding 
+
+F. 
+
+C 
+D 
+F 
+E 
+G 
+H 
+I 
+J 
+K 
+L 
+
+Fig.  11.  First  VERIFY 
+
+expansion. 
+
+Node  Depth/Prt 
+A 
+B 
+C 
+D 
+F 
+E 
+G 
+n 
+I 
+J 
+K 
+L 
+M 
+N 
+P 
+
+0 
+0 
+0 
+l/A 
+WA 
+l/A 
+2/D 
+2/D 
+2/D 
+2/F 
+2/F 
+2/F 
+3/G 
+3/G 
+3/G 
+
+OptVal 
+76 
+40 
+25 
+10 
+-80 
+40 
+76 
+36 
+32 
+100 
+100 
+100 
+10 
+15 
+20 
+
+RealVal 
+34 
+18 
+10 
+34 
+80 
+60 
+34 
+12 
+16 
+80 
+60 
+50 
+20 
+30 
+34 
+
+PessVal 
+-80 
+
+Undef. 
+76 
+100 
+100 
+10 
+0 
+0 
+-80 
+-80 
+-80 
+76 
+76 
+76 
+
+TargetVal 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+11 
+17 
+17 
+17 
+17 
+17 
+17 
+
+DptPrb 
+Undef. 
+undef. 
+Undef. 
+.700 
+.313 
+.ooo 
+.700 
+1.00 
+1.00 
+.606 
+.693 
+.746 
+.700 
+.133 
+.ooo 
+
+Fig.  12.  VERIFY 
+
+after  expanding  G. 
+
+114 
+
+H.J.  &diner, 
+
+c‘.  McConnell 
+
+I  Artijiciul 
+
+Intelligence  X6  (1996)  97-156 
+
+Node  Depth/Prt 
+
+A 
+B 
+C 
+D 
+F 
+E 
+G 
+H 
+I 
+J 
+
+K 
+L 
+M 
+N 
+P 
+Q 
+R 
+S 
+
+0 
+0 
+0 
+l/A 
+l/A 
+l/A 
+2/D 
+2/D 
+2/D 
+2/P 
+
+2/F 
+2/F 
+3/G 
+3/G 
+3/G 
+4/N 
+4/N 
+4/N 
+
+OptVal 
+76 
+40 
+25 
+10 
+-80 
+40 
+76 
+36 
+32 
+100 
+100 
+100 
+10 
+15 
+20 
+76 
+76 
+76 
+
+RealVal 
+34 
+18 
+10 
+34 
+80 
+60 
+34 
+12 
+16 
+80 
+60 
+50 
+55 
+30 
+34 
+55 
+32 
+20 
+
+PessVal 
+-80 
+Undef. 
+Undef. 
+76 
+100 
+100 
+10 
+0 
+0 
+-80 
+-80 
+-80 
+76 
+76 
+76 
+10 
+10 
+10 
+
+TargetVal 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+
+CptPrb 
+Undef. 
+Undef. 
+Undef. 
+.133 
+.313 
+.ooo 
+.133 
+1.00 
+1.00 
+,606 
+693 
+:746 
+,034 
+.133 
+000 
+:156 
+,318 
+.700 
+
+Fig. 1.i. VERIFY  after cxpandin~ M 
+
+values.  we  get  Fig.  13.  Now  the  best  path 
+values  yields  Fig.  14. 
+
+is  A,  F.  J.  Expanding 
+
+J  and  backing  up 
+
+Since 
+
+all  of 
+
+the 
+
+OptPrbs  <  MinAct. 
+node  A  almost 
+One  should 
+This  occasionally 
+
+note 
+
+alternative 
+the  VERIFY 
+
+refutations 
+phase  comes 
+
+of  node  A 
+
+to  a  close  with 
+
+certainly 
+
+is  the  best  node.  The 
+
+final 
+
+tree  can  be  seen 
+
+that  RealVal(T) 
+since 
+happens, 
+
+turned 
+out 
+the  bounds 
+
+to  be  outside 
+are,  after  all,  only  heuristic 
+
+the  original 
+
+esti- 
+
+{,!I,  E,  F}  now  have 
+that 
+the  conclusion 
+in  Fig.  15. 
+bounds. 
+
+Node  Depth/Prt 
+
+A 
+B 
+C 
+D 
+F 
+E 
+G 
+n 
+I 
+J 
+K 
+L 
+M 
+N 
+P 
+Q 
+R 
+S 
+T 
+U 
+V 
+
+0 
+0 
+0 
+l/A 
+l/A 
+l/A 
+2/D 
+2/D 
+2/D 
+2/F 
+2/F 
+2/F 
+3/G 
+3/G 
+3/G 
+4/N 
+4/M 
+4/M 
+3/J 
+3/J 
+3/J 
+
+OptVal 
+7ti 
+40 
+25 
+10 
+4 
+40 
+76 
+36 
+32 
+100 
+100 
+100 
+10 
+15 
+20 
+76 
+76 
+76 
+4 
+11 
+16 
+
+FLealVal 
+34 
+18 
+10 
+34 
+80 
+60 
+34 
+12 
+16 
+40 
+60 
+50 
+55 
+30 
+34 
+55 
+32 
+20 
+82 
+70 
+40 
+
+PessVal 
+-80 
+Un&f. 
+Undef. 
+76 
+100 
+100 
+10 
+0 
+0 
+4 
+-80 
+-80 
+76 
+76 
+76 
+10 
+10 
+10 
+82 
+80 
+80 
+
+TargetVal 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+17 
+
+OptPrb 
+Undef. 
+Undef. 
+Undef. 
+.133 
+.086 
+.ooo 
+.133 
+1.00 
+1.00 
+167 
+:693 
+746 
+:034 
+.133 
+000 
+:156 
+.318 
+700 
+:167 
+102 
+:042 
+
+Fig. IJ. VERIFY  after expanding J 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijkial  Intelligence  86  (1996)  97-156 
+
+11.5 
+
+Fig.  15.  Final  tree. 
+
+mates.  This  example 
+to  display  all  the  features 
+
+is a  relatively  short  one,  but  still  quite  complex  and  attempts 
+
+that  go  into  controlling 
+
+the  search. 
+
+3.6.1.  OptPrb  and  probability  distributions 
+
+Probability  distributions  collect  the  information  needed 
+
+about  what  to  explore  and  when  to  stop.  When  a  node  is  expanded, 
+and  OptVal  are  computed.  The  conditions 
+complicated 
+and  are  explained 
+of  a  leaf  is somewhere  between 
+the  RealVal  . 
+
+to  make  good  decisions 
+its  RealVal 
+for  computing  OptVal  are  quite 
+in  Section  3.8.  It  is  assumed  that  the  actual  value 
+these  two  values,  with  it  most  likely  being  nearer 
+
+Fig.  16 shows  a leaf  node  distribution.  The  RealVal  =  20,  and  the  OptVal  =  250. 
+We  assume  a  uniform  distribution  between  RealVal  and  OptVal,  and  this  appears 
+to  work  well  in  practice.  The  OptPrb  at  250  is  0,  while  the  OptPrb  at  20  is  1.0 
+since  that  value  has  already  been  achieved. 
+values  can  be  read  off 
+along  the  X  and  Y  axes. 
+
+Intermediate 
+
+to  be  achieved 
+
+In  our  method  of  computing  OptPrbs  we  differ 
+In  Palay’s  method,  after  a node  was  expanded, 
+
+somewhat 
+from  Palay’s 
+the  distribution  of  likely 
+approach. 
+time 
+values 
+the  tree  that  was  likely 
+consuming,  but  allowed  the  selection  of  the  path  through 
+to  yield  the  greatest 
+to  the  leaf 
+node  estimates.  Thus,  the  backing  up  of  values  consisted  of  backing  up  the  best 
+distribution 
+
+in  every  subtree  was  computed.  This  was  quite 
+
+it  was  an  OR  node,  and  doing  a  point-by-point 
+
+in  the  value  at  the  root,  according 
+
+in  toto  whenever 
+
+improvement 
+
+116 
+
+H.J.  Berliner,  c’. 
+
+McConnell 
+
+I  Artificial  Intelligence  X6  ( 1996)  97  156 
+
+TargetVal=lOO, 
+
+OptPrb=.652 
+
+Prob 
+
+1.0 
+
+0.8 
+
+0.6 
+
+0.4 
+
+0.2 
+
+0.0 
+
+20 
+
+Value 
+
+250 
+
+Fig.  16.  Probability 
+
+distribution 
+
+and  meaning. 
+
+of  distributions 
+
+at  AND  nodes. 
+
+It  was  this  latter  operation 
+
+that  was 
+
+computationally. 
+
+This  method 
+
+of  backing 
+
+up  distributions 
+
+is  explained 
+
+multiplication 
+expensive 
+in  [26,  271. 
+
+Instead,  we  use  a  method  of  projecting 
+
+to  be  a  reasonable 
+computation 
+of  TargetVal 
+100,  and  OptPrb(TargetVal) 
+
+target 
+
+to  which 
+
+to 
+
+is  explained 
+=  0.652. 
+
+in  Section  3.9.3. 
+
+a  TargetVaf,  which 
+to  move 
+
+try 
+
+is  a  value 
+the  best  RealVal. 
+
+that  seems 
+The 
+In  Fig.  16  the  TargetVal  = 
+
+After  a  node  has  been  expanded,  we  back  up  all  new  values 
+
+including  OptPrbs, 
+
+however 
+parameters 
+tion  of  OptPrbs 
+requiring 
+subtree 
+
+far  back 
+
+they  percolate 
+
+in 
+
+the 
+
+tree.  Then  we  check  whether 
+
+the 
+
+that  determine 
+throughout 
+only  a  single  multiply 
+
+TargetVal 
+the  tree  is  done.  The  computation 
+
+have  changed. 
+
+If  so,  then  a  new  computa- 
+is  very  inexpensive, 
+
+per  node 
+
+in  the  AND  case.  The  OptPrbs 
+
+in  any 
+
+now  represent 
+
+We  have  found 
+
+that 
+
+likelihood 
+
+the 
+the  performance 
+
+of  achieving  TargetVal 
+of  the  B*  algorithm 
+
+the  exact  value  of  TargetVal; 
+best  RealVal 
+
+reflect 
+
+and 
+
+it  only  needs 
+
+to  be  an  approximate 
+
+the  potential 
+
+of  the  best  alternative 
+
+OptVal. 
+
+in  that  subtree. 
+is  hardly  affected  by 
+the 
+
+distance 
+
+from 
+
+3.7. 
+
+Independence 
+
+of  alternatives  in  the  search 
+
+When 
+
+a  player  has  many  alternatives 
+
+if  he  only  has  few.  This 
+
+is  reflected 
+
+it  is  more 
+in  the  way  distributions 
+
+that  he  has  a  good  one 
+are  backed  up. 
+
+likely 
+
+chooses,  we  assume 
+
+that  he  will  choose 
+
+his  best  alternative. 
+
+the  Opponent 
+of  his  alternatives 
+
+chooses  he  may  choose 
+from  many,  and  the  quality 
+are  reflected  by  the  product  method  of  backing  up 
+
+the  Player 
+
+than 
+When 
+However,  when 
+and  quantity 
+distributions.” 
+
+It 
+
+is  well  known 
+Thus, 
+five  replies.  However, 
+
+independent. 
+(say) 
+then  one  may  question  whether 
+the  five  replies 
+
+all  moves 
+
+that 
+a  certain  move  may  appear 
+
+and  branches 
+
+non-forcing 
+
+of  a  search 
+
+if  each  of  these 
+this  represents 
+
+replies 
+
+is  refuted 
+
+as  much 
+
+freedom 
+
+is  met  in  different  ways.  Actually, 
+
+the  problem 
+
+tree 
+
+are  not 
+because 
+it  allows 
+in  the  same  way, 
+as  when  each  of 
+of 
+
+of  independence 
+
+“‘It  should 
+categorization 
+
+be  noted 
+effect 
+
+that 
+
+this  captures 
+
+the 
+from  putting 
+
+idea  behind 
+things 
+
+that  comes 
+
+into  conspiracy 
+
+buckets. 
+
+conspiracy  without 
+
+being 
+
+subject 
+
+to 
+
+the 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijkial  Intelligence  86  (1996)  97-156 
+
+117 
+
+In  some  earlier  work 
+
+is  complicated  by  the  fact  that  no  one  knows  how  to  define  “in  the 
+alternatives 
+same  way”,  despite 
+the  fact  that  it  is  fairly  clear  to  humans  what  is  being  talked 
+of 
+about. 
+[4],  the  first  author  backed  up  descriptions 
+failures,  and  used  these  to  try  to  discover  those  moves  that  could  not  be  refuted 
+in 
+the  same  way.  It  turned  out  that  the  descriptions  were  not  complete  enough  to  be 
+effective  all  of  the  time. 
+We  have  addressed 
+
+in  the  modern  style  of  approx- 
+imating  behavior  by  starting  with  the  simplest  concepts.  Thus,  as  a  first  approxi- 
+it  is good  to  categorize  moves  to  reply  groups.  All  moves  in  a  reply  group 
+mation, 
+have  the  same  best  response.  These  responses  are  discovered  during  the  RealVal 
+searches.  The  value  backed  up  for  a  reply  group 
+in 
+searches  of  all  members  of  the  reply  group.  This  avoids  the  risk  of  having  the 
+that  may  or  may 
+OptPrb  of  a  parent  node  reflect  that  there  are  many  responses 
+not  be  independent.  This  method  has  produced  better  behavior,  but  we  do  not 
+want  to  justify  it  by  other 
+
+is  the  best  value  found 
+
+than  empirical  means. 
+
+the  independence 
+
+problem 
+
+3.8.  The  search  mechanism 
+
+important 
+
+is  extremely 
+
+The  participants 
+
+[5]  in  an  attempt 
+
+formulation 
+phase, 
+
+replaced  by  two  phases. 
+
+In  Palay’s 
+In  the  SELECT 
+
+these 
+the  search 
+the 
+in  trying  to  find  the  best  move.  In  the 
+if  it  can 
+the  Opponent  has  the  chance  to  exercise  his  optimism.  For 
+in  the  SELECT  phase  a  certain  piece  may  be  attacked  by  the  Player, 
+in 
+
+in  the  adversary  search  are  the  Player  who  is the  side-to-move 
+at  the  root,  and  the  Opponent,  who  is  the  other  side.  In  the  original  formulation 
+of  B*,  the  search  was  guided  by  selecting  either 
+the  ProveBest  or  DisproveRest 
+strategy 
+to  gain  separation. 
+strategies  were 
+proceeds  until  a  candidate  best  descendant  of  the  root  is  determined.  Here, 
+Player’s  optimism 
+VERIFY  phase  this  move  is  subjected 
+hold  its  value.  Here 
+instance, 
+and  prudence  dictates  that  the  Opponent 
+the  VERIFY  phase  it  may  be  found  that  a counter-attack  best  solves  this  problem. 
+If  both  sides  exercise 
+the  Opponent, 
+the  Player  were  to  put  a  rook  where  it  could  be  taken  it  behooves 
+as  a  first  attempt, 
+to  take  it.  If  he  were  allowed  to  exercise  optimism  at  this  point, 
+he  might  prefer  to  attack  the  queen,  which  if  successful  could  be  better.  However, 
+it  would  widen  the  scope  of  the  investigation  unnecessarily 
+to  the  point  where 
+convergence  would  be  problematical.  This  problem  was  first  discussed  in  [4]. 
+
+their  optimism  simultaneously, 
+
+total  chaos  would  result.  If 
+
+should  move  or  defend 
+
+to  intense  scrutiny 
+
+to  determine 
+
+it.  However, 
+
+3.9.  Node  expansion 
+
+Expanding  a  node  consists  of  doing  probe  searches 
+
+to  get  bounding  values  for 
+its  children.  The  algorithm  always  gets  the  RealVal  bound  for  any  node  being 
+to 
+expanded  by  doing  a  D-ply  search  of  the  move  in  question.  Here  D  is referred 
+as  the  probe  depth,  and  is  adjustable  depending  upon  the  power  of  the  machine 
+and  the  amount  of  material  on  the  board. 
+then  the 
+nodes  also  get  an  OptVal.  OptVals  are  obtained  by 
+children  of  all  Player-to-move 
+
+If  it  is  the  SELECT  phase, 
+
+118 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificial 
+
+Intelligence  86  (1996)  97-156 
+
+to  the  child  node,  and  reversing 
+
+the  side-to-move 
+
+leading 
+search.  This  gives 
+
+the  Player 
+
+an  extra  move, 
+
+to  show  his  threats.  The  reasons 
+only 
+
+phase 
+
+for  this  method 
+deals  with  Player 
+
+are  discussed 
+optimism, 
+
+at  the 
+and  gives  him  a 
+
+in  Section 
+is  not 
+it 
+the 
+of 
+
+for 
+
+the  children 
+phase,  OptVals 
+
+of  Opponent-to-move 
+
+are  obtained 
+
+nodes.  On 
+only  for  the  children 
+
+because 
+
+here  we 
+
+are 
+
+dealing 
+
+with  Opponent 
+
+making 
+the  move 
+start  of  the  D-ply 
+chance 
+3.10.  Since 
+necessary 
+other  hand, 
+Opponent-to-move 
+optimism.” 
+
+the  SELECT 
+to  get  OptVals 
+
+in  the  VERIFY 
+nodes, 
+
+3.9.1.  The  SELECT 
+
+phase 
+
+this  phase,  we  only  deal  with 
+
+the  Player’s  optimism. 
+
+OptPrbs 
+
+potential 
+
+at  each  node.  All  phases 
+
+are  governed 
+
+by  effort 
+
+define 
+the 
+limits,  which 
+
+In 
+Player’s 
+are  discussed 
+
+in  Section  3.11. 
+
+The  search  begins  with  a  limit  on  the  number 
+
+of  nodes 
+
+to  find  the  best  move  for  the  Player.  When 
+phase, 
+
+the  SELECT 
+
+If  during 
+
+phase. 
+
+this  limit 
+the  best  move 
+
+is  considered 
+
+that  are  to  be  expanded 
+is  reached,  we  begin 
+
+in  trying 
+the  VERIFY 
+best”, 
+“clearly 
+that  competitive 
+other  move 
+SELECT 
+phase, 
+
+the  SELECT 
+OptPrbs 
+can  achieve 
+because 
+then  a  new  effort 
+
+phase 
+
+phase 
+are  valued 
+
+is  terminated 
+
+in  such  a  way 
+
+early.  By  clearly  best,  we  mean 
+that  any 
+it  is  unlikely 
+to  the 
+
+that 
+
+If  the  search 
+
+as  good  a  RealVal. 
+the 
+limit 
+
+selected  move  was 
+is  set,  and 
+
+things  proceed 
+
+refuted 
+
+later 
+during 
+as  described 
+
+returns 
+the  VERIFY 
+above. 
+
+3.9.2.  The  VERIFY  phase 
+Despite  Palay’s  assertion 
+
+that 
+
+the  VERIFY 
+
+is  not  correct.  The  purpose 
+but  merely 
+
+for  the  Opponent. 
+
+this 
+
+phase, 
+best  reply 
+the  RealVal 
+two  goals  are  not 
+open-ended 
+clearly  best  move.  Finding 
+move 
+
+activity 
+
+of  the  selected  move 
+
+the  same.  Finding 
+
+to  the  point  where 
+the  best  move 
+
+terminated 
+
+only  by  exceeding 
+
+phase 
+of  the  VERIFY 
+to  find  one 
+
+phase 
+
+to  find 
+
+is  the  reverse  of  the  SELECT 
+is  not 
+that  is  good  enough 
+
+the 
+to  reduce 
+it  is  no  longer  best.  These 
+is  an 
+a 
+
+in  the  SELECT 
+the  effort 
+
+limit  or  finding 
+
+phase 
+
+any  move 
+
+that  is  an  adequate  refutation 
+task. 
+
+of  the  selected 
+
+is  a  much  more  circumscribed 
+phase, 
+
+the  Opponent 
+
+In  the  VERIFY 
+
+has  been 
+successful 
+Opponent 
+his  optimism. 
+However, 
+
+suppressed 
+Player  move 
+captured. 
+
+the  SELECT 
+
+during 
+in  the  SELECT 
+
+In  the  VERIFY 
+
+phase 
+
+is  allowed 
+
+phase. 
+
+For 
+
+to  exercise  his  optimism,  which 
+the 
+the 
+to  try 
+
+will  be  allowed 
+
+a  rook  which 
+
+instance, 
+
+assume 
+
+phase  was  to  sacrifice 
+
+He  could 
+it  would  have  been 
+
+threaten  mate, 
+
+and 
+
+refute 
+
+the 
+
+rook 
+
+folly  to  allow 
+
+this  threat  during 
+
+the  SELECT 
+
+sacrifice. 
+phase. 
+
+the  Opponent 
+this  may 
+
+that  when  we  discuss  node  expansion,  we  are  speaking 
+
+involves 
+
+”  It  should  be  noted  here, 
+B*  node  expansion 
+descendants 
+nodes 
+but  for  the  purposes 
+node  has,  nor  how  many  nodes  were  expanded 
+
+the  node  has,  and  what  phase 
+
+doing  a  certain 
+
+of  understanding 
+
+in  the  probe 
+
+(hardware) 
+
+searches.  We  do  present 
+the  B*  algorithm. 
+
+number 
+the  search 
+
+of  probe 
+
+searches 
+
+depending 
+
+is  in.  This  in  turn  will  involve  many 
+the  latter  data  at  various  places 
+
+of  B*  nodes.  Each 
+upon  how  many 
+of 
+thousands 
+in  this  report. 
+
+it  does  not  matter  how  many  descendants 
+
+a 
+
+in  the  search 
+
+to  find  the  bounding 
+
+values. 
+
+H. J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+119 
+
+Only  after  a  concrete 
+Opponent 
+The 
+
+selection  has  been  made  does  it  make  sense  to  allow  the 
+
+to  try  to  refute  by  non-standard  means. 
+
+is  refuted  before 
+
+is  also  governed  by  an  effort 
+
+length  of  the  VERIFY  phase 
+
+limit.  If  the 
+selected  move 
+to  the 
+SELECT  phase  to  begin  anew  finding  the  best  Player  move.  If  the  effort  limit  is 
+It  is  also 
+reached, 
+the  selected  move  has  stood  up  to  testing,  and  is  played. 
+possible  for  the  VERIFY  phase  to  give  up  trying  to  refute 
+if 
+none  of  the  moves  remaining 
+for  a 
+refutation. 
+
+to  be  investigated  appear  to  have  the  potential 
+
+the  selected  move, 
+
+limit  is  reached, 
+
+control 
+
+returns 
+
+that 
+
+3.9.3.  Selecting the next node  to expand 
+
+At  the  root,  the  node  with  the  largest  OptVal  is not  always  the  best  one  to  look 
+a  subtree  where  Prb(500)  =  0.01,  and 
+at.  An  OptVal  of  500  may  represent 
+a  subtree  where  Prb(lOO)  = 
+Prb(lOO)  =  0.02.  An  OptVal  of  250  may  represent 
+0.8,  even  though  Prb(300)  =  0.0.  So  a  more  likely  lower  goal  may  be  preferred 
+to 
+a  less  likely  higher  goal.  This  is why  distributions  are  so  desirable  as  estimators  of 
+idea  of  which 
+goodness, 
+branches  may  lead  there. 
+
+for  a  suitable  goal  gives  an  excellent 
+
+and  OptPrb 
+
+In  each  phase,  one  player 
+
+level  of  success,  and  the  Obstructor 
+
+is  goal  oriented  and  forcing  and  the  other 
+
+is  an 
+tries  the  move  that  has  the  greatest 
+tries  to 
+is  a 
+
+Obstructor.  The  goal  oriented  player  (Forcer) 
+chance  of  achieving  some  optimistic 
+the  effectiveness  of  a  move 
+limit  the  effectiveness  of  that  move.  Limiting 
+than  looking  for  wild  refutations. 
+much  more  prudent  strategy  for  the  Obstructor 
+form  a pair,  and  they  succeed  in  limiting  the  scope 
+The  Forcer  and  the  Obstructor 
+In  the  two 
+of  the  investigation 
+the 
+phases, 
+the 
+Player 
+is  the  Forcer.  This 
+exchanging  of  roles  continues  until  the  optimism  of  the  Forcer  does  not  change 
+the  existing  view  of  what  is  going  on. 
+
+exchange 
+is the  Forcer,  and  in  the  VERIFY  phase  the  Opponent 
+
+to  the  benefit  of  the  problem 
+roles.  Thus, 
+
+solving  process. 
+in  the  SELECT  phase 
+
+two  opponents 
+
+that 
+
+The 
+
+indicates 
+
+computes 
+
+expression 
+
+the  Forcer 
+
+is  the  one 
+
+is  on  move, 
+
+is  to  choose, 
+
+the  branch  chosen 
+
+The  level  of  success  that  the  Forcer  attempts 
+
+levels  in  the  search  where 
+whose  OptPrb 
+the  Obstructor 
+RealVal  from  the  Obstructor’s  point  of  view.  This  produces 
+is 
+
+to  achieve  is  called  TargetVal.  At 
+the  branch  chosen  is  the  one 
+that  it  is  most  likely  to  reach  TargetVal.  At  levels  where 
+that  has  the  best 
+the  firmest  resistance. 
+(OptVal(  2ndBest)  + 
+RealVal(Best))/2.  We  have  no  theory  for  this  expression,  but  it  seems  to  do  an 
+excellent 
+from  what  has  been 
+achieved  already.  As  these  values  change,  TargetVal  will  also  change.  The  major 
+dis- 
+function  of  TargetVal 
+tributions 
+time 
+TargetVal  changes,  the  program  goes  through  the  whole  tree  (which  is never  more 
+the  probability  of 
+than  20,000  nodes,  and  seldom  more  than  8000)  and  computes 
+to  reach  the  TargetVal.  These  values  are 
+any  node’s  subtree  having  the  potential 
+in  Section  3.6.1,  and  this  yields 
+backed  up  by  the  product  rule  methods  explained 
+takes  about  0.2  seconds  on  a  SUN-4 
+the  OptPrbs  for  each  node.  This  computation 
+
+the  cumulative  probability 
+time.  Each 
+
+the  goal  at  the  right  distance 
+
+that  caused  Palay’s  program 
+
+is  to  avoid  computing 
+
+to  spend  so  much 
+
+job  of  keeping 
+
+TargetVal 
+
+120 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Art$ciul 
+
+Intelligence  86  (1996)  47-156 
+
+workstation.  As  new  information 
+updated  along  with  the  OptVal  and  RealVal  in  the  affected  subtrees. 
+
+comes  in  during  the  search, 
+
+the  OptPrbs  are 
+
+the 
+
+and 
+
+since 
+
+(OptVal- 
+
+a  distribution 
+
+then  compute 
+
+-  RealVal).  This 
+
+require  producing 
+
+basis.  If  it  should 
+
+the  processing  cost  is  large. 
+
+This  method  should  be  compared 
+
+ratio  of  area  under 
+is  the  probability 
+
+to  Palay’s  process  which  produced  a  rough 
+associated  with  each  node.  That 
+estimate  of  the  whole  probability  distribution 
+allows  reading  off  the  probability  of  achieving  any  given  level  of  success  in  that 
+subtree.  However, 
+Instead,  we  estimate  a  target 
+distance, 
+TargetVal)/(OptVal 
+greater  or  equal  to  TargetVal  in  the  given  range.  The  computation 
+it  does  not 
+faster, 
+on  a  point-by-point 
+interrogated 
+TargetVal 
+is  too  difficult  to  achieve. 
+at  still  a  fraction  of  the  cost  of  Palay’s  scheme. 
+to  choose 
+
+the  curve 
+of  achieving  a  value 
+is considerably 
+capable  of  being 
+turn  out  that  the  selected 
+it  is  moved  closer  and  the  process  repeated, 
+
+that  has  the  greatest 
+the  node 
+In  Palay’s  method 
+likelihood  of  achieving 
+the  greatest  success.  The  first  author  had  many  oppor- 
+tunities  to  observe  this  algorithm  in  action,  and  does  not  believe  that  it  in  any  way 
+the  present  scheme.  It  turns  out  that  within  limits  it  only  makes  a 
+outperformed 
+small  difference  which  of  several  promising  nodes  are  chosen.  They  will  all  be 
+examined  eventually,  and  it  is  sufficient  to  examine 
+them  in  some  approximately 
+correct  order.  If  one  of  them  turns  out  to  be  a winner,  it  will  eventually  be  found. 
+If  there  are  several  winners,  the  first  one  found  will  be  selected.  The  quality  of  the 
+the  kind  of 
+data,  while  truly  excellent 
+high  quality  mathematical  manipulation 
+It  is,  in 
+fact,  necessary 
+a  reasonably  broad, 
+the  subject  of  dithering 
+actually  support 
+
+into  the  selection  process  to  guarantee 
+if  shallow,  coverage  of  all  candidates.  This  is  treated  under 
+(see  Section  6).  Any  somewhat  second  rate  decision  will 
+
+for  the  given  purposes,  does  not  deserve 
+
+to  introduce  some  variation 
+
+that  Palay’s  scheme 
+
+it  is  possible 
+
+this  process. 
+
+involved. 
+
+is always  greater 
+
+the  search.  TargetVal 
+
+than  the  best  RealVal, 
+During  the  SELECT  phase,  TargetVal 
+is  adjusted 
+and  as  gains  in  RealVal  are  made  during 
+accordingly.  However,  during  the  VERIFY  phase  TargetVal  always  remains  at  the 
+value  that  the  RealVal  of  the  selected  move  must  be  reduced 
+to  for  it  no  longer  to 
+that  it  is  not  the  best  policy  to  always 
+be  best.  In  both  phases,  we  have  found 
+investigate 
+It  could  be  that  such  a  subtree  has 
+already  had  a  large  amount  of  effort  expended  on  it.  In  such  a  case,  it  is  wise  to 
+select  for  investigation  a  node  that  is  not  quite  as  good,  but  has  had  less  effort 
+expended  on  it. 
+
+the  node  with  the  highest  OptPrb. 
+
+3.9.4.  The  two  phuses  working 
+
+together 
+
+to  identify 
+
+It  is  the  function  of  the  SELECT  phase 
+
+the  best  move  for  the 
+PLAYER,  and  the  function  of  the  VERIFY  phase  to  show  that  this  move  is  not 
+best.  This  sets  the 
+the  move  with  the 
+to  be  the  best  move.  The  Forcer  will  at  each  choice 
+greatest  RealVal  is considered 
+point  select  for  search  the  node  with  the  best  OptPrb  with  the  proviso 
+that  the 
+dithering 
+to  a  node  with  a  less 
+good  OptPrb.  The  latter  is useful  to  assure  that  the  most  promising  node  does  not 
+
+factor  may  cause  occasional  effort 
+
+tone  for  everything 
+
+else.  At  all  times 
+
+to  be  diverted 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+121 
+
+get  all  the  search  effort. 
+to  examine  every 
+possible  move  that  has  potential,  and  to  pursue  those  with  the  greatest  potential 
+until  they  are: 
+
+In  the  SELECT  phase  it  is  important 
+
+l shown  to  be  decisively  better 
+l found 
+l time  expires. 
+In  the  VERIFY  phase  the  same  logic  is  applied  in  attempting 
+
+than  the  competition, 
+
+to  be  lacking,  or 
+
+to  find  that  the 
+selected  move  is  not  best.  In  the  SELECT  phase  all  effort 
+is  put  into  being  sure 
+that  every  possible  promising  move  is  tried.  In  the  early  stages  of  a  search  when 
+optimism  abounds, 
+is a  good  distance  from  the  best 
+RealVal.  As  the  optimism  abates,  the  TargetVal  comes  closer  to  the  best  RealVal. 
+However, 
+is  a  firm  value.  If  the  value  of  the 
+selected  move  can  be  brought  down  below  this  value,  then  the  selected  move  is 
+considered 
+
+in  the  VERIFY  phase,  TargetVal 
+
+this  means  that  the  TargetVal 
+
+refuted,  and  control  returns 
+
+to  the  SELECT  phase. 
+
+3.10.  Knowledge 
+
+issues  in  optimistic  evaluation 
+
+There  are  certain  problems  associated  with  assigning  OptVals  to  moves  that  are 
+that  threaten  mate,  or  that  start  with  certain  kinds  of  captures.  These  are 
+
+checks, 
+domain  specific  issues  for  chess,  that  Palay  did  not  succeed 
+
+in  solving. 
+
+All  values  are  the  result  of  probe  searches,  which  produce  more  consistent 
+the 
+the  probe  search  that  produces 
+
+than  static  estimates 
+to  make  an  extra  move  before  beginning 
+
+values 
+Forcer 
+the  OptVal  for  this  move.  In  chess,  this  amounts  to  discovering 
+“threat” 
+where 
+
+the  extra  move  gives  a  false  impression  of  what  is  going  on. 
+
+that  he  could  execute  on  the  next  move.  However, 
+
+if  the  Forcer  has  a 
+there  are  many  cases 
+
+is  best  portrayed 
+
+[26].  Optimism 
+
+by  allowing 
+
+The  most  obvious  one  of  these  is  a  checking  move.  Clearly,  one  cannot  make 
+an  extra  move  here,  as this  would  result  in  the  capture  of  the  king  that  is in  check, 
+that  the 
+which  would  not  tell  us  anything  useful.  Instead,  we  have  determined 
+strength  of  a  check  is  a  function  of  the  following  positive  properties: 
+
+(1)  Is  the  checking  piece  safe  from  capture? 
+(2)  How  few  replies  to  the  check  are  there? 
+(3)  Is  the  king  forced 
+
+to  move? 
+
+Thus,  we  produce  a value  based  on  these  considerations.  We  discount  the  value  of 
+a  check,  so  that  checks  near  the  root  of  the  tree  tend  to  be  preferred. 
+
+is  capable  of  always  finding  mates 
+
+is  the  threat  of  mates.  A  normal  3-ply  Hitech  alpha-beta 
+Another  problem 
+search  with  extensions 
+in  2  moves,  and 
+frequently  mates  in  3  or  even  4  moves  (because  of  extensions).  Such  threats  are 
+very  potent,  and  are  something 
+to  discover  without 
+that  is  essentially 
+probe  searches.  We  consider  mate  threats 
+than  all  checks  that  have  3 
+or  more  replies.  The  number  of  moves  to  mate  is not  important.  We  also  discount 
+such  threats  as  a  function  of  distance  from  the  root. 
+
+to  be  better 
+
+impossible 
+
+A  third  type  of  problem,  we  call  hit-and-run  captures.  Here  a piece  will  capture 
+to  escape  with  the 
+to  capture  whatever 
+
+a  man  that  is  well  guarded, 
+and  then  use  the  extra  move 
+capturing  man,  thus  giving  the  illusion  that  there  is  a  threat 
+
+122 
+
+H.J.  Berliner,  C‘.  McConnell 
+
+I  Artificiul  intelligence  86  (1996)  97-156 
+
+in  the  hit-and-run.  We  have  solved 
+
+was  grabbed 
+this  problem  by  careful  case 
+analysis  of  the  principal  variations  brought  back  by  the  optimistic  and  realistic 
+searches. 
+
+If: 
+
+(1)  in  the  optimistic  line  of  play  the  piece  making  the  extra  move  is the  same  as 
+
+the  one  that  does  the  capturing,  and 
+
+(2)  in  the  realistic  line  of  play,  the  capturing  man  is  itself  captured, 
+then  only  a  small  fraction  of  credit  is  allowed.  Similar  considerations 
+moves  in  which  a  piece  moves  twice,  but  would  have  been  captured 
+play  that  produced 
+
+deal  with 
+in  the  line  of 
+the  RealVal.  Such  “threats”  are  not  to  be  taken  too  seriously. 
+We  have  been  able  to  use  the  pattern  recognizing  ability  of  Hitech  [7] to  create 
+patterns 
+If  a  king  has  wandered  away 
+from  his  home  base, 
+it  is  worth  endowing  such  positions  with  a  few  points  of 
+situation 
+optimism 
+occurs  when  there  is  a  pin  (which  standard  Hitech  does  not  detect).  Here  again, 
+we  encourage 
+the  position  optimistic 
+for  itself. 
+
+the  side  that  is  making  the  pin  to  consider 
+
+that  produce  optimism  in  special  situations. 
+
+further  exploration.  Another 
+
+for  the  opponent 
+
+to  encourage 
+
+the 
+
+since 
+
+results. 
+
+or  that 
+
+this.  However, 
+
+immemorial.  Consider, 
+
+We  have  only  developed 
+
+immediately  with  gain.  However, 
+
+issue  of  optimism 
+the  value  of  a  pin.  It  could  be  that 
+
+a  few  optimistic  patterns.  but  they  are  producing 
+It  should  be  pointed  out  that  brute-force  programs  have  had 
+excellent 
+for 
+time 
+problems  with 
+the  pinned  piece  will  be  lost 
+instance, 
+it  will  escape,  or  that  part  of  its  value  will  be  lost.  The 
+completely, 
+quiescence  search  will  do  a  fairly  good  job  of  arbitrating 
+there  are 
+times  when  (say)  a  knight  is  pinned  by  a  bishop,  yet  the  knight  is  defended  and 
+cannot  be  captured 
+in  the  long  run  the  knight 
+cannot  escape  and  some  severe  detriment  will  result  from  this.  Of  course,  not 
+every  knight  pinned  by  a  bishop  will  suffer  such  a  fate.  It  is  impossible 
+to  decide 
+statically  how  much  of  a debit  to  associate  with  such  a  situation; 
+today’s  programs 
+to  use  some  heuristic  average.  This  will  encourage  pinning  and  avoiding 
+tend 
+the  main  question.  A  pin  is  a  source  of 
+being  pinned,  but  fails  to  address 
+optimism 
+this  issue  for  some 
+distance  in  the  search,  can  the  truth  about  the  value  of  the  pin  be  discovered.  This 
+is  an  example  of  a  fundamental 
+class  of  issues.  There  are  very  few  things  in  the 
+real  world  for  which  an  exact  value  can  be  determined.  Some  sort  of  fuzziness 
+is  a  good  way  of 
+represented 
+bounding 
+
+the  problem  until  more  investigative  effort  can  be  brought 
+
+for  the  side  doing  the  pinning.  Only  by  pursuing 
+
+by  optimistic  and  realistic  evaluation 
+
+to  bear. 
+
+bounds 
+
+3.11.  Effort  limits 
+
+In  a performance  program  one  needs  effort  limits,  which  may  very  well  be  quite 
+to  the  rest,  and  in 
+ad  hoc.  It  is  rarely  the  case  that  one  move  is  clearly  superior 
+in  most  cases 
+such  situations 
+there  must  be  some  assurance 
+action 
+that  the  algorithm 
+under  conditions  of  uncertainty.  For  instance,  how  much  effort  should  be  spent  in 
+the  first  SELECT  phase  to  decide  the  best  move.  Assuming  that  the  search  does 
+
+this.  However, 
+is  taking  appropriate 
+
+the  algorithm  speedily  determines 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijicial  Intelligence  86  (1996)  97-156 
+
+123 
+
+not  terminate  due  to  an  overwhelming  preference 
+types  of  effort 
+
+limits: 
+
+for  a  move, 
+
+there  are  three 
+
+l the  amount  of  time  available  for  the  investigation, 
+l how  close  are  the  competing  alternatives, 
+l that  no  effort  be  expanded  on  any  branch  that  has  less  than  a  likelihood,  X, 
+is  used  up,  X  is  increased 
+
+the  TargetVal.  As  search 
+
+time 
+
+and 
+
+of  achieving 
+accordingly. 
+
+Similar  limits  control 
+
+the  effort  to  be  allocated 
+
+to  refuting  the  selected  move  in 
+the  VERIFY  phase.  It  could  be  that  the  very  next  move  to  be  investigated  would 
+in  a  pragmatic  world  there  must  be  a  balance 
+refute 
+between 
+terminates  when 
+further 
+
+investigation  costs  more  than  it  is  likely  to  help. 
+
+likelihood  of  success  and  its  cost.  Each  phase 
+
+the  selected  move.  However, 
+
+the 
+
+We  set  the  effort 
+
+limit  at  the  start  of  the  whole  move  selection  process  based 
+upon  the  size  of  the  saved  tree  (discussed 
+in  the  next  section),  and  the  average 
+amount  of  time  that  is  available  per  move  until  the  next  time  control.  This  is 
+number  of  nodes 
+expressed 
+to 
+as  the  “maximum” 
+that  number  is 225.  40%  of  the  nodes  are  allotted 
+expand.  In  this  implementation, 
+to  the  first  SELECT  phase,  and  50  nodes  to  the  first  VERIFY.  After  that,  future 
+50%  of  the  remaining  nodes  with  the 
+selects  and  verifies,  use  approximately 
+to  a VERIFY.  This  can  on 
+proviso 
+those  occasions 
+occasion  result  in  exceeding 
+are  rare,  and  are  more 
+the 
+algorithm 
+
+than  made  up  for  by  the  large  number  of  times 
+
+terminates  without  using  up  its  node  allotment. 
+
+that  there  never  be  less  than  15 nodes  allotted 
+
+the  maximum  node  target.  However, 
+
+the  algorithm  expects 
+
+that 
+
+3.12.  Thinking  ahead  on  the  opponent’s 
+
+time 
+
+improved  upon 
+
+Brute-force  programs 
+
+to  the  expected  move. 
+
+think  ahead  on  the  opponent’s 
+
+If  the  program  guesses  successfully, 
+
+is 
+If  the  time 
+long,  it  may  even  be  able  to  penetrate  more  deeply  in  the  search,  and 
+
+time  by  guessing  the  move 
+to  be  made,  and  then  figuring  out  what  they  would  do  if  that  move 
+it  may  be  able  to  respond 
+taken  by  the  opponent 
+
+they  expect 
+were  played. 
+instantaneously 
+inordinately 
+make  a  much  better  move  than  it  would  under  normal  time  controls.  Tournament 
+time  on  thinking 
+Hitech 
+it 
+ahead  for  any  move  the  opponent  may  make  [6]. When  that  time  was  reached, 
+think  ahead  on  the  next  most  likely  opponent  move,  etc.  There  were 
+would 
+for  any  of  6 potential  replies,  and  would  respond 
+occasions  where  it  was  prepared 
+instantly 
+saving  parts  of 
+if  any  of  these  were  played. 
+to  be  impractical.  The  maximum 
+trees  from  the  previous  move  has  been  thought 
+about  5%‘*  of  the  total  work  that  is  going  to  be 
+savings  would  only  represent 
+expended  on  the  next  move. 
+
+this  technique  by  putting  a  maximum 
+
+In  brute-force  programs, 
+
+” It  takes  a  factor  of  4.5  to  do  an  additional  ply  of  search  (141. To  replace  the  part  of  the  tree  lost  by 
+the  move  made  and  the  opponent’s  reply  is  1 -  ( 1/4.5)2  = 0.95.  For  chess  the  branching  factor  is  about 
+35 [32].  The  reason  that  4.5  is smaller  than  the  “theoretical”  maximum  savings  due  to  alpha-beta, 
+i.e., 
+sqrt(hranching 
+table  introduces  many 
+savings  [31]. 
+
+factor)  which  is  approximately  6.0,  is  that  the  transposition 
+
+Given 
+understand. 
+its  move.  Then 
+Player  move  selection. 
+the  analysis 
+then 
+move 
+Opponent 
+finding 
+the  Player’s 
+observed 
+in  advance 
+during 
+the  game  continues 
+analysis 
+think-ahead 
+
+indicates 
+
+In  selective 
+
+124 
+
+H.J.  Berliner,  c‘.  McConnell 
+
+I  Artificial  Intelligence  X6  (1996)  97-1.56 
+
+tree 
+
+played, 
+of  the  played  move.  Although 
+
+situation  with  B*  think-ahead 
+the  search 
+
+The 
+actually 
+selection 
+best. 
+can  make  a  difference  with  respect 
+its  move, 
+the  program 
+to  it. 
+
+it  does  not  know 
+
+it  behooves 
+
+represents 
+
+is  quite  different.  At 
+
+the  program 
+
+a  fabric  of  moves 
+considers 
+there 
+
+is  that 
+
+the 
+
+that 
+the  move 
+
+time  a  move 
+justifies 
+
+is 
+the 
+to  be 
+is  no  reply  which 
+it  made.  After  having  made 
+the  best  answer 
+
+the  best  reply  and 
+
+that 
+
+to  the  choice 
+to  identify 
+
+the  best  reply.  All  it  knows 
+
+this  understanding, 
+The  germane 
+
+the  correct  method 
+
+for  think-ahead 
+
+parts  of  the  tree  are  saved  when 
+
+the  Opponent’s 
+
+best  move 
+
+is  found  using 
+
+easy 
+
+becomes 
+
+to 
+the  B*  search  makes 
+for 
+
+the  procedure 
+
+used 
+terminates, 
+
+If  the  Opponent  moves  before 
+
+this  procedure 
+
+tree  will  have  been  enriched  with  new  pertinent 
+is  found  before 
+
+the  search  will 
+
+he  plays. 
+
+best 
+
+reply.  This 
+
+can  continue 
+
+occasions  where  B*  Hitech  has  calculated 
+
+think-ahead, 
+the 
+
+along 
+that  a  move 
+
+and 
+
+is  prepared 
+line  of  perceived 
+that  was  previously 
+
+as 
+
+turn 
+
+time 
+
+data. 
+its  attention 
+
+If  the  best 
+to 
+allows.  We  have 
+certain  parts  of  a  tree  6  moves 
+as  long  as 
+the 
+time, 
+so,  the 
+
+to  reply 
+best  moves. 
+thought  best  is  no  longer 
+that  point. 
+from 
+are  searched, 
+
+immediately 
+
+If  at  any 
+
+of  nodes 
+
+paradigm 
+
+is  saved; 
+
+everything 
+if  not, 
+
+it  is 
+is 
+the 
+is  not 
+its 
+after  an  actual  move  has 
+
+the  tree  with 
+
+analysis  will  return 
+
+to  that  stage  and  resume 
+
+searches,  where  only  small  numbers 
+trees. 
+
+and 
+
+the  brute-force 
+some 
+
+effort 
+
+the 
+
+to  save 
+
+If 
+effort 
+
+enrich 
+right  move 
+
+feasible 
+hit-or-miss. 
+think-ahead 
+quite  sure  which  of  3  or  so  plausible  moves 
+findings.  A  fairly  high  percentage 
+been  made. 
+
+In 
+is  guessed 
+
+is  all  wasted. 
+
+is  best, 
+
+it  is  enriching 
+
+of  these  are  useful 
+
+It  is  worth  noting 
+
+that  even  when  B*  Hitech 
+
+3.13.  The  graph  history 
+
+interaction  problem 
+
+like  chess  where 
+efficient 
+
+game  can  best  be  represented 
+the  same  position 
+to  use  a  graph.  Using 
+
+to  a  given  depth  only  once 
+
+duplication 
+
+of  effort  since  different 
+
+For  example, 
+a  node 
+
+if  we  are  normally 
+that  has  a  value  brought 
+
+can  be  reached 
+a  graph 
+
+in  the  form  of  a  tree. 
+along  many 
+allows  each 
+[31].  The  benefits  go  beyond 
+length  paths  can 
+to  a  depth  of 
+from  a  5-ply 
+gain 
+to  go 
+
+searching 
+back 
+is  a  very  important 
+the  analysis 
+
+allowing 
+
+it  is  as  if  we  were  searching 
+
+to  a  depth  of  10.  This 
+
+itself  felt  in  the  end  game, 
+the  expected  maximum 
+graphs  have  one 
+
+depth. 
+
+frequently 
+
+it  is  more 
+
+The  analysis  of  a  two-player 
+in  games 
+paths, 
+to  be  evaluated 
+
+However. 
+different 
+position 
+the  obvious  one  of  preventing 
+lead  to  the  same  position. 
+7,  and  at  depth  5  encounter 
+search, 
+that  really  makes 
+than 
+twice 
+more 
+Unfortunately 
+that 
+
+loops  back  on 
+figure 
+the 
+
+path 
+Each  node 
+moves.  The  path  ABDB 
+not 
+should 
+repeat.  How 
+searching  B?  It  clearly  depends 
+
+in 
+
+is  scored 
+
+fundamental 
+
+itself 
+a  position 
+represents 
+is  a  draw  by  repetition. 
+position 
+
+flaw  in  games 
+as  a  draw.  Fig.  17  shows 
+and  each  arc  some 
+However, 
+B  be  scored?  As  a  draw  or  as  the 
+
+the  path  ACDB 
+
+the  problem. 
+sequence 
+
+like  chess  where 
+
+a 
+
+on  the  path 
+
+that 
+
+is  taken,  yet  ignoring 
+
+the  path 
+
+of 
+does 
+result  of 
+to 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+125 
+
+A 
+. ..*... 
+
+B  a::::. 
+
+‘::a  c 
+
+3.‘. 
+i  D 
+6 
+B 
+
+Fig.  17.  History 
+
+can  affect 
+
+the  value  of  a  node. 
+
+a  position 
+interaction 
+using  a  graph  to  represent 
+
+is  the  source  of  the  efficiency  of  graphs!  This  is  the  graph  history 
+(GHI)  problem;  so  christened  by  Palay  [26].  It  is an  insidious  effect  of 
+
+the  tree  of  analysis. 
+
+In  a  brute-force 
+
+to  keep  the  more  valuable 
+
+program,  an  analysis  involves  millions  of  positions.  For  this 
+as  a  hash  table  without  overflow.  Each 
+reason,  graphs  are  typically  represented 
+in  the  hash  table  stores  the  essential  information  about  a  search  done  on  a 
+entry 
+the  entry  is 
+If  two  different  positions  hash  to  the  same  entry, 
+particular  position. 
+that  is  flushed 
+[6].  If  a  position 
+information 
+changed 
+from  the  hash  table  is  encountered 
+again,  it  will  have  to  be  searched  again.  The 
+benefits  of  compactly  and  efficiently  storing  a  large  part  of  the  graph  more  than 
+make  up  for  the  cost  of  collisions  since  most  searches  are  not  very  valuable  and 
+this 
+the  cost  of  searching  an  individual  position  again  if  needed 
+is  no  optimal 
+representation, 
+found 
+solution, 
+empirically 
+in  the 
+is  far  outweighed  by  the  benefits  described  above.  This  is 
+brute-force 
+because  most  of  the  entries 
+and  the 
+likelihood  of  some  meaningful  collision  is  small. 
+
+how  can  the  GHI  problem  be  dealt  with?  There 
+
+It  has  been 
+effect  due  to  GHI 
+
+the  likelihood  of  some  deleterious 
+
+but  how  collisions  are  handled 
+
+search  are  nonsensical, 
+
+that 
+paradigm 
+
+in  a  brute-force 
+
+is  10w.l~ Given 
+
+can  help 
+
+[ll]. 
+
+is  different 
+
+The  situation 
+
+for  the  B*  selective  search, 
+
+thousands  of  nodes  are 
+is continuously  being  passed  around 
+instead  of  millions  and  information 
+generated 
+in  its  entirety,  or  the  whole  process 
+in  the  tree.  The  search  tree  must  be  preserved 
+search  trees  as  an  explicit  graph 
+would  not  work.  For  this  reason  we  represent 
+to  its  parents  and  children.  The  GHI 
+with  each  node 
+in  the 
+problem 
+search  tree  are  well  reasoned  out,  and  there  may  be  several  paths  to  meaningful 
+goals.  One  might  question  whether  a tree  representation  would  be  preferable 
+graph  representation. 
+
+is  even  more  severe  for  a  selective  search  because  most  entries 
+
+There  are  two  good  reasons  for  still  preferring  a  graph: 
+
+in  the  graph  pointing 
+
+to  a 
+
+l Deficiency:  In  the  usual  case,  the  path  to  a  position  does  not  matter  and  the 
+to  be 
+is 
+
+the  subtree  below  any  given  position  only  needs 
+every 
+time 
+the  position  needs 
+few  nodes  that  a  selective  search  can  afford 
+
+In  a  tree 
+the  whole  subtree  below 
+the  relatively 
+
+to  be  explored 
+to 
+
+the  same  position 
+
+representation 
+
+work  of  exploring 
+done  once. 
+encountered 
+again.  Given 
+expand, 
+
+this  duplication  of  effort  would  be  ruinous. 
+
+I3 The  cost  of  searching 
+still  in  the  hash 
+usually 
+
+is  low  because 
+table. 
+
+the  results  of  searching 
+
+the  children 
+
+of  the  flushed  position 
+
+are 
+
+126 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Arfificial  Intelligence  86  (1996)  97-156 
+
+l Logical  necessity:  If  there  were  a  sequence 
+
+this  leads 
+
+to  the  same  position 
+
+to  know  about 
+
+it.  Otherwise, 
+
+there  are  two  equally  good  alternatives, 
+
+that 
+
+B,  C,  and 
+be  important 
+impression 
+have  an  impossible 
+brute-force 
+alternatives 
+termination 
+others. 
+
+time  deciding 
+
+between 
+just 
+by 
+
+searches 
+
+alpha-beta 
+with  equal  value.  However. 
+criterion 
+
+starting 
+
+at  the  root 
+
+that  went  A, 
+as  the  sequence  C,  B,  A,  it  would 
+the 
+the  search  would  be  under 
+A  and  C.  and  would 
+in 
+is  solved 
+the 
+set  of 
+the  search 
+
+first  of 
+this  is  not  possible  when 
+
+them.  This  problem 
+the 
+
+choosing 
+
+is  deciding  that  one  move  at  the  root  is  better  than  all 
+
+they  bring  are  necessary. 
+
+Hence, 
+
+graphs  and 
+
+the  problems 
+
+of  how 
+to  deal  with  GHI. 
+ruinous.  We  deal  with  the  problem 
+node  has  a  value’”  only 
+leads 
+path 
+that 
+cycle.  Most  nodes  are  not  on  a  cycle  and  do  not  need  CVs. 
+connected 
+
+searches 
+by  using  conditional 
+combination 
+found 
+
+to  that  node.  CVs  are  only 
+
+the  issue 
+leaves 
+to  GHI 
+could  be 
+(CV).  A  CV  for  a 
+of  nodes  are  on  or  not  on  the 
+that  are  on  a  strongly 
+
+an  error  due 
+
+if  a  particular 
+
+In  selective 
+
+in  nodes 
+
+values 
+
+This 
+
+CVs  starts 
+paths 
+entry  point 
+loops, 
+
+by 
+through 
+into 
+
+finding 
+the  cycle 
+
+all  nodes 
+are 
+
+then 
+the  cycle  and  recursively 
+
+The  process 
+
+for  computing 
+cycle.  The  possible 
+
+from  each  possible 
+
+particular 
+starting 
+cycle  children.  When 
+node 
+all  cycle 
+continues 
+an  efficient 
+
+on 
+is  created.  CVs  are  backed  up  to  each  parent  node  by  combining 
+
+CV  dependent 
+
+a  repetition 
+
+a  path 
+
+children  with 
+until  all  possible  paths  are  explored.  The  details 
+
+all  non-cycle 
+
+the  values 
+
+from 
+
+children. 
+involved 
+
+process  will  be  described 
+
+in  a  forthcoming 
+
+paper. 
+
+that 
+
+are  on  a 
+by 
+all 
+
+explored 
+exploring 
+the 
+the  CVs  for 
+This  process 
+this 
+in  making 
+
+looping 
+
+4.  Examples  of  the  B*  search 
+
+in  action 
+
+these 
+
+to  again 
+and 
+
+the  reader 
+searches 
+
+is  225  nodes,  of  which  90  are 
+that 
+are 
+
+remind 
+that 
+a  value. 
+searches 
+Such 
+for  a  typical  3-ply  probe 
+of  one  software 
+the  logs 
+
+and 
+nodes 
+the  expansion 
+
+is  going  on.  To  read 
+
+limit 
+
+hardware, 
+
+the  Hitech 
+
+the  examples 
+
+of  accounting, 
+
+in  this  section, 
+
+searches 
+on 
+
+involve 
+In  our  method 
+
+the  effort 
+phase.  We  wish 
+
+to  the  first  SELECT 
+are  done 
+
+for  each  node  expansion, 
+a  move 
+yielding 
+
+an  effort  of  about  2000  hardware 
+we  count 
+
+For 
+dedicated 
+probe 
+done 
+typically 
+search. 
+node  as  one  node  as  this  gives  the  best  view  of  what 
+presented, 
+There 
+left  of  each 
+that 
+in  algebraic 
+node, 
+and 
+by  the  “*”  in  front  of  this  move.  A  letter 
+the  move 
+the 
+
+in  the  move  “b7c6”  having 
+following 
+the  probe 
+
+line.  The  node 
+notation. 
+this  resulted 
+
+by  a  “:” 
+that  is  expanded 
+For  instance. 
+
+is  needed: 
+listed  on  each 
+
+are  10  node  expansions 
+
+the  following 
+
+line  followed 
+
+third  node, 
+
+the  “d7c6” 
+
+information 
+
+the  depth 
+
+at  which 
+
+following 
+
+indicates 
+
+the  “a” 
+
+”  Actually 
+
+a  set  of  values 
+
+including 
+
+value  bounds 
+
+and 
+
+the  OptPrb. 
+
+line  of  the  log.  The  number 
+
+at  the 
+is  the  number 
+on 
+is  in  the  subtree  of  the  top  level  move  named 
+in  Fig.  18  was  the  root 
+
+of  the  first  node  expansion 
+
+the  first  node  expanded 
+
+the  best  RealVal, 
+the  four  character 
+searches  were  dispatched. 
+
+as  indicated 
+encoding 
+
+of 
+For 
+searches  were 
+
+the  probe 
+
+indicates 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+121 
+
+this  move  became 
+
+is  dispatched  at  depth  N,  it  will,  of  course, 
+
+to  the  first  26 
+sent  out  at  depth  1 (there  is  a mapping  of  the  letters  of  the  alphabet 
+integers).  When  a  search 
+to 
+reach 
+depth  N  +  D,  where  D is the  probe  depth,  plus  any  quiescence  moves  that  may  be 
+explored  below  that.  When  there  is  no  depth  letter  following  a  move,  this  means 
+in  another 
+that 
+move’s  subtree.  When  a  number  appears  by  itself,  this  means  that  this  is the  new 
+best  RealVal  for  the  whole  search,  and  the  “-”  or  ““”  indicates  whether 
+this  is  an 
+upward  or  downward  movement 
+in  the  value.  Values  are  measured  on  a  scale 
+where  a  pawn  is  worth  128,  and  positional  values  of  much  lesser  magnitude  are 
+it  is  the  best  reply 
+included.  Finally,  a  “$”  indicates 
+during  the  VERIFY  phase.  In  the  VERIFY  phase,  the  depth  indicator 
+letters  are 
+in  capitals  rather 
+
+the  best  as  the  result  of  expanding  a  node 
+
+that  the  move  following 
+
+than  lower  case. 
+
+Fig.  18 is  an  example  of  a  move  that  every  program  would  make  correctly.  The 
+only  issue  is  how  much  time  would  it  take  to  make  this  move.  While  there  are  25 
+there  are  really  only  two  that  do  not  lose  material:  d:c6  and  b:c6. 
+legal  moves, 
+to  d:c6,  it  is 
+Even  though  this  is  the  case,  and  even  though  b:c6  is  vastly  superior 
+limit  is 
+safe  to  say  that  any  brute-force  program  would  stop  only  when  its  effort 
+reached,  which  would  usually  be  3  minutes.  B*  Hitech,  on  the  other  hand,  at 
+settings  takes  only  5 nodes  to  discern  that  b:c6  is clearly  best, 
+regular  tournament 
+and  then  does  a  minimal  VERIFY 
+can  happen. 
+The  result  is  that  the  move  is  made  in  22  seconds  instead  of  180.  Less  extreme 
+examples  of  this  behavior  abound. 
+
+to  see  that  nothing  unexpected 
+
+The  search  penetrated 
+
+to  a  maximum  depth  of  “G”  (7)  +  probe  depth  (3)  =  10. 
+At  the  end  of  the  search  are  given:  the  time  taken,  the  number  of  software  nodes, 
+
+1:  l blc6 
+
+30-z  dlda 
+11:  e4e5F  e4eSD  e4e5F 
+
+fEb4a  d7c6b  $e4&B 
+
+clgSB  $fld3  .$e4&D 
+
+32^ 
+
+e4e5D 
+
+e4eSD 
+
+e*leSG 
+
+22.34  16  2154338  <=  32  b:c6  I e5  Qel  Qe2  NdS  Nd2  #  c5 
+
+5.  . . . .  b:c6 
+
+***[b7c6]*** 
+
+Fig. 18. Black to play. 
+
+the  correct 
+its 
+
+128 
+
+H.J.  Brrlinur.  C’.  McConnell 
+
+i  Artijicinl 
+
+Intelligence  X6  (19%)  97-156 
+
+nodes,  an  indication 
+
+of  hardware 
+
+the  number 
+the  move, 
+to  the  right  were  found  by  the  hardware 
+negative 
+
+are  preferred. 
+
+the  projected 
+
+values 
+
+and 
+
+line  of  best  play.  The  “#” 
+
+of  the  lower  bound” 
+indicates 
+
+probe 
+
+search.  Since  Black 
+
+on  the  value  of 
+the  moves 
+that 
+is  the  player, 
+
+Fig.  19  is  a  much  more  difficult  problem.  Here  B*  Hitech  examines 
+
+as  early  as  its  second  node  expansion, 
+68,  at  which  point 
+
+it  discovers 
+
+but  does  not  recognize 
+correct 
+
+the 
+
+follow-up 
+
+until 
+
+23  without 
+
+expansion 
+2.  K:h2,g5! 
+
+move,  R:h2+. 
+value 
+l.-R:h2+; 
+expansion 
+much 
+SELECT 
+even 
+though 
+this  is  still  explored 
+turn  of  events  will  show 
+
+phase  and 
+there 
+
+less  clear, 
+
+This 
+
+is  despite 
+hitting  on  the  right 
+
+having 
+follow-up. 
+
+gone 
+
+to  depth 
+In  this  search 
+
+and  B*  Hitech 
+
+takes 
+the  full  SO allowed 
+is  only  one  legal  response 
+
+full  90  expansions 
+
+the 
+for  the  VERIFY. 
+
+for  White  during 
+
+at  times 
+the 
+
+to  a  depth  of  10.  since 
+to  be  unsound 
+idea 
+
+for  Black. 
+
+it  is  possible 
+
+9  (6  +  3)  on 
+issues  are 
+the 
+the 
+for 
+allowed 
+that 
+phase, 
+later 
+
+that  some 
+
+It  should  be  noted 
+the  VERIFY 
+
+line  of  play  delivered 
+if  after 
+
+move  such  as  3.  Qd2, 
+
+is  correct, 
+l.-R:h2; 
+then 
+
+but  obscures  what 
+
+2.  K:h2,g5;  White  were 
+follow  3.-Qh8+ 
+
+there  would 
+
+is  most 
+to 
+; 
+
+the  maximum 
+
+eyes.  Namely. 
+
+the  search,  which 
+
+5.  Kf3,Bg4  mate.  Below 
+shows 
+
+the  principal 
+to  human 
+
+that 
+is  about  5-ply  deeper 
+
+Again, 
+important 
+make  a  safer-appearing 
+4.  Kg2,Qh3+; 
+for 
+shows 
+which 
+amount 
+in  [4].  The  average  depth  of  the  tree 
+the  &ply  search 
+assume 
+parts  of  the 
+humans) 
+There 
+
+and  brute-force 
+is,  of  course,  much  more 
+
+that  usually 
+
+depth 
+
+tree. 
+
+above.  At  each  point  where 
+and  OptPrbs 
+RealVals,  OptVals 
+impossible 
+all-this 
+idea  of  how  things  change,  we  present 
+this  search. 
+
+to  portray 
+
+that  brute-force  Hitech  executes 
+is  more  effectively 
+the 
+idea 
+the  winning 
+
+this  effort 
+In  the  present 
+Hitech 
+
+case 
+finds 
+
+distributed 
+is  not  very  deep 
+line  during 
+
+the  number 
+
+than  a  normal 
+
+expanded 
+
+at  each  depth. 
+
+of  nodes 
+reached  was  11  +  3  (probe 
+
+the  move  output,  we  show  the  tree  profile 
+It 
+search  depth)  =  14, 
+in  this 
+reach 
+first  noted 
+is  4.8  +  (3)  =  7.8  which  compares  well  with 
+of  time.  We 
+interesting 
+
+in  the  same  amount 
+
+search  would 
+
+bell-shaped 
+
+alpha-beta 
+
+outline 
+
+into 
+
+the 
+
+(but  complex 
+the  6-ply  search. 
+than  we  have  presented 
+
+to 
+
+to  the  decision  process 
+
+expansion 
+node 
+of  the  competitor 
+
+information 
+
+in  such  a  short 
+
+in  Fig.  20  in  detail 
+
+be  made, 
+
+decisions  must 
+nodes  must  be  considered. 
+report. 
+the  first 
+
+the 
+It  is 
+To  give  some 
+from 
+10  nodes 
+
+of  time.  The  profile  has  the  characteristic 
+
+5.  What 
+
+is  the  rationale 
+
+for  a  working  B*  search? 
+
+It  is  one 
+
+thing 
+
+to  propound 
+
+an  algorithm, 
+
+it  is  still  more  satisfying 
+
+to  achieve 
+
+However, 
+should  work.  We  have 
+notions 
+
+of: 
+
+shown 
+
+that  B*‘s  analysis 
+
+and  show  examples 
+a  notion 
+
+of  it  in  action. 
+of  why  such  an  algorithm 
+upon 
+
+dependent 
+
+is  strongly 
+
+Ii  Recall 
+which  point 
+
+that 
+
+the  I3*  search  only  develops 
+it  only  has  a  lower  bound  on  the  value  of  that  move. 
+
+to  the  point  where 
+
+the  tree 
+
+it  is  sure 
+
+it  has  the  best  move,  at 
+
+H.J.  Berliner,  C.  McConnell 
+
+1  Artijicial  Intelligence  86  (1996)  97-156 
+
+129 
+
+1:  *c8h3 
+
+hEh2a  h8h2b  *d8d7a  hEh2c  h8h2c 
+11:  g6g5b  g6gSc  g6gSd  d8d7c  d4e5a  d8d7d 
+21:  h8h2d  h8h2e  h8h2f  d8d7c  d8d7f  d4e5b 
+31:  d0d7c  d4c3b  d4c3c  d4c3c  d4c3d  d4c3e 
+41:  d8d7f  d8d7g  d8d7h  d0d7i  d8d7i  d8d7g 
+51:  g6gSc  d0d7g  g6g5d  d4eSc  g6g5f  g6g5g 
+61:  d4e3a  d4eSf  d4eSg  d4eSg  d8d7d  d8d7e 
+11:  c0g4c  h8h2e  d4e5g  d8d7c  d4e5h  g6g5i 
+81:  d0d7g  d0dlh  d8d7i  d4e5d  d4e5e  d4e5f 
+91:  $hlhPD  hlh2D  -247"  hlh2E  hlh2E  hlh2D 
+101:  -245~  hlh2D  hlh2G  -243^  hlh2F  hlh2F 
+111:  hlh2D  -241A  hlh2D  hlh2D  hlh2D  hlh2D 
+121:  hlh2F  hlh2E  hlh2D  hlh2D  hlh2E  hlh2F 
+131:  hlh2D  hlh2D  hlh2D  hlh2D  hlh2D  hlh2D 
+253.99  140  29397772  <=  -241  R:h2+  I K:h2  g5 
+
+-188~  cEg4a  g6gSa  h8h2c 
+g6g5e  d4c3a  d0dle  g6gSc 
+d4eSc  d4eSd  d4e5e  d4e5e 
+d4c3e  d8d7e  d8d7f  d8d7g 
+d8d7g  d4c3d  h8h2d  h8h2e 
+h8h2e  g6g5h  d4eSc  h8h2f 
+d8d7g  *h8h2c  d4c3f  c8g4b 
+d8d7d  d8d7j  d8d7k  d4e5h 
+d4c3g  d4c3f  d4e5g  h0h2d 
+hlh2E  hlh2F  hlh2E  -241* 
+hlh2D  hlh2D  hlh2D  hlh2D 
+hlh2E  hlh2E  hlh2E  hlh2E 
+hlh2F  hlh2G  hlh2D  hlh2G 
+hlh2D  hlh2G  hlh2D  hlh2D 
+
+Qf5  B:f5  #  e:fS  QhS+  Kg2 
+
+R:h2+ 
+
+***[hEh2]*** 
+
+Depth 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+
+Nodes 
+1 
+7 
+6 
+21 
+34 
+23 
+18 
+17 
+7 
+4 
+1 
+1 
+
+Fig. 19. Black to play. 
+
+(1) 
+
+(2) 
+(3) 
+
+(4) 
+
+among  alternatives  with  a  view  toward 
+
+Comparisons 
+clearly  best  alternative  emerges. 
+Use  of  optimism 
+Finding  lines  of  play  based  upon  simple  resistance  by  the  Opponent  before 
+allowing  him  to  venture 
+in  the  same  style  as  the  Player 
+used. 
+Using  probability  distributions 
+
+the  notion  of  goodness. 
+
+to  guide  the  search. 
+
+to  find  a  refutation 
+
+terminating  when  a 
+
+to  capture 
+
+130 
+
+H.J.  Rerliner,  C’.  McConnell 
+
+I  Artijicud  Intelligence  86  (19%)  97-1.56, 
+
+!!  coament:  After  the  root  node  is  expanded  (no&  l),  this  is  the  state  of 
+!!  things. 
+
+Since  Black  is  the  player,  negative  values  are  preferred. 
+
+BestRealVal=-70 
+
+2ndBest=-66  MinAct=0.15 
+
+TargetVal=-1417 
+!! coaunent:  MinAct  is  the  probability 
+!! as  worth  expanding.  TargetVal  is  based  upon  optimism  available. 
+OptPrb 
+! ! 
+0.0000 
+c8h3 
+0.4993 
+dad7 
+0.6311 
+hSh2 
+
+RealV  PessV 
+-70  327661 
+-66  327661 
+456  32766) 
+
+OptVal 
+[  -296 
+[ -2764 
+[ -4621 
+
+!!  This  is  the  best  move  thus  far 
+
+!!  Selected  for  Xpand;  best  OptPrb 
+
+level  below  which  a move  is  not  deemed 
+
+and  37  inferior  moves 
+
+Node  2:  R:hZt 
+[ -4621 
+hSh2 
+
+453  327661 
+
+0.6309 
+
+Node  3:  R:h2+  K:h2 
+[ -2764 
+dad7 
+[ -2764 
+hSh2 
+
+-66  327661 
+207  327661 
+
+0.4981 
+0.4151 
+
+and  37  inferior  moves 
+All  control 
+!!  comment: 
+!!  best  OptPrb  since  hSh2's  OptVal  has  worsened  (though  RealVal  improved). 
+!!  So  dSd7  (which  threatens  nate  in  two  by  Rh2+;  K:h2,Qh3++)  is  chosen  next. 
+
+parameters  are  still  the  same,  but  now  dad7  has  the 
+
+Node  4:  Qd7 
+dad7 
+New  Best  Move,  New  Best  RealVal,  New  PV  <=  -85  Qd7  Qd2 
+New  TargetVal=-1446 
+
+-85  327661 
+
+[ -2764 
+
+0.0000 
+
+Node  5:  R:h2+  K:h2  Qd7 
+New  TargetVal=-765 
+
+Node  6:  R:hZ+  K:h2  QhSt 
+
+!! Coannent:  The  failure  of  this  threat 
+!!  reduces  expectations 
+
+by  quite  a  bit. 
+
+Node  7:  Qd7  Qd2 
+dad7 
+0.2572 
+New  Best  RealVal,  New  PV  Qd7  Qd2  Qh3 
+New  TargetVal=-894 
+
+-188  327661 
+
+[ -1807 
+
+!! Comment:  Reducing  TargetVal  has  made  dad7 
+!! into  an  acceptable  action. 
+!!  it  goes  up. 
+
+Now  with  some  success 
+
+NO& 
+
+a:  Bg4 
+
+Node  9:  g5 
+
+Node  10:  R:h2+  K:h2  Bg4 
+New  TargetVal=-541 
+
+!! Coanuent:  Has  not  found  the  right  i&a  yet,  but  is 
+!! narrowing  down  the  possibilities. 
+
+Fig. 20. Detail of first IO nodes. 
+
+It  is  legitimate 
+
+to  speculate  whether 
+
+there  exist  any  comparable 
+
+notions 
+
+in  the 
+
+real  world 
+
+that  are  similar 
+
+to  these. 
+
+(1)  The  notion 
+
+of  comparison 
+
+the  word  “better” 
+collected 
+
+by  DeGroot 
+
+is  found 
+[13]. 
+
+is  fundamental 
+abundantly 
+
+to  all  intelligent 
+
+in  the  protocols 
+
+activities, 
+
+and 
+of  chess  players 
+
+(2)  The  notion  of  optimism 
+upon  optimism. 
+
+based 
+
+is  also  to  be  found  everywhere.  Human 
+to  find  something 
+Thus, 
+
+any  attempt 
+
+ambition 
+that 
+
+is 
+is  not 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+131 
+
+immediately  apparent  must  in  some  way  be  supported  by  an  optimistic  view 
+of  what  is  likely  to  happen. 
+
+in  AND/OR 
+
+to  finding  solutions 
+is  to  examine 
+
+(3)  The  notion  of  optimism  being  met  by  firm  resistance  may  be  new.  There 
+trees.  The  correct 
+are  certain  similarities 
+that  is  most  likely  to 
+strategy  at  an  OR  node 
+succeed,  while  at  AND  nodes 
+the  branch  most 
+it  is  correct 
+likely  to  fail.  Thus,  at  Forcer  nodes  B*  acts  as if  it  were  an  OR  node,  trying 
+to  find  the  best  possible  alternative.  Obstructor  nodes  are  AND  nodes. 
+the  node  with  the  best  RealVal  first  is  the  most  likely  way  to 
+Examining 
+terminate 
+its  RealVal  as  best,  and  is 
+most  likely  to  make  the  whole  branch  fail.  This  paradigm  seems  to  capture 
+what  is  going  on  in  thinking  about  moves  in  a  two-person  game. 
+
+the  search.  This  node  has  established 
+
+to  examine 
+
+the  branch 
+
+(4)  Probability 
+
+functions  have 
+
+long  been  known 
+
+to  capture 
+
+the  essence  of 
+
+Thus, 
+
+not  only 
+
+representations 
+
+and  the  notion  of  fuzziness  go  well  together 
+
+subtrees, 
+distributions 
+robustness.  Point-value 
+precision  and  can  end  up  being  catastrophically  wrong. 
+the  B*  search  relies  upon  fundamental  mechanisms 
+
+in  the  work  of  Palay  but  also  in  [27].  Probability 
+and  produce 
+of  nodes  usually  aim  for  too  much 
+
+chess  players.  The  notion  of  optimism 
+
+ready  supply  in  human  intellectual  activity.  It  is interesting 
+finding  a  crisp  method  of  terminating 
+human 
+observations.  However, 
+capture 
+the  tip  of  the  intelligence 
+the  need  for  the  Forcer/Obstructor 
+know  of  in  the 
+workable  algorithm. 
+
+to  be  in 
+to  note  that  the  idea  of 
+the  search  was  motivated  by  observation  of 
+by  such 
+just 
+and 
+relation  are  not  pointed  out  by  anything  we 
+to  find  a 
+
+the  first  author  has  long  held  that  human  protocols 
+iceberg.  Thus,  the  need  for  distributions, 
+
+the  result  of  experimentation 
+
+literature.  They  are 
+
+is  also  supported 
+
+that  appear 
+
+6.  B*  Hitech  and  its  experiences 
+
+The  present  paradigm  was  not  developed 
+the  Hitech 
+
+implemented 
+problems 
+plementation  which  began  in  the  fall  of  1990. 
+
+on 
+
+special  purpose  hardware 
+
+in  a  vacuum.  The  algorithm  was 
+the 
+im- 
+
+[7,14].  Most  of 
+the 
+
+and  solutions  discussed  herein  were  first  discovered  during 
+
+6.1.  Development  and  testing  of  early  versions 
+
+to  combine 
+
+the  conspiracy 
+
+Initially,  we  attempted 
+
+in  Section  3.2  this  was  not  possible.  The  early  development 
+
+idea  with  the  B*  paradigm. 
+of  B* 
+As  related 
+the  optimism  of  checks  and  mate  threats,  and 
+Hitech  dealt  with  how  to  evaluate 
+in 
+in  general.  Our  findings  are  related 
+how  to  deal  with  the  notion  of  threat 
+Section  3.10.  Palay 
+and  found 
+investigated 
+[26]  had  already 
+certain  remedies,  but  these  were  not  quite  good  enough.  The  key  to  progress  was 
+being  able  to  compare 
+
+the  lines  of  best  play  in  the  probe  searches 
+
+these  problems 
+
+that  produced 
+
+132 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificiul  Intelligence  $6  (1996)  97-l-M 
+
+truly 
+
+threatening 
+
+both  the  RealVal  and  the  OptVal.  This  allowed  the  discrimination  of  moves  that 
+to  be  real 
+were 
+because 
+for  the 
+to  reduce  the  number 
+opponent.  This  type  of  winnowing  was  absolutely  necessary 
+that  could  be  processed 
+of  moves  worth  looking  at  to  some  reasonable  number 
+within  the  effort 
+
+the  threatening  piece  could  be  removed  without  any  detriment 
+
+threat  was  unlikely 
+
+those  where 
+
+limits. 
+
+from 
+
+the 
+
+Much  trial  and  error  was  involved  here,  since  it  was  not  at  all  clear,  a priori  just 
+and  in 
+how  much  optimism  good  moves  needed 
+that  this  is  rather 
+what  order  different 
+dependent  on  the  evaluation 
+in  Section 
+3.10,  and  we  believe  any  programmer  used  to  bringing  up  systems  such  as  this 
+could  readily  do  the  tuning  appropriate 
+
+types  should  be  investigated.  We  believe 
+
+function.  Our  experiences  are  described 
+
+to  have  in  order  to  be  preferred, 
+
+for  his  system. 
+
+Once 
+
+these  knowledge  problems  were  ameliorated, 
+
+it  was  apparent 
+
+that  B* 
+
+Hitech  was  doing  very  well  on  tactical  problems. 
+based  approach  and  getting  better  results  on  the  same  set  that  Palay  used  in  his 
+thesis.  In  fact,  these  results  were  comparable 
+to  the  results  that  had  been  achieved 
+on  this  set  by  the  best  programs.”  One  reason  was  that  we  were  using  3-ply  probe 
+time  limitations,  was  only  able  to  use 
+searches,  whereas  Palay,  due  to  computing 
+2-ply  searches.  All  these  searches  are  with  quiescence, 
+as  a  search  without 
+quiescence  does  not  produce 
+
+It  was  using  the  probability 
+
+reliable  values. 
+
+At  this  point,  we  began  to  run  practice  games  against  tournament 
+
+(brute-force 
+
+alpha-beta)  Hitech  that  has  an  accredited  USCF  rating  of  2400+.  We  had  not  yet 
+dealt  with  the  GHI  problems,  but  were  content 
+to  find  out  how  well  the  new 
+program  could  compete  against  the  old. 
+
+that  we  found 
+
+In  tactical  situations 
+
+the  new  program  at  least  held  its  own  with  the  old,  but  in 
+the  old  program  usually  found  steady  answers  while  the  new 
+positional  situations 
+was  at  a  loss  for  what  to  do.  It  was  in  these  circumstances 
+that 
+having  a  dithering  factor  (allowing  moves  to  be  tried  that  had  less  potential  but 
+less)  was  very  useful.  Dithering  was  a  function  of  the  number 
+had  been  explored 
+in  a  subtree  and  the  OptPrb  of  that  subtree.  Thus,  a  certain 
+of  node  expansions 
+if  the  subtree  had  already  had  a  great 
+amount  of  OptPrb  would  be  discounted 
+deal  of  attention.  This  provided 
+to  the 
+to  recognize  a  good  position  when  it  sees  one. 
+search.  Hitech 
+from  the 
+However, 
+functions  could  have 
+root  of  the  tree 
+in 
+considerable 
+positions  where  there  are  no  clear  tactical  issues,  the  program 
+to 
+the  position 
+those  moves 
+explore 
+generally.  This  is  an  important 
+facet  of  this  work,  as  it  is  essential  to  be  able  to 
+play  this  common 
+
+to  such  a  position.  Therefore, 
+is  encouraged 
+
+the  goodness  may  not  be  apparent  until  a  depth  far  removed 
+
+that  have  some  potential 
+
+the  existing  optimistic 
+
+in  plotting  a  course 
+
+is  reached.  Thus, 
+
+type  of  position. 
+
+is  smart  enough 
+
+breadth-first 
+
+a  moderate 
+
+component 
+
+improving 
+
+difficulty 
+
+for 
+
+In  the  fall  of  1992,  after  about  1.5  man-years  of  effort, 
+
+still  running  at  about  3  times  real 
+
+time; 
+
+that 
+
+the  new  program  was 
+is  about  10  minutes  and  350 
+
+lhThis  early  version  of  B*  Hitech  got  286  right  out  of  299  of  the  positions 
+tactical 
+
+problems 
+
+[28]. 
+
+in  the  book  of  standard 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+133 
+
+tight  effort 
+
+improvements 
+
+in  a  tournament 
+
+little  things  that  are  needed 
+
+in  various  decision  procedures, 
+
+a  real-time  program,  we  determined 
+
+limits,  thinking  ahead  on  opponent’s 
+
+that  being  able  to  think  ahead  on  the  opponent’s 
+to  the  point  where 
+
+and  the 
+nodes/move.  However, 
+time  would  produce 
+realization 
+certain  gains,  eventually  got  B*  Hitech 
+to 
+it  was  reasonable 
+believe  it  could  play  at  the  average  rate  of  3 minutes/move.  We  now  had  to  put  in 
+things  like  time  controls, 
+time, 
+program.  Because  B* 
+and  other 
+Hitech  was  not  completely 
+that  when  the 
+time  remaining  got  too  short, 
+Hitech  which  could  manage 
+how  little  time  remained. 
+In  test  games  versus 
+
+it  would  ask  to  be  switched  over  to  tournament 
+time  better,  and  be  sure  to  forge  a  reply  no  matter 
+
+tournament  Hitech,  B”  Hitech  got  41.7%  of  the  total 
+points.  Most  games  were  draws.  It  frequently  got  very  strong  positions  but  was 
+it  seldom 
+the  consistent  play  to  win.  When  it  got  into  trouble 
+unable 
+It  did,  however,  win  some  very  nice  games,  based  upon  pure  depth  of 
+escaped. 
+calculation, 
+in  a  way  that  only  very 
+select  humans  had  been  able  to  do  (see  Appendix  A).  But  this  only  happened 
+these  results  were  very  encouraging, 
+about  once  out  of  every  20  games.  However, 
+and  certainly  not  taken  for  granted  when  the  first  author  began  this  work. 
+
+and  in  these  wins  it  beat  tournament  Hitech 
+
+to  produce 
+
+This  version  of  Hitech  participated 
+
+in  three  tournaments,  being  subject  to  some 
+albeit  with  new  bugs,  each  new  time  out.  Since  B*  Hitech  was  able 
+to 
+to 
+
+1.5  real  time  we  had  to  arrange  for  a  transition 
+in  the  endings,  we  deferred 
+
+improvement, 
+to  play  at  only  approximately 
+Hitech  5.6  when  time  became 
+Hitech  5.6.  The  results  are  shown  in  Table  1. 
+
+too  short.  Also, 
+
+The 
+
+it  in  two  games, 
+
+result  of  the  AEGON 
+
+tournament,  where  humans  play  only  against 
+computers  and  vice  versa,  is  somewhat  marred  by  the  fact  that  B*  Hitech  had  a 
+serious  bug,  and  we  only  played 
+it  scored  1 -  1. 
+However, 
+to  indicate  we  were  in  the  ballpark  of  a 
+reasonably 
+In  other 
+
+the  results  in  general  seemed 
+competitive  program. 
+testing,  we  found 
+
+in  [28]  were  no 
+longer  much  of  a  challenge,  and  switched  our  major  testing  to  a  volume  [17]  that 
+we  had  recently  been  using  to  test  tournament  Hitech.  This  volume  contains 
+that  are  much  more  difficult  as  they  intermix  tactical  with  positional  and 
+positions 
+themes.  B*  Hitech  outperformed 
+tournament  Hitech  on  quite  a  few 
+strategic 
+in  this  set,  and  discovered 
+problems 
+
+that  the  original  set  of  problems 
+
+several  errors 
+
+in  the  book. 
+
+in  which 
+
+Table  1 
+B*  Hitech 
+
+Tourney 
+
+tournament 
+
+results 
+
+Result 
+
+Place 
+
+7th  World  Computer  Champ.  1992 
+ACM  Internat.  Computer  Champ.  1993 
+AEGON  Human-Computer  Tourn.  1993 
+
+3-2 
+3-2 
+3-3” 
+
+7th  out  of  22. 
+3rd  out  of  12. 
+14th  out  of  32. 
+
+a Some  of  these  games  were  played  by  Hitech  5.6  as  bugs  were  found  and  corrected 
+
+in  B*  Hitech. 
+
+134 
+
+H.J.  Berliner.  C‘.  McConnell 
+
+I  Artificial  Intelligence  86  (19%)  97-156 
+
+6.2.  Testing  of  the  most  recent  version 
+
+The  most  recent  version 
+
+is  really 
+
+the  first  that  we  feel  is  relatively 
+
+version 
+possible 
+
+appears 
+to  solve  some  very  difficult  problems. 
+
+to  have  no  difficulties  with  GHI  problems, 
+
+and 
+
+6.2.1.  How  problems  are  scored 
+
+bug-free.  This 
+it 
+
+this  has  made 
+
+The  book  The  Best  Move  [17]  that  we  used  for  testing  has  been  widely 
+
+regarded 
+for  tactics  and  position  play  combined.  We  were  quite 
+some 
+of  points, 
+
+in  the  book  over  50  contained 
+
+the  solver 
+
+can  earn 
+
+a  certain 
+
+number 
+
+errors, 
+
+book 
+
+that  out  of  the  230  examples 
+
+as  the  best  instruction 
+surprised 
+quite 
+depending 
+
+l judges 
+l finds 
+l finds 
+took 
+
+it 
+
+serious.17  Each  problem 
+upon  whether 
+the  value  of  the  position 
+first  move, 
+follow-up 
+that 
+it  is  excellent), 
+of  points 
+
+the  best 
+the  best 
+the  approach 
+
+number 
+
+believe 
+
+correctly, 
+
+and 
+line. 
+the  book’s  method 
+
+the  correct 
+
+We 
+indeed 
+the  intended 
+made 
+thereafter, 
+deviated 
+Recall 
+anything 
+lead 
+first  move, 
+that 
+in  such  a  situation. 
+principal 
+deeply 
+Therefore, 
+the  game 
+whatever 
+
+variation 
+
+enough 
+
+and  when 
+for  the  correct  or  better 
+
+(we  do 
+of  scoring  was  correct 
+the  given  solution  was  wrong,  we  gave 
+solution.  When  a  program 
+did  not  represent 
+found 
+
+best  play 
+the  best  play  or 
+
+variation 
+
+either 
+
+the  game  until 
+
+the  program 
+
+first  move,  but  the  principal 
+
+we  continued 
+it. 
+
+from 
+that  both 
+than 
+other 
+to  the  win  of  a  rook,  but 
+and  no  other 
+
+the  B”  and 
+finding 
+
+the  best 
+
+alpha-beta 
+
+algorithms 
+first  move.  Thus, 
+believes 
+
+if  the  algorithm 
+first  move  can  do  as  well, 
+
+then 
+
+first  move.  B*  Hitech  will  do  the  minimal 
+Brute-force 
+
+Hitech  may 
+
+amount 
+
+find 
+
+the  correct 
+
+are  not 
+
+charged  with 
+a  given 
+first  move  could 
+it  can  win  a  pawn  by  the 
+in  making 
+itself 
+the 
+
+to  convince 
+first  move,  but 
+
+it  is  justified 
+
+of  work 
+
+it  tenders 
+to  resource 
+
+due 
+
+in  support 
+
+limitations 
+
+of  its  decision  may  not  have  penetrated 
+best  possibility. 
+
+the  absolutely 
+idea  of  the  best  line  of  play  as 
+
+to  pursue 
+
+both  are  given  a  chance 
+continues. 
+partial 
+
+If  this 
+
+credit 
+
+the  book  deems 
+
+appropriate. 
+
+to  find 
+their 
+line 
+
+is  the  correct 
+
+they  get 
+
+full  credit, 
+
+otherwise 
+
+that  a  highly 
+
+regarded 
+disagrees  with 
+error  or  improvement, 
+
+book  contains 
+
+the  book. 
+
+If  in  following 
+
+errors.  The 
+the 
+
+then  one  must  conclude 
+
+used 
+
+how  w’c  can  determine 
+
+the  book 
+
+is  to  investigate 
+
+reader  may  wonder 
+
+line, 
+is  errorful. 
+
+“The 
+method 
+recommended 
+that 
+course. 
+will  not  concern 
+correspondence  World  Champion  was  unable 
+The  competence 
+presentation. 
+the  imaginative 
+
+the  program 
+Thus, 
+
+it  is  always  possible 
+
+ourselves  with 
+
+that  case. 
+
+that  both 
+
+positions  where  a  program 
+finds  some  obvious 
+this 
+
+is  a  clean  scientific 
+the  book  and 
+
+approach 
+
+the  program  make 
+
+It  should  be  noted 
+
+to  find  any  of  these  errors, 
+
+of  the  two  programs 
+
+There 
+problems 
+yet  ripe 
+programs 
+participants 
+settings. 
+
+is  an  amusing 
+[#166  &  #187] 
+
+experience 
+from 
+the  win  which  must  be  prepared. 
+find  a  win  in  the  first  position.  which 
+
+the  same  game. 
+
+for 
+
+that  can  be  related 
+
+about 
+
+In  the  first  the  book 
+
+In  the  second, 
+is  very  delicate 
+the  win 
+
+in  the  game.  Neither 
+
+program 
+
+finds 
+
+in  the  second 
+
+that 
+
+is  what  brought 
+
+the  first  author, 
+
+and  was  instead  enthralled 
+
+to  the  validity  of  test  material.  Of 
+the  same  error;  however.  we 
+chess  by 
+a  former 
+by 
+to  light. 
+two 
+are 
+the  situation 
+is  not 
+involved  win.  Both 
+the  attention 
+of  the 
+under 
+
+indicates 
+that 
+it  gives  a  long  and 
+and  clearly  escaped 
+position 
+
+the  errors 
+the  use  of  the  book.  There 
+
+tournament 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+135 
+
+Table  2 
+Results 
+
+of  tests  on  The  Best  Move 
+
+Poss  pts 
+
+Hitech  A-B 
+
+4  x  Time 
+
+B*  Hitech 
+
+2  x  Nodes 
+
+Probe  +  1 
+
+Opening 
+MidGame 
+Ending 
+All 
+
+28 
+837 
+235 
+1100 
+
+18 
+559 
+166 
+770 
+
+22 
+587 
+179 
+815 
+
+17 
+547 
+145 
+704 
+
+17 
+604 
+149 
+765 
+
+17 
+613 
+151 
+781 
+
+6.2.2.  Test  on  a  book  of  problems 
+
+that  is  possible 
+
+Table  2  shows  the  performance  of  the  two  programs  on  the  set  of  problems 
+in 
+the  book  The  Best  Move  [17].  The  first  column  shows  the  maximum  number  of 
+to  get  in  that  category.  The  next  five  columns  show  the 
+points 
+of  five  different  programs  by  type  of  position.  The  five  programs  are 
+performance 
+that  Hitech  given  4  times  as  much  time  (a  factor 
+respectively 
+tournament  Hitech 
+of  4.5  allows  a  l-ply  deeper  search),  B*  Hitech  at  tournament 
+settings,  B*  Hitech 
+to  twice  as  much  time),  and  B* 
+allowed 
+Hitech  with  the  probe  searches  going  l-ply  deeper  than  normal  (which  amounts  to 
+4.5  times  as  much  time). 
+
+twice  as  many  nodes  (which  amounts 
+
+The  results  show  that  Hitech  5.6  is  slightly  better 
+tournament 
+
+of  the  game  under 
+formance 
+additional 
+
+the  other  programs 
+
+of 
+time,  if  such  were  available  due  to  better  hardware 
+
+represent 
+
+conditions. 
+that 
+
+It  is  interesting 
+
+to  note 
+various  ways  of 
+
+than  B*  Hitech 
+
+in  all  phases 
+the  per- 
+investing 
+
+in  the  future. 
+
+In  the  opening,  Hitech  5.6  benefits  from  going  l-ply  deeper 
+
+than  normal  by 
+its  performance  by  22%.  On  the  other  hand  B*  Hitech  does  not  benefit 
+improving 
+at  all  from  having  more  time  to  explore  or  by  having  deeper  probe  searches.  This 
+clearly  indicates 
+that  B*  Hitech’s  understanding  of  the  opening  is limited  in  some 
+way  that  the  deeper  searching  Hitech  5.6  is  not. 
+
+In  the  middle  game,  we  see  the  potential  of  the  B*  search.  Under 
+
+tournament 
+
+conditions  Hitech  5.6  still  outperforms  B*  Hitech.  But  when  given  4  times  as 
+much  time  Hitech  5.6  improves  by  5%,  while  B*  Hitech 
+improves  9%  with  a 
+factor  of  only  2  more  in  time.  Some  additional 
+improvement  on  this  is seen  if  the 
+probe  searches  are  made  one  ply  deeper,  which  allows  a  still  better  understanding 
+of  threats. 
+
+In  the  ending, 
+
+the  improvements 
+
+in  B*  Hitech  with  additional 
+
+it  is  again  a  case  of  the  brute-force 
+
+search  being  clearly  better, 
+although 
+time  are  slightly  better 
+than  those  of  Hitech  5.6.  We  should  note  that  3-  or  4-ply  probe  searches  are  just 
+level,  without 
+for  B*  to  understand 
+not  enough 
+additional  knowledge.  As  indicated,  B*  Hitech 
+runs  in  tournament  mode  only 
+to  a  certain  level.  It  then  defers  to  Hitech 
+until  the  amount  of  material 
+to  finish  the  game.  We  deal  with  some  of  the  issues  of  how  to  remedy 
+this  in 
+Section  9. 
+
+endgame  play  at  the  Master 
+
+is reduced 
+
+6.2.3.  Games  versus  tournament  Hitech 
+
+Table  3 shows  the  results  of  24 games  between  B*  Hitech  and  Hitech  5.6.  These 
+games  were  the  last  tests  made  and  came  after  a  number  of  serious  bugs  were 
+
+136 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificiul  Intelligence  86  (1996)  97-l% 
+
+Table  3 
+Test  games  versus  Hitech  5.6’” 
+
+Opening 
+
+type 
+
+Closed 
+
+Semi-open 
+
+for  B* 
+for  A-B 
+
+Points 
+Points 
+Avg.  B*  stopped 
+Avg.  game  ended 
+
+2.5 
+5.5 
+35.5 
+54.1 
+
+4.0 
+3.0 
+29.4 
+36.4 
+
+Open 
+
+3.5 
+4.5 
+30.0 
+41.4 
+
+Total 
+
+10.0 
+14.0 
+32.6 
+47.3 
+
+o/c 
+
+41.7 
+58.3 
+
+In  one  B*  Hitech  had  white,  and  in  the  other 
+
+a variety  of  situations.  For  each  starting  position, 
+
+two  affected  both  programs.  The  games  were  played 
+
+remedied, 
+including  bugs  in  the  hardware  and  some  very  old  software  bugs.  The 
+latter 
+from  12  opening 
+positions  which  represented 
+two 
+it  had  black. 
+games  were  played. 
+Both  programs  had  identical  time  limits  for  making  moves.  Thus,  the  contest  was 
+completely  balanced.  Games  were  terminated  when  one  side  had  won,  when  a 
+or  insufficient  material,  or  when  B*  Hitech 
+draw  was  declared  by  repetition 
+to  play  the  current  ending 
+announced 
+because  of  reduced  material. 
+In  the  latter  cases,  the  following  procedure  was  used 
+to  evaluate 
+
+that  it  was  no  longer  qualified  to  continue 
+
+the  outcome: 
+
+l If  the  programs  agreed 
+
+l If  the  programs  agreed 
+
+more, 
+
+advantage, 
+
+that  neither  side  had  more 
+
+than  0.125  of  a  pawn 
+the  game  was  declared  a draw.  This  was  the  outcome  of  3 games. 
+that  one  side  had  an  advantage  of  two  pawns  or 
+the  game  was  declared  a  win  for  that  side.  This  terminated  6  games. 
+the  game  was  continued  by  tournament  Hitech  playing 
+until  a  definite  result 
+both  sides,  with  appropriately 
+was  obtained.  There  was  a proviso  that  if  both  programs  agreed  one  side  had 
+the  advantage  when  the  game  was  continued, 
+that  the 
+other  program  win  the  game.  This  proviso  never  needed 
+
+it  was  not  allowed 
+
+to  be  invoked. 
+
+information, 
+
+inherited 
+
+l In  all  other  situations, 
+
+This  procedure  simulates  the  play  of  B*  Hitech  under  tournament  conditions.  The 
+for  terminating  play  were  decided  on  before  any  games  were  run,  and 
+conditions 
+were  invoked 
+that  could  occur  in  nearly  even  endings  due 
+to  some  horizon  effect 
+[3],  or  other  aberration.  They  act  equally  on  both 
+programs. 
+requiring  no  chess  knowledge. 
+
+is  a  purely  mechanical  procedure, 
+
+to  remove  randomness 
+
+It  can  be  seen 
+
+the  above 
+
+that 
+
+to  lose  14 -  10.  However, 
+
+B*  Hitech  got  41.7%  of  the  total  points.  This  is a  very  good  result.  It  certainly 
+is  decisive 
+that  a  selective  search 
+program  can  get  this  many  points  from  an  established  brute-force  program. 
+It 
+just  how  much  work  the  computer  chess  community  has 
+should  be  remembered 
+put  into  the  development  of  the  alpha-beta  search.  It  is now  a very  robust  vehicle, 
+in  all  phases  of  the  game.  B*,  on  the  other  hand,  requiring 
+capable  of  performing 
+
+it  is  also  amazing 
+
+semi-open, 
+
+and  closed 
+
+lx Open, 
+starting  position.  Closed  means  no  pawns  have  been  captured 
+semi-open  means  one  of  the  two  center  pawns  of  one  side  has  been  captured, 
+least  one  center  pawn  of  each  side  has  been  captured. 
+
+to  the  character 
+
+of  the  position 
+
+or  that 
+
+refer 
+
+as  determined 
+
+by  a  particular 
+
+two  opposing 
+
+center  pawns  abut; 
+that  at 
+
+and  open  means 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+137 
+
+the  game  was  over.  This  will  allow  the  reader 
+
+many  more  control  decisions,  has  not  had  nearly  that  amount  of  work  put  into  it 
+(despite  some  intensive  effort  on  this  project).  We  have  avoided 
+the  problem  of 
+B*  Hitech’s  poor  endgame  play  by  not  allowing  it  to  play  the  ending.  13  games 
+were  played  out  in  this  manner.  We  have  included  in  Table  3 the  average  move  of 
+from  B*  to  regular  Hitech  for  these  games,  and  the  average  move 
+switch-over 
+when 
+the  degree  of 
+involvement  of  endgame  play  by  tournament  Hitech 
+in  finishing  off  games  of  B* 
+Hitech. 
+It  is  not  surprising  that  games  in  closed  positions  were  continued 
+further, 
+In  its  current  state,  B*  Hitech 
+in  such  positions. 
+as  swaps  of  material  are  rarer 
+with  Hitech  5.6  playing  the  ending  is  rated  only  65 points  worse  than  tournament 
+Hitech  on  the  human  scale.  This  puts  it  near  a  US  Chess  Federation 
+2350,  based  upon 
+purely  selective  search  chess  program  known.” 
+
+rating  of  2413,  and  makes 
+
+rating  of 
+it  the  best 
+
+tournament  Hitech’s 
+
+to  gauge 
+
+strategy 
+
+the  probe 
+
+importance. 
+
+In  such  situations 
+
+to  its  play  of  closed  positions. 
+
+In  Hitech  5.6,  the  battle  hardened  veteran, 
+
+in  detail  at  Table  3  one  can  discern  that  almost  all  of  B*‘s  deficit  can 
+Looking 
+is  of 
+be  attributed 
+strategy  has 
+paramount 
+that  find  useful  patterns  far  from  the 
+been  built  in  by  means  of  pattern  recognizers 
+root  of  the  search  [7].  However,  B*  Hitech  can  only  find  patterns  3-ply  removed 
+from  where 
+the 
+patterns 
+finds  some  “deep” 
+search,  but  independent  of  the  pattern  recognizers. 
+idea  as  a  result  of  brute-force 
+However,  more  frequently  B*  Hitech  found  such  ideas.  This  resulted 
+events, 
+decisively 
+competitor  B*  Hitech  needs,  at  a  minimum, 
+better. 
+
+in  turns  of 
+that  Hitech  5.6  did  not  have  an  inkling  of  until  the  game  had  turned 
+to  become  a  real 
+to  be  able  to  play  closed  positions 
+
+to  be  fully  developed  as  yet.  Hitech  5.6  occasionally 
+
+in  the  direction  dictated  by  B*  Hitech.  However, 
+
+search  originates.  This  frequently 
+
+does  not  allow 
+
+7.  Discussion  of  test  results 
+
+7.1.  B*  search  examples 
+
+One 
+
+interesting 
+
+and  extreme  example  of  the  differences  between 
+
+the  under- 
+standing  of  a  brute-force  and  B*  search  is shown  in  Fig.  21.  Here  Black  can  make 
+a  draw  by  correct  play.  Tournament  Hitech  sees  that  after 
+l.-f5!;  2.  Ke5,f4;  3. 
+Ke4,f3;  4.  Ke3,h5;  5.  Kf2,h4;  6.  Bd6,Kh3  the  position  is a  draw  because  7.  K:f3  is 
+stalemate.  This  is  the  kind  of  thing  that  humans  can  easily  miss,  but  tournament 
+finds  it  in  8  seconds.  B*  Hitech  on  the  other  hand,  looks  at  10  modes  to 
+Hitech 
+that  way  until  it  is 
+that 
+decide 
+faced  with  4.-h5  where 
+It 
+goes  down  the  only  path  available  to  it  and  at  the  end  finds  to  its  surprise  that  the 
+
+it  chooses  h6  instead.  But  this  makes  no  difference. 
+
+is  the  only  reasonable  move. 
+
+It  continues 
+
+l.-f5 
+
+” There  are  micro-chess 
+strategies 
+far. 
+very 
+
+discussed 
+
+programs 
+
+that  may  be  better,  but  these  programs 
+
+use  one  of  the  hybrid 
+
+in  Section  2.  We  wish 
+
+to  make 
+
+the  point 
+
+that 
+
+the  B*  paradigm 
+
+search 
+has  been  pushed 
+
+138 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificiul 
+
+Intelligence  86  (1996)  97-1.56 
+
+Fig.  2 I.  Black 
+
+to  play 
+
+is  a  draw.  Actually,  neither  program  understands 
+
+position 
+is  a  draw 
+without  a  great  deal  of  additional  work.  They  both  will  avoid  the  move  K:f3  as 
+long  as possible,  always  believing  that  White  still  has  a  chance  as long  as  he  avoids 
+that  plays  in  tournaments  would 
+this  move.  This  is what  every  computer  program 
+also  do.  However, 
+to  see  how  B*  Hitech  only  looks  at  enough  of 
+the  solution  to  be  sure  what  the  best  next  move  is,  while  tournament  Hitech  looks 
+as  deeply  as  it  can. 
+
+it  is  interesting 
+
+the  position 
+
+A  more 
+
+typical  example  of  how  things  work,  where  B*  Hitech 
+
+looks  much 
+into  a  situation  can  be  seen  in  Fig.  22.  This  is from  an  infamous  article  by 
+that  his 
+
+deeper 
+former  World  Chess  Champion  Botvinnik  [lOj,  in  which  he  demonstrated 
+
+Fig.  22.  White 
+
+to  play. 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-1.56 
+
+139 
+
+did  not  at  all  understand 
+about  his  failure 
+
+“program” 
+commotion 
+problem  correctly, 
+This  resulted 
+B*  Hitech  now  solves  this  problem 
+
+in  some  refinements 
+
+since  this  is  exactly 
+
+the  position.”  However, 
+
+the  resulting 
+inspired  us  to  see  that  B”  Hitech  would  solve  this 
+it  should  excel  on. 
+in  our  treatment  of  the  GHI  problem.  The  way 
+
+the  kind  of  problem 
+
+is  exemplary  of  its  best  play. 
+
+3.  K:f2  because  B*  Hitech  considers 
+
+Within  120  nodes  B*  Hitech  discovers 
+
+if  R:d8;  2.  Rd5!!  wins.  The  principal  variation  gives  1.  Rd8,Q:b5; 
+
+the  key  move  1.  Rd8!!,  and  has  found 
+2. 
+that 
+Qd6!,B:f2+!; 
+this  to  be  the  line  that  gives 
+White  the  best  chances.  This  is correct.  After  Black  plays  Q:b5,  it  quickly  decides 
+it  explores  K:f2  to  a  depth  of  29  ply,  and  finds  the 
+on  Qd6!.  Then  after  B:f2+ 
+(not 
+complete  win.  The  principal  variation 
+;  6. 
+Kg2  whereupon  Qd5+  gives  good  drawing  chances),  Qbl+ 
+11. 
+8.  Kg3,Qel 
+Kh3,Qf5+;  7.  g4,Qfl+; 
+longest 
+to  a  winning  position.  Since 
+Kd4 
+resistance 
+is the  main  criterion  of  successful  defense  it  does  not  give  the  line  e5 + ! ; 
+12.  Kd5,Qg7+; 
+17.  K:a6  and  there  are  no  more  useful  checks.  However, 
+in  its  log  as  part  of  its  supporting  analysis,  as  are  less  interesting  sidelines  such  as 
+ll.-Q:g4+; 
+
+4.  Kgl!! 
+;  5.  Kg2,Qe4+ 
+10.  Ke3,Qh3+!; 
+
+16.  Ka7,Qgl+; 
+this  line  is  documented 
+
+(or  gl)+;  9.  KD,Qfl+; 
+
+it  does  not  consider 
+
+is  3.  K:f2,Qf5+; 
+
+12.  Kc3,Qh3+; 
+
+15.  Kb6,Qbl+; 
+
+13.  KcS,Qgl+; 
+
+14.  Kc6,Qhl+; 
+
+it  delivers 
+
+11.  Kb2. 
+
+leading 
+
+that 
+
+When 
+
+this  position 
+
+To  understand 
+
+in  the  choice  of  moves. 
+tournament  Hitech 
+to 
+
+the  chess  part  of  the  analysis,  it  is  useful  to  note  that  if  instead 
+then  4.  a4!  forces  Q:a4;  after  which  5.  Qe7! 
+of  3.-Qf5+  Black  plays  3.-Re8, 
+wins.  But  not  immediately  4.  Qe7?,  as  Botvinnik’s  program  purportedly  played, 
+as  then  Qb6+  wins.  B*  Hitech  discovers  all  the  analysis  in  less  than  10  minutes. 
+The  major  point  of  this  example 
+is to  show  how  deep  the  analysis  can  go  when  it 
+makes  a  top  level  decision  difference 
+as  presented 
+
+it  played  1.  Rd8, 
+expecting:  Q:b5;  2.  Qd6,B:f2+;  3.  K:f2,Re8;  4.  R:e8+  ,Q:e8;  5.  Q:a6  with  a  small 
+that  Black  had  better 
+advantage.  Then  after 
+2.  Qd6,  B:f2+ 
+it  was  content  with  a 
+play,  and  after  3.  K:f2,Qf5+; 
+to  venturing  out  into  the  open  with  5. 
+draw,  since  it  could  see  no  advantage 
+8.  Kg3.  The  critical  difference  here  is that 
+Kg2,Qe4+; 
+B*  Hitech  has  its  optimism 
+it  going,  while 
+tournament  Hitech  assesses  the  current  situation  with  no  understanding  of  such 
+issues.  We  have  confirmed 
+like 
+tournament  Hitech,  being  afraid  to  venture 
+into  the  open  with  the  king,  without 
+being  able  to  see  the  end  of  the  situation. 
+
+top  chess  programs  behave  exactly 
+
+it  found 
+5.  Kf2,Qf5+ 
+
+6.  Kh3,Qf5+;  7.  g4,Qfl+; 
+
+threat  at  f8)  to  keep 
+
+4.  Kgl,Qbl+; 
+
+that  many 
+
+(the  mate 
+
+l.-Q:b5; 
+
+There  are  some  general  observations  on  the  interaction  of  a  selective  search 
+
+and  a  brute-force 
+
+search  that  are  worth  making: 
+l When  the  selective  search  program  has  the  better  position, 
+
+win  by  finding  ideas  that  improve 
+an  excellent  manner.  However, 
+exploring  all  defenses  and  thus  overlooking 
+idea.  On  the  other  hand,  the  brute-force  program  will  defend  meticulously 
+
+to 
+its  position  further.  This  is  mostly  done  in 
+it  goes  astray  when  not  fully 
+sometimes 
+that  can  foil  an 
+in 
+
+some  possibility 
+
+it  will  attempt 
+
+*OFrom  a  game  Kasparov-Ribli, 
+
+1991,  in  which  the  World  Champion  missed  a  win. 
+
+140 
+
+H.J.  Berliner,  c’.  McConnell 
+
+I  Artificiul  Intelligmce  86  (1996)  97-1.56 
+
+is  with  one  exception:  When 
+it  can 
+in  a  manner 
+
+try  has  approximately 
+that  looks  random 
+
+result, 
+to  a  human.  Since 
+in  not  requiring  much  understanding 
+
+the  brute-force 
+the  same 
+
+this  results 
+
+to  make  progress.  This  phenomenon 
+
+reminds 
+
+strongly 
+
+respect 
+
+to  games 
+
+in  which  a  program 
+
+that  searches 
+
+the  better 
+
+position 
+
+against 
+
+a  program 
+
+that  searches 
+
+the  deeper  program  will  frequently 
+of  whether 
+any  notion 
+
+see  too  much 
+
+it  is  offering 
+
+resistance 
+
+program 
+it  then 
+it  has  no 
+for  the 
+of  a  similar 
+to 
+to  depth 
+for  its  own 
+in 
+
+This 
+
+that  everything 
+to  defend 
+
+such  situations. 
+sees 
+chooses 
+notion  of  difficulty, 
+opponent 
+point  we  made  with 
+depth  N  has 
+N  +  k  [S].  Here 
+good,  and 
+the  human 
+
+retreat  without 
+sense. 
+the  brute-force 
+
+l When 
+
+have 
+
+The  only 
+
+is.  It  is  essentially 
+result 
+
+ones).  However, 
+idea 
+to  be 
+the 
+is  threatening. 
+
+ahead  always  considering 
+the  correct 
+“defensive” 
+would 
+opponent 
+in  B*  Hitech 
+this  is  only 
+However, 
+phase,  and  these  are  essentially 
+SELECT 
+defensive 
+idea 
+and  deal  with 
+extra-move 
+several 
+situations 
+way  of  “lighting 
+
+in  which  other  methods 
+for  the  search. 
+a  path” 
+
+is  what  comes  up  during 
+in  response 
+
+is  called 
+these 
+paradigm 
+
+for.  We  intend 
+
+in  a  somewhat 
+
+the  better 
+
+program 
+
+has 
+the  best  defenses 
+a  selective 
+
+position, 
+as  it  sees  them 
+search 
+
+impossible 
+of  some  probe 
+
+little 
+
+has 
+to  define 
+search  which 
+
+statically, 
+
+it  essentially 
+
+plows 
+(which  are  usually 
+idea  of  what 
+
+and 
+tells  what 
+
+a 
+thus 
+the 
+such  as  this 
+part  of  the  search. 
+by  the 
+that  a 
+
+implementation 
+
+of  something 
+
+the  VERIFY 
+
+to  moves 
+
+that  have  been  proposed 
+random  when  one  considers 
+
+to  try  to  identify 
+
+defensive 
+
+situations, 
+
+different  way. 
+
+It  is  clear 
+
+is  an  excellent  way  of  gauging 
+
+optimism, 
+
+are  required 
+
+in  order 
+
+the 
+that,  while 
+there 
+are 
+to  have  some 
+
+reaches  has  little 
+
+to  do  with 
+
+the  number 
+
+has  a  forcing 
+to  find  a  solution.  Explorations 
+
+character, 
+
+than  1.2”  nodes,  which 
+
+that 
+the  forcing  positions  where 
+
+lack  a  forcing 
+
+the  effective 
+
+seldom  need 
+branching 
+
+the  expected 
+1.5”  =  292  and  1.6”  =  720.  It  is  in  this  area 
+
+number 
+
+In  general, 
+
+the  depth 
+
+that  a  B*  search 
+the  position 
+is  required 
+
+empirically 
+
+take  more 
+
+If 
+depth 
+
+is  useful.  Unlike 
+
+than  14.  We  believe 
+
+is  in  the  range  1.5-1.6.  Thus, 
+
+to  seldom 
+It  is  in  situations 
+
+expanded. 
+to  whatever 
+found 
+
+of  nodes 
+plummet 
+have  been 
+D  =  20  is  only  38  nodes. 
+additional 
+effort 
+expansion 
+could  be  at  depth  35  or  so,  placid  positions 
+to  a  depth  greater 
+positions 
+exploration 
+additional 
+always 
+required 
+positions 
+However, 
+1845  Hitech’s 
+relax 
+than 
+
+to  find  out 
+such 
+to  do  a  14-ply  brute-force 
+
+the 
+if  anything 
+that 
+
+for  B*  search 
+done. 
+
+power  could  be  used.  This 
+
+in  a  single  machine.  With 
+
+the  brute-force 
+
+search  would 
+
+termination. 
+
+to  capture 
+
+is  between 
+
+computing 
+
+interesting 
+
+ideas 
+
+able 
+
+that 
+
+this 
+
+as 
+
+the  criteria 
+is  currently 
+It  should  be  clear 
+
+the  above  data 
+
+alpha-beta 
+use 
+
+in  games 
+
+when 
+
+such  as  Go. 
+
+is  because 
+
+are  pertinent, 
+
+large 
+
+and 
+can  be  done.  Of  course, 
+performs 
+
+search 
+
+that  much  power, 
+
+require 
+
+the  power  of  4.5”  = 
+to 
+and  investigate  much  more  of  the  tree 
+
+it  would  be  possible 
+
+character 
+the  deepest 
+
+B*  Hitech  will 
+to  depth  D 
+for 
+that 
+node 
+to  be  explored 
+factor 
+of  nodes  needed 
+that 
+the  OptVals 
+
+for  such 
+for 
+the  most 
+are  not 
+are 
+it  is  in 
+
+searches 
+
+so  admirably. 
+
+from 
+the  branching 
+
+factor  of  the  tree 
+
+that  B’  has  its  greatest 
+
+over 
+is  high.  This  augurs  well  for  its 
+
+advantage 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+141 
+
+7.2.  The  horizon  effect  and  the  B*  search 
+
+Let  us  assume  the  position 
+
+in  Fig.  23  occurs  as  a  leaf  node 
+captures 
+
+in  a  brute-force 
+
+and 
+
+is  not 
+
+in  check, 
+
+is  a  good  possibility 
+
+the 
+search.  Since  White  has  no  meaningful 
+quiescence  search  will  allow  him  to  pass,  and  the  position  will  be  scored  as  good 
+for  White  since  he  is  ahead  in  material. 
+It  is  possible  that  a  brute-force  program 
+with  extension  heuristics  may  notice  that  White  has  two  pieces  en  prise,  and  that 
+that  it  may  lose  one  of  them.  Such  a  fact  could  cause 
+there 
+that  White  is,  in  fact,  slightly 
+the  search  to  continue  and  come  to  the  conclusion 
+worse  off.  However,  detecting  such  a  situation 
+expensive,  and 
+not  always  correct.  For  instance, 
+if  the  black  king  were  at  fi’,  then  the  pawn  at  d5 
+would  be  pinned  and  the  N  at  e4  would  not  be  en  prise.  This  is  but  one  kind  of 
+the  score  being 
+problem 
+is  correct.  There  are  many  other  kinds  of  problems 
+attributed 
+such  as  when  a  piece  is pinned  but  can’t  be  captured 
+[3].  It  has  been 
+that  such  problems  can  be  largely  done 
+the  view  of  the  computer  chess  community 
+if  such  a 
+to  be  true;  however, 
+away  with  by  ever  deeper  searches.  That  appears 
+problem  occurs  in  a  critical  branch, 
+
+that  brute-force 
+to  a  leaf  position 
+
+it  will  cause  bad  effects  in  the  search. 
+
+in  deciding  whether 
+
+is computationally 
+
+searches  have 
+
+immediately 
+
+is  playing  White  in  Fig.  23,  and  this  is  a  leaf  position 
+
+Now  let  us  examine  how  the  B*  search  deals  with  such  problems.  Let  us  say 
+in  the 
+line  of  play  at  the  end  of  the  SELECT  phase.  Now  when  the  Opponent 
+
+that  the  B*  program 
+principal 
+begins  to  VERIFY,  he  exerts  his  optimism  in  connection  with  his  last  move  d7d.5, 
+that  with  an  extra  move  he  will  be  a  pawn  ahead  after  the  capture 
+and  notices 
+the 
+d:c4  or  d:e4.  This  optimism  will  cause 
+to  respond  because  Black  wants 
+consequences 
+to  know  what  is going  to  happen.  In  this  way  the  full  consequences  of  the  position 
+will  be  investigated  until  it  is  clear  what  will  happen,  or  that  it  is  not  of  interest. 
+
+of  d7d5,  and  White  will  be  forced 
+
+the  search 
+
+to  explore 
+
+to  want 
+
+Fig.  23.  White 
+
+to  play; 
+
+last  move  was  d7d5. 
+
+142 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-1.56 
+
+This  same  kind  of  I-have-optimism-that-needs-to-be-investigated 
+
+attitude  will  be 
+It  is 
+applied  to  all  leaf  nodes  in  which  good  effects  are  waiting  to  be  discovered. 
+that  the  good  effect  be  reasonably  probable  and  can  be  found 
+only  necessary 
+results  over 
+within  the  probe  search.  Thus  horizon  effects,  which  push  undesirable 
+the  search  horizon,  do  not  seem  to  occur  in  B*  searches.  If  they  do,  they  must  be 
+the  result  of  the  probe  search  (which  uses  brute-force)  being  subject  to  a  horizon 
+effect.  During  this  work,  we  have  seen  some  bad  bounds  being  brought  back  for 
+this  reason.  However,  we  have  noted  no  horizon  effects  of  any  other  type.  This  is 
+all  other 
+clearly  an  important  consideration, 
+
+things  being  equal. 
+
+it  is  problematical  whether 
+
+In  Fig.  24,  Black  (Hitech  5.6)  plays  Qd7  based  upon  a  lo-ply  search,  unaware 
+that  there  is  any  problem.  Of  course,  any  human  would  be  leery  of  such  a  move, 
+since  the  response  d5  creates  a  situation  where 
+the 
+the  situation  with  the 
+bishop  at  e6  can  survive.  However,  Hitech  5.6  horizons 
+variation  1. d5,  Rad8  after  which  the  bishop  can  delay  moving  for  a  move  or  two, 
+and  even  after  it  moves  it  cannot  be  captured 
+immediately.  After  the  faulty  Qd7, 
+B*  Hitech  does  a  118-node  search  in  which  all  except  17 of  the  nodes  expanded 
+are  in  the  subtrees  of  the  responses  d5  and  h:g  which  are  the  only  two  moves  that 
+good  humans  would  look  at.  It  then  decides  on  h:g,  but  quickly  finds  that  this 
+allows  f:g,  after  which  d5  could  be  met  by  Bf7.  It  then  immediately 
+switches  to 
+d5,  and  after  the  VERIFY  comes  up  with  a  principal  variation  of  1.  d5,Bg4;  2. 
+is  about  what  a  human 
+f3,B:h5;  3.  g4,B:g4;  4.  fg4,Q:g4;  5.  Qd2,c6  which 
+Grandmaster  would  calculate  here.  To  do  this  B*  Hitech  penetrated 
+to  a  depth  of 
+14  in  certain  parts  of  the  tree,  but  the  whole  analysis  revolved  about  the  issue  of 
+whether 
+bishop  at  e6  could  escape,  whereas  Hitech  5.6  had  no 
+inkling  of  the  problem.  This  is  an  extreme  but  very  to  the  point  example  of  the 
+difference 
+
+in  outlook  between  B*  and  its  brute-force 
+
+the  unfortunate 
+
+competitors. 
+
+Fig.  24.  Black 
+
+to  play 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artijicial  Intelligence  86  (1996)  97-156 
+
+143 
+
+8.  Speed  and  potential  parallelization 
+
+functions, 
+
+Our  method  of  getting  bounds  by  the  use  of  shallow  searches 
+
+large 
+quantities  of  computing  power.  Yet,  having  tried  to  produce  bounding  estimates 
+by  means  of  static  evaluation 
+it  appears  clear  that  there  is essentially  no 
+choice  but  to  do  shallow  searches  at  the  current  state  of  the  art.  This  limits  the  use 
+to  machines  that  can  do  the  required  shallow  searches 
+of  the  B*  search  algorithm 
+than  chess  it 
+in  real  time.  It  is  certainly  conceivable 
+that  in  some  domain  other 
+it  is the  first 
+would  be  possible  to  get  bounding  estimates  more  cheaply.  However, 
+author’s  experience 
+there  is  no 
+significant  problem 
+
+that  when  it  is  easy  to  get  good  bounds  statically, 
+to  be  solved. 
+
+requires 
+
+the  better 
+
+the  problem 
+
+It  is always  interesting 
+
+up  with  additional  computing  power.  Section  6.2  shows  that  the  deeper 
+searches 
+investigated, 
+performance 
+this  is  unlikely  as  it  would  require 
+hardware, 
+especially 
+for  that  purpose. 
+use  a  general  purpose  parallel  machine 
+
+to  examine  an  algorithm  to  determine  how  it  would  scale 
+the  probe 
+the  set  of  nodes 
+the 
+it  on  a  faster  chess  specific  piece  of 
+of  a  machine 
+It  is  much  more  sensible  to  think  of  how  one  would 
+
+the  better 
+of  the  system  by  running 
+
+the  solution.  While  it  may  be  possible 
+
+to  get  increased  power. 
+
+the  construction 
+
+solution.  Also, 
+
+to  improve 
+
+larger 
+
+the 
+
+Our  argument 
+
+regarding 
+
+the  advantages  of  parallelizing  B*  takes  the  following 
+
+form: 
+
+(1)  B*  performance 
+investigated, 
+
+has  already  been  shown  to  increase  with  additional  nodes 
+
+and  depth  of  probe  searches  over  a  modest  range. 
+
+(2)  B*  decomposes  easily  for  parallelism. 
+(3)  Potential 
+
+losses  in  efficiency  come  from  having  to  predict  which  nodes  need 
+to  be  expanded,  and  there  may  be  some  loss  if  that  node  is  expanded  but 
+would  never  have  been  if  a  single  machine  were  at  work.  We  estimate 
+the 
+magnitude  of  such  losses. 
+
+(4)  We  review 
+
+the  literature  on  parallel  decomposition 
+
+of  alpha-beta 
+
+search 
+
+and  what  the  efficiency 
+
+losses  are. 
+
+(5)  Since  the  losses  due  to  alpha-beta  are  on  the  order  of  90%  and  the  losses 
+that  as  computing  power 
+
+due  to  B*  are  on  the  order  of  15%,  we  conclude 
+increases,  B*  searches  must  overtake  alpha-beta  searches. 
+
+The  B*  algorithm  decomposes  nicely  for  limited  parallelism.  Since  there  are  on 
+[32],  one  can  use  on  the  order  of  70 
+average  35  legal  moves  in  a  given  position 
+processors 
+to  do  the  probe  searches  required  by  a  single  node  expansion.  There 
+will  at  times  be  as  many  as 70  legal  moves,  and  at  times  very  few.  Thus,  it  appears 
+that  128  processors  could  be  kept  busy  doing  in  parallel  what  B*  Hitech  does 
+serially  now  without  any  particular  effort 
+to  schedule  processors.  At  present  B* 
+to  do  all  the  processing  of  a  node.  With  128 
+Hitech 
+processors 
+to  0.02  seconds.  The  fact  that  certain 
+processors  may  not  finish  on  time  has  been  dealt  with  in  the  literature  on  the 
+tree-splitting 
+searching;  cf.  [19,  221.  At  present 
+Hitech  searches  about  120 nodes  in  the  three  minutes  it  is  allotted  on  average  for 
+
+takes  about  2  seconds 
+equal  to  Hitech, 
+
+to  parallel  alpha-beta 
+
+this  reduces 
+
+approach 
+
+144 
+
+H.J.  Berliner,  C.  McConnell 
+
+i  Artificial  Intelligence  b’6 (1996)  97-156 
+
+a  move.  These  240  seconds  contain  about  80  seconds  worth  of  work  done  on  the 
+opponent’s 
+
+time. 
+
+To  do  an  (N  +  1)-ply  search  takes  a  factor  of  4.5  more  than  it  took  to  do  the 
+N-ply  search  [14].  If  a  machine  were  capable  of  doing  a  13-ply  search, 
+it  could 
+to  investigate  about  747 
+instead  do  37,367  6-ply  searches.  This  would  be  enough 
+nodes,  which  should  be  sufficient  in  99.9%  of  all  cases.  In  fact,  since  the  search 
+would  use  less  than  half  this  number  of  nodes  most  of  the  time,  it  will  have  saved 
+up  enough 
+
+time  to  investigate  any  difficult  position 
+
+that  may  come  up. 
+
+The  whole  issue  in  scaling  up  is  how  many  processors  must  be  kept  busy  at  the 
+same  time.  If  it  is  128 or  less,  there  should  be  no  loss  of  efficiency  as  they  will  all 
+be  working  on  the  current  node  that  is  being  expanded. 
+If  there  are  many  more 
+processors, 
+then  there  is the  issue  of  what  tasks  to  assign  them.  The  normal  thing 
+to  find  the  node  that  is most  likely  to  be  expanded  after 
+to  do  would  be  to  attempt 
+the  present  node  and  start  work  on  that.  This  is not  difficult,  as we  have  explained 
+in  Section  3.9.3.  There  are  many  candidate  nodes  to  expand,  and  we  even  do 
+to  be  sure  to  not  be  too  myopic  about  things.  So  it  seems  fair  to  say  that 
+dithering 
+(4  nodes  worth)  can  be  kept  busy  with  essentially  no  loss.  After 
+512  processors 
+that  there  are  bound  to  be  some  losses  due  to  the  fact  that  node  expansions  will 
+bring  on  enough  new  views  of  the  world,  so  that  those  nodes  that  looked  good 
+under 
+some 
+the  above  views. 
+examination  of  search  trees  generated  by  B*  Hitech  to  support 
+that  more  than  1  out  of  5 
+Based  on  our  examinations, 
+nodes  selected 
+later 
+anyway.  To  be  safe,  let  us  assume  the  loss  is actually  30%  for  up  to  1K  processors 
+it  would  be 
+(14  nodes 
+wisest  to  invest  the  additional  power  in  deeper  probe  searches. 
+
+in  advance  for  expansion  would  not  have  to  be  expanded 
+
+in  advance).  When  we  have  more 
+
+that  good.  We  have  done 
+
+it  seems  highly  unlikely 
+
+the  old  view  will  no 
+
+than  1K  processors, 
+
+longer 
+
+look 
+
+conditions 
+
+The  critical  number 
+
+the  time  limit  allows  approximately 
+
+then  several  processors  must  cooperate 
+
+is  the  amount  of  time  that  is  available 
+
+to  process  a  single 
+3 
+node.  Under  chess  tournament 
+If  we  plan  to  expand  (say)  300  nodes  in  the  process  of  selecting  a 
+minutes/move. 
+move,  then  each  node  must  be  done  in  about  0.5  sec.  If  a  probe  search  cannot  be 
+done  in  this  time  on  a single  processor, 
+to 
+do  the  job.  If  there  is  a  surplus  of  processors, 
+then  getting  four  of  them  working 
+on  the  same  search  will  produce  a  gain  of  about  2.5  (or  0.5-ply)  [19,  221.  Large 
+amounts  of  computer  power  will  have  to  be  used  in  doing  deeper  probe  searches 
+losses  due  to  parallel  alpha-beta. 
+using  parallel  alpha-beta.  This  will  involve 
+However,  despite  several  claims  for  linear  losses  in  parallel  alpha-beta, 
+the  data 
+that  a  small  number  of  processors  can  cooperate  with  much 
+seem 
+to  indicate 
+line  is  a  large  number  of 
+than  a  large  number.  So  the  bottom 
+greater  efficiency 
+processors  would  most  effectively  be  used  by  having  1K  N-unit  processors  doing 
+parallel  alpha-beta, 
+in 
+parallel.  We  now  turn  to  the  issue  of  how  powerful  such  an  N-unit  alpha-beta 
+search  might  be. 
+We  estimate 
+
+to  the  instanta- 
+neous  visualization  of  a  Grandmaster  without  doing  any  calculation.  We  conjec- 
+ture  that  this  is  what  drives  the  human  search,  and  it  is  how  B*  Hitech  operates 
+
+and  thus  have  the  ability  to  process  about  14  B*  nodes 
+
+that  a  3-ply  search 
+
+is  approximately 
+
+equivalent 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+145 
+
+additional  experiments 
+
+searches.  We  have  just  completed 
+
+presently. 
+this  would 
+If  1K  units  were  to  be  available,  each  doing  a  6-ply  search, 
+be  a  very  formidable  machine.  And  yet,  such  machines  are  presently  doing  pure 
+alpha-beta 
+that  show 
+a  13%  gain  in  performance  on  the  problem  solving 
+that  one  gets  approximately 
+set  by  going  from  probe-depth  =  3  to  probe-depth  =  4  and  doubling 
+the  Target- 
+Nodes.  This  is  approximately 
+a  factor  of  ten  of  additional  power.  A  6-ply  search 
+completely  dominates  a  3-ply  search.  In  [8]  are  recorded  some  experiments  with 
+Hitech  where  a  7-ply  search  wins  15.5 -  0.5  over  a  4-ply  search.  This  reference 
+contains  much  similar  data  including  some  results  of  Thompson  which  showed 
+6-ply  beating  4-ply  19.5  to  0.5.  So  the  perceptual  power  of  a  6-ply  search  should 
+be  considerably  more  powerful 
+
+than  that  of  a  3-ply  search. 
+
+In  a  recent  speed  chess  tournament 
+
+in  Munich  a  program  named  Fritz3  running 
+on  a  Pentium  Plus  processor  finished  tied  for  first  with  World  Champion  Kasparov 
+at  the  head  of  a  field  of  18 of  the  World’s  best  Grandmasters. 
+If  such  a  program 
+were  fast  enough 
+to  do  probe  searches  of  depth  N  in  less  than  0.5  set,  then  in  3 
+minutes,  128  such  processors  could  generate  a  B*  search  tree  of  360  nodes  using 
+depth  N  probe  searches. 
+
+appear 
+
+in  parallel.  However, 
+
+We  now  turn  to  the  efficiency  of  alpha-beta.  There  are  a  number  of  papers  in 
+for  additional 
+field  results  do  not  seem  to 
+losses  as  more 
+is  a  recursive 
+the  right-hand  part  of  a 
+in  the  left-hand  part.  This  does  not 
+in  parallel  alpha-beta  and  this  is  the  major  problem.  On  the  other  hand, 
+to  do  part  of  a  B*  search  as  described  above  does 
+
+the  field  [15,  18,  211  that  make  claims  of  a  linear  degradation 
+processors  doing  alpha-beta 
+this  out.  There 
+bear 
+processors 
+algorithm  which  depends  on  its  efficiency  on  processing 
+tree  knowing  exactly  what  has  happened 
+happen 
+using  each  parallel  processor 
+such  problems. 
+not  encounter 
+
+are  added.  This  is  hardly  surprising,  since  alpha-beta 
+
+to  be  ever  greater  percentage 
+
+In  Fig.  25  the  work  tradeoff  between 
+
+the  B*  method  of  doing  searches  and  the 
+alpha-beta  becomes  clear.  Each  triangle  represents  a  node  expansion  doing  probe 
+then  the  first  move  is  a  step  in 
+searches. 
+
+If  that  discovers  something 
+
+interesting, 
+
+Fig.  25.  Division  of  labor  pays  off. 
+
+146 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+in  the  same  subtree 
+
+that 
+
+is  further 
+some  direction 
+any  depth. 
+If  it  were  possible 
+almost  half  as  deep  as  a  13-ply  search. 
+more  node  expansions 
+reached. 
+discovered 
+then 
+there 
+only  0.00615  of  the  total  effort 
+this  depth.  Thus, 
+resources 
+to  reach 
+depth  of  13  when 
+The  bottom 
+
+If  the  guidance  was  good 
+the  13-ply  search 
+in  the  fact 
+
+all  that 
+is  consolation 
+
+a  moderately 
+
+even 
+the 
+
+is  that  when  enough 
+
+important 
+
+required. 
+
+line 
+
+one  ply  deeper, 
+search 
+searches  of  a  B*  search 
+search.  Although 
+clear 
+
+that  efficiency 
+
+this 
+rather 
+the  chess  strength 
+
+is  best 
+than  going 
+
+issues  very  much 
+
+explored. 
+Thus, 
+to  do  6-ply  probe 
+If  that 
+
+the 
+searches, 
+looks 
+
+can  reach 
+
+to  almost 
+the  first  would  see 
+takes  7 
+
+then 
+interesting, 
+
+triangles 
+
+the  limit 
+
+to  reach 
+that  particular 
+
+it  only 
+that  the  13-ply  search 
+it  will  have 
+line  of  play, 
+If  the  guidance  was  less  than  perfect 
+investigating 
+
+line  of  play 
+
+this  single 
+
+in 
+saw. 
+that 
+
+that  the  brute-force  would  have  expended 
+
+informed 
+
+program 
+and 
+
+tree, 
+
+parts  of  the 
+
+should 
+
+have 
+
+to  go  well  beyond 
+
+is 
+to  reach 
+enough 
+the 
+
+processing 
+
+power  becomes 
+
+invested 
+
+by 
+
+increasing 
+
+the  depth 
+
+available 
+
+to 
+of  probe 
+
+from  depth  N  to  N  +  1  in  an  alpha-beta 
+
+gain 
+favor 
+
+is  still  subject 
+
+to  further 
+
+testing, 
+
+it  is 
+
+the  B*  approach. 
+
+9.  Summary  and  conclusions 
+
+What  can  one  say  about 
+
+the  play  of  Hitech  using 
+
+the  B*  algorithm? 
+
+It  is  very 
+
+search 
+
+in  a  complicated 
+
+a  brute-force 
+If  there 
+
+to  watch.  When 
+
+explicit 
+appears 
+
+one  never  knows  what 
+
+observing 
+to  expect. 
+
+illuminating 
+position 
+be  made 
+suddenly 
+home  and  announces 
+the  end  of  the  &ply  search,  brute-force  will  select 
+of  gold, 
+only  be  pointed 
+
+it  will  bring  home 
+
+the  most  pennies 
+
+to  in  retrospect. 
+
+by  a  depth  8  search, 
+at  depth  8.  It  is  as  if  a  grade  D  average 
+
+roll.  When 
+
+the  honor 
+
+he  made 
+
+there 
+
+then 
+
+is  some 
+is  no 
+
+of  this  until 
+
+turn  of  events 
+inkling 
+student 
+
+that  can 
+it 
+comes 
+there  are  two  pots  of  gold  at 
+is  no  pot 
+that  exist  can 
+
+and  if  there 
+
+suddenly 
+
+ideas 
+
+the  larger, 
+
+it  can  find.  Any 
+
+the  analysis 
+
+the  B*  search 
+
+the  notion  of  threat  carries 
+
+With 
+is  because 
+do  this  or  that.  Much  of  this  will,  perforce, 
+exploration. 
+whatever 
+bring  back 
+more. 
+One 
+
+as 
+to  come 
+the  first  pot  of  gold 
+
+things  are  very  different.  One  gets  the  feeling  of  ideas.  This 
+to 
+It  is  trying 
+is  the  nature  of 
+to 
+this  search  will 
+for 
+
+idea 
+to  a  conclusion. 
+it  finds,  quite 
+
+and  not  go  looking 
+
+it  will  be  pursued 
+
+turn  out;  but  that 
+
+in  some  direction. 
+
+over-emphasize 
+
+Like  humans, 
+
+long  as  an 
+
+is  promising 
+
+importance 
+
+However, 
+
+satisfied, 
+
+it  takes 
+
+depth 
+
+not 
+
+the 
+
+of  a  timely  termination  of  the 
+a  move  without  knowing  what 
+
+cannot 
+search.  It  is  illuminating 
+the  opponent’s 
+
+best 
+
+l it  has  found 
+l the  opponent’s 
+
+to  find  B*  Hitech  making 
+
+reply 
+
+is.  All 
+the  best  move, 
+
+it  knows 
+
+is  that: 
+
+that 
+and 
+
+it  needs 
+All 
+idea  behind 
+all  other 
+level 
+
+from 
+
+best 
+
+reply 
+
+is  not  a  timely 
+to  be  sure  of  is  that  it is,  in fact,  the  best  move.  This 
+to  find  the  move 
+the  B*  approach: 
+at  the  root.  This  distinguishes 
+levels. 
+
+is  considered 
+the  decisions  made 
+
+its  move. 
+is  the  cardinal 
+than 
+no  worse 
+root 
+at  the 
+that 
+the  decisions 
+
+the  decisions  made  at  lower 
+
+It  distinguishes 
+
+topic  before 
+
+it  makes 
+
+that 
+
+siblings 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+147 
+
+from 
+
+those 
+
+phase. 
+
+that  are  made  during 
+
+the  SELECT  phase 
+It  is  quite  amazing 
+
+the 
+are  made  during 
+to  see  B*  Hitech  make  a  simple  non- 
+VERIFY 
+capturing,  non-checking  move  in  a  few  nodes  of  investigation,  because 
+it  realizes 
+it  is  the  best.  It  could  be  something  simple  such  as  occupying  an  open  file  with  a 
+in  the  endgame.  These  are  things  that 
+rook,  or  moving  a  king  toward  the  center 
+the  best  of  a  set  of 
+humans, 
+siblings,  and  does  not  allow  any  important  counteraction.  Therefore, 
+it  is selected 
+without  much  ado. 
+
+too,  do  quickly.  The  move  selected 
+
+is  obviously 
+
+However, 
+
+there  are  some  things  that  the  B*  search  still  does  not  do  very  well 
+is  defense, 
+
+them.  Chief  among 
+
+to  overcome 
+
+effort 
+
+these 
+
+despite  considerable 
+which  is  an  area  where  the  brute-force 
+
+search  excels. 
+
+It  was  not  unusual 
+
+One  may  wonder  why  it  is so  difficult  to  find  good  defensive  moves.  It  seems  to 
+that  the  best  defensive  human  chess 
+go  with  the  territory. 
+player  was  also  the  World  Champion.  This  was  the  case  with  Steinitz,  Lasker, 
+Capablanca,  Petrosian, 
+the  main 
+is  that  defensive  play  is  very  hard  in  the  human  style  because  one  must 
+point 
+ideas,  and  figure  out  how  to  meet 
+anticipate  all  of  the  opponent’s  worthwhile 
+them.  This  is the  kind  of  thing  that  a  brute-force 
+search  does  routinely.  However, 
+when  it  comes  to  following  some  important 
+idea  to  great  depth,  then  the  selective 
+search  does  much  better. 
+
+and  Fischer.  Not  a  bad  collection.  However, 
+
+that  there 
+
+is  a  “natural”  way  for  humans 
+
+some  evidence 
+situations.  We  feel 
+
+Harking  back  to  our  original  premise  about  “natural” 
+
+searches,  we  believe  we 
+to 
+have  accumulated 
+search 
+that 
+two-player 
+(A  >  B)&(B  >  C)--+  (A  >  C).  It  is  part  of  some  fundamental  human  armament. 
+this,  but  made  many  oblique 
+We  have  not 
+references 
+this  view.  The  fundamental  properties  of 
+this  search  are 
+the  same  as  the  precepts  of  the  B*  search.  Some  of  these 
+properties 
+
+can  also  be  found  in  the  protocols  of  chess  players  in  [13]. 
+is  a  clearly  preferred 
+
+tried 
+to  phenomena 
+
+to  make  a  strong  case  for 
+
+0  Search  only  until  there 
+
+alternative.  This  implies 
+
+this  is  as  ingrained 
+
+as  the  notion 
+
+that  support 
+
+the 
+
+need  for  strong  comparison  of  alternatives  at  all  times. 
+
+l Use  optimism 
+l Assume 
+
+to  guide  your  search. 
+
+that  your  opponent  will  make  steadfast 
+
+replies  while  you  are 
+formulating  your  plan,  and  then  reverse  the  view  to  see  if  he  can  upset  your 
+plan  by  implementing  his  own  ideas. 
+
+required 
+
+Our  experiences 
+
+show  that  the  knowledge 
+
+non-trivial.  There  are  a  variety  of  situations,  and  each  seems  to  require 
+special  optimism 
+attempt 
+the  difficulties 
+general  notion.  As  in  many  other  domains, 
+is  not  sufficient 
+information 
+very  important 
+
+is 
+its  own 
+to  produce  worthwhile  moves.  We  have  made  no 
+to  deal  with  how  humans  get  their  optimism  functions,  but  merely  noted 
+from  being  a 
+the  acquisition  of  limited  amounts  of 
+to  completely  conquer 
+
+that  keep  the  notion  of  “extra  move  implies  threat” 
+
+to  get  good  optimism 
+
+the  domain. 
+
+in  order 
+
+it  should  be  remembered 
+
+Finally, 
+increases 
+3 minutes  do  a 9-ply  brute-force 
+This  confrontation 
+
+how  well  the  B*  algorithm  scales  up  with 
+that  can  in 
+search,  or  a  B*  search  with  3-ply  probe  searches. 
+if  one  were 
+
+in  power.  The  present  work  was  done  on  a piece  of  hardware 
+
+is still  minimally  in  favor  of  brute-force.  However, 
+
+148 
+
+H.J.  Berliner,  C.  McConnell  I  Artificiul  Intelligence  86  (19%)  97-156 
+
+to  2-ply  probe  searches  versus  an  S-ply  brute-force 
+
+to  scale  backward 
+latter  would  win  easily.  So  it  appears  from  both  analysis  and  experimentation 
+doing  deeper  probe  searches 
+searches.  A  machine 
+probe 
+time-equivalent 
+B*  has  great  promise.  Thus,  the  future  of  the  B*  approach  appears  bright. 
+
+that  can  do  depth  11 alpha-beta  searches,  could  do  depth  5 
+the 
+brute-force  program.  Also,  in  games  with  a  high  branching  factor 
+
+the 
+that 
+than  doing  deeper  brute-force 
+
+searches.  Such  a  B*  searcher  would  almost  certainly  outperform 
+
+is  more  beneficial 
+
+search, 
+
+Acknowledgements 
+
+the  second  author 
+
+The  efforts  of  Andy  Gruss  who  supported 
+
+in  massive 
+investigations  of  flaws  in  the  Hitech  hardware 
+is very  much  appreciated.  We  wish 
+to  thank  Gordon  Goetsch  and  Sergey  Iskotz  who  worked  on  early  versions  of  B*. 
+and  David  Kosbie  made  valuable  comments  on  the  final 
+Jonathan  Schaeffer 
+some  of  the  decision  theoretic 
+manuscript.  Jay  Kadane  helped  us  in  understanding 
+referees  of 
+aspects  of  our  algorithm.  We  also  would  like  to  thank  the  (unknown) 
+this  paper,  as  their  comments  very  much  improved 
+of  the 
+to  the  memory  of  Allen  Newell  and  Araxie  Berliner. 
+text.  This  paper  is dedicated 
+
+the  understandability 
+
+Appendix  A 
+
+We  here  present  some  games  that  B*  Hitech  has  played 
+
+that  are  considered 
+
+noteworthy. 
+
+April  24,  1993. 
+White 
+B*  Hitech 
+
+Black 
+Hitech  5.6 
+
+White 
+B*  Hitech  Hitech  5.6 
+
+Black 
+
+1.  e4 
+2.  Nf3 
+3.  Bb5 
+4.  o-o 
+5.  c3 
+6.  Rel 
+7.  Ba4 
+8.  d4 
+9.  c:d4 
+10.  e5!? 
+11.  e:f6 
+12.  d5 
+13.  Q:a4 
+
+C5 
+NC6 
+g6 
+Bg7 
+Nf6 
+a6 
+o-o 
+c:d4 
+b5 
+b:a4 
+B:f6 
+Na7 
+Qc7? 
+
+14.  Nc3! 
+15.  b:c3 
+16.  Bd2 
+17.  Qh4 
+18.  Bh6 
+19.  d6! 
+20.  d:e7 
+21.  Bg5! 
+22.  Bf6 
+23.  g:f3 
+24.  Re4 
+25.  Re5! 
+26.  R:h5 
+
+B:c3? 
+Q:c3 
+Q@ 
+Re8 
+Qh8 
+Bb7 
+B:f3 
+Qb2 
+Qb6 
+Nb5 
+h5 
+Nd4 
+Resigns 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+149 
+
+May  1,  1993. 
+White 
+Hitech  5.6 
+
+Black 
+B*  Hitech 
+
+White 
+Hitech  5.6  B*  Hitech 
+
+Black 
+
+1.  d4 
+2.  c4 
+3.  e4 
+4.  Nf3 
+5.  B:c4 
+6.  O-O 
+7.  B:e6 
+
+d5 
+d:c 
+e5 
+e:d4 
+NC6 
+Be6 
+f:e6 
+
+8.  Qb3 
+9.  Q:b7 
+10.  Qa6 
+11.  Nbd2 
+12.  Nc4 
+13.  a3 
+
+Qd7 
+Rb8 
+Nf6 
+Bb4 
+o-o 
+Be7 
+
+All  book  to  here,  now  Black  gets  into  trouble. 
+
+14.  Rel 
+15.  Bd2 
+16.  b4 
+17.  Bg5 
+18.  B:f6 
+19.  Racl 
+
+Rbe8 
+Bc5 
+Bb6 
+h6! 
+R:f6 
+d3! 
+
+20.  Rcdl 
+21.  N:b6 
+22.  Re3 
+23.  g:f3 
+24.  Rc3 
+25.  Qe2 
+
+Rd8 
+a:b6 
+R:f3! 
+d2 
+Ne5 ! 
+b5 
+
+Hitech  5.6  almost  played  25.  Qa7,Rf8!;  Q:c7  when  N:f6+  and  Black  is much 
+better.  Also,  25.  f4,  Qd4  is strong.  Now  Black  seems  to  have  enough  play  to 
+draw  easily. 
+
+26.  Rc2 
+27.  a4 
+28.  f4 
+29.  a:b5 
+30.  Qg4 
+31.  Ra2 
+32.  Ra7 
+
+Nc4 
+c6 
+Qd6 
+c:b5 
+Qd3 
+Q:e4 
+g5 
+
+33.  Qh5 
+34.  Q:h6 
+35.  Kg2 
+36.  f:e3 
+37.  Kg3 
+38.  Kg2 
+
+Rf8 
+Qel+ 
+Ne3+ 
+Qe2+ 
+Q:e3+ 
+Draw 
+
+38.-Qe2;  Kg3,g:f+;  Kh3  leads  nowhere. 
+
+March  25,  1994. 
+White 
+Hitech  5.6 
+
+Black 
+B*  Hitech 
+
+1.  d4 
+2.  c4 
+3.  Nc3 
+4.  e4 
+5.  f3 
+6.  Be3 
+7.  Bd3 
+8.  Nge2 
+9.  a3 
+10.  o-o 
+
+Nf6 
+g6 
+Bg7 
+d6 
+c6 
+a6 
+Nbd7 
+b5 
+Bp7 
+b:c4 
+
+White 
+Hitech  5.6  B*  Hitech 
+
+Black 
+
+White 
+Hitech  5.6  B*  Hitech 
+
+Black 
+
+21.  R:cl 
+22.  b4 
+23.  Ne2? 
+
+Re8 
+Qh4 
+R:e2 
+
+11.  B:c4 
+12.  Qc2 
+13.  Racl 
+14.  N:d4 
+15.  Qd2 
+16.  e:d5 
+17.  N:d5 
+18.  Ba2 
+19.  Bh6 
+20.  Rfel 
+
+o-o 
+e5 
+e:d4 
+Qe7 
+d5 
+N:d5 
+c:d5 
+Rfc8 
+Bh8 
+R:cl 
+
+150 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+White  has  the  edge  but  his  23rd 
+deeply 
+
+enough. 
+
+is  a  terrible 
+
+blunder 
+
+based  upon  not  seeing 
+
+24.  Q:e2 
+25.  Rc7 
+26.  R:b7 
+
+Q:h6 
+BeS! 
+Qcl+ 
+
+27.  Kf2 
+28.  Kg3 
+29.  Kh3 
+
+Bd4+ 
+Q@+ 
+Qh6+!! 
+
+A  brilliant  move  based  upon 
+Qh5+ 
+then  Qd6+  mates. 
+
+does  not  work,  Now 
+
+letting 
+
+the  Q  have  access 
+
+if  White  plays  31.  h3  to  defend 
+
+to  d6.  The  normal 
+the  mate  Qh4, 
+
+30.  Kg3 
+31.  Rb8+ 
+32.  Qe8+ 
+
+Resigns 
+
+g5!! 
+N:b8 
+
+Kg7 
+
+33.  QeS+ 
+34.  Kf2 
+
+B:eS+ 
+g4 
+
+April  16,  1994 
+White 
+B*  Hitech 
+
+Black 
+Hitech  5.6 
+
+White 
+B*  Hitech 
+
+Black 
+Hitech  5.6 
+
+1.  d4 
+7 I.  c4 
+3.  e4 
+4.  Nf3 
+5.  B:c4 
+6.  O-O 
+7.  B:e6 
+8.  Qb3 
+9.  Q:b7 
+10.  Qa6 
+11.  Nbd2 
+12.  Nc4 
+13.  a3 
+14.  Rel 
+15.  NfeS 
+16.  Ne:5 
+17.  Qc4 
+18.  Nd3 
+19.  Bf4 
+20.  b4 
+21.  a:b4 
+22.  Nc5 
+23.  b:c5 
+24.  Ra5 
+
+d5 
+d:c4 
+es 
+e:d4 
+NC6 
+Be6 
+f:e6 
+Qd7 
+Rb8 
+Nf6 
+Bb4 
+o-o 
+Be7 
+Rb3 
+N:e5 
+Qd6 
+Rb6 
+Qd7 
+C5 
+c:b4 
+Rc8 
+B:c5 
+Rbc6 
+Ra8 
+
+25.  Rdl 
+26.  Qd3 
+27.  Bd6 
+28.  R:a7 
+29.  Qb3+ 
+30.  R:d7 
+31.  Qd5 
+32.  f3 
+33.  c6 
+34.  Q:e5 
+35.  Q:d4 
+36.  Khl 
+37.  e5 
+38.  Qd3 
+39.  Qg6 
+40.  e:d6 
+41.  Rel 
+42.  Qe6 
+43.  Qe8+ 
+44.  Rdl 
+45.  Qe4+ 
+46.  Qd3 
+47.  R:d3 
+
+Rd8 
+Qe8 
+e5 
+Rd7 
+KhX 
+N:d7 
+Rc8 
+h5 
+Nf6 
+Q:c6 
+Rd8 
+Ne8 
+
+Kg8 
+Rd7 
+N:d6 
+Qb5 
+Rf7 
+Qb7 
+Kh7 
+Qb3 
+86 
+Q:d3 
+
+the  game  was  discontinued 
+
+Here 
+with  such  reduced  material. 
+
+because  B*  Hitech  does  not  play  endings 
+is  an  easy  win  for  White. 
+
+The  position 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+151 
+
+Fig.  A.l.  White 
+
+(can  no  longer 
+
+castle) 
+
+to  play. 
+
+The  next  two  examples  are  both  quite  difficult  to  understand 
+
+for  a  non-Master 
+chess  player,  but  show  what  B*  Hitech  is capable  of  at  its  best.  Fig.  A.1  shows  the 
+position  from  a  game  after  30  moves  have  been  played.  It  is instructive  because  it 
+the  selective  search  and  the  brute- 
+highlights 
+force  search. 
+
+the  differences  of  “view”  between 
+
+In  this  position,  White  is comfortably  ahead  with  an  advantage  of  two  pieces  for 
+a  rook.  All  he  needs  to  do  is move  his  king  to  gl,  where  it  is safe,  and  then  he  can 
+it  does  not  believe 
+win  the  game  at  his  leisure.  But,  being  a  brute-force  program, 
+in  anything 
+it 
+decides 
+
+its  search  horizon.  Thus,  seeing  no  danger, 
+
+that  exists  beyond 
+
+it  can  augment 
+
+its  gains  now. 
+
+May  5,  1994 
+White 
+Hitech  5.6 
+
+Black 
+B*  Hitech 
+
+31.  N:e5 
+32.  Q:e5 
+
+N:e5 
+Rb2! 
+
+suspicious  of  White’s  position  after 
+
+this 
+A  good  human  player  might  become 
+Black  move.  It  can  be  seen  that  White’s  king  is  now  trapped 
+in  the  center,  being 
+unable  to  cross  the  f-file,  and  being  trapped  on  the  back  rank.  Yet,  the  seriousness 
+of  this  is a  matter  of  deep  calculation.  Both  programs  are  aware  that  White’s  king 
+position 
+for  this. 
+is  undesirable,  but  White  is  winning  two  pawns  to  compensate 
+the  coming  check  Qa5-t  , 
+At  this  point  White  noticed  that  33.  Bd2,  which  prevents 
+and  the  Black  pieces  will 
+35.  Ke2,Qa6+; 
+is refuted  by  33.-R:d2!;  34.  K:d2,Qa5+; 
+penetrate 
+(since  there  is  a 
+difference  between  some  checks  and  a  mate),  and  it  is  only  because 
+tremendous 
+that  Hitech  5.6  is  able  to  see  it  at  this  point. 
+of  the  many  extension  mechanisms 
+
+to  mate  the  White  king.  This  itself  is a  deep  calculation 
+
+152 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+the  game, 
+
+this,  it  now  acquiesces 
+
+in  loss  of  some  material, 
+It  should  be  noted  that  B*  Hitech  understood 
+
+than  play 
+Having  realized 
+Bd2  which  loses  immediately. 
+it  had 
+a very  good  position  after  Rb2,  but  had  not  yet  investigated  how  to  meet  33.  Bd2. 
+the  most 
+After 
+is that  when  the  colors  are  reversed,  and  B* 
+impressive 
+Hitech 
+it  also  chooses  31. 
+N:e5  as the  selected  move,  BUT  after  36 nodes  of  verification  finds  the  refutation, 
+and  plays  31.  Bd2  instead. 
+
+it  found 
+thing  about  this  example 
+
+is  given  the  task  of  finding  the  31st  move  for  White, 
+
+in  four  nodes.  However, 
+
+this  refutation 
+
+rather 
+
+33.  Q:d4 
+34.  Bd2 
+35.  Q:d2 
+36.  K:fl 
+
+Qa5+ 
+R:d2 
+Rfl+ 
+Q:d2 
+
+Although 
+
+the  material 
+
+is  near  even,  Black  has  a  win. 
+
+31.  c3  and  the  threats 
+
+In  the  position  of  Fig.  A.2,  B*  Hitech 
+there 
+
+is  playing  White  and  it  has  a  certain 
+is  insufficient  shelter  for  the  Black  king.  Hitech  5.6  as 
+advantage  because 
+Black  is  expecting  28.  Qd7-t  and  has  just  found  that  the  intended 
+reply,  Kb6,  is 
+not  so  good  because  of  29.  Nd4  when  Black  cannot  play  Q:d4  because  of  30. 
+Qc6+,Ka5; 
+to 
+since  Bc6  wins  a  pawn. 
+meet  28.  Qd7+  by  Kb8  with  a  marked 
+However,  B*  Hitech  has  been  much  further. 
+It  plays  28.  Qg4!!  relying  on  the  fact 
+that  a  move  of  the  attacked  bishop  on  g3  to  (say)  d6  would  allow  29.  Nh4!  with 
+removal  of  the  bishop  at  g6  and  penetration  of  the  White  rook  to 
+the  subsequent 
+to 
+f7  with  fatal  effect. 
+penetrate  on  the  Q-side  with  devastating  effect.  If  the  bishop  goes  to  f2,  then  Ne5 
+has  the  same  effect. 
+In  turn,  Hitech  5.6  sees  these  things  too  after  White’s  28th 
+move  has  been  made.  It  then  plays  28.-Qc4  which  both  programs 
+
+to  the  queen  and  b4+  win.  So  it  intended 
+
+then  30.  Rf3  allows  the  rook 
+
+If  this  is  met  by  29.-Rf8; 
+
+judge  best. 
+
+inferiority, 
+
+Fig.  A.2.  White 
+
+to  play 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+153 
+
+May  15,  1994 
+White 
+B*  Hitech 
+
+Black 
+Hitech  5.6 
+
+28.  Qg4!! 
+29.  Q:g3+ 
+30.  Rel! 
+31.  Re7+ 
+32.  Qc7 
+
+Qc4 
+Kb7 
+Q:a4 
+Ka8! 
+Qa6 
+
+If  32.-Rb8,  33.  Ne5  and  the  threat  of  Nc6  is  fatal. 
+
+33.  Nd4! 
+34.  Nb5! 
+
+Rc8 
+R:c7 
+
+If  Black  plays  a waiting  move  such  as  B:c2,  then  White  plays  35.  Qd7!  forcing 
+Kb8  (Be4,Re8!  wins);  36.  Q:d5,f6;  37.  Kh2!  and  Black  is helpless  against  the 
+many  threats 
+
+to  his  king. 
+
+35.  N:c7+ 
+36.  N:a6+ 
+37.  c3 
+
+Kb7 
+K:a6 
+
+Now  Black  must  lose  either 
+which  he  is hopelessly 
+
+the  d-pawn  or  one  of  the  K-side  pawns  after 
+lost.  A  masterful  exploitation  of  a  weak  king  position. 
+
+Finally,  we  have  an  example  of  truly  great  play  that  would  do  justice 
+
+to  any 
+The  position  of  Fig.  A.3  looks  relatively  even.  White  may  have 
+Grandmaster. 
+some  chances  with  e4,  but  it  is hard  to  see  how  to  make  them  work  out.  Further, 
+Black  threatens 
+the  White  pieces  on 
+to  show  how  much  further  ahead  B* 
+the  king’s  side.  We  are  using  this  example 
+that  each  was 
+Hitech  can  think  than  brute-force  Hitech.  We  show  the  variations 
+
+to  play  g5  and/or  h5  which  would  embarrass 
+
+Fig.  A.3.  White 
+
+to  play. 
+
+154 
+
+H.J.  Berliner.  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+on  when 
+style  where 
+
+relying 
+usual 
+game  continued: 
+
+it  made 
+
+the  move 
+
+it  played.  The  values 
+
+the  value  of  a  pawn  =  128,  and  plus 
+
+is  good 
+
+at  the  right  are 
+
+in  the 
+for  White.  The 
+
+June  2,  1994 
+White 
+B*  Hitech 
+23.  Qb2! 
+
+Black 
+Hitech  5.6 
+
+Principal 
+Qb2  h5  e4  Nf:d4  e:d5  e:d5  Rfeli 
+
+variation 
+
+Kf8  Ne3 
+
+Qd7 
+
+Qd7  Rfel  h5  Nf2  Ra8  e4  d:e4  R:e4  O-O 
+
+24.  e4!! 
+
+d:e4 
+
+e4  Nfe7  Bd6  Ba5  Rbl  Nc4 
+If  e4  d:e4  d5  e:d5 
+R:c6 
+White 
+
+thinks  d:e4 
+
+is  not  a  good  move. 
+
+f:e4  Nfe7  e:d5  Q:g4  d:c6 
+
+f:e4  Nf:d4  Bd6  e5  h3  h5  Ne3  Ne7  Nd5 
+
+d:e4 
+N:d5  e:d5  h4 
+But  Black 
+
+thinks 
+
+it  gives  him 
+
+the  advantage. 
+
+2.5.  d5!! 
+
+d5  e:f3  d:e6  Qe7  Bd6  f2+  Q:f2  N:d6 
+
+26.  f:e4 
+
+27.  e:d5 
+
+28.  Ne 
+
+e:d5 
+
+Nfe7 
+
+N:d5 
+
+Nce7 
+
+f:e4  Nfe7  Ne3  Na5  N:d5  N:d5  R:d5  Qg4 
+
+e:d5 
+Now  Black  agrees 
+
+it  is  good 
+
+for  White. 
+
+f:e4  Nfe7  e:d5  Q:g4  d:c6  R:c6  Bd6  Qg5 
+White 
+
+even  better. 
+
+the  position 
+
+likes 
+
+Nfe7  Ne3  Nd8  N:d5  N:d5  R:d5  Qa4  e5  O-O 
+Qa2  Kh8  Be3 
+They  disagree 
+think  White  has  made 
+
+follow-up 
+gains. 
+
+the  best 
+
+further 
+
+but  both 
+
+on 
+
+e:d5  N:d5  Rfel+  Kf7  Bd6  Q:g4  Q:b7+  Nde7 
+B:e7 
+N:d5  appears 
+
+(liked  earlier). 
+
+than  Q:g4 
+
+better 
+
+N:d5  Rfel+  Kf7  Bd6  b5  Nf2  Nc7  Qb3+  Ne6 
+Bf8  Qc7  B:g7  K:g7  Q:e6 
+Black  produces 
+realizes  he  is  in  trouble. 
+
+a  line  with  many  extensions 
+
+and 
+
+Kf7  Bd6  Nc7 
+Ne3  Nce7  N:d5  N:d5  Rfel+ 
+Re7+  Q:e7  B:e7  K:e7  Qe2+  Kf8  Rd7  Re8  Qd2 
+Ne6  Qd6+  Kg8  R:b7 
+The  price  has  gone  up  again. 
+
+Nce7  N:d5  N:d5  Bd6  b5  Qb3  Ne7  Rfel  Rd8 
+B:e7  Q:dl. 
+Too 
+
+realizes  he  is  lost. 
+
+late  Black 
+
+Value 
+-3 
+
+32 
+
+61 
+121 
+
+-38 
+
+76 
+
+75 
+
+121 
+
+94 
+
+90 
+
+125 
+
+271 
+
+476 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+155 
+
+29.  N:d5 
+
+N:d5  N:d5  Qe2+  Kf7  Qh5+ 
+
+N:d5 
+
+30.  Qe2-t 
+
+Qe2+  Kf7  Qh5+  Kf8  R:d5  Qe6 
+
+Kf8 
+
+Kf8  Bd6+  Kg8  Qc4  Qf7  Q:d5  Ra8 
+
+31.  Qc4 
+
+Qc4  Ne3  B:e3  Qc6  Bf4 
+
+Rd8 
+
+Rd8  Rd4  b5  c:b6ep  Qb7  Bc7  Rd7  Qd3 
+In  a  hopeless  position  Hitech  has  been  pro- 
+to  make  the  last  move  that  “looked 
+grammed 
+reasonable”. 
+It  realizes  this  is  not  best,  and  the 
+value  is based  upon  a  6-ply  search  when  a  9-ply 
+search  showed  Re8  best,  but 
+for  a 
+faulty  reply. 
+
+it  hopes 
+
+403 
+
+411 
+
+421 
+
+422 
+
+153 
+
+32.  Bd6+ 
+
+33.  Q:d5+ 
+
+Kg8 
+
+Qf7 
+
+34.  Rfel 
+
+Q:d5 
+
+35.  R:d5 
+
+References 
+
+White  has  an  easy  win.  It  is  interesting 
+to  see 
+how  the  brute-force  program  does  not  under- 
+stand 
+the 
+situation  and  can’t  get  out. 
+
+its  problems  until 
+
+it  is  well 
+
+into 
+
+[l]  T.S.  Anantharaman,  A  statistical  study  of  selective  min-max  search  in  computer  chess,  Ph.D. 
+
+Thesis,  Carnegie-Mellon  University,  Pittsburgh,  PA  (1990). 
+
+[2]  T.  Anantharaman,  M.  Campbell  and  F.  Hsu,  Singular  extensions:  adding  selectivity 
+
+to  brute 
+in:  Proceedings  AAAZ  Spring  Symposium  on  Computer  Game  Playing  (1988). 
+in:  Proceedings  ZJCAZ-73, 
+
+[3]  H.J.  Berliner,  Some  necessary  conditions  for  a  Master  chess  program, 
+
+force  searching, 
+
+Stanford,  CA  (1973)  77-85. 
+
+[4]  H.J.  Berliner,  Chess  as  problem  solving:  the  development  of  a  tactics  analyzer,  Ph.D.  Thesis, 
+
+Carnegie-Mellon  University,  Pittsburgh,  PA  (1974). 
+
+[5]  H.  Berliner,  The  B*  tree  search  algorithm:  a  best-first  proof  procedure,  Artif.  Znfell.  12  (1979) 
+
+23-40. 
+
+[6]  H.J.  Berliner,  Some  innovations 
+introduced  by  Hitech,  J.  Znt.  Comput.  Chess  Assoc.  10 (1987). 
+[7]  H.  Berliner  and  C.  Ebehng,  The  SUPREM  architecture:  a new  intelligent  paradigm,  Artif.  Intell. 
+
+28  (1986)  3-8. 
+
+[8]  H.J.  Berliner,  G.  Goetsch,  M.  Campbell  and  C.  Ebeling,  Measuring  the  performance  potential  of 
+
+chess  programs, 
+
+in:  Advances 
+
+in  Computer  Chess  5  (Elsevier,  Amsterdam,  1989). 
+
+[9]  H.J.  Berliner,  Producing  behavior  in  a searching  program, 
+
+Science:  A  25th  Anniversary  Commemorative 
+
+in:  R.F.  Rashid,  ed.,  CMU  Computer 
+(Addison-Wesley,  Reading,  MA,  1991)  311-344. 
+
+[lo]  M.M.  Botvinnik,  Three  positions,  J.  Znt.  Comput.  Chess  Assoc.  16  (2)  (1993). 
+[ll]  M.  Campbell,  The  graph-history 
+
+interaction:  on  ignoring  position  history,  in:  Proceedings  ACM 
+
+National  Conference 
+
+(1985)  278-280. 
+
+[12]  J.H.  Condon  and  K.  Thompson,  Belle  chess  hardware, 
+
+in:  M.R.B.  Clarke,  ed.,  Advances 
+
+in 
+
+Computer  Chess  3  (Pergamon,  Oxford,  1982). 
+
+156 
+
+H.J.  Berliner,  C.  McConnell 
+
+I  Artificial  Intelligence  86  (1996)  97-156 
+
+[ 131  A.D.  De  Groot, 
+[14]  C.  Ebeling,  All  the  Right  Moves  -  A  VLSI  Architecture  for  Chess  (MIT  Press,  Cambridge,  MA, 
+
+Thought  and  Choice  in  Chess  (Mouton, 
+
+Berlin. 
+
+1965). 
+
+1986). 
+[IS]  R.  Feldmann. 
+
+P.  Mysliwietz 
+
+van  den  Herik, 
+
+H.J. 
+(University 
+[16]  L.  Harris, 
+23-29. 
+
+and  B.  Monien,  Game-tree 
+and  Uiterwijk. 
+
+I.S.  Herschberg 
+
+search  on  a  massively  parallel 
+
+in: 
+in  Computer  Chess  7 
+
+system, 
+
+eds..  Advances 
+
+of  Limburg,  Maastricht, 
+The  bandwidth 
+
+heuristic 
+
+1993)  203-219. 
+search, 
+
+in:  Proceedings 
+
+IJCAI-73, 
+
+Stanford, 
+
+CA 
+
+(1973) 
+
+[17]  V.  Hort  and  V.  Jansa,  The  Best  Move  (RHM  Press.  New  York,  1980). 
+[ 181  F-H.  Hsu,  Large  scale  parallelization  of  alpha-beta  search:  an  algorithmic  and  architectural  study 
+
+with  computer  chess,  Ph.D.  Thesis,  Carnegie-Mellon 
+[19]  R.M.  Hyatt,  A.E.  Gower  and  H.L.  Nelson,  Cray  blitz, 
+Oxford, 
+An  adaptive 
+
+[20]  E.W.  Kozdrowicki, 
+
+Chess  4  (Pergamon, 
+
+1986). 
+
+system: 
+in:  Proceedings  ACM  National  Conference 
+The  Star  Tech  massively-parallel 
+
+tree  pruning 
+
+searches, 
+[21]  B.C.  Kuszmaul. 
+(1)  (1995). 
+
+(1968). 
+
+University, 
+
+Pittsburgh, 
+
+PA  (1990). 
+
+in:  D.F.  Beal,  ed.,  Advances  in  Computer 
+
+a  language 
+
+for  programming 
+
+realistic 
+
+tree 
+
+chess  program, 
+
+J.  Int.  Comput.  Chess  Assoc.  18 
+
+[22]  T.A.  Marsland,  M.  Olafsson 
+
+and  J.  Schaeffer,  Multiprocessor 
+
+Beal.  ed.,  Advances 
+
+in  Computer  Chess  4  (Pergamon. 
+
+Oxford, 
+
+tree-search 
+1986). 
+
+experiments, 
+
+in:  D.F. 
+
+[23]  D.A.  McAllester, 
+[24]  A.  Newell,  H.  Simon  and  C.  Shaw.  Chess  playing  programs 
+and  J.  Feldman. 
+
+for  min-max 
+
+Conspiracy 
+
+numbers 
+
+search,  Artif,  Intell.  35  (1988)  287-310. 
+
+and 
+
+the  problem 
+
+of  complexity, 
+
+eds..  Computers  and  Thought 
+
+(McGraw-Hill. 
+
+in: 
+New  York, 
+
+E.A.  Feigenbaum 
+1963). 
+
+[25]  A.J.  Palay,  The  B*  tree  search 
+[26]  A.J. 
+
+Palay, 
+
+Searching  with  Probabilities.  Pitman 
+
+Research 
+
+Notes 
+
+in  Artificial 
+
+Intelligence 
+
+algorithm-new 
+
+results,  Artif,  Intell.  19  (1982)  145-163. 
+
+(Pitman, 
+
+1984). 
+
+[27]  J.  Pearl,  Heuristics:  Intelligent  Search  Strategies  for  Computer  Problem  Solving  (Addison-Wesley, 
+
+Reading,  MA.  1984). 
+
+[28]  F.  Reinfeld.  Win  At  Chess  (Dover.  New  York,  1958). 
+decision-theoretic 
+and  E.  Wefald.  Multilevel 
+[29]  S.  Russell 
+
+Symposium  on  Computer  Game  Playing  (1988)  3-7. 
+
+search, 
+
+in:  Proceedings  AAAJ  Spring 
+
+[30]  J.R.  Slagle  and  J.K.  Dixon,  Experiments  with  some  programs 
+
+that  search  game 
+
+trees,  J.  ACM  16 
+
+(2)  (1969). 
+
+[31]  D.J.  Slate  and  L.R.  Atkin,  CHESS  4.5  -the 
+
+ed.,  Chess  Skill  in  Man  and  Machine  (Springer, 
+
+northwesterm 
+Berlin, 
+
+Unversity 
+
+chess  program, 
+
+in:  P.  Frey, 
+
+1977). 
+
+(321  E.  Slater,  Statistics 
+
+for  the  chess  computer 
+
+and  the  factor  of  mobility, 
+
+in:  Proceedings  Symposium 
+
+on  Information  Theory,  London 
+
+(1950)  150-152. 
+
+

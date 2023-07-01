@@ -1,0 +1,1285 @@
+Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+
+www.elsevier.com/locate/artint
+
+Rational choice and AGM belief revision
+
+Giacomo Bonanno 1
+
+Department of Economics, University of California, Davis, CA 95616-8578, USA
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 24 October 2008
+Received in revised form 8 May 2009
+Accepted 11 May 2009
+Available online 30 May 2009
+
+Keywords:
+Rational choice
+Revealed preference
+Belief revision
+Partial belief revision function
+Choice function
+Arrow’s axiom
+
+1. Introduction
+
+We establish a correspondence between the rationalizability of choice studied in the
+revealed preference literature and the notion of minimal belief revision captured by the
+AGM postulates. A choice frame consists of a set of alternatives Ω, a collection E of
+subsets of Ω (representing possible choice sets) and a function f : E → 2Ω (representing
+choices made). A choice frame is rationalizable if there exists a total pre-order R on Ω
+such that, for every E ∈ E,
+f (E) coincides with the best elements of E relative to R.
+We re-interpret choice structures in terms of belief revision. An interpretation is obtained
+by adding a valuation V that assigns to every atom p the subset of Ω at which p is
+true. Associated with an interpretation is an initial belief set and a partial belief revision
+function. A choice frame is AGM-consistent if, for every interpretation of it, the associated
+partial belief revision function can be extended to a full-domain belief revision function
+that satisﬁes the AGM postulates. It is shown that a ﬁnite choice frame is AGM-consistent
+if and only if it is rationalizable.
+
+© 2009 Elsevier B.V. All rights reserved.
+
+The dominant theory of belief revision is due to Alchourrón, Gärdenfors and Makinson [1] and is known as the AGM
+theory. In their approach beliefs are modeled syntactically as sets of formulas and belief revision is construed as an operation
+that associates with every deductively closed set of formulas K (thought of as the initial beliefs) and formula φ (thought of
+as new information) a new set of formulas B K (φ) representing the new beliefs after revising by φ.
+
+We establish a correspondence between the AGM theory and the set-theoretic structures studied in rational choice theory
+(also known as revealed preference theory; see, for example, [22] and [24]). Rational choice theory considers structures
+(cid:4)Ω, E, f (cid:5) consisting of a set of alternatives Ω , a collection E of subsets of Ω (representing possible choice sets) and a
+function f from E into the set of subsets of Ω , representing choices made. The main objective of rational choice theory is
+to investigate the conditions under which the function f can be rationalized by a total pre-order R on Ω in the sense that,
+for every E ∈ E , f (E) coincides with the best elements of E relative to R.
+
+We re-interpret choice structures in terms of belief revision. The set Ω is now interpreted as a set of states. A model
+based on (or an interpretation of) a choice structure is obtained by adding to it a valuation V that assigns to every atomic
+formula p the set of states at which p is true. Truth of an arbitrary formula at a state is then obtained as usual. Given a
+model (cid:4)Ω, E, f , V (cid:5) we deﬁne the initial beliefs as the set of formulas φ such that f (Ω) is a subset of the truth set of φ,
+denoted by (cid:6)φ(cid:6). Hence f (Ω) is interpreted as the set of states that are initially considered possible. We then interpret the
+collection of events (sets of states) E as a set of possible items of information. If φ is a formula such that (cid:6)φ(cid:6) ∈ E , we deﬁne
+the revised beliefs upon learning that φ as the set of formulas ψ such that f ((cid:6)φ(cid:6)) ⊆ (cid:6)ψ(cid:6). Thus the event f ((cid:6)φ(cid:6)) is interpreted
+as the set of states that are considered possible after learning that φ is the case. Hence associated with every model is a
+
+E-mail address: gfbonanno@ucdavis.edu.
+
+1 I am grateful to three anonymous reviewers for helpful and constructive comments.
+
+0004-3702/$ – see front matter © 2009 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2009.05.001
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+1195
+
+partial belief revision function (partial because, in general, it is not the case that, for every formula φ, (cid:6)φ(cid:6) ∈ E , that is, not
+every piece of information is potentially available or contemplated). We say that a choice frame (cid:4)Ω, E, f (cid:5) is AGM-consistent
+if, for every model based on it, the associated partial belief revision function can be extended to a full-domain belief revision
+function that satisﬁes the AGM postulates. We show that, when the set of states is ﬁnite, the properties of AGM-consistency
+and rationalizability are equivalent.
+
+In the next section we review the notion of belief function and the AGM postulates. In Section 3 we develop the corre-
+spondence between AGM belief revision and rational choice. Section 4 contains a brief discussion of related literature and
+concluding remarks.
+
+2. Belief revision functions
+
+Let Φ be the set of formulas of a propositional language based on a countable set A of atomic formulas.2 Given a subset
+K ⊆ Φ, its PL-deductive closure [K ]P L (where ‘PL’ stands for Propositional Logic) is deﬁned as follows: ψ ∈ [K ]P L if and only
+if there exist φ1, . . . , φn ∈ K (with n (cid:2) 0) such that (φ1 ∧ · · · ∧ φn) → ψ is a tautology (that is, a theorem of Propositional
+Logic). A set K ⊆ Φ is consistent if [K ]P L (cid:9)= Φ (equivalently, if there is no formula φ such that both φ and ¬φ belong to
+[K ]P L ). A set K ⊆ Φ is deductively closed if K = [K ]P L . A belief set is a set K ⊆ Φ which is deductively closed.
+
+Let K be a consistent belief set representing the agent’s initial beliefs and let Ψ ⊆ Φ be a set of formulas representing
+possible items of information. A belief revision function based on K is a function B K : Ψ → 2Φ (where 2Φ denotes the set of
+subsets of Φ) that associates with every formula φ ∈ Ψ (thought of as new information) a set B K (φ) ⊆ Φ (thought of as the
+revised beliefs).3 If Ψ (cid:9)= Φ then B K is called a partial belief revision function, while if Ψ = Φ then B K is called a full belief
+revision function.
+
+Deﬁnition 1. Let B K : Ψ → 2Φ be a (partial) belief revision function and B
+that B
+
+K is an extension of B K if, for every φ ∈ Ψ , B
+
+K (φ) = B K (φ).
+
+∗
+
+∗
+
+∗
+
+K
+
+: Φ → 2Φ a full belief revision function. We say
+
+A full belief revision function is called an AGM function if it satisﬁes the following properties, known as the AGM postu-
+
+lates: ∀φ, ψ ∈ Φ,
+
+(AGM1) B K (φ) = [B K (φ)]P L ,
+(AGM2) φ ∈ B K (φ),
+(AGM3) B K (φ) ⊆ [K ∪ {φ}]P L ,
+(AGM4) if ¬φ /∈ K , then [K ∪ {φ}]P L ⊆ B K (φ),
+(AGM5) B K (φ) = Φ if and only if φ is a contradiction,
+(AGM6) if φ ↔ ψ is a tautology then B K (φ) = B K (ψ),
+(AGM7) B K (φ ∧ ψ) ⊆ [B K (φ) ∪ {ψ}]P L ,
+(AGM8) if ¬ψ /∈ B K (φ), then [B K (φ) ∪ {ψ}]P L ⊆ B K (φ ∧ ψ).
+
+AGM1 requires the revised belief set to be deductively closed. AGM2 requires that the information be believed. AGM3
+says that beliefs should be revised minimally, in the sense that no new formula should be added unless it can be deduced
+from the information received and the initial beliefs.4 AGM4 says that if the information received is compatible with the
+initial beliefs, then any formula that can be deduced from the information and the initial beliefs should be part of the
+revised beliefs. AGM5 requires the revised beliefs to be consistent, unless the information φ is a contradiction (that is, ¬φ
+is a tautology). AGM6 requires that if φ is propositionally equivalent to ψ then the result of revising by φ be identical to
+the result of revising by ψ . AGM7 and AGM8 are a generalization of AGM3 and AGM4 that
+
+“applies to iterated changes of belief. The idea is that if B K (φ) is a revision of K [prompted by φ] and B K (φ) is to be
+changed by adding further sentences, such a change should be made by using expansions of B K (φ) whenever possible.
+More generally, the minimal change of K to include both φ and ψ (that is, B K (φ ∧ ψ)) ought to be the same as the
+expansion of B K (φ) by ψ , so long as ψ does not contradict the beliefs in B K (φ)” (Gärdenfors [12], p. 55; notation
+changed to match ours).5
+
+We now turn to a semantics for belief revision, using structures that are known in rational choice theory as choice
+
+functions. We shall call them choice frames.
+
+2 Thus Φ is deﬁned recursively as follows: if p ∈ A then p ∈ Φ and if φ, ψ ∈ Φ then ¬φ ∈ Φ and (φ ∨ ψ) ∈ Φ.
+∗
+φ or K ∗ φ instead of B K (φ), but for our purposes the latter notation is clearer.
+3 In the literature it is common to use the notation K
+4 For every formula ψ , ψ ∈ [K ∪ {φ}]P L if and only if (φ → ψ) ∈ K (since, by hypothesis, K = [K ]P L ).
+5 The expansion of B K (φ) by ψ is [B K (φ) ∪ {ψ}]P L . Note, again, that, for every formula χ , χ ∈ [B K (φ) ∪ {ψ}]P L if and only if (ψ → χ ) ∈ B K (φ) (since,
+
+by AGM1, B K (φ) = [B K (φ)]P L ).
+
+1196
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+3. Choice frames and AGM belief revision
+
+Deﬁnition 2. A choice frame is a triple (cid:4)Ω, E, f (cid:5) where
+
+Ω is a non-empty set of states (or possible worlds); subsets of Ω are called events.
+E ⊆ 2Ω is a collection of events (2Ω denotes the set of subsets of Ω ) such that ∅ /∈ E and Ω ∈ E .
+f : E → 2Ω is a function that associates with every event E ∈ E an event f (E) satisfying the following properties:
+
+(1) f (E) ⊆ E and (2) f (E) (cid:9)= ∅.
+
+In rational choice theory a set E ∈ E is interpreted as a set of available alternatives and f (E) is interpreted as the subset
+of E which consists of the chosen alternatives (see, for example, [22] and [24]). In our case, we think of the elements of
+E as possible items of information and the interpretation of f (E) is that, if informed that event E has occurred, the agent
+considers as possible all and only the states in f (E). The set f (Ω) is interpreted as the states that are initially considered
+possible.6
+
+In order to interpret a choice frame (cid:4)Ω, E, f (cid:5) in terms of belief revision we need to add a valuation V : A → 2Ω that
+associates with every atomic formula p ∈ A the set of states at which p is true. The quadruple (cid:4)Ω, E, f , V (cid:5) is called a
+model (or an interpretation) of (cid:4)Ω, E, f (cid:5). Given a model M = (cid:4)Ω, E, f , V (cid:5), truth of an arbitrary formula at a state is deﬁned
+recursively as follows (ω |(cid:15)M φ means that formula φ is true at state ω in model M):
+
+(1) for p ∈ A, ω |(cid:15)M p if and only if ω ∈ V (p), (2) ω |(cid:15)M ¬φ if and only if ω (cid:9)|(cid:15)M φ and (3) ω |(cid:15)M (φ ∨ ψ) if
+and only if either ω |(cid:15)M φ or ω |(cid:15)M ψ (or both). The truth set of formula φ in model M is denoted by (cid:6)φ(cid:6)M. Thus
+(cid:6)φ(cid:6)M = {ω ∈ Ω: ω |(cid:15)M φ}.7
+
+Given a model M = (cid:4)Ω, E, f , V (cid:5) we say that
+
+• the agent initially believes that ψ if and only if f (Ω) ⊆ (cid:6)ψ(cid:6)M,
+• the agent believes that ψ upon learning that φ if and only if (1) (cid:6)φ(cid:6)M ∈ E and (2) f ((cid:6)φ(cid:6)M) ⊆ (cid:6)ψ(cid:6)M.
+
+Accordingly, we can associate with every model a (partial) belief revision function as follows. Let
+
+(cid:2)
+
+(cid:3)
+
+(cid:2)
+
+φ ∈ Φ: f (Ω) ⊆ (cid:6)φ(cid:6)M
+KM =
+B KM : ΨM → 2Φ given by B KM (φ) =
+
+, 8
+
+ΨM =
+(cid:2)
+
+φ ∈ Φ: (cid:6)φ(cid:6)M ∈ E
+(cid:4)
+(cid:6)φ(cid:6)M
+
+(cid:5)
+
+⊆ (cid:6)ψ(cid:6)M
+
+ψ ∈ Φ: f
+
+(cid:3)
+
+,
+
+(cid:3)
+
+.
+
+(1)
+
+We address the following question: what properties must a choice frame satisfy in order for it to be the case that the
+(typically partial) belief revision function associated with an arbitrary interpretation (or model) of it can be extended to a
+full AGM belief revision function? This is the motivation for the following deﬁnition.
+
+Deﬁnition 3. A choice frame (cid:4)Ω, E, f (cid:5) is AGM-consistent if, for every model M = (cid:4)Ω, E, f , V (cid:5) based on it, the (partial) belief
+revision function B KM associated with M (see (1)) can be extended (see Deﬁnition 1) to a full belief revision function that
+satisﬁes the AGM postulates.
+
+We want to ﬁnd necessary and suﬃcient conditions for a choice frame to be AGM-consistent.
+
+Remark 4. It is shown in Appendix A (Lemma 17) that a necessary condition for AGM-consistency is the following, which
+is known in the rational choice literature as Arrow’s Axiom (see [24], p. 25):
+
+∀E, F ∈ E,
+
+if E ⊆ F and E ∩ f (F ) (cid:9)= ∅ then f (E) = E ∩ f (F ).
+
+(2)
+
+Arrow’s Axiom, however, is not suﬃcient for AGM-consistency, as the following example shows:9
+
+6 Notice that, in general, E may be a “small” subset of 2Ω . In the revealed preference approach, this is because one might only have a limited number of
+observations concerning the choices made by an individual (given menu sets E1, . . . , En the agent was observed choosing f (E1), . . . , f (En), respectively).
+In the belief revision interpretation, an introspective agent (e.g. a doctor) might consider how she would change her beliefs if she received various pieces
+of information (e.g. laboratory results), but might be able, or willing, to consider only a limited number of possible items of information.
+
+7 A valuation V (and corresponding model M) associates with every state ω ∈ Ω a maximally consistent set of formulas m(ω) = {φ ∈ Φ: ω |(cid:15)M φ}. Let
+M denote the set of maximally consistent sets of formulas. Then a valuation is equivalent to a choice of a label function from Ω to M (see [19] and [21]).
+
+8 It is straightforward to show that, for every model M, KM is a consistent and deductively closed set (a proof can be found in [8]).
+9 Another well-known condition, which is necessary but not suﬃcient for AGM-consistency, is the Weak Axiom of Revealed Preference (WARP):
+
+if E, F ∈ E, x, y ∈ E ∩ F , x ∈ f (E) and y ∈ f (F )
+
+then x ∈ f (F )
+
+(equivalently, if E, F ∈ E , E ∩ f (F ) (cid:9)= ∅ and f (E) ∩ F (cid:9)= ∅ then E ∩ f (F ) = f (E) ∩ F ).
+
+WARP is stronger than Arrow’s Axiom as can be seen in the example of Fig. 1, which satisﬁes Arrow’s Axiom but not WARP (take E = {α, β, γ }
+and F = {β, γ , δ}). To see that WARP is not suﬃcient for AGM-consistency consider the following frame: Ω = {α, β, γ , δ}, E = {Ω, {α, β}, {β, γ }, {a, γ }},
+f ({β, γ }) = {β} and f ({α, γ }) = {γ }. This frame satisﬁes WARP vacuously, but is not rationalizable (see Deﬁnition 5 and
+f (Ω) = {δ},
+Proposition 6) and thus, by Proposition 8, is not AGM-consistent.
+
+f ({α, β}) = {α},
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+1197
+
+Fig. 1. A choice frame that satisﬁes Arrow’s Axiom and a model based on it.
+
+Ω = {α, β, γ , δ, ε},
+f (Ω) = {ε},
+
+f
+
+(cid:4)
+{α, β, γ }
+
+E =
+
+(cid:2)
+
+(cid:5)
+
+(cid:3)
+
+Ω, {α, β, γ }, {β, γ , δ}
+= {γ } and
+
+(cid:4)
+{β, γ , δ}
+
+,
+
+f
+
+(cid:5)
+
+= {β, γ }.
+
+This choice frame is illustrated in Fig. 1, where the elements of E are shown as rectangles and the values of the function
+f are shown as ovals inside the rectangles. This choice frame satisﬁes Arrow’s Axiom trivially (for E, F ∈ E , E ⊆ F if and
+only if F = Ω and, for every E ∈ E\{Ω}, f (Ω) ∩ E = ∅). Consider the model based on this frame where, for some atoms
+p, q, r and s, (cid:6)p(cid:6) = {α, β, γ }, (cid:6)q(cid:6) = {β, γ , δ}, (cid:6)r(cid:6) = {β, γ } and (cid:6)s(cid:6) = {γ }. The initial beliefs are given by the consistent and
+deductively closed set K = {φ ∈ Φ: ε |(cid:15) φ}. For every formula φ such that (cid:6)φ(cid:6) ∈ E , let B K (φ) = {ψ ∈ Φ:
+f ((cid:6)φ(cid:6)) ⊆ (cid:6)ψ(cid:6)} be
+the revised beliefs after receiving information φ. It is straightforward to check that {(q ∧ r), s} ⊆ B K (p) and (p ∧ r) ∈ B K (q)
+while s /∈ B K (q) (since f ((cid:6)q(cid:6)) = {β, γ } (cid:3) {γ } = (cid:6)s(cid:6)). Since s ∈ B K (p) and s /∈ B K (q),
+
+B K (p) (cid:9)= B K (q).
+∗
+K
+
+: Φ → 2Φ is an AGM function that extends B K . Since (q ∧ r) ∈ B K (p) = B
+
+Suppose that B
+∗
+¬(q ∧r) /∈ B
+K (p). It follows from AGM7 and AGM8 that B
+since (p ∧ r) ∈ B K (q) = B
+is a tautology, it follows from AGM6 that B
+of B K , B
+
+∗
+K (p) is consistent,
+∗
+∗
+K (p)]P L = B
+K (p). Similarly,
+∗
+∗
+K (q). Furthermore, since (p ∧ (q ∧ r)) ↔ (q ∧ (p ∧ r))
+K (q ∧ (p ∧ r)) = B
+∗
+∗
+∗
+K (q ∧ (p ∧ r)). Hence B
+K (p ∧ (q ∧ r)) = B
+K is an extension
+∗
+K (q) = B K (q), yielding a contradiction with (3).
+
+∗
+K (q), by AGM7 and AGM8 B
+
+∗
+K (p)∪{(q ∧r)}]P L = [B
+
+∗
+K (p) = B K (p) and B
+
+∗
+K (p ∧(q ∧r)) = [B
+
+In rational choice theory a choice frame (cid:4)Ω, E, f (cid:5) is said to be rationalizable if there exists a total pre-order10 R on Ω
+f (E) is the set of best elements of E relative to R (see Deﬁnition 5 below). In that context, the
+). In our
+if and only if state ω is considered to be at least as plausible as
+. Given this interpretation, if the frame is rationalizable then, after receiving information E, the agent considers as
+
+such that, for every E ∈ E ,
+relation R is interpreted as a preference relation (ωRω(cid:17)
+case R can be interpreted as a plausibility relation: ωRω(cid:17)
+state ω(cid:17)
+possible (according to his revised beliefs) all and only the states that are most plausible among the ones in E.
+
+if and only if ω is considered to be at least as good as ω(cid:17)
+
+∗
+K (q). Since B
+
+∗
+K (p) and B
+
+∗
+K (p) = B
+
+(3)
+
+Deﬁnition 5. A choice frame (cid:4)Ω, E, f (cid:5) is rationalizable if there exists a total pre-order R on Ω such that, for every E ∈ E ,
+
+f (E) = best R E
+
+de f= {ω ∈ E: ωRω(cid:17)
+
+, ∀ω(cid:17) ∈ E}.11
+
+The following proposition, due to Hansson ([16], Theorem 7, p. 455) gives a necessary and suﬃcient condition for a
+
+choice frame to be rationalizable.
+
+Proposition 6. A choice frame (cid:4)Ω, E, f (cid:5) is rationalizable if and only if it satisﬁes the following property: for every sequence
+(cid:4)E1, . . . , En, En+1(cid:5) in E with En+1 = E1, if Ek ∩ f (Ek+1) (cid:9)= ∅, ∀k = 1, . . . , n, then Ek ∩ f (Ek+1) = f (Ek) ∩ Ek+1, ∀k = 1, . . . , n.
+
+For instance, in the example illustrated in Fig. 1, letting n = 2, E 1 = {α, β, γ }, E2 = {β, γ , δ} and E3 = E1 we have that
+E1 ∩ f (E2) = {β, γ } (cid:9)= ∅ and E2 ∩ f (E1) = {γ } (cid:9)= ∅ and thus E1 ∩ f (E2) (cid:9)= E2 ∩ f (E1), so that, by Proposition 6, the frame
+is not rationalizable.
+
+10 A binary relation R ⊆ Ω × Ω is a total pre-order if it satisﬁes the following properties:
+or ω(cid:17)
+and ω(cid:17)
+
+Completeness: ∀ω, ω(cid:17) ∈ Ω , either ωRω(cid:17)
+Transitivity: ∀ω, ω(cid:17), ω(cid:17)(cid:17) ∈ Ω , if ωRω(cid:17)
+Note that completeness implies reﬂexivity (∀ω ∈ Ω , ωRω).
+
+Rω (or both);
+then ωRω(cid:17)(cid:17)
+Rω(cid:17)(cid:17)
+
+.
+
+11 In the rational choice literature the preference relation is usually denoted by (cid:18) and the set {ω ∈ E: ω (cid:18) ω(cid:17), ∀ω(cid:17) ∈ E} is referred to as the set of maximal
+elements of E. In the artiﬁcial intelligence literature, the preference or plausibility relation is usually denoted by (cid:2) and the set {ω ∈ E: ω (cid:2) ω(cid:17), ∀ω(cid:17) ∈ E}
+is referred to as the set of minimal elements of E. In order to avoid confusion, we denote the relation by R and refer to the best elements of a set.
+
+1198
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+The following propositions are proved in Appendix A. The ﬁrst states that, when Ω is ﬁnite, rationalizability implies
+
+AGM-consistency and the second that, when Ω is countable, AGM-consistency implies rationalizability.
+
+Proposition 7. Let (cid:4)Ω, E, f (cid:5) be a choice frame where Ω is ﬁnite. If (cid:4)Ω, E, f (cid:5) is rationalizable then it is AGM-consistent.
+
+Proposition 8. Let (cid:4)Ω, E, f (cid:5) be a choice frame where Ω is a (possibly inﬁnite) countable set. If (cid:4)Ω, E, f (cid:5) is AGM-consistent then it is
+rationalizable.
+
+Putting together Propositions 7 and 8 we get that, when the set of states is ﬁnite, the two properties of AGM-consistency
+
+and rationalizability are equivalent.
+
+Corollary 9. Let (cid:4)Ω, E, f (cid:5) be a choice frame where Ω is ﬁnite. Then the following are equivalent:
+
+(a)
+
+(b)
+
+(cid:4)Ω, E, f (cid:5) is AGM-consistent,
+(cid:4)Ω, E, f (cid:5) is rationalizable.
+
+The restriction to ﬁnite frames in Proposition 7 can be dropped if the frame (cid:4)Ω, E, f (cid:5) is rationalizable by a total pre-
+
+order R that satisﬁes the property that every non-empty subset of Ω has a best element.
+
+Deﬁnition 10. A choice frame (cid:4)Ω, E, f (cid:5) is strongly rationalizable if it is rationalizable by a total pre-order R ⊆ Ω × Ω such
+that, for every non-empty E ⊆ Ω , best R E (cid:9)= ∅.12
+
+A rationalizable choice frame (cid:4)Ω, E, f (cid:5) where Ω is ﬁnite is strongly rationalizable. Thus Proposition 7 is a corollary of
+
+the following result (a proof can be found in [8]).
+
+Proposition 11. Let (cid:4)Ω, E, f (cid:5) be a strongly rationalizable choice frame. Then (cid:4)Ω, E, f (cid:5) is AGM-consistent.
+
+4. Related literature and conclusion
+
+Choice frames provide a semantics for AGM belief revision which can be considered an extension of Grove’s [15] system
+of spheres semantics to the class of partial belief revision functions. In Appendix A we review the notion of system of
+spheres and prove Propositions 7 and (a weaker version of) 8 using Grove’s characterization of AGM functions.13
+
+Choice frames offer a Kripke-style (Kripke [20]) semantics for belief revision. Recently there have been several attempts
+to model belief revision along the lines pioneered by Hintikka [17] for static beliefs, namely using a modal logic framework
+that, on the semantic side, relies on Kripke-style structures. Important work in this new area was done by Segerberg [23]
+in the context of dynamic doxastic logic, Board [5] in the context of multi-agent doxastic logic and van Benthem [3] in the
+context of dynamic epistemic logic (see also [2], [9] and the recent survey in [10]). More closely related to the analysis
+of this paper is Bonanno [6] where belief revision is studied within a temporal logic, which, on the semantic side, relies
+on branching-time frames where with each instant are associated two relations, one representing beliefs and the other
+representing information. As shown in [7], one can view such branching-time frames as a temporal generalization of the
+choice frames considered in this paper.
+
+We conclude by noting that Corollary 9 can be viewed as analogous to the frame characterization results of modal logic
+(see, for example, [4]): given a ﬁnite rationalizable choice frame, every model based on it gives rise to a partial belief revision
+function which can be extended to a full AGM function and, conversely, a frame with this property must be rationalizable.
+
+Appendix A
+
+We shall prove Proposition 7 using Grove’s [15] notion of system of spheres, which we recall below. As before, let A
+be an inﬁnitely countable set of atoms and Φ the set of propositional formulas built on A. Let M be the set of maximally
+
+12 A rationalizable frame may fail to be strongly rationalizable. For example, let N denote the set of natural numbers and let Ω = N ∪ {∞}. Let G be
+the set of ﬁnite subsets of N and E = G ∪ {Ω}. Finally, let f (Ω) = {∞} and, for every E ∈ G, let f (E) be the largest number in E. Then the choice frame
+(cid:4)Ω, E, f (cid:5) so deﬁned is rationalizable by the total pre-order (cid:3) (with the convention that ∞ > n for every n ∈ N). However, it is not strongly rationalizable.
+Suppose it were strongly rationalizable in terms of a total pre-order R on Ω . Then ∅ (cid:9)= bestR N ⊆ N. Fix an arbitrary n ∈ bestR N and let E = {n, n + 1}. By
+hypothesis, f (E) = bestR E. Since E ⊆ N and E ∩ bestR N (cid:9)= ∅,
+
+(cid:6)
+
+bestR E = E ∩ bestR N =
+
+{n}
+{n, n + 1}
+But f (E) = {n + 1}, yielding a contradiction.
+13 I am grateful to two anonymous referees for pointing out these simpler proofs.
+
+if n + 1 /∈ bestR N,
+if n + 1 ∈ bestR N.
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+1199
+
+consistent sets of formulas for the propositional logic whose set of formulas is Φ. If H ⊆ Φ let MH = {x ∈ M: H ⊆ x}. For a
+formula φ we shall write Mφ instead of M{φ}.
+
+Deﬁnition 12. A system of spheres centered on X ⊆ M is a collection S of subsets of M satisfying the following properties:
+
+(S.1) For all U , V ∈ S, either U ⊆ V or V ⊆ U ;
+(S.2) X is the smallest element of S, that is, X ∈ S and, for every U ∈ S, X ⊆ U ;
+(S.3) M ∈ S;
+(S.4) If φ is a consistent formula, then there exists a smallest sphere in S denoted by S(φ) intersecting Mφ (if φ is a
+
+contradiction, deﬁne S(φ) to be M).
+
+Notation 13. For every M ⊆ M, let [M] = {φ ∈ Φ: φ ∈ x, ∀x ∈ M}.
+
+Theorem 14. (See Grove [15].) If K ⊆ Φ is a consistent belief set and S a system of spheres centered on MK then the function
+∗
+∗
+B
+K is an AGM function based on a
+K
+∗
+consistent belief set K , then there exists a system of spheres S centered on MK such that, for every formula φ, B
+K (φ) = [S(φ) ∩ Mφ].
+
+∗
+K (φ) = [S(φ) ∩ Mφ] is an AGM function based on K . Conversely, if B
+
+: Φ → 2Φ deﬁned by B
+
+Let (cid:4)Ω, E, f (cid:5) be a frame and V a valuation, giving rise to the model M =(cid:4)Ω, E, f , V (cid:5). As noted in Footnote 7, we can
+associate with M a function m : Ω → M as follows: m(ω) = {φ ∈ Φ: ω |(cid:15) φ}.14 For F ⊆ Ω let m(F ) = {m(ω): ω ∈ F }.
+Clearly, for every formula φ, m((cid:6)φ(cid:6)) ⊆ Mφ . By deﬁnition of K (see (1)), K = [m( f (Ω))]; furthermore, for every formula
+φ ∈ Φ, if (cid:6)φ(cid:6) = E ∈ E , then
+
+(cid:4)
+
+(cid:7)
+m
+
+(cid:5)(cid:8)
+
+f (E)
+
+= B K (φ).
+
+(4)
+
+In fact, for every formula ψ , ψ ∈ [m( f (E))] ⇔ ψ ∈ x, ∀x ∈ m( f (E)) ⇔ ψ ∈ m(ω), ∀ω ∈ f (E) ⇔ ω |(cid:15) ψ, ∀ω ∈ f (E) ⇔ f (E) ⊆
+(cid:6)ψ(cid:6) ⇔ ψ ∈ B K (φ).
+
+f (E) = best R E. For every ω ∈ Ω , let D(ω) = {ω(cid:17) ∈ Ω: ω(cid:17)
+
+Proof of Proposition 7. 15 Let (cid:4)Ω, E, f (cid:5) be a ﬁnite rationalizable frame and let R be a total pre-order on Ω such that, for
+every E ∈ E ,
+Rω} and let (cid:14) = {D(ω): ω ∈ Ω}. Since Ω is ﬁnite,
+(cid:14) can be written as a sequence (cid:4)D0, . . . , Dn(cid:5) satisfying: (i) D0 = f (Ω), (ii) D j ⊂ D j+1, for all j = 0, . . . , n − 1, (iii) Dn = Ω
+and (iv) for every E ∈ E , since f (E) = best R E (cid:9)= ∅, f (E) = E ∩ Dr(E) where r(E) is the smallest index j ∈ {0, . . . , n} such that
+E ∩ D j (cid:9)= ∅.16 Let S = {m(D0), . . . , m(Dn), M}. We ﬁrst show that S is a system of spheres centered on m(D0) = m( f (Ω)).
+Since, D j ⊂ D j+1 it is clear that m(D j) ⊆ m(D j+1), for every j = 0, . . . , n − 1.17 Thus (S.1) and (S.2) of Deﬁnition 12 are
+satisﬁed; (S.3) is satisﬁed by construction and (S.4) is satisﬁed because of ﬁniteness of S. It follows from Theorem 14 that
+∗
+∗
+K (φ) = [S(φ) ∩ Mφ] is an AGM belief revision function. We need to show that B
+the function B
+K
+is an extension of B K (φ), that is, that if (cid:6)φ(cid:6) ∈ E then [S(φ) ∩ Mφ] = B K (φ). Let φ be such that (cid:6)φ(cid:6) = E ∈ E , so that
+m(E) ⊆ Mφ . Since f (E) = E ∩ Dr(E), S(φ) = m(Dr(E)), so that m( f (E)) = m(E ∩ Dr(E)) ⊆ S(φ) ∩ Mφ. Thus [S(φ) ∩ Mφ] ⊆
+[m( f (E))] and, therefore, by (4), [S(φ) ∩ Mφ] ⊆ B K (φ). For the converse, let ψ ∈ B K (φ); then f (E) ⊆ (cid:6)ψ(cid:6). Suppose that
+ψ /∈ [S(φ) ∩ Mφ]. Then there exists an x ∈ S(φ) ∩ Mφ such that ψ /∈ x. Since S(φ) = m(Dr(E)), there exists an ω ∈ Dr(E) such
+that x = m(ω). Since x ∈ Mφ and (cid:6)φ(cid:6) = E, ω ∈ E. Thus ω ∈ E ∩ Dr(E) = f (E) so that, since f (E) ⊆ (cid:6)ψ(cid:6), ω |(cid:15) ψ , that is,
+ψ ∈ x = m(ω), yielding a contradiction. (cid:2)
+
+: Φ → 2Φ deﬁned by B
+
+∗
+K
+
+We now turn to the proof of Proposition 8. For the case where the frame (cid:4)Ω, E, f (cid:5) is such that E is a countable set,
+Proposition 8 can also be proved using Grove’s approach. First of all, as Grove ([15], p. 160) notes, a system of spheres
+centered on X is equivalent to a total pre-order (cid:3) on M that satisﬁes the following properties:
+
+(S (cid:3) 1) X = min(cid:2) M (where, for every T ⊆ M, min(cid:2) T = {x ∈ T : x (cid:3) y, ∀ y ∈ T }),
+(S (cid:3) 2) if φ is a consistent formula, then min(cid:2) Mφ (cid:9)= ∅.
+
+Theorem 14 can thus be restated in terms of a total pre-order (cid:3) on M. We shall make use of the following related result
+in Gärdenfors and Rott ([14], Theorem 4.4.1, p. 79), which, in turn, is based on a result of Katsuno and Mendelzon ([18],
+Theorem 3.3, p. 269).18
+
+14 Note that the function m in general is not injective, that is, it is possible that ω (cid:9)= ω(cid:17)
+subset of M.
+15 An alternative proof, that does not rely on Grove’s notion of system of spheres, is given in [8].
+16 For a generalization of this see Freund ([11], Theorem 5, p. 246).
+17 Note that it could be that m(D j) = m(D j+1) for some, or even all, j.
+18 This result is also a consequence of the representation of rational inference relations by means of total pre-orders (see [19]) and the identity between
+AGM revisions and rational relations (see [13]).
+
+and m(ω) = m(ω(cid:17)). Furthermore, in general, m(Ω) is a proper
+
+1200
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+Theorem 15. (See Gärdenfors and Rott [14].) B
+only if there exists a total pre-order (cid:3) on M such that, (1) MK = min(cid:2) M and (2) for every formula φ, MB
+
+: Φ → 2Φ is an AGM belief revision function based on a consistent belief set K if and
+
+∗
+
+K (φ) = min(cid:2) Mφ .
+
+∗
+K
+
+When E is a countable set, the above theorem can be used to prove Proposition 8 by constructing a model where, for
+
+every E ∈ E , there is an atom p E ∈ A such that (cid:6)p E (cid:6) = E.
+
+Proof of Proposition 8 when EEE is countable. Let (cid:4)Ω, E, f (cid:5) be an AGM-consistent frame where Ω and E are countable sets.
+Construct a model where, for every ω ∈ Ω there is an atom pω ∈ A such that V (pω) = {ω} and for every E ∈ E\{Ω} there is
+∗
+an atom p E ∈ A such that V (p E ) = E. Let B K be the associated (partial) belief revision function and B
+K an AGM extension
+of B K (it exists since the frame is AGM-consistent). By Theorem 15 there exists a total pre-order (cid:3) of M such that
+
+(a) MK = min
+(cid:2)
+
+M and
+
+(5)
+
+(b)
+
+for every φ ∈ Φ, MB
+
+∗
+
+K (φ) = min
+
+Mφ.
+
+. Since ω(cid:17)
+
+Deﬁne R ⊆ Ω × Ω as follows: ωRω(cid:17)
+
+(cid:2)
+if and only if m(ω) (cid:3) m(ω(cid:17)) (recall that m : Ω → M is deﬁned by m(ω) = {φ ∈
+Φ: ω |(cid:15) φ}). First we show that f (Ω) = best R Ω . Fix arbitrary ω ∈ f (Ω) and ω(cid:17) ∈ Ω . By deﬁnition of K (see (1)), m( f (Ω)) ⊆
+MK . Thus, by (a) of (5), m(ω) (cid:3) m(ω(cid:17)); hence ωRω(cid:17)
+was chosen arbitrarily, it follows that ω ∈ best R Ω . Hence,
+since ω ∈ f (Ω) was chosen arbitrarily, f (Ω) ⊆ bestR Ω . Suppose that best R Ω (cid:3) f (Ω). Then there exists an α ∈ best R Ω such
+that α /∈ f (Ω). Hence f (Ω) ⊆ (cid:6)¬pα(cid:6) = Ω\{α}, that is, ¬pα ∈ K so that ¬pα ∈ x for every x ∈ MK . Thus, since α |(cid:15) pα (that
+is, pα ∈ m(α)), m(α) /∈ MK . By deﬁnition of choice frame,
+f (Ω) (cid:9)= ∅. Fix a β ∈ f (Ω). Then m(β) ∈ MK and thus, by (a) of
+(5), since m(α) /∈ MK , it is not the case that m(α) (cid:3) m(β). Hence it is not the case that α Rβ, contradicting the hypothesis
+that α ∈ best R Ω .
+
+Now let E ∈ E with E (cid:9)= Ω . We want to show that f (E) = best R E. Fix arbitrary ω ∈ f (E) ⊆ E = (cid:6)p E (cid:6) and ω(cid:17) ∈ E. Since
+f (E) ⊆ (cid:6)φ(cid:6)}, m( f (E)) ⊆ MB K (p E ). Thus, since m(E) ⊆ Mp E , it follows from (b) of (5) that m(ω) (cid:3) m(ω(cid:17))
+B K (p E ) = {φ ∈ Φ:
+and thus ωRω(cid:17)
+. Hence f (E) ⊆ bestR E. Suppose that best R E (cid:3) f (E). Then there exists an α ∈ best R E such that α /∈ f (E).
+Hence f (E) ⊆ (cid:6)¬pα(cid:6), that is, ¬pα ∈ B K (p E ) so that ¬pα ∈ x for every x ∈ MB K (p E ). Thus, since α |(cid:15) pα (that is, pα ∈ m(α)),
+m(α) /∈ MB K (p E ). By deﬁnition of choice frame, f (E) (cid:9)= ∅. Fix a β ∈ f (E). Then m(β) ∈ MB K (p E ) and thus, by (b) of (5), since
+m(α) /∈ MB K (p E ), it is not the case that m(α) (cid:3) m(β). Hence it is not the case that α Rβ, contradicting the hypothesis that
+α ∈ bestR E. (cid:2)
+
+The assumption that E is a countable set is restrictive. For example, it rules out the case where Ω = N (the set of natural
+N
+numbers) and E = 2
+. An alternative proof, which does not require the assumption that E is countable, is given below. This
+proof may be of independent interest, since it is not based on the notion of system of spheres. Instead it relies on Hansson’s
+result (Proposition 6). We begin with several lemmas. This ﬁrst lemma is well known and the proof is omitted (a proof is
+given in [8]). The second lemma does not require any restrictions on the sets Ω and E .
+
+Lemma 16. Let H ⊆ Φ and ψ ∈ Φ. Then, for every formula χ , χ ∈ [H ∪ {ψ}]P L if and only if (ψ → χ ) ∈ [H]P L .
+
+Lemma 17. If (cid:4)Ω, E, f (cid:5) is an AGM consistent choice frame then it satisﬁes Arrow’s Axiom: if E, F ∈ E are such that E ⊆ F and
+E ∩ f (F ) (cid:9)= ∅ then f (E) = E ∩ f (F ).
+
+Proof. Fix arbitrary E, F ∈ E such that E ⊆ F and E ∩ f (F ) (cid:9)= ∅ and suppose that f (E) (cid:9)= E ∩ f (F ). Then either E ∩ f (F ) (cid:3)
+f (E) or f (E) (cid:3) E ∩ f (F ).
+
+Case 1: E ∩ f (F ) (cid:3) f (E). Let ω ∈ E ∩ f (F ) be such that ω /∈ f (E). Construct a model based on this frame where,
+for some atoms p, q and r, (cid:6)p(cid:6) = E, (cid:6)q(cid:6) = F and (cid:6)r(cid:6) = {ω}. Let B K be the associated (partial) belief revision function
+∗
+K be an AGM extension of B K (it exists since, by hypothesis, the frame is AGM consistent). Since (cid:6)p(cid:6) = E ∈ E and
+and B
+∗
+f (E) ⊆ E ⊆ F = (cid:6)q(cid:6), q ∈ B K (p) and thus q ∈ B
+K (p) is consistent. Thus
+∗
+¬q /∈ B
+K (p) and therefore, by AGM7 and AGM8,
+(cid:8)
+∗
+∗
+∗
+K (p) ∪ {q}
+K (p ∧ q) =
+K (p)
+
+∗
+K (p). Since p is not a contradiction, by AGM5 B
+
+∗
+K (p).
+
+P L =
+
+(6)
+
+B
+
+B
+
+(cid:8)
+
+(cid:7)
+
+(cid:7)
+
+B
+
+P L =(by AGM1) B
+Since (cid:6)q(cid:6) = F ∈ E , (cid:6)p(cid:6) = E and E ∩ f (F ) (cid:9)= ∅, ¬p /∈ B K (q) = B
+It follows from this and (6) that
+(cid:7)
+P L.
+
+∗
+K (q) ∪ {p}
+
+∗
+K (p) =
+
+B
+
+B
+
+(cid:8)
+
+∗
+K (q). Thus, by AGM7 and AGM8, B
+
+∗
+K (q ∧ p) = [B
+
+∗
+K (q) ∪ {p}]P L.
+
+(7)
+
+Since ω /∈ f (E) and (cid:6)r(cid:6) = {ω}, f (E) ⊆ (cid:6)¬r(cid:6), that is, ¬r ∈ B K (p) and hence (since B
+
+∗
+K is an extension of B K )
+
+¬r ∈ B
+
+∗
+K (p).
+
+Since ω ∈ E, ω ∈ (cid:6)r ∧ p(cid:6). Thus, since ω ∈ f (F ),
+(p → ¬r) /∈ B K (q) = B
+
+∗
+K (q). Hence, by Lemma 16, ¬r /∈ [B
+
+(8)
+f (F ) ∩ (cid:6)r ∧ p(cid:6) (cid:9)= ∅ so that f (F ) (cid:3) (cid:6)¬(r ∧ p)(cid:6) = (cid:6)(p → ¬r)(cid:6) and thus,
+
+∗
+K (q) ∪ {p}]P L . This, together with (7), contradicts (8).
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+1201
+
+Case 2: f (E) (cid:3) E ∩ f (F ). Let ω ∈ f (E) be such that ω /∈ E ∩ f (F ). Since f (E) ⊆ E, ω ∈ E. Thus ω /∈ f (F ). As before,
+construct a model where, for some atoms p, q and r, (cid:6)p(cid:6) = E, (cid:6)q(cid:6) = F and (cid:6)r(cid:6) = {ω}. A repetition of the argument used
+above (leading to (6), making use of the hypotheses that E ⊆ F and E ∩ f (F ) (cid:9)= ∅) yields (7). Since ω /∈ f (F ) and (cid:6)r(cid:6) = {ω},
+f (F ) ⊆ (cid:6)¬r(cid:6) and thus, since (cid:6)q(cid:6) = F , ¬r ∈ B K (q) = B
+
+∗
+K (q), which implies that
+
+(cid:7)
+
+¬r ∈
+
+∗
+K (q) ∪ {p}
+
+B
+
+(cid:8)
+
+P L.
+
+On the other hand, since ω ∈ f (E) and (cid:6)p(cid:6) = E, ¬r /∈ B K (p) = B
+
+∗
+K (p). This, together with (7), contradicts (9). (cid:2)
+
+Deﬁnition 18. Let F = (cid:4)Ω, E, f (cid:5) and F + = (cid:4)Ω, E +, f
+E ⊆ E +
+
+and, for every E ∈ E , f
+
++(E) = f (E).
+
++(cid:5) be two choice frames. We say that F +
+
+is an extension of F if
+
+Lemma 19. Let F = (cid:4)Ω, E, f (cid:5) be an AGM-consistent choice frame where Ω is a (possibly inﬁnite) countable set. Let (cid:4)E 1, . . . , En, En+1(cid:5)
+be a sequence in E such that En+1 = E1 and, ∀k = 1, . . . , n, Ek ∩ f (Ek+1) (cid:9)= ∅. Let G = E1 ∪ · · · ∪ En. Then there exists an exten-
+sion F + = (cid:4)Ω, E +, f
++(G).
+Furthermore, there exists a j ∈ {1, . . . , n} such that E j ∩ f
+
++(cid:5) of F such that (i) E + = E ∪ {G}, and (ii) ∀k = 1, . . . , n, if Ek ∩ f
+
++(G) (cid:9)= ∅ then f
+
++(Ek) = Ek ∩ f
+
++(G) (cid:9)= ∅.
+
+Proof. Let F = (cid:4)Ω, E, f (cid:5) be an AGM-consistent frame where Ω is countable and ﬁx an arbitrary sequence E 1, . . . , En+1 in
+E such that En+1 = E1 and, ∀k = 1, . . . , n, Ek ∩ f (Ek+1) (cid:9)= ∅. Let G = E1 ∪ · · · ∪ En. If G ∈ E , then the result follows from
+Lemma 17 (take F + = F and apply Arrow’s Axiom). Suppose, therefore, that G /∈ E . Construct a model based on this frame
+where for every state ω ∈ Ω there is an atom pω such that (cid:6)pω(cid:6) = {ω}. Furthermore, for every i ∈ {1, . . . , n}, let pi be an
+∗
+atom such that (cid:6)pi(cid:6) = E i. Let B K be the associated (partial) belief revision function and let B
+K be an AGM extension of B K
+(it exists since, by hypothesis, F is AGM-consistent). Let
+
+(cid:2)
+
+J =
+
+i ∈ {1, . . . , n}: ¬pi /∈ B
+
+(cid:3)
+∗
+K (p1 ∨ · · · ∨ pn)
+
+.
+
+First we show that J (cid:9)= ∅. Suppose that J = ∅. Then, for every i ∈ {1, . . . , n}, ¬pi ∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn) is deductively closed, (¬p1 ∧ · · · ∧ ¬pn) ∈ B
+
+AGM1) B
+equivalent to ¬(p1 ∨ · · · ∨ pn),
+
+(10)
+∗
+K (p1 ∨ · · · ∨ pn). Hence, since (by
+∗
+K (p1 ∨ · · · ∨ pn). Thus, since (¬p1 ∧ · · · ∧ ¬pn) is
+
+¬(p1 ∨ · · · ∨ pn) ∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn).
+
+By AGM2,
+
+(p1 ∨ · · · ∨ pn) ∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn).
+
+Deﬁne (cid:4)Ω, E +, f
+(cid:9)
+
++
+
+f
+
+(G) =
+
+f (E j).
+
+j∈ J
+
+by deﬁnition of f
+
+Fix an arbitrary k ∈ {1, . . . , n} and suppose that Ek ∩ f
++(Ek) = f (Ek)).
+First we show that k ∈ J . Suppose that k /∈ J , that is,
+
+, f
+
++
+
+Since (p1 ∨ · · · ∨ pn) is not a contradiction, by AGM5, B
+the case that both φ and ¬φ belong to B
+
++(cid:5) as follows: E + = E ∪ {G} (where G = E1 ∪ · · · ∪ En); for every E ∈ E , f
+
++(E) = f (E) and
+
+∗
+K (p1 ∨ · · · ∨ pn), contradicting (11) and (12). Thus J (cid:9)= ∅.
+
+(12)
+∗
+K (p1 ∨ · · · ∨ pn) is consistent, so that, for every formula φ, it is not
+
++(G) (cid:9)= ∅. We want to show that f
+
++(Ek) = Ek ∩ f
+
++(G) (note that,
+
+(13)
+
+¬pk ∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn).
+
+Since, by hypothesis, Ek ∩ f
+
++(G) (cid:9)= ∅, f
+
+(14)
++(G) (cid:9)= ∅ and thus, by (13), there exists an s ∈ J such that Ek ∩ f (E s) (cid:9)= ∅. Thus
+
+f (E s) (cid:3) Ω\Ek = (cid:6)¬pk(cid:6) and therefore ¬pk /∈ B K (ps). Since (cid:6)ps(cid:6) = E s ∈ E , B K (ps) = B
+
+∗
+K (ps). Thus
+
+∗
+¬pk /∈ B
+K (ps).
+(15)
+∗
+K (p1 ∨ · · · ∨ pn). Thus, by AGM7 and AGM8 (and noting that ps is equivalent to ((p1 ∨ · · · ∨ pn) ∧ ps)),
+Since s ∈ J , ¬ps /∈ B
+∗
+K (p1 ∨ · · · ∨ pn) ∪ {ps}
+
+∗
+K (ps) =
+
+P L.
+
+(16)
+
+B
+
+B
+
+(cid:8)
+
+(cid:7)
+
+It follows from (15), (16) and Lemma 16 (and the fact that, by AGM1, B
+
+∗
+K (ps) = [B
+
+∗
+K (ps)]P L ) that
+
+(ps → ¬pk) /∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn).
+Since (¬pk → (ps → ¬pk)) is a tautology and (by AGM1) B
+∗
+K (p1 ∨ · · · ∨ pn). It follows from this and (14) that (ps → ¬pk) ∈ B
+Thus we have shown that k ∈ J , that is,
+∗
+K (p1 ∨ · · · ∨ pn).
+
+¬pk /∈ B
+
+B
+
+(17)
+∗
+K (p1 ∨ · · · ∨ pn) is deductively closed, (¬pk → (ps → ¬pk)) ∈
+
+∗
+K (p1 ∨ · · · ∨ pn), contradicting (17).
+
+(9)
+
+(11)
+
+(18)
+
+1202
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+Hence, by (13), f (Ek) ⊆ f
+Now we show the converse, namely that Ek ∩ f
+
+that α /∈ f (Ek), that is, f (Ek) ⊆ (cid:6)¬pα(cid:6), so that
+
++(G). Furthermore, by deﬁnition of choice frame, f (Ek) ⊆ Ek. Thus f (Ek) ⊆ Ek ∩ f
+
++(G).
+
++(G) ⊆ f (Ek). Suppose not. Then there exists an α ∈ Ek ∩ f
+
++(G) such
+
+(19)
+
+∗
+K (pk) = [B
+
+∗
+K (p1 ∨ · · · ∨ pn) ∪
+
+∗
+K (ps). Furthermore, since s ∈ J ,
+
+(20)
+
+(21)
+
+By (18) and AGM7 and AGM8 (and noting that (p1 ∨ · · · ∨ pn) ∧ pk is equivalent to pk), B
+
+¬pα ∈ B K (pk) = B
+
+∗
+K (pk).
+
+{pk}]P L. Hence, by (19) and Lemma 16,
+∗
+K (p1 ∨ · · · ∨ pn).
+
+(pk → ¬pα) ∈ B
+
+¬ps /∈ B
+
++(G), there exists an s ∈ J such that α ∈ f (E s). Thus ¬pα /∈ B K (ps) = B
+
+Since α ∈ f
+∗
+K (p1 ∨ · · · ∨ pn) (see (10)), so that (16) holds and, therefore, by Lemma 16,
+(ps → ¬pα) /∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn).
+
+Since α ∈ Ek, {α} = (cid:6)pα(cid:6) ⊆ (cid:6)pk(cid:6) = Ek, that is, (cid:6)pα → pk(cid:6) = Ω . Hence f (E s) ⊆ (cid:6)pα → pk(cid:6), that is, (pα → pk) ∈ B K (ps) =
+∗
+K (ps). Thus, by (16) and Lemma 16,
+
+B
+
+(cid:4)
+
+(cid:5)
+ps → (pα → pk)
+
+∈ B
+
+∗
+K (p1 ∨ · · · ∨ pn).
+
+(22)
+
+Since (ps → (pα → pk)) is equivalent to (ps ∧ pα → pk), it follows from (20), (22) and the fact that (by AGM1) B
+∗
+K (p1 ∨ · · · ∨ pn) so that (ps ∧ pα → ¬pα) ∈ B
+
+· · · ∨ pn) is deductively closed, that ((ps ∧ pα → pk) ∧ (pk → ¬pα)) ∈ B
+· · · ∨ pn). But (ps ∧ pα → ¬pα) is equivalent to (ps → ¬pα). Hence (ps → ¬pα) ∈ B
++(Ek), it follows that f
+Thus we have shown that f (Ek) = Ek ∩ f
+
+∗
+K (p1 ∨
+∗
+K (p1 ∨
+∗
+K (p1 ∨ · · · ∨ pn), contradicting (21).
++(G).
++(Ek) = Ek ∩ f
++(G) =
++(G) (cid:9)= ∅. Since f
+
+It only remains to show that there exists a j ∈ {1, . . . , n} such that E j ∩ f
+
++(G); since f (Ek) = f
+
+(cid:10)
+
+f (E j), it
++(G). By deﬁnition of choice frame, ∅ (cid:9)= f (E j) ⊆ E j .
+
+j∈ J
+
+follows that there exists a j ∈ {1, . . . , n} such that f (E j) = f (E j) ∩ f
+Thus E j ∩ f
+
++(G) (cid:9)= ∅. (cid:2)
+
+Lemma 20. Let F = (cid:4)Ω, E, f (cid:5) be a choice frame and let (cid:4)E 1, . . . , En, En+1(cid:5) be a sequence in E such that En+1 = E1 and, ∀k =
+1, . . . , n, Ek ∩ f (Ek+1) (cid:9)= ∅. Let G = E1 ∪ · · · ∪ En and let F + = (cid:4)Ω, E +, f
++(cid:5) be an extension of F such that (i) E + = E ∪ {G} and
+(ii) ∀k = 1, . . . , n, if Ek ∩ f
+
++(G). Then, for every k = 1, . . . , n
+
++(G) (cid:9)= ∅ then f
+
+if Ek+1 ∩ f
+
++
+
+(G) (cid:9)= ∅ then
+
+⎧
+⎪⎨
+
+⎪⎩
+
++(Ek) = Ek ∩ f
++(G) (cid:9)= ∅
+
+Ek ∩ f
+and
+Ek ∩ f (Ek+1) = f (Ek) ∩ Ek+1.
+
+Proof. Fix a k ∈ {1, . . . , n} and assume that Ek+1 ∩ f
+
++(G) (cid:9)= ∅. Then, by hypothesis (ii), f (Ek+1) = Ek+1 ∩ f
+
++(G). Thus
+
+Ek ∩ f (Ek+1) = Ek ∩ Ek+1 ∩ f
+
++
+
+(G).
+
+By hypothesis, Ek ∩ f (Ek+1) (cid:9)= ∅. Thus, by (24), Ek ∩ Ek+1 ∩ f
+
++(G) (cid:9)= ∅ so that
+
+Ek ∩ f
+
++
+
+(G) (cid:9)= ∅.
+
+It follows from (25) and hypothesis (ii) that f (Ek) = Ek ∩ f
+
++(G), so that
+
+f (Ek) ∩ Ek+1 = Ek ∩ Ek+1 ∩ f
+
++
+
+(G).
+
+From (24) and (26) we get that Ek ∩ f (Ek+1) = f (Ek) ∩ Ek+1. (cid:2)
+
+Corollary 21. Let F = (cid:4)Ω, E, f (cid:5) be a choice frame and let (cid:4)E 1, . . . , En, En+1(cid:5) be a sequence in E such that En+1 = E1 and, ∀k =
++(cid:5) be an extension of F such that (i) E + = E ∪ {G},
+1, . . . , n, Ek ∩ f (Ek+1) (cid:9)= ∅. Let G = E1 ∪ · · · ∪ En and let F + = (cid:4)Ω, E +, f
++(G) (cid:9)=
+(ii) ∀k = 1, . . . , n, if Ek ∩ f
+∅. Then, for every k = 1, . . . , n, Ek ∩ f (Ek+1) = f (Ek) ∩ Ek+1.
+
++(G) and (iii) there exists a j ∈ {0, . . . , n − 1} such that E j+1 ∩ f
+
++(G) (cid:9)= ∅ then f
+
++(Ek) = Ek ∩ f
+
++(G) (cid:9)= ∅. Thus applying the lemma again we get E j−1 ∩
+Proof. By Lemma 20, E j ∩ f (E j+1) = f (E j) ∩ E j+1 and E j ∩ f
+f (E j) = f (E j−1) ∩ E j (taking j − 1 = n if j = 1). Repeating this argument n − 1 times (interpreting j − r as n − ( j − r) if
+j − r < 1) yields the desired result. (cid:2)
+
+Proof of Proposition 8. Let F = (cid:4)Ω, E, f (cid:5) be an AGM-consistent choice frame where Ω is a (possibly inﬁnite) countable
+set. Let (cid:4)E1, . . . , En, En+1(cid:5) be a sequence in E such that En+1 = E1 and, ∀k = 1, . . . , n, Ek ∩ f (Ek+1) (cid:9)= ∅. By Lemma 19 and
+Corollary 21, for every k = 1, . . . , n, Ek ∩ f (Ek+1) = f (Ek) ∩ Ek+1. It follows from Proposition 6 that (cid:4)Ω, E, f (cid:5) is rationaliz-
+able. (cid:2)
+
+(23)
+
+(24)
+
+(25)
+
+(26)
+
+G. Bonanno / Artiﬁcial Intelligence 173 (2009) 1194–1203
+
+1203
+
+References
+
+[1] Carlos Alchourrón, Peter Gärdenfors, David Makinson, On the logic of theory change: Partial meet contraction and revision functions, The Journal of
+
+Symbolic Logic 50 (1985) 510–530.
+
+[2] Alexandru Baltag, Sonja Smets, A qualitative theory of dynamic interactive belief revision, in: G. Bonanno, W. van der Hoek, M. Wooldridge (Eds.), Logic
+
+and the Foundations of Game and Decision Theory, in: Texts in Logic and Games, vol. 3, Amsterdam University Press, 2008, pp. 11–58.
+
+[3] Johan van Benthem, Dynamic logic for belief revision, Journal of Applied Non-Classical Logics 17 (2007) 1–27.
+[4] Patrick Blackburn, Maarten de Rijke, Yde Venema, Modal Logic, Cambridge University Press, 2001.
+[5] Oliver Board, Dynamic interactive epistemology, Games and Economic Behavior 49 (2004) 49–80.
+[6] Giacomo Bonanno, Axiomatic characterization of the AGM theory of belief revision in a temporal logic, Artiﬁcial Intelligence 171 (2007) 144–160.
+[7] Giacomo Bonanno, Belief revision in a temporal framework, in: K.R. Apt, R. van Rooij (Eds.), New Perspectives on Games and Interaction, in: Texts in
+
+Logic and Games, vol. 4, Amsterdam University Press, 2008, pp. 45–79.
+
+[8] Giacomo Bonanno, Rational choice and AGM belief revision, Working Paper, University of California at Davis, http://www.econ.ucdavis.edu/faculty/
+
+bonanno/pdf/cf_agm_08.pdf, 2008.
+
+[9] Hans van Ditmarsch, Prolegomena to dynamic logic for belief revision, Synthese 147 (2005) 229–275.
+
+[10] Hans van Ditmarsch, Wiebe van der Hoek, Barteld Kooi, Dynamic Epistemic Logic, Synthese Library, vol. 337, Springer, 2007.
+[11] Michael Freund, Revising preferences and choices, Journal of Mathematical Economics 41 (2005) 229–251.
+[12] Peter Gärdenfors, Knowledge in Flux: Modeling the Dynamics of Epistemic States, MIT Press, 1988.
+[13] Peter Gärdenfors, David Makinson, Relations between the logic of theory change and nonmonotonic logic, in: A. Fuhrmann, M. Morreau (Eds.), The
+
+Logic of Theory Change, Springer-Verlag, 1991, pp. 185–205.
+
+[14] Peter Gärdenfors, Hans Rott, Belief revision, in: D.M. Gabbay, C.J. Hogger, J.A. Robinson (Eds.), Handbook of Logic in Artiﬁcial Intelligence and Logic
+
+Programming, vol. 4, Clarendon Press, 1995, pp. 35–132.
+
+[15] Adam Grove, Two modellings for theory change, Journal of Philosophical Logic 17 (1988) 157–170.
+[16] Bengt Hansson, Choice structures and preference relations, Synthese 18 (1968) 443–458.
+[17] Jaakko Hintikka, Knowledge and Belief, Cornell University Press, 1962.
+[18] Hirofumi Katsuno, Alberto Mendelzon, Propositional knowledge base revision and minimal change, Artiﬁcial Intelligence 52 (1991) 263–294.
+[19] Sarit Kraus, Daniel Lehmann, Menachem Magidor, Nonmonotonic reasoning, preferential models and cumulative logics, Artiﬁcial Intelligence 44 (1990)
+
+167–207.
+
+[20] Samuel Kripke, A semantical analysis of modal logic I: Normal propositional calculi, Zeitschrift für Mathematische Logik und Grundlagen der Mathe-
+
+matik 9 (1963) 67–96.
+
+[21] David Makinson, How to go nonmonotonic, in: D. Gabbay, F. Guenthner (Eds.), Handbook of Philosophical Logic, vol. 12, second ed., Springer, 2005,
+
+pp. 175–278.
+
+[22] Hans Rott, Change, Choice and Inference, Clarendon Press, Oxford, 2001.
+[23] Krister Segerberg, Belief revision from the point of view of doxastic logic, Bulletin of the IGPL 3 (1995) 535–553.
+[24] Kotaro Suzumura, Rational Choice, Collective Decisions and Social Welfare, Cambridge University Press, 1983.
+
+

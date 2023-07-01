@@ -1,0 +1,8968 @@
+ELSEVIER 
+
+Artificial  Intelligence  8.5 (1996)  59-99 
+
+Artificial 
+Intelligence 
+
+An  empirical  symbolic  approach 
+processing 
+
+to  natural 
+
+language 
+
+Roberto  Basili”**,  Maria  Teresa  Pazienzaa3’,  Paola  Velardib’2 
+
+“Department  of  Computer  Science,  Systems  and  Production,  University  of  Tor  Vergata, 
+Via  della  Ricerca  Scientifica,  00133  Roma,  Italy 
+
+bIstituto  di  Informatica,  University  of  Ancona,  Ancona, 
+
+Italy 
+
+Received  October  1995;  revised  November  1995 
+
+Abstract 
+
+not  conceptual, 
+
+systems  do  “work” 
+
+Empirical  methods 
+
+language  processing 
+
+in  the  field  of  natural 
+
+into  the  mechanisms  of  human  communication, 
+
+linguistic  phenomena.  Probabilistic 
+and  this  is  meritorious,  but  in  our  view  they  are  intrinsically  unable 
+
+(NLP)  are  usually  based 
+on  a  probabilistic  model  of  language.  These  methods  recently  gained  popularity  because  of 
+the  claim  that  they  provide  a  better  coverage  of  language  phenomena.  Though  this  claim  is 
+not  entirely  proved,  empirical  methods  certainly  outperform 
+in  this  regard  rationalist,  or 
+symbolic,  methods.  However,  empirical  methods  provide  a  probabilistic, 
+explanation  of  the  analyzed 
+applications, 
+insight 
+by  plain  words,  or  word  clusters,  with  attached  probabilities.  Eventually, 
+must  make  sense  of  these  data. 
+In  the  past  few  years,  we  explored 
+combining 
+was 
+linguistically 
+language. 
+system,  ARIOSTO_LEX, 
+methods  for  the  acquisition  of  selectional 
+many 
+languages, 
+and  show  that  the  acquired 
+NLP,  but  they  are  indeed  useful  for  a  comparative 
+ARIOSTO_LEX 
+impact  on  the  large-scale  applicability  of  commonly  used  NLP  techniques. 
+
+lexical  learning 
+and  knowledge-based 
+restrictions  of  words  in  sublanguages.  We  present 
+and 
+in 
+
+in  real 
+to  provide 
+is  represented 
+a  human  analyst 
+the  possibility  of 
+
+lexical  data  not  only  have  practical  applications 
+analysis  of  sublanguages. 
+
+in  NLP.  Our  objective 
+that  are  both  scalable  and 
+analysis  of 
+
+acquisition 
+to  a 
+theoretically 
+the  results  of  a  large-scale 
+
+Importantly, 
+that  have  a  problematic 
+
+the  advantages  of  empirical  and  rationalist 
+
+In  this  paper  we  describe  and  evaluate 
+
+that  uses  a  combination 
+
+shed  light  on  recurrent 
+
+linguistic  phenomena 
+
+to  define  methods 
+
+lexical  knowledge 
+
+from  different 
+
+of  probabilistic 
+
+data  obtained 
+
+is,  amenable 
+
+experimental 
+
+in  different 
+
+“appealing”, 
+
+approaches 
+
+the  output 
+
+domains 
+
+founded 
+
+because 
+
+corpora 
+
+that 
+
+for 
+
+* Corresponding 
+1 E-mail:  pazienza@info.utovrm.it. 
+* E-mail:  velardi@anvaxl.cineca.it. 
+
+author.  E-mail:  basiIi@info.utovrm.it. 
+
+0004-3702/96/$15.00  Copyright  0  1996 Elsevier  Science  B.V.  All  rights  reserved 
+SSDI 
+
+0004-3702(95)00116-6 
+
+60 
+
+H.  Bad 
+
+et  d. 
+
+i  Artificial  lnrelligrncr  85  (lYY6)  SY-YY 
+
+1.  The  empiricist 
+
+resurgence 
+
+in  natural 
+
+language  processing 
+
+At  the  beginning 
+
+of  the  1990s  the  field  of  natural 
+
+language 
+
+processing,  whether 
+
+systems 
+
+research 
+
+. . .”  and  concluded: 
+
+it  or  not.  was  at  an  impass. 
+
+of  commercial 
+of  commercial 
+
+like:  “not  yet  robust  enough”,  “. 
+
+to  admit 
+an  overview 
+The  panorama 
+
+and 
+systems  was  quite  discouraging: 
+
+In  1989  the  Financial  Times 
+we  are  willing 
+based  on  NLP 
+[20]  presented 
+the 
+technology. 
+editorial  was  spread  with  sentences 
+coverage  is 
+modest”,  “no  computer  has  the  background  knowledge  to  resolve  enough  linguistic 
+that  can  sustain  a  natural  free- 
+“the  computer 
+ambiguities 
+flowing  conversation  on  a  subject  of  your  choice 
+is  unlikely  to  exist  for  several 
+decades“. 
+Though 
+ambitious 
+i.e.. 
+increase 
+of  commercially 
+formation 
+text 
+been  greatly 
+actual 
+
+such  an 
+task, 
+that  could 
+There  are  a  variety 
+in- 
+of  the 
+would  have 
+the 
+since 
+
+interfaces 
+and  yet  an  even  partial  use  of  NLP 
+this 
+
+in  everyday 
+such 
+for  which  a  deep  understanding 
+
+perhaps  no  scientist 
+objective, 
+
+impact  of  NLP  systems  on  industrial 
+
+retrieval, 
+is  not  required, 
+
+in  the  field  of  NLP  was  seriously 
+
+we  admittedly 
+computer 
+
+pursuing 
+less  complex 
+
+failed  even  with  a  much 
+
+objective  was  missed. 
+
+that  of  building 
+
+based  on  NLP 
+
+the  acceptability 
+
+of  computers 
+
+to  databases, 
+
+technologies 
+
+applications. 
+
+technology 
+
+as  on-line 
+
+innovative. 
+
+But  even 
+
+translation 
+
+situations. 
+
+important 
+
+programs 
+
+limited 
+
+help, 
+
+applications 
+of  NLP  was  the  limited  coverage 
+to  real  systems.  The  manual 
+aspects  of  lexical  knowledge  was  unrealistic 
+
+was  poor. 
+that 
+acquisition 
+
+language 
+
+processors 
+and  codifica- 
+as  a  systematic 
+
+of  practical 
+
+interest.  On 
+
+the  other  hand, 
+
+for  lexical  knowledge 
+could  not  be  fully  demonstrated 
+
+representation 
+
+there  was  a 
+and  analysis,  whose 
+
+in  real  applications. 
+the  beginning 
+
+in  our  view, 
+
+of  a 
+
+In  this  panorama, 
+
+two  scientific 
+new  era,  which  we  may  call  the  empiricists  resurgence: 
+
+events  marked, 
+
+The  major 
+
+limitation 
+
+could  exhibit  when  applied 
+tion  of  the  various 
+basis 
+proliferation 
+merits 
+
+for  most  applications 
+
+and  deficiencies 
+
+of  theories 
+
+l In  1990,  a  symposium 
+
+titled: 
+
+Text-based 
+
+[33]  baptised  with 
+
+was  held 
+note. 
+
+Intelligent 
+this  new  name 
+
+in  Stanford 
+Systems.  In  his  introductory 
+Jacobs 
+“systems  that  combine  artificial  intelligence  techniques  with  more  robust  but 
+‘shallower’  methods”.  The  meeting  was  a  success, 
+idea  of 
+improving 
+the 
+Linguistics 
+Watson  Research  Center  proposed 
+the  field  of  speech  processing) 
+proposed  method-was 
+
+techniques. 
+on  Computational 
+from 
+
+to  use  stochastic  methods 
+translation. 
+
+paper  was  published 
+a  group  of  researchers 
+
+the  coverage 
+year, 
+In 
+
+of  NLP  systems  by  the  use  of  shallow 
+
+a  milestone 
+this  paper 
+
+The  paper-and 
+
+IBM  Thomas 
+
+(widely  used 
+
+and  so  was 
+
+a  striking 
+
+in 
+the 
+
+same 
+
+[15]. 
+
+the 
+
+l In 
+
+in  machine 
+success. 
+based  methods 
+
+The  core 
+
+idea  of  statistically 
+
+of  language 
+
+through 
+when  available) 
+crude,  generally 
+
+the  extensive 
+from  on-line 
+limited 
+
+model 
+translations, 
+were 
+methods 
+
+rather 
+
+are  rather 
+
+The  quantitative 
+
+mathematical 
+
+model 
+
+sophisticated. 
+methods  used 
+adopted: 
+
+analysis 
+resources. 
+
+a  predictive 
+
+in  NLP 
+
+is  to  learn 
+of  word  patterns 
+
+(and  word 
+The  first  statistical  methods 
+statistical 
+
+in  texts;  current 
+
+to  word  counts 
+
+in  NLP  can  be  roughly  grouped 
+
+according 
+
+to  the 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+61 
+
+them 
+
+stream 
+
+analysis 
+
+information 
+
+independently. 
+analysis  is  in  [17]. 
+
+of  two  co-occurring  words  Wl  and  W2  compares 
+
+is  concerned  with  the  analysis  of  word  co-occur- 
+A  first  research 
+is  mutual 
+rences.  One  popular  measure  used  for  co-occurrence 
+(t-score,  lexical  ussociution,  etc.).  The 
+information,  or  one  of  its  derivations 
+the 
+mutual 
+probability  of  observation  of  Wl  and  W2  together  with  the  probability  of 
+observing 
+for 
+co-occurrence 
+A  second  stream  recast  the  language  modelling  problem  as  one  of  computing 
+the  probability  of  a  single  word  W  given  all  the  words  that  preceded  W  in  a 
+sentence.  These  statistical  models  are  based  on  Shannon’s  Noisy  Channel 
+Model.  An  overview 
+A  third  group,  currently 
+categorize 
+approach  are  summarized. 
+
+to 
+In  [40]  the  objectives  and  methods  of  this 
+
+is  found  in  [18]. 
+a  minority, 
+
+An  overview  of  statistical  measures 
+
+language  phenomena. 
+
+learning  methods 
+
+use  machine 
+
+Probabilistic 
+
+techniques  have  been  applied  with  encouraging 
+
+language  processing  problems, 
+
+of  natural 
+disambiguation, 
+translation 
+it  is difficult  to  read  everything 
+be  summarized 
+
+part-of-speech 
+[15],  etc.3  The  literature 
+
+in  the  next  sections. 
+
+tagging  [36],  word  classification 
+
+like  syntactic 
+
+results  to  a  variety 
+[47], 
+[28],  automatic 
+in  this  area  has  recently  grown  to  a  point  that 
+to  the  field  will 
+
+[3]  and  semantic 
+
+that  is published.  Our  contribution 
+
+in  NLP  is 
+in 
+
+One  of  the  major  claims  of  the  followers  of  probabilistic  approaches 
+
+(for 
+
+initial 
+
+is  represented 
+
+[46]  we  think  that  there 
+
+by  statistically  based  methods 
+
+training  and  optimal  parameter 
+
+scalability.  Though  we  have  been  among  the  supporters  of  large-scale  methods 
+linguistics 
+is  no  strict  equivalence  between  probability 
+calculus  and  scalability.  Many  probabilistic  models  in  fact  require  quite  an  amount 
+setting).  Often, 
+of  manual  work 
+statistically  reliable  results  are  obtained  only  for  a  small  fragment  of  the  data,  and 
+in  some  case  we  suspect  that  the  problem  could  have  been  handled  more  easily  by 
+hand.  One  example 
+for  sense 
+just  do  not  scale  up, 
+disambiguation.  Many  methods  described 
+because 
+they  require  manual  training4  of  the  statistical  model,  for  every  ambigu- 
+ous  word.  Perhaps  an  approach  based  on  manually  defined  heuristic  rules  would 
+be  more  general, 
+studies  are  not  found  in  the 
+literature. 
+is 
+Another 
+word 
+represented 
+clusters,  etc.,  with  attached  probabilities.  A  conceptual  explanation  of  the  results 
+is  not  provided.  Eventually, 
+to 
+gain  some  linguistic  insight  into  the  matter.  But  a  manual  analysis  is  almost  as 
+complex  as  an  inspection  of  raw  tests,  since  there  might  be  thousands  or  millions 
+of  different  observed  word  patterns.  For  example,  word  clustering  methods 
+[22, 
+30,381  create  word  groups  whose  similarity  on  a  linguistic  ground  can  only  be 
+
+problem  with  statistically  based  methods 
+by  words,  word  strings,  bi-lingual  word  correspondences, 
+
+a  human  analyzer  must  make  sense  of  the  data, 
+
+these  types  of  comparative 
+
+in  the  literature 
+
+their  output 
+
+is  that 
+
+though 
+
+3 We  selected  here  for  brevity  only  one  among  the  most  representative  papers  for  each  application. 
+4 That  is,  given  a  learning  set  of  sentences 
+must  be  manually  assigned  to  one  of  its  senses. 
+
+including  an  ambiguous  word,  each  occurrence  of  the  word 
+
+h7 
+
+R.  Busili  et  ul. 
+
+Artificial 
+
+Intelligence  8-5 (1996)  X-99 
+
+evaluated 
+contrast 
+
+by  inspection. 
+
+to  machine 
+
+learning 
+
+No  conceptual 
+conceptual 
+
+In  conclusion, 
+
+though  we  agree 
+
+that, 
+
+description 
+clustering  methods. 
+in  general, 
+
+empirical  methods 
+
+of  a  cluster 
+
+is  provided, 
+
+in 
+
+rationalist  methods 
+
+outperform 
+this  claim  should  not  be  taken 
+that 
+are  very  much  concerned  with  applications. 
+be  inherently 
+analysis 
+The 
+
+of  the  linguistic  material 
+
+thesis  of  this  paper. 
+
+inadequate 
+
+produced. 
+
+as  far  as  coverage 
+for  granted. 
+
+is  concerned, 
+
+Furthermore, 
+
+which 
+
+is  meritorious, 
+
+in  NLP 
+we  also  believe 
+empirical  methods 
+but  they  seem 
+
+to 
+
+for,  or,  in  any  case,  poorly  concerned  with,  a  theoretical 
+
+and,  we  would  say,  of  all  our  recent  work, 
+
+is  that  pure 
+symbolic  methods  may  not  scale  up  and  pure  quantitative  methods  may  not  dig 
+coverage  and 
+deep.  An 
+and 
+linguistic 
+also 
+quantitative 
+for  artificial 
+
+qualitative 
+of  balancing 
+in  the  area  of  NLP,  have  an  interest 
+
+integration 
+insight.  We  believe 
+
+that  we  consider 
+as  a  field. 
+
+methods, 
+intelligence 
+
+to  obtain  both  domain 
+
+of  the  two  is  necessary 
+
+the  problem 
+
+that 
+
+In  the  next  sections.  we  describe  ARIOSTO_LEX, 
+the  past 
+
+few  years, 
+
+a  system 
+of  probabilistic 
+
+a  combination 
+extensively 
+
+acquires 
+that  we  have  undertaken 
+
+the  selectional 
+
+than 
+
+sense 
+the  data  (word  observations 
+
+that  adopted 
+
+(the  selectional 
+
+only  on  a  probabilistic 
+
+restrictions). 
+model, 
+
+semantic  model. 
+
+like 
+represented 
+
+and  relations.  The  semantic  model 
+
+that  we  developed 
+and  knowledge- 
+restrictions 
+in  ARIOSTO_LEX 
+in  the  area  of  NLP.  It  is 
+and  then 
+of  the 
+
+in  corpora) 
+
+The  interpretation 
+
+of 
+
+in  most  corpus-based 
+
+by  a  system 
+of 
+is  the  bias  of  the 
+
+The  approach 
+
+in  sublanguages. 
+
+in  a  more  general 
+because  we  start  from 
+
+in 
+using 
+based  methods.  ARIOSTO_LEX 
+words 
+is  “empirical” 
+empirical 
+we  derive  an  interpretation 
+data 
+studies. 
+high-level 
+lexical 
+human 
+
+founded 
+also  on  a  “naive” 
+
+is  not 
+but 
+
+categories 
+
+semantic 
+
+system. 
+
+learning 
+activity,  which  can  be  further 
+
+Its  definition 
+
+The  acquisition 
+
+of  an  unrestricted 
+
+requires 
+
+a  minimal, 
+
+relatively  well-specified, 
+
+by  the  use  of  on-line 
+
+thesaura. 
+
+reduced 
+case-based 
+
+of  ARIOSTO_LEX 
+
+The  choices  and  methodologies 
+implies 
+
+the  analysis  of  several 
+
+semantic 
+
+that  we  adopted 
+
+lexicon  was  a  rather 
+the 
+such  as 
+
+aspects, 
+
+during 
+
+representation, 
+
+cognitive  modelling, 
+
+design  and  balancing 
+
+of  symbolic 
+
+methods. 
+and  quantitative 
+
+However, 
+evaluation 
+
+in 
+of 
+
+this  paper  we  give 
+the 
+
+results. 
+
+Though  we  provide 
+
+emphasis 
+
+to  a 
+a 
+
+of  the  main  processing 
+data  obtained 
+
+steps,  our  aim  will  be  to  critically 
+corpora 
+
+in  different 
+
+from  different 
+
+that 
+
+the  approach 
+
+that  we  present, 
+
+that 
+
+is,  a  combination 
+
+and  numeric  methods, 
+applications 
+
+allows  us  to  acquire 
+indeed 
+
+in  NLP,  but  are 
+
+lexical  data 
+useful 
+
+for  a  comparative 
+
+of  sublanguages. 
+
+Furthermore, 
+
+our  experimental 
+
+findings 
+
+impact  on  the 
+
+of  many  popular  NLP 
+
+techniques. 
+
+discuss  many 
+and 
+domains 
+of 
+that  not  only 
+
+objective. 
+
+challenging 
+development 
+knowledge 
+and  probabilistic 
+qualitative 
+summary 
+experimental 
+languages.  We  show 
+symbolic 
+have  practical 
+analysis 
+applicability 
+
+2.  An  overview  of  ARIOSTO_LEX 
+
+ARIOSTO_LEX 
+[g],  that  acquires 
+
+is  a  part  of  a  corpus-based 
+
+lexical 
+
+several 
+
+types  of  linguistic  knowledge, 
+
+learning 
+system,  ARIOSTO 
+like  syntactic  disambiguation 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+63 
+
+[7]  and  conceptual  clusters  of  words  [6,10].  ARIOSTO  has  been  applied 
+
+criteria 
+so  far  to  the  fields  of  information 
+
+retrieval  and  hypertextual 
+
+navigation 
+
+[3]. 
+
+The  general  objectives  of  the  ARIOSTO  project  are,  on  the  linguistic  side,  to 
+
+shed  light  on  interesting 
+and  on  the  computational 
+probabilistic 
+
+side, 
+and  knowledge-based 
+
+to  demonstrate 
+techniques 
+
+that  are  recurrent 
+
+in  sublanguages, 
+the  advantages  of  combining 
+
+for  large-scale 
+
+lexical  acquisition. 
+
+language  phenomena 
+
+to  study  several  sublanguages, 
+
+We  used  ARIOSTO 
+l a  legal  domain  (LD)  of  taxation  norms, 
+l a  commercial  domain  (CD)  of  agricultural  activities, 
+l a  collection  of  remote  sensing  (RSD)  abstracts, 
+We  are 
+environmental 
+cross-analysis  and  categorization 
+
+in  the  process  of  analyzing  a  medical  domain 
+
+in  English  and  an 
+in  Italian.  In  the  near  future,  we  plan  a  more  systematic 
+types. 
+
+of  sublanguage 
+
+in  English. 
+
+in  Italian; 
+
+in  Italian; 
+
+such  as: 
+
+domain 
+
+restrictions 
+
+ARIOSTO_LEX 
+
+from  application  corpora.  The  lexicon 
+
+has  the  objective  of  acquiring  extensively  a  lexicon  of  word 
+is  acknowl- 
+sense  selectional 
+(MT) 
+edged  as  one  of  the  major  components  of  NLP  and  machine 
+of  NLP- 
+systems. 
+based  systems  so  far  have  been  those  based  on  the  lexicon.  However,  hand-built 
+say,  the  7-8k  word 
+lexicons  have  obvious  problems  of  size  extension  beyond, 
+barrier.  Therefore,  we  may  expect 
+sizable 
+lexicons. 
+
+that  the  most  successful 
+
+It  is  broadly  agreed 
+
+in  automatically 
+
+implementations 
+
+translation 
+
+industrial 
+
+interest 
+
+A  fundamental  property  of  computational 
+
+lexicons  is an  account  of  the  relations 
+in 
+
+structure,  or  by  conceptual 
+
+argument 
+instrument,  purpose, 
+
+between  words  and  their  arguments.  Arguments  are  identified  by  their  position 
+relation  names  (e.g.  part-of, 
+a  predicate 
+are  annotated  with  selectional 
+agent, 
+restrictions,  which  impose  type  constraints  on  the  set  of  content  words  that  may 
+the  arguments  of  a  relation.  Selectional 
+instantiate 
+often  do  not 
+in  an  NLP  system,  however 
+provide  all  the  semantic  information 
+that  is necessary 
+to  syntactic  and 
+approaches 
+they  are  at  the  basis  of  the  majority  of  computational 
+semantic  disambiguation. 
+
+etc.).  Arguments 
+
+restrictions 
+
+food) 
+
+restrictions 
+
+Unfortunately, 
+
+flavour,  but  in  practice 
+
+hand  writing  selectional 
+
+is  not  an  easy  matter, 
+because 
+it  is  time  consuming  and  it  is  hard  to  keep  consistency  among  the  data 
+when  the  lexicon  has  several  hundred  or  thousand  words.  The  major  difficulty  is 
+that  words  relate  to  each  other  in  many  different,  often  domain-dependent  ways. 
+lexicons  is  filled  with  neat  examples 
+The  current  vast  literature  on  computational 
+language  domains 
+of  the  eat(animute, 
+selectional  constraints  between  words  are  quite  unintuitive. 
+It  is not  just  a  matter 
+as  in  “kill  the  process”  or  “my  car  drinks 
+of  violating 
+that  are 
+gasoline”.  Rather, 
+and  are  even 
+hard 
+harder 
+is 
+structure 
+is  to  tune 
+adopted 
+the  precise  semantic  relationships  present 
+lexical  knowledge, 
+in  a  sublanguage, 
+in  general 
+dictionaries. 
+
+slot  in  the  whatever  conceptual 
+The  key  idea  of  ARIOSTO  LEX 
+
+to  assign  to  the  appropriate 
+for  lexical  representation. 
+
+to  imagine  a  priori,  as  almost  never  found 
+
+the  semantic  expectations, 
+
+there  exist  statistically 
+
+so  that  it  expresses 
+
+linguistic  relations 
+
+in  dictionaries, 
+
+the  standard 
+
+relationships 
+
+in  many 
+
+relevant 
+
+rather 
+
+found 
+
+than 
+
+6-i 
+
+R.  Basili  et  al.  I) Arttjicial 
+
+Intelligencr  X.5 (1996)  59-99 
+
+A  short  description  of  the  algorithm 
+
+is  presented  here  to  summarize 
+
+the  main 
+
+steps  of  analysis.  The  subsequent  sections  provide  details  on  each  step. 
+
+(1) 
+
+(2) 
+
+(3) 
+
+corpus 
+
+restrictions 
+
+the  statistically 
+
+in  an  application 
+
+semantic  patterns 
+
+(e.g.  ACT-with-INSTRUMEN- 
+
+identify 
+semantic  patterns 
+
+are  detected 
+tagger.  High-level  semantic 
+
+the  relevant 
+in  sublanguages.  The  linguist  must  replace  syntactic 
+(INSTRU- 
+
+The 
+is  to 
+first  step 
+prevailing  generalized 
+by  a  shallow 
+TALITY).  Generalized 
+syntactic  analyzer  and  by  a  semantic 
+tags  are 
+assigned  to  words  manually  or  by  an  on-line  thesaurus,  when  available.  We 
+show  that  many  detected  semantic  patterns  are  very  unintuitive,  and  do  not 
+generalize  across  sublanguages. 
+Then,  generalized  patterns  are  used  by  a  linguist  to  identify 
+selectional 
+links  with  the  appropriate 
+MENT)  -+  [INSTRUMENTALITY].’ 
+identify  conceptual 
+power  of  a  posited  set  of  relations  can  be  evaluated  a  posteriori. 
+case, 
+relations 
+the  use  of  conceptual 
+acquisition  step  (though  obviously 
+Finally.  we  use 
+restrictions 
+acquisition 
+domain  relevant  selectional 
+sublanguage, 
+sublanguage.  Selectional 
+of  the  strength  of  their  expectation 
+
+selectional 
+the  automatic 
+lexicon.  The  algorithm 
+extracts 
+for  all  the  content  words  w,  in  a 
+the 
+restrictions  are  weighted  by  a  statistical  measure 
+
+as  the  “semantic  bias”  of  an  algorithm 
+of  a  case-based 
+
+to 
+the  descriptive 
+In  any 
+in  the  subsequent 
+
+relation,  e.g.  [ACT]+ 
+We 
+
+or  at  least  for  a  statistically 
+
+they  add  informative  power). 
+
+semantic 
+restrictions 
+
+the  semi-automatically 
+
+“coarse” 
+for 
+
+in  a  sublanguage, 
+
+automatic  way 
+
+is  not  essential 
+
+including  w,. 
+
+fragment  of 
+
+in  sentences 
+
+conceptual 
+
+significant 
+
+see  no 
+
+relations 
+
+acquired 
+
+though 
+
+Though  more  details  on  each  step  are  needed, 
+
+advantages  of  this  approach  with  respect 
+
+this  brief  description  highlights 
+to  pure  quantitative 
+
+important 
+
+some 
+methods. 
+
+are 
+
+patterns 
+
+co-occurrence 
+
+linguistic  patterns  are  generalized, 
+
+linguistic  material 
+let  a  human 
+
+to  sublanguage  analysis,  while  probabilistic  methods 
+
+Digging  deep:  Generalized 
+amenable 
+analyst  sink  into  an  ocean  of  data. 
+Scaling  up:  Since  the  detected 
+the  method 
+is  less  sensitive  to  the  problem  of  low  counts.  Quantitative  methods  defined 
+in  the  literature  are  unreliable  when  applied  to  linguistic  patterns 
+that  have 
+(this  is  a  serious  drawback  since  rare  patterns  are  the 
+been  rarely  observed 
+to  use  learning 
+majority).  To  obtain  relatively  good  coverage, 
+Instead,  general- 
+corpora  of  several  million  words,  that  are  rarely  available. 
+ized  patterns  have  a  predictive  power. 
+to  interpret  word 
+patterns 
+
+that  have  never  been  observed 
+
+in  the  learning  corpus. 
+
+It  is  possible 
+
+it  is necessary 
+
+In  Sections  2.1  and  2.2  we  illustrate 
+
+the  method  by  which  “coarse” 
+
+occurrence 
+discussion  of 
+describe 
+
+patterns 
+the 
+the  algorithm 
+
+are  extracted 
+results,  comparing 
+
+from  corpora, 
+
+these  sublanguages. 
+
+for 
+
+the  acquisition  of  a  case-based 
+
+co- 
+and  we  provide  a  detailed 
+In  Section  2.3  we 
+lexicon. 
+
+semantic 
+
+’  Hereafter 
+
+we  will  use  the  conceptual 
+
+graph 
+
+[4-l]  notation 
+
+to  express 
+
+selectional 
+
+restrictions. 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+65 
+
+Finally,  Section  2.4  provides  a  linguistic 
+analysis  of  the  data.  A  formal  method  for  performance 
+Section  3. 
+
+(though  partial 
+
+for  sake  of  brevity) 
+in 
+
+is presented 
+
+evaluation 
+
+2.1.  Acquisition  of  syntactically  and  semantically  tagged  word  co-occurrences 
+
+The  input  to  ARIOSTO_LEX 
+which  is  part  of  the  ARIOSTO 
+
+is  provided  by  a  corpus  pre-processing  module, 
+system.  There  are  two  phases: 
+
+(1) 
+
+First,  the  corpus  is analyzed  by  a  grammar-based  part  of  speech  tagger  and 
+by  a  surface  syntactic  analyzer,  described 
+in  [5,9].  The  syntactic  analyzer 
+produces  a  database  of  productive  word  pairs  and  triples,  which  identify 
+like  for  example  N-V  (i.e.,  the  subject  relation), 
+surface  syntactic  relations, 
+(prepositional 
+relation),  V-prep-N, 
+(the  direct  object 
+V-N 
+phrases)  etc.  We  call  these  triples  elementary 
+has  the  following  structure: 
+
+links  (es/s).  An  es1 
+
+syntactic 
+
+N-prep-N 
+
+esl(w1,  prep,  wl) 
+
+where  prep  expresses 
+in  V-N  relations). 
+
+the  syntactic  relation. 
+
+In  some  case,  prep  =  nil  (e.g. 
+
+Each  detected  es1  is  weighted  by  a  measure  called  plausibility,  which  is 
+es1  is 
+syntactic 
+in  the  sentence  John  flies  to  Rome 
+
+to 
+in  a  sentence.  For  example, 
+the  colliding  esls  (or  collision  sets)  are: 
+
+formally  defined 
+inversely  proportional 
+structures 
+by  plane, 
+
+the  plausibility  of  a  detected 
+
+the  number  of  mutually 
+
+in  [4].  To  simplify, 
+
+excluding 
+
+{N_prep_N(Rome, 
+
+by,  plane),  V_prep_N(.@,  by,  plane)] 
+
+. 
+
+(2) 
+
+The  evidence  of  a  given  es1  type  in  a  corpus  is  computed  as  the  sum  of  all 
+the  plausibility  values  of  identical  esls  (i.e.,  same  words  and  same  syntactic 
+relation). 
+Second,  each  word  included 
+domain  appropriate, 
+STRUMENTALITY, 
+domain  appropriate 
+actual  tagging  may  be  automatic 
+example  WordNet 
+
+tagged  using  a  set  of 
+IN- 
+the  selection  of  a 
+the 
+like  for 
+
+high-level  categories, 
+ABSTRACTION, 
+set  of  categories 
+
+is  best  performed  manually: 
+
+[12]  in  the  English  language. 
+
+in  an  es1  is  semantically 
+
+like  HUMAN-ENTITY, 
+
+if  an  on-line  thesaurus 
+
+etc.  Though 
+
+is available, 
+
+There  are  several  motivations 
+
+for  using  high-level  categories, 
+
+that  are 
+
+briefly  summarized  hereafter: 
+
+First,  high-level 
+
+tags  are  less  ambiguous  and  more 
+
+assigning  a  word  to  one  (or  more)  categories 
+
+is  a  relatively 
+
+intuitive.  Hence, 
+simple  task 
+
+is  proposed 
+
+to  automatically  create  a  flat  set  of  categories  from  WordNet  with  a 
+6 In  [29]  a  method 
+controlled  upper  and  lower  bound  of  the  category  size.  However,  since  our  objective  was  to  select 
+very  few  (about  12-15)  domain  appropriate  categories,  we  found  it  more  easy  and  reliable  to  perform 
+manually  the  choice  of  the  categories. 
+
+66 
+
+R.  Basili  et  al.  1 Artificial  Intelligence  85  (1996)  59-99 
+
+(when  thesauri  are  not  available  for  automatic 
+tagging).’  Second,  high-level 
+tags  support  a  psychologically  plausible  model  of  semantic  bootstrapping 
+[39]  in  human  language  learning.  They  represent 
+the  semantic  bias  of  our 
+lexical  learning  system. 
+
+Semantically 
+
+tagged  esls,  e.g. 
+
+N_prep_N(temperuture/PROPERTY, 
+
+in,  waterlNATURAL_OBJECT) 
+
+are  the  input  to  ARIOSTO_LEX. 
+
+One 
+
+important 
+
+of  semantically 
+
+tagged 
+they 
+advantage 
+that  is  one  of  the  major 
+significantly  reduce  the  problem  of  low  counts, 
+In  fact,  the  evidence  of  a 
+limitations  of  corpus-based 
+in  a  corpus  may  be  increased  by  the 
+pattern 
+observation  of  syntactically  and  semantically  similar  patterns.  For  example, 
+the  pattern  above  is  similar  to  the  following: 
+
+is  found  only  once 
+
+statistical  methods. 
+
+is  that 
+
+that 
+
+esls 
+
+N_prep_N(emissivity/PROPERTY, 
+
+in,  airlNATURAL_OBJECT) 
+
+. 
+
+To  evaluate 
+
+and  syntactically 
+marked  co-occurrences  with  respect  to  the  problem  of  low  counts,  we  performed 
+an  experiment 
+
+of  semantically 
+
+the  advantages 
+
+in  Table  1. 
+
+summarized 
+
+numerically 
+
+Table  1 shows  the  data  obtained  by  extracting  from  the  legal  domain  LD  all  the 
+
+co-occurrences 
+
+including  the  word  reddito  (income),  using  three  methods. 
+
+(1)  Distance-based  associations  are  derived  by  extracting  all  the  pairs  where  the 
+second  word  is no  more  than  5 words  apart  from  income  (excluding  articles 
+techniques  are 
+and  conjunctions,  but  not  prepositions).  Such  “windowing” 
+very  popular 
+
+in  corpus-based 
+
+literature. 
+
+(2)  Syntactic  co-occurrences 
+
+including  the  word  income.  In  the  literature, 
+to  detect  co-occurrences. 
+(3)  Semantic  co-occurrences 
+
+are  the  esls  extracted  by  our  syntactic  analyzer, 
+surface  parsers  are  also  used 
+
+are  obtained  by  the  set  of  syntactic  co-occur- 
+rences,  where  one  (or  more  if  ambiguous)  semantic  tag(s)  is assigned  to  the 
+word  other 
+
+than  income. 
+
+For  example.  consider 
+
+the  sentence 
+
+fragment: 
+
+on  different  methods 
+
+to  detect 
+
+co-occurrences 
+
+Table  1 
+Statistics 
+
+Method 
+
+(1)  Distance-based 
+(2)  Syntactic 
+(3)  Semantic 
+
+co-occurrences 
+co-occurrences 
+
+’ In  any  case.  on-line 
+word 
+ontologies. 
+“acceptable”. 
+
+thesauri 
+In  general, 
+
+Total 
+
+4044 
+5609 
+7048 
+
+Different 
+
+Frequencies 
+
+>3 
+
+%  preserved 
+
+information 
+
+623 
+1454 
+311 
+
+3546 
+3272 
+6869 
+
+0.87 
+0.76 
+0.97 
+
+are  produced 
+
+by  humans, 
+
+the  classification 
+
+choices 
+
+and  reflect 
+relative 
+
+the  difficulties  of  manually 
+to  high-level 
+
+categories 
+
+defining 
+are  more 
+
+R.  Basili  et  al.  /  Artificial  Intelligence  85  (1996)  59-99 
+
+67 
+
+Z  redditi(  1)  di( 2) 
+marittimu(8)  o  aereu(9) 
+in(15)  uno  Stuto(l6), 
+
+di( 4) 
+
+gestione(  3) 
+
+imprese(  5)  di( 6)  navigazione(  7) 
+con(  10)  sede( 11)  di( 12)  direzione(  13)  effettivu(  14) 
+. . . 
+
+[ ~ono  imponibili](  17)  soZo( 18)  nello(  19)  Stuto(20) 
+
+The  word-by-word 
+
+translation 
+
+is: 
+
+of(2) 
+
+income(l) 
+
+( means:  deriving 
+
+The 
+of(4) 
+compunies(  5)  of(  6)  muritime(  8)  or  ueriul( 9)  nuvigution(  7)  with( 10)  ofice(  11) 
+of(  12)  uctuul(  14)  munugement(  13)  (means:  that  have  a  primary  management 
+in( 19)  the 
+office) 
+Stute(20) 
+
+[zk eligible  for  tuxution](  17)  only(18) 
+
+the)  munugement(3) 
+
+in(U) 
+. . . 
+
+a  Stute(l6), 
+
+from 
+
+With  method 
+
+(l), 
+
+the  following  associations  are  obtained, 
+
+including 
+
+the  word 
+
+income: 
+
+[l-2,  1-3,  1-4,  l-5, 
+
+l-61 
+
+and  with  method 
+
+(2): 
+
+l-2-3,  l-4-5,  l-6-7,  l-lo-ll, l-12-13, 
+
+1-15-16,  1-17. 
+
+etc.) 
+
+it  also  detects  a  subject-verb 
+
+that  are 
+Notice  that,  though  the  surface  syntactic  parser  detects  syntactic  relations 
+in  the  sentence  context  (e.g.  reddito  di  imprese,  reddito  di 
+not  semantically  correct 
+is 
+nuviguzione, 
+eligible)  that  would  be  missed  by  most  distance-based  methods  and  surface  parsers 
+the  two  words  are  very  far  apart.  Most  statistical  methods  use  a 
+as  well,  because 
+filtering  techniques  can 
+posteriori 
+it  is 
+increase 
+important 
+the  initial  information.  The  filtering 
+techniques 
+
+to  preserve  as  much  as  possible 
+that  we  use  are  described  next. 
+
+the  precision  of  the  collected  data,  but  not  the  recall.  Therefore 
+
+to  reduce  noise.  However 
+
+(e.g.  the  income 
+
+techniques 
+
+filtering 
+
+relation 
+
+With  method 
+
+together,  because 
+
+(3),  some  of  the  associations  detected  with  method 
+
+they  are  semantically  similar.  For  example, 
+
+grouped 
+gestione  and  reddito  di  nuviguzione  are  similar  because 
+and  navigation)  both  belong 
+nuviguzione 
+(management 
+category  activity  (ACT).  This  example 
+nuviguzione 
+correct 
+navigation.  Since  we  preserve 
+pattern,  we  can  use  patterns 
+knowledge. 
+
+the  information 
+that  are  not 
+
+it  is  semantically 
+that  is  to  say,  an  income  can  be  originated  by  an  activity  of 
+on  the  structure  of  a  detected 
+to  improve  domain 
+
+(2)  are 
+reddito  di 
+the  words  gestione  e 
+to  the  same  semantic 
+reddito  di 
+
+is  not  a  correct  attachment 
+
+in  the  sentence  context, 
+
+locally  correct 
+
+is  interesting, 
+
+since  though 
+
+in  general, 
+
+In  Table  1,  the  first  column  shows  the  total  number  of  detected  associations. 
+
+It 
+is  higher  than  that 
+is  seen  that  the  number  of  syntactic  and  semantic  associations 
+triples,  not  only 
+of  distance-based 
+legal  corpus  has  many 
+pairs.  This 
+sentences.  Many  related  words  are  located 
+coordinations 
+at  a  distance  higher  than  5,  as  in  the  example  before.  Notice  also  that  the  total 
+number  of  semantic  associations 
+that  of  syntactic  associations, 
+because  of  semantic  ambiguity. 
+
+associations,  despite 
+is  explained  by 
+and  nested  prepositional 
+
+the  fact  that  we  collect 
+
+is  higher 
+
+the  fact 
+
+result 
+
+than 
+
+that 
+
+the 
+
+68 
+
+R.  Basili  et  al.  I  Arti$cial 
+
+Intelligence  85  (1996)  59-99 
+
+the 
+
+shows 
+
+column 
+
+total  number 
+
+second 
+associations 
+
+are  clustered  when 
+associations 
+
+The 
+based 
+the  same  order.  Syntactic 
+and 
+words 
+significantly 
+clusters 
+navigazione  and  reddito  di  gestione 
+
+same 
+the 
+low,  because 
+
+es1  type.  The  number 
+are  obtained 
+tag, 
+in  the  previous 
+
+are  clustered  when 
+of  distinct 
+further 
+by 
+in  the  same  order, 
+example. 
+
+the  same  semantic 
+
+of  different 
+the  same  co-occurring 
+they  have 
+semantic 
+
+of  words  with 
+
+they  have 
+
+clustering 
+
+these 
+
+words 
+in 
+the  same 
+is 
+
+clusters 
+
+syntactic 
+
+like  reddito  di 
+
+clusters.  Distance- 
+
+A  commonly 
+
+used  criterion 
+
+correct,  while  error  prone 
+
+that  are  detected  with  a  frequency 
+obviously 
+“correct”. 
+does  not  mean 
+but  perfectly 
+times 
+However, 
+patterns. 
+been  detected  more 
+
+the  common  wisdom 
+
+the  same  error. 
+
+therefore 
+
+it  is  more  “reliable” 
+say. 
+
+thus  accumulating 
+
+suggests 
+
+three 
+
+than, 
+
+is  to  consider 
+higher 
+
+“statistically 
+
+reliable” 
+than  3  in  a  corpus.  The 
+
+A  language 
+
+pattern  may  be  extremely 
+
+term 
+
+associations 
+reliable 
+rare, 
+repeat 
+several 
+of  a  wrong  pattern. 
+
+analyzers  may 
+evidence 
+
+is  mostly  originated 
+only  observations 
+
+by  rare 
+that  have 
+
+language 
+statistical 
+that  noise 
+to  preserve 
+
+A  rather 
+
+crude, 
+
+yet  meaningful. 
+
+of  the  amount 
+
+of  information 
+
+may  be 
+following  measure: 
+
+reliably 
+
+acquired  with 
+
+the 
+
+three  methods 
+
+is 
+
+therefore 
+
+given 
+
+by 
+
+%  of  preserved 
+
+information 
+
+(PI)  = 
+
+(#  associations  with  freq.  >  3) 
+
+#  associations 
+
+that 
+the 
+
+times.” 
+estimate 
+
+associations 
+
+all  three  methods 
+
+allow 
+
+it  to  preserve 
+rather 
+perform 
+in  the 
+frequent  words 
+in  similar  patterns.  We  hence 
+
+is  one  of  the  most 
+to  appear 
+
+It  is  seen 
+
+in  column  4  of  Table  1  that  semantic 
+though 
+
+the 
+
+and 
+
+it  has 
+
+the  word 
+
+the  initial 
+
+information, 
+income 
+tendency 
+
+is  because 
+
+our  analysis 
+
+almost  all  (97%) 
+well.  This 
+legal  domain, 
+extended 
+Fig. 
+frequency 
+allows 
+semantic 
+Though 
+clusters  with  more 
+these  can  be  filtered  out  a  posteriori. 
+
+relation 
+the  LD.  The 
+
+range 
+clustering 
+
+it  to  preserve 
+than 
+
+the 
+for 
+
+between 
+
+1  plots 
+
+to  groups  of  words  with  different 
+
+frequencies. 
+
+PI 
+
+(%  of  preserved 
+
+figure 
+
+shows 
+
+that  even 
+over  50%  of  the  detected 
+
+for 
+
+and 
+
+information) 
+low  frequencies, 
+associations. 
+
+three  observations 
+
+may  well 
+
+include 
+
+noisy  data, 
+
+2.2.  Acquisition  of  coarse  selectional  patterns 
+
+identify 
+
+concept 
+the  statistical 
+
+In  order 
+to 
+ARIOSTO_LEX 
+given  syntactic 
+More 
+the  probability 
+C2  in  the  pattern  C,-synt_rel-C2,  where  synt_rel  is  one  of  the  syntactic 
+syntactic 
+(e/s)  extracted 
+
+(e.g.  PROPERTY-in-NATURAL-OBJECT) 
+
+typical 
+of  a  concept 
+
+patterns 
+significance 
+
+formally,  we  measure 
+
+of  co-occurrence 
+
+by  the  shallow 
+
+analyzer. 
+
+pattern 
+
+that 
+
+are 
+
+of  a  sublanguage, 
+in 
+pair  occurring  with  a 
+
+is  computed. 
+
+of  two  classes  C,  and 
+
+relations 
+
+For 
+
+each  pattern 
+CP(C,.  synt_rel,  C,)  defined 
+
+as 
+
+C, -synt_rel-C,,  we  computed 
+
+the  conditioned  plausibility 
+
+’  Recently. 
+counts 
+
+[22,28]. 
+
+so-called 
+
+smoothing 
+
+techniques 
+
+have  been  adopted 
+
+to  reduce 
+
+in  part 
+
+the  problem 
+
+of  low 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+69 
+
+O-5 
+
+5-10 
+
+1 O-20 
+
+20-50 
+
+50-200 
+
+> 200 
+Freq.  Range 
+
+Fig.  1.  %  of  preserved 
+
+information. 
+
+CP(C,,  synt_rel,  C,)  =  w’EC1’w2ECZ 
+
+p@s4w,, vnt_reh  wz)) 
+
+c 
+C  p@sl(w, , synt_rel, wz)) 
+
+w~,wzany 
+
+The  numerator 
+
+is  the  sum  of  the  plausibility  values  of  all  the  esls  of  type 
+to  the  conceptual  categories  C,  and  C,. 
+is  the  sum  of  the  plausibility  values  of  all  the  esls  of  type 
+like  for 
+the  popular  mutual  information  used  in  [17]  and  in  other  studies,  is  that 
+and  present 
+
+synt_rel  that  relate  word  pairs  belonging 
+The  denominator 
+synt_rel.  The 
+example 
+what  matters  here  is  to  detect  all  the  statistically relevant  phenomena, 
+them  to  a  linguist. 
+
+than  other  measures, 
+
+the  CP  rather 
+
+for  using 
+
+reason 
+
+(xi,  yj)  represents 
+
+Clustered  esls  are  used  to  build  tables,  one  for  each  syntactic  structure,  whose 
+element 
+in  the  corpus  of  a  general- 
+the  statistical  significance 
+ized  pattern  C,-synt_rel-Cj.  All  the  statistically  prevailing  couplings  among  classes 
+are  submitted 
+(according 
+to  his/her 
+
+to  a  linguist  who  replaces  synt_rel  with  the  appropriate 
+
+intuition)  conceptual  relation. 
+
+A  linguistic  analysis  of  these  tables  is  indeed  useful  to  illustrate 
+
+the  advantages 
+
+table  shows 
+
+of  the  method. 
+
+In  what  follows  three 
+the  distribution 
+
+tables  are  discussed,  for  three  domainsP 
+in  a  given  corpus  of  the  C,-synt_reZ-Cj 
+In  illustrating  groups  of  similar  conceptual  patterns  detected  by  the 
+relation  subsumed 
+subsumes  a  beneficiary  or 
+
+to  followed  by  HUMAN-ENTITY 
+
+Each 
+associations. 
+system,  we  propose  an  interpretation 
+(e.g.  the  preposition 
+recipient  case  relation). 
+
+of  the  type  of  conceptual 
+
+9 The  tables  and  a  list  of  the  semantic  tags  used  are  in  Appendix  A. 
+
+70 
+
+R.  Basili  et  al. 
+
+I  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+Table  A.1  summarizes 
+
+the  relations  C,-per-C, 
+
+(per  =for), 
+
+in  the  commercial 
+
+corpus 
+
+(for  brevity,  CD  in  what  follows).  Some  of  the  pertinent 
+
+are: 
+(e.g.  articofi  per  lo  sport  (*items  for  sport),”  uttrezzi 
+
+associations 
+
+l ARTEFACT 
+
+for  ACT 
+
+per  giardinaggio 
+
+(*tools  for  gardening)), 
+
+l ARTEFACT 
+
+for  BUILDING 
+
+(e.g.  biuncheria  per  la  case  (*linens  for  the 
+
+house),  mobili  per  negozi  (*furnitures 
+for  BUILDING 
+
+0  MACHINE 
+
+for  shops)), 
+
+(e.g.  mucchinuri  per  Zuborutori  (*equipment 
+
+for 
+
+All 
+
+subsume 
+intuitive 
+the  most 
+
+relations 
+the  most 
+are  not 
+beneficiary  relations 
+
+laboratories).  mucine  per  mulini  ( *grindstones  for  mills)). 
+the  above 
+Notice 
+that 
+and  purpose 
+relevant 
+(e.g.  culzuture  per  uomo 
+Zudy))  and  HUMAN-ENTITY-HUMAN-ENTITY 
+(*hairdresser 
+
+the  use  relation 
+senses  of  the  preposition 
+in 
+frequent 
+
+hold  between  ARTEFACT 
+
+the  corpus. 
+
+for  lady)). 
+
+(*shoes 
+
+for, 
+
+(e.g.  tools  used  for  gardening). 
+is,  benejkiury 
+that 
+statistically 
+The  only 
+
+and  HUMAN-ENTITY 
+
+for  man),  biuncheriu  per  Signora  (*linens  for 
+(e.g.  purrucchiere  per  Signora 
+
+The  proposition 
+
+for  has  a  relatively  more  conventional 
+
+use  in  the  legal  corpus, 
+
+as  seen 
+
+in  Table  A.3.  Examples 
+
+of  frequent 
+
+l ACT  for  ACT 
+
+(e.g.  pugure  per  prestuzione 
+
+the  cause  relation, 
+
+relations 
+
+are: 
+(to pay  for  a job)), 
+
+interpreted 
+
+by 
+
+0  ACT 
+
+for  ABSTRACTION 
+
+(=  by)  category)), 
+
+interpreted 
+
+(e.g.  ussegnure  per  cutegoriu 
+by  the  manner 
+
+relation, 
+
+(*to  assign  for 
+
+(e.g.  disintinguere  per  &quota 
+
+(*distinguish  for  (=  by) 
+
+l ACT 
+
+rates), 
+
+for  AMOUNT 
+interpreted 
+
+In  the  RSD  (Table  A.3) 
+
+{ACT, 
+NITIVE_PROCESS, 
+remote-sensing, 
+{ACT, 
+NATURAL-OBJECT} 
+data  for  Orgeon, 
+analysis  concerning, 
+{COGNITIVE_PROCESS} 
+(study  for  university), 
+{INSTRUMENTALITY, 
+CESS} 
+We  spent 
+
+etc.), 
+
+by  the  manner 
+the  following 
+
+relation. 
+
+uses  of  the  preposition 
+ABSTRACTION} 
+
+fo; 
+
+C‘OGNITIVE_PROCESS, 
+
+DISCIPLINE} 
+interpreted 
+COGNITIVE_PROCESS} 
+
+etc.), 
+
+(method  for  evaluation,  technique 
+
+by  the  purpose 
+
+relation, 
+
+for 
+
+{LOCATION, 
+
+INSTRUMENT, 
+
+for  are  frequent: 
+{ACT,  COG- 
+for 
+
+(analysis  for  atmosphere, 
+in  which 
+
+the  underlying 
+
+calculation  for  satellite, 
+is  reference 
+(e.g. 
+
+relation 
+
+referring  to,  the  atmosphere), 
+{INDIVIDUAL, 
+
+for 
+
+ORGANIZATION} 
+
+interpreted 
+
+by  the  recipient  relation, 
+
+and 
+
+ARTEFACT} 
+
+for 
+
+{ACT,  COGNITIVE_PRO- 
+
+time 
+
+(spectrometer  for  the  analysis)  that  subsumes 
+to  support” 
+some 
+are 
+i.e., 
+less 
+lexicons 
+the 
+is  a  remarkable 
+
+intuitive 
+(and  general 
+in  the  use  of  the  same  prepositions 
+
+restrictions 
+on  computational 
+
+that  selectional 
+literature 
+
+the  tables 
+
+illustrating 
+
+difference 
+
+. . 
+
+in 
+
+the  use  relation. 
+to  one  of  the  results  of 
+
+than  what  usually 
+
+dictionaries). 
+
+in  the  three 
+do  not 
+
+patterns 
+
+in 
+
+the  way  words 
+
+and 
+across  sublanguages. 
+
+relate 
+
+to  each  other.  Many 
+
+this  study, 
+appears 
+There 
+domains, 
+generalize 
+
+indicates 
+
+asterisk 
+
+“‘The 
+compound, 
+‘I Many  other  examples 
+
+e.g.  sport 
+
+items. 
+
+have  been  discussed 
+
+in  [XI. 
+
+a  literal 
+
+translation. 
+
+In  many 
+
+cases. 
+
+the  English 
+
+translation 
+
+would  be  a 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+71 
+
+conceptual 
+
+a  semantic 
+the 
+earlier, 
+
+[23].  To  define  a  set  of  relations 
+
+interpretation 
+of  some  C,- 
+In  the  examples,  we  also  provided 
+task  of  associating  with  a 
+synt_rel-Ci  pattern.  As  we  remarked 
+relation  cannot  be  automated.  The 
+syntactic  pattern  an  appropriate 
+problem 
+the  large  consensus  on  the  use  of  relational 
+is  that,  notwithstanding 
+models  for  the  lexicon,  there  is the  greatest  disagreement  on  the  number  and  type 
+for  our  sublanguages,  we 
+of  relations  posited 
+relied  as  much  as  possible  on  previous  work  on  semantic  networks, 
+for  example 
+i.e.,  relations  frequently  mentioned 
+[44].  We  used  “commonly  agreed” 
+like  agent,  object, 
+in  the  computational 
+theme,  patient, 
+that  we  found 
+location,  purpose, 
+three 
+necessary 
+like 
+sublanguages, 
+(the  data for  Oregon)  etc. 
+jigurative_location 
+the 
+Overall,  we  used  about  30  conceptual 
+same  set  of  relations  for  the  three  sublanguages.  For  each  domain,  we  prepared  a 
+list  of  correspondences 
+concept 
+triples 
+syntactic  pattern 
+interpretations). 
+semantic 
+
+(compounds 
+are  prepositions 
+(e.g.  by  means  of  =  manner). 
+
+lo-30  different  CRC  for  each 
+the  highest  number  of 
+
+between  C,-synt_rel-Cj  patterns  and  concept-relation- 
+
+instrument,  etc.,  plus  a  small  set  of  relations 
+
+there  are 
+in  English  have 
+
+relations,  but  we  did  not  use  exactly 
+
+that  have  only  one  straightforward 
+
+(to  include  &  the program), 
+
+specific  word  patterns 
+
+(CRC).  On  average, 
+
+in  the 
+reference 
+
+type 
+There 
+
+interpretation 
+
+to  interpret 
+
+literature, 
+
+linguistic 
+
+relations, 
+
+In  any  case,  we  do  not  consider  the  task  of  preparing  CRC  tables  as particularly 
+
+relation  name  may  sound  more  or  less  appropriate 
+
+relevant  for  the  purpose  of  demonstrating 
+conceptual 
+what  matters  here  is  not  our  personal  view  of  a  relational  model,  but  rather 
+possibility  of  automatically  detecting  generalized  word  patterns  that  are  frequent 
+a  given  sublanguage. 
+sublanguages. 
+hisslher  intuition  of  a  language  domain. 
+
+the  thesis  of  this  paper.  The  choice  of  a 
+to  the  reader,  but 
+the 
+in 
+These  patterns  are  highly  variable  within  and  among 
+It  would  be  very  difficult  for  a  linguist  to  identify  them  all  using  only 
+
+In  the  next  sections,  we  will  show  how  the  automatically  detected  conceptual 
+patterns  can  be  used  as  the  semantic  bias  of  a  system  for  the  acquisition  of  a 
+semantic 
+
+lexicon. 
+
+2.3.  Acquisition  of  a  case-based 
+
+lexicon 
+
+The  CRC  are 
+
+the  “semantic 
+
+bias”  of  ARIOSTO_LEX. 
+
+The  process  of 
+
+acquiring  word  sense  selectional 
+For  any  word  W  in  the  corpus  and  any  sense  of  W: 
+
+restrictions 
+
+is  summarized 
+
+in  what  follows: 
+
+(1)  Select  all  the  esls  that  include  Was  one  of  the  arguments,  e.g.  if  W =  data  in 
+from,  radar), 
+for,  Oregon), 
+from,  code),  etc.  The  esls  are  collected  with  their  global 
+
+the  RSD:  N_prep_N(data, 
+from,  satellite)  N_prep_N(data, 
+V_N(analyze,  data),  N_V(data,  demonstrate),  N_prep_N(data, 
+N_prep_N(data, 
+plausibility  value  in  the  corpus. 
+
+(2)  For  any  esl,  given  the  semantic  tag(s)  assigned  to  W  and  to  its  co-occurring 
+the  appropriate 
+(e.g. 
+
+word,  and  given 
+semantic 
+
+type  of  syntactic 
+or  reject 
+
+the  esl.  Put  rejected  patterns 
+
+interpretation(s) 
+
+relation, 
+
+find 
+
+the 
+
+72 
+
+R.  Basili  et  al. 
+
+I  Artificial 
+
+lntelligencr 
+
+85  (1996)  59-99 
+
+(data,  from, 
+available 
+
+code)) 
+for  inspection 
+
+to  a  linguist. 
+
+in  a  list  R,  and  accepted 
+
+in  a  list  A.  Both 
+
+lists  are 
+
+Example: 
+
+one  of  the  existing  CRC 
+
+interpretations 
+
+the  RSD, 
+
+is:  [MENTAL-OBJECT]+ 
+
+since  “data”  is  classified 
+
+in  WordNet 
+
+and  “satellite”  as  an 
+
+INSTRUMENTALITY, 
+
+of  the  preposition 
+[INSTRU- 
+
+(SOURCE)+ 
+
+as  a  MENTAL-OB- 
+N_p_N(datu, 
+
+from, 
+
+the  interpretation: 
+
+[data]  -+  (SOURCE) 
+
+-+  [satellite]. 
+
+(3) 
+
+two  esls  are  interpreted 
+
+by  the  same  CRC,  generalize 
+
+and  create 
+
+restriction 
+corpus 
+-+  [radar] 
+
+for  W. 
+we 
+
+find: 
+
+the 
+
+the  word 
+
+sense 
+
+-+  [INSTRUMENTALITY]. 
+
+[data]--+(SOURCE)+ 
+selectional 
+following 
+datu/MENTAL_OBJECT: 
+
+[satellite], 
+
+restriction 
+
+is 
+
+[data]* 
+
+(4)  For 
+
+selectional 
+
+restriction 
+
+of  W,  SR(W). 
+
+compute 
+
+two 
+
+in 
+
+from, 
+MENTALITY], 
+JECT 
+satellite)  receives 
+If  at  least 
+a  new  selectional 
+
+in 
+
+E.g. 
+
+the 
+If 
+[data]  +  (SOURCE) 
+acquired 
+(SOURCE) 
+each 
+
+acquired 
+
+for 
+
+statistical 
+-  The 
+
+figures: 
+semantic 
+
+expectation 
+freq(SR(  W))  /freq(  W),  where 
+of  esls 
+frequency 
+SR. 
+restriction 
+including  W  in  the  corpus. 
+
+including  W 
+freq(W) 
+
+and 
+
+SE(SR,  W). 
+freq(SR(  W)) 
+that  are 
+the 
+is 
+
+given 
+
+by 
+is  the  (plausibility-weighted) 
+by 
+
+interpreted 
+
+SE(SR,  W)  = 
+
+the  selectional 
+of  phrases 
+
+absolute 
+
+frequency 
+
+High  values  of  the  semantic 
+
+expectation 
+
+suggest 
+
+the  word  W,  that  particular 
+to  succeed.  The  semantic 
+for  verbs  and  verbal  nouns.  whose 
+
+including 
+for  the  parse 
+
+sentence 
+order 
+important 
+semantic 
+in  many 
+we  will  see  later 
+
+interpretation 
+
+algorithms 
+
+to  guide  parsing.  However, 
+
+that  most  verbs  have  shallow 
+
+expectations. 
+
+that,  when  parsing 
+case  role  must  be  filled 
+expectation 
+is  particularly 
+thematic 
+
+structure 
+
+is  used 
+
+a 
+in 
+
+-  The  certainty  factor  CF(SR,  W) 
+restriction 
+a  selectional 
+
+sentence 
+
+structure, 
+
+if  the  program 
+
+whenever 
+one  unambiguous 
+example, 
+competente  (to  submit  to  the  competent  authority), 
+that  submit  to  authority/HUMAN_ENTITY 
+short  unambiguous 
+other  words, 
+increase  the  reliability  of  the  acquired  relations. 
+by  ARIOSTO_LEX 
+
+the  sentence: 
+
+sentences 
+
+analyzes 
+
+derived 
+
+is  not 
+
+is  a  Boolean  measure.  CF  is  set 
+SR(W)  has  been 
+elsewhere 
+
+is  set 
+
+learned 
+it 
+
+from  at  least 
+to  0.  For 
+sottomettere  all’autorita’ 
+it  will  have  no  doubt 
+is  indeed 
+In 
+a  valid  pattern. 
+in  the  corpus  are  used  to 
+
+intended 
+
+to  be 
+
+the  “final” 
+
+to  1 
+
+in  a  NL  or  MT 
+
+and  ARIOSTO_LEX 
+
+provides 
+
+system.  A  post-editing 
+a  nice  environment 
+
+by  a  linguist 
+
+is 
+so  (see 
+
+for  doing 
+
+section).  One  problem 
+
+is  partially 
+
+handled 
+
+at  this  stage 
+
+The  over-general 
+
+lexicon 
+to  be  used 
+
+The 
+lexicon 
+suggested, 
+next 
+ambiguity. 
+strongly 
+TION. 
+especially 
+of  verbs.  Therefore, 
+the  lexicon.  The  problem 
+is  a  very  complex 
+
+This  discriminating 
+in  restricted 
+
+different 
+
+that 
+semantic 
+
+interpretations, 
+
+power 
+sublanguages, 
+
+tags  make  possible 
+
+to  discriminate 
+
+e.g.  bank/BUILDING. 
+is  “good 
+
+enough” 
+
+for  many 
+
+is  semantic 
+among 
+
+from  banklLOCA- 
+concrete 
+nouns, 
+the  subtle  ambiguities 
+into  a  single  entry 
+
+in 
+for  verbs, 
+
+especially 
+on  the  matter. 
+
+different 
+
+but  does  not  capture 
+senses  of  verbs  may  collapse 
+sense  disambiguation, 
+
+of  systematic 
+
+one.  See  [lo]  for  a  first  investigation 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+13 
+
+2.4.  Linguistic  analysis  of  the  lexicon 
+
+ARIOSTO_LEX  acquires  the  selectional 
+
+restrictions  of  all  the  content  words  in 
+the  corpus  that  are  found  frequently  enough  to  generalize  some  of  their  patterns 
+that  are 
+of  usage  (step  (3)).  However, 
+found 
+advantage  over  empirical 
+methods 
+
+that  do  not  rely  on  any  semantic  model. 
+
+step  (2)  allows  it  to  interpret  patterns 
+
+in  a  corpus.  This 
+
+is  an  important 
+
+just  once 
+
+In  this  section  we  give  a  brief  account  of  the  linguistic  material  produced  when 
+the  three  domains  (CD,  LD  and  RSD).  The  reported  data  have  been 
+to  the 
+
+from  learning  corpora  of  about  500,000  words  each,  belonging 
+
+processing 
+acquired 
+three  domains. 
+
+the 
+
+proposes 
+
+restrictions 
+
+the  selectional 
+
+that  ARIOSTO_LEX 
+
+linguist.  Four  windows 
+
+left),  a  list  of  accepted  selectional 
+
+in  the  RSD,  as  presented 
+restrictions 
+
+Fig.  2  shows  the  lexical  entry  for  the  verb  to  obtain,  that  has  a  relatively  high 
+show, 
+to 
+frequency 
+to  acquire 
+respectively, 
+(window  1,  upper 
+for  which  only 
+one  example  was  found  (window  2,  middle  left)  called  limbo,  a list  of  rejected  esls 
+the  underlying 
+(window  3,  upper 
+is  based  on  shallow 
+conceptual 
+relation 
+it  may  collect  some  noisy  relations.  An 
+NLP  and  statistical 
+environment 
+the 
+system.  The  linguist  can  modify  or  finally  accept  any  of  the  selectional  restrictions 
+in  windows  1  and  2.  For  any  rejected  pattern 
+provided.  A  pattern  can  be  rejected  because  no  CRC  could  interpret 
+(CRC),  or  because  a  word  in  the  es1 was  not  found 
+(MOR),  or  it  was  not  classified  (TAX). 
+
+the  pattern 
+lexicon 
+In  each  case,  the  linguist  may  decide  to 
+
+right), 
+(window  4,  lower  left).  ARIOSTO_LEX 
+techniques, 
+
+in  window  3,  an  explanation 
+
+the  output  and  optimally 
+
+in  the  morphologic 
+
+is  hence  provided 
+
+list  of  accepted 
+
+to  review 
+
+esls  with 
+
+therefore 
+
+tune 
+
+and 
+
+the 
+
+is 
+
+Fig.  2.  ARIOSTO_LEX: 
+
+Screendump 
+
+of  a  validation 
+
+session 
+
+for  the  entry 
+
+to_obtain. 
+
+74 
+
+R.  Basili  et  ul.  I  Arterial 
+
+intelligence  85  (1996)  59-99 
+
+the  CRC,  or  the  morphologic 
+
+update 
+environment.  He/she  may  also  browse  the  corpus  and  the  database  of  esl. 
+
+lexicon,  or  the  taxonomy,  within  the  same 
+
+Each  acquired  selectional 
+
+restriction 
+
+is  represented 
+
+as  follows: 
+
+pre_sem_lex(word, 
+
+conceptual_relation. 
+
+semantic  tag, 
+
+direction,  es1 type,  preposition,  SYNE,  SE,  CF) 
+
+. 
+
+The  first  four  arguments 
+relation. 
+the  conceptual 
+
+identify 
+i.e., 
+
+the  selectional 
+
+restriction  and  the  direction  of 
+
+[obtain]  +- (PURPOSE)  +- [COGNITIVE_PROCESS] 
+
+{e.g.  variance  is  computed 
+
+in  order  to  obtain} 
+
+or 
+
+[obtain]  +  (INSTRUMENT)  +  [INSTRUMENTALITY] 
+
+{e.g.  obtain  an  image  from  the  satellite}. 
+
+SYNE 
+
+is  the  syntactic  expectation,” 
+
+SE  and  CF  have  been  described  earlier. 
+
+In  this  form,  the  lexical  entry  is  rather  sparse,  because  syntactic  and  statistical 
+by 
+the  central  right  window  in  Fig.  2  (opened 
+of  the  lexical 
+
+data  are  also  shown.  The  same  selectional 
+different  syntactic  patterns.  However, 
+only  on  demand)  provides  a  more  compact  semantic  representation 
+entry, 
+
+restriction  may  be  generated 
+
+that  is  the  conceptual  graph. 
+
+(e.g. 
+
+Fig.  2  is  a  good  summary  of  some  recurrent 
+
+for  this  verb  does  not  belong,  as  expected, 
+INDIVIDUAL  +  ORGANIZATION). 
+
+findings  of  our  research:  The  verb 
+technical  use.  The  most 
+to  the  category 
+This  pattern 
+in  window  2  (first  line  of  the  limbo). 
+such  as 
+(CO),  e.g.  the  following  analysis  obtained  results  . . .  , 
+
+to  obtain  in  the  RSD,  like  many  others,  has  a  rather 
+frequent 
+subject 
+HUMAN-ENTITY 
+was  found  only  once,  therefore 
+Commonly, 
+COGNITIVE_PROCESS 
+(INST) 
+or  concrete  nouns,  such  as  ARTEFACT 
+(NO),  e.g.  the  antenna  obtains  . . . .  These  patterns  of 
+or  NATURAL-OBJECT 
+use  could  not  be  deduced  from  a standard  dictionary  definitions.  For  example, 
+the 
+Webster’s  dictionary  gives  the  following  definition  for  the  verb  to  obtain:  “1.  To 
+gain  possession  of,  to  acquire.  2.  To  be  widely  acceptable.” 
+
+the  subjects  are  words  belonging 
+
+to  abstract  categories 
+
+INSTRUMENTALITY 
+
+it  appears 
+
+(ART), 
+
+to  observe, 
+
+in  Fig.  2,  that  the  SE  values  are  relatively 
+
+It  also  is interesting 
+low. 
+The  highest  expectation 
+In 
+fact,  most  sentences  with  the  verb  to  obtain  in  the  RSD  specify  some  instrument 
+used  to  obtain  information  or  an  artifact  (e.g.  to  obtain  an  image  from  satellite). 
+As  defined,  SE  is  1 only  if  a  given  selectional  restriction 
+for  a  word  is found  with 
+including  that  word.  But  the  cases  of  SE  =  1  are 
+plausibility  1 in  every  sentence 
+
+to  the  instrument  relation. 
+
+seen  in  Fig.  2  is  associated 
+
+definition 
+
+“Its 
+corpus  with 
+preposition 
+
+follows 
+
+straightforwardly 
+
+that  of  SE: 
+
+it  is  the  probability 
+
+that  word 
+
+the  conceptual  relation  expressed 
+
+by  a  syntactic 
+
+relation 
+
+represented 
+
+is  used 
+
+in  the 
+by  es1  type  and 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  8.5  (1996)  59-99 
+
+75 
+
+to  different 
+
+like  associate  with,  go  to, 
+very  rare.  Even  verbs  that  always  take  a  preposition, 
+semantic 
+relate  to,  etc.,  have  a  prepositional  modifier  belonging 
+or  relate  to 
+categories.  For  example,  one  can  relate  to  datu/MENTAL_OBJECT 
+that  SE  values  higher 
+the  turbulence/PROCESS.  We  experimentally 
+than  0.5  indicate  highly  expected 
+in  the  RSD,  but  even  these  values  are 
+rare.  Strong  semantic  expectations  are  conveyed  only  by  a  very  restricted  number 
+of  verbs,  some  of  which  have  the  tendency 
+to  appear  not  only  within  similar 
+contexts,  but  within  almost  identical  expressions.  Verbs  with  strong  expectations 
+stereotypical 
+in  the  commercial  domain,  which  adopts  a  telegraphic, 
+are  frequent 
+style.  In  contrast, 
+the  highest  syntactic  ambiguity  of  sentences 
+and  because 
+
+in  the  legal  domain,  SE  values  are  even  lower,  because  there  is 
+(hence  plausibility  values  are  low), 
+
+the  style  is  less  technical. 
+
+determined 
+
+relations 
+
+Another  observation 
+
+emerging  from  an  analysis  of  Fig.  2  is  that  the  relational 
+patterns  of  words  may  be  highly  variable,  despite  the  fact  that  high-level  semantic 
+categories  are  an  inherent 
+
+limit  to  the  detection  of  very  fine-tuned 
+
+relations. 
+
+Table  2  shows  the  general  validity  of  this  finding.  The  table  lists,  for  the  LD  in 
+restric- 
+in 
+
+the  average  number  of  detected 
+
+in  three  classes  according 
+
+to  their  frequency 
+
+selectional 
+
+Italian  and  RSD  in  English, 
+tions  for  verbs.  Verbs  are  grouped 
+the  corpus. 
+Though 
+
+restriction 
+
+the  number  of  detected  selectional  restrictions 
+
+lower  when 
+the  total  number  of  different  detected 
+we  had  fewer  examples  of  a  verb  context, 
+selectional 
+the  same  (around  80)  for  each  frequency 
+range  and  for  the  two  domains.  This  is because  the  class  of  lower  frequency  verbs 
+that  the  average  number  of  different 
+is  more  populated. 
+it  is  possible  to  gain  enough 
+relations  attached 
+evidence  on  its  patterns  of  use  in  a  sublanguage. 
+
+to  a  verb  is  around  30,  whenever 
+
+It  is  also  remarkable 
+
+is obviously 
+
+is  about 
+
+types 
+
+The  data  in  Table  2  provide  experimental 
+difficulty  of  defining  (manually  or  automatically) 
+identification  of  common 
+
+relational  patterns  of  verbs. 
+
+evidence 
+
+to  justify  the  well-known 
+a  verb  taxonomy,  based  on  the 
+
+Interesting  matter 
+
+for  linguistic  analysis  emerges 
+
+from  a  comparison  between 
+the  three  sublanguages.  Many  verbs  exhibit  completely  different  patterns  of  use. 
+For  example, 
+in  all  the  three 
+domains,  but  occurs  in  very  different  contexts. 
+
+the  verb  produrre  (to produce) 
+
+is  relatively  frequent 
+
+In  the  RSD  we  found  for  example: 
+
+Table  2 
+Average  number  of  selectional  restrictions  per  verb  in  two  sublanguages 
+
+Verb  frequency  ranges 
+
+Legal  domain 
+
+Remote  sensing  domain 
+
+Average  # 
+relations  per 
+verb 
+
+#  of  different 
+detected 
+relations 
+
+Average  # 
+relations  per 
+verb 
+
+#  of  different 
+detected 
+relations 
+
+XC10 
+lO<x<lOO 
+x>lOO 
+
+3.76 
+9.8 
+27 
+
+81 
+85 
+85 
+
+6.4 
+17.9 
+35.2 
+
+76 
+80 
+80 
+
+R.  Basili  et  al. 
+
+I  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+ORGANIZATION 
+
+produce  ABSTRACTION 
+
+or  MENTAL-OBJECT 
+
+INSTRUMENT 
+
+produce  ABSTRACTION 
+
+or  MENTAL-OBJECT 
+
+76 
+
+or 
+
+e.g. 
+
+the NASA/ORGANIZATION 
+
+produced  the  image/MENTAL-OBJECT 
+
+the satellite/INSTRUMENTALITY 
+with high  accuracy  . 
+
+produced  da&/MENTAL-OBJECT 
+
+In  the  CD  we  found: 
+
+ORGANIZATION 
+INSTRUMENTALITY 
+
+produce  ARTEFACT 
+
+or  INSTRUMENTALITY 
+
+with 
+
+e.g. 
+
+la  ditta produce  articoli  in  pelle  con  macchinari  propri 
+(the  companyiORGANIZATION 
+produces 
+with  owned  machinery/INSTRUMENTALITY) 
+
+items/ARTEFACT 
+
+in  leather 
+
+and  in  the  LD: 
+
+ORGANIZATION 
+
+produce  DOCUMENT 
+
+e.g. 
+
+la  societb  deve  produrre  un  attestato 
+
+(the  company/ORGANIZATION 
+
+must  produce  a form/  DOCUMENT) 
+
+. 
+
+Once  again,  it  appears  that  word  patterns  do  not  generalize  across  sublanguages. 
+Often,  words  are  used  in  a much  narrower  (and  sometimes  unintuitive)  sense  than 
+that  suggested  by  dictionaries  or  common  sense. 
+
+Finally,  our  data  provide  more  insight  into  the  problem  of  relating  conceptual 
+in  window  4  of  Fig.  2,  that 
+(e.g. 
+interpretation 
+
+roles  and  syntactic  structures.  Notice  for  example, 
+syntactic  patterns  may  have 
+different 
+instrument). 
+
+the  same  semantic 
+
+Another  example 
+In  the  RSD,  one  typical  conceptual  pattern 
+
+is  provided  again  by  the  verb  to  produce. 
+
+is: 
+
+[producel- 
+
+(INSTRUMENT) 
+
+-+  [INSTRUMENTALITY 
+
+1 
+
+(OBJ)  -+  [MENTAL-OBJECT] 
+
+(MANNER)+ 
+
+[PROPERTY] 
+
+as  in 
+
+the  satellite  produces  an  image  with  high  accuracy 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+77 
+
+whereas 
+
+in  the  CD  a  typical  pattern 
+
+is: 
+
+[producel- 
+
+(AGENT)  +  [ORGANIZATION] 
+
+(OBJ)  +  [BY-PRODUCT] 
+
+(INSTRUMENT)  +  [INSTRUMENTALITY] 
+
+as  in: 
+
+la  ditta produce  vino  con  macchinari  propri 
+
+(the  company  produces  wine  with  owned  machinery) 
+
+. 
+
+linguistic 
+styles  and 
+
+show 
+
+relation 
+
+relations 
+
+syntactic 
+
+subsume 
+
+(produce  a 
+
+This  example 
+
+that  different 
+
+These  examples 
+
+semantic 
+ery),  while  the  same  syntactic  relation 
+machinery)  has  different  semantic  interpretations, 
+
+the  same 
+instrument  (the  satellite  produces  versus  produces  with  machin- 
+accuracy  versus  produce  with 
+namely  manner  and  instrument. 
+that  generaliz- 
+ing  word  patterns  on 
+similarity  may  cause  problems. 
+Syntactic  similarity  is  not  always  a  systematic  marker  of  semantic  similarity.  This 
+motivates  our  choice  of  using  conceptual 
+relations,  at  the  price  of  some  additional 
+human 
+In 
+
+(as  many  others  that  can  be  found)  demonstrates 
+
+this  section,  we  reported 
+
+the  basis  of  syntactic 
+
+on  a  variety  of 
+
+and  commented 
+
+labour. 
+
+phenomena 
+languages.  Our  findings  can  be  summarized  as  follows. 
+
+that  are  recurrent 
+
+across  different 
+
+technical  domains, 
+
+the  patterns  of 
+
+use  cannot  be  deduced 
+
+0  Word  uses  may  be  very  different  across  sublanguages.  Often, 
+from  standard  dictionary  definitions. 
+is  not  a  reliable  marker  of  semantic  similarity. 
+
+0  Syntactic  similarity 
+l The  case  structure  of  words,  especially  of  verbs, 
+
+and 
+it  is  difficult  to  identify  strongly  expected 
+
+is  highly  variegated 
+
+poorly  overlapping.  Furthermore, 
+patterns  of  use  for  a  verb. 
+last  statement 
+limitations 
+at 
+
+The 
+inherent 
+for  verbs, 
+effectiveness  of  expectation-driven 
+applications 
+world,  such  as  for  example 
+
+least  at 
+
+is  the  most  problematic.  One  consequence 
+is  that  there  are 
+to  the  possibility  of  defining  a  language  independent  ontology 
+the 
+to 
+are  imposed  from  the  outside 
+
+seems  to  be  limited 
+
+levels.  Another 
+
+consequence 
+
+interpreters 
+
+semantic 
+
+is  that 
+
+lowest 
+
+the 
+
+in  which  strong  semantic  expectations 
+
+in  NL  interfaces 
+
+to  databases. 
+
+3.  Performance 
+
+evaluation 
+
+In  the  previous  section  we  analyzed  the  results  of  ARIOSTO_LEX 
+
+on  linguistic 
+the  impact  of  our  findings  on  commonly  used  NLP 
+
+grounds,  and  we  discussed 
+techniques.  This  section  provides  a  quantitative 
+
+evaluation  of  ARIOSTO_LEX. 
+
+There  are  two  issues  related 
+
+to  this  task. 
+
+7x 
+
+R.  Basili  et  01. 
+
+Artificial 
+
+Intelligence  85  (1996)  59-W 
+
+0 
+
+l 
+
+The  first  is  that  the  problem  of  lexicon  evaluation 
+termined. 
+The  second 
+computational 
+the  lexical  learning  system. 
+
+linguistics  are  not  fully  adequate 
+
+the  evaluation 
+
+frameworks 
+
+is  that 
+
+is  theoretically  underde- 
+
+adopted 
+
+in  the  area  of 
+to  measure  the  complexity  of 
+
+attention 
+
+evaluation 
+
+to  be  so”.  Furthermore 
+
+the  final  output,  while  retaining 
+
+As  for  the  first  issue,  we  must  notice  that  in  the  literature 
+
+there  are  no  effective 
+evaluation  mechanisms  for  lexicons.  Frequently, 
+is  paid  to  the  problem 
+of  making  a  lexicon  consistent  and  “provably  correct”,  but,  to  agree  with  Yorick 
+Wilks.  “lexicons  are  inconsistent  and  could  not  be  proved  consistent  even  if  they 
+is  impossible,  since  the 
+happen 
+“comparative 
+lexical  component  of  a  (NLP)  system  cannot  be  alternated  with  an  alternative 
+to 
+compare 
+the  rest  of  the  system  constant”.‘3 
+that  the  evaluation  of  a  lexicon  should  not  be  confused  with 
+Finally,  we  believe 
+there  are 
+the  evaluation 
+international 
+and 
+TREC 
+in  which  different  systems  that  use  a  given 
+technology  are  compared  against  some  common 
+the  linguistic  components  of  an  NLP-based  system  are  many,  and  it  is 
+However, 
+difficult 
+for  example.  whether  a  sentence  misunderstanding  was 
+originated  by  the  lexicon.  or  by  some  deductive  component,  or  by  the  grammar, 
+etc. 
+
+like  MUC  (Message  Understanding  Conference) 
+
+task  of  language  understanding. 
+
+(Text  Retrieval  Conference), 
+
+lexicon.  For  example, 
+
+of  a  system 
+
+to  establish, 
+
+conferences, 
+
+that  uses 
+
+the 
+
+in  this  section, 
+
+Therefore,  we  see  two  possible  ways  to  attack  this  problem:  The  first,  which  we 
+as  a  self-standing  knowl- 
+to  some 
+limited 
+a  task  for  which  a  human  can 
+
+pursue 
+edge  base  of  lexical  facts,  and  to  evaluate 
+specific  and  intuitive 
+(relatively) 
+
+is  to  consider  ARIOSTO_LEX 
+
+task.  We  call  “intuitive” 
+
+its  performances 
+
+easily  judge  the  decision  of  the  system. 
+is  to  evaluate  ARIOSTO_LEX 
+
+over 
+
+experiment, 
+
+The  second, 
+
+a  comparative 
+
+time,  at  different 
+
+within  some  application, 
+
+for 
+example  an  information  extraction  system.  In  this  second  case,  we  do  not  see  the 
+for  the  motivations 
+possibility  of  performing 
+stated 
+lexicon,  we  could  compare 
+above.  Rather,  since  we  propose  a dynamic,  adaptable 
+to  a 
+tuning 
+the  system  performance 
+corpus.‘”  This  second  experiment 
+setup  and  a  design 
+effort  that  we  hopefully  will be  able  to  carry  on  in  cooperation  with  other  research 
+sites,  within  a  larger  project 
+As  far  as  the  evaluation 
+
+most  popular  evaluation  parameters 
+systems  (from  statistically  based  syntactic  analyzers 
+classifiers)  are  accuracy 
+Accuracy  measures 
+decisions 
+global  number  of  automatic  decisions. 
+
+the 
+of  inductive 
+to  IR  systems,  or  pattern 
+as  efficiency  or  recall)  and  precision. 
+the  number  of  correct  decisions  over  the  number  of  expected 
+the 
+
+that  is  now  under  final  definition. 
+is  concerned, 
+
+is  the  number  of  correct  decisions  over 
+
+(or  test  cases).  Precision 
+
+requires  an  experimental 
+
+in  the  NLP  literature, 
+
+stages  of  lexical 
+
+the  performance 
+
+(also  referred 
+
+to  compare 
+
+framework 
+
+” Wilks.  personal 
+are 
+“We 
+
+communication, 
+
+January 
+
+19Y5. 
+
+in  debt  with  Yorick  Wilks 
+
+for  his  intuitions 
+
+on  this  problem. 
+
+R.  Basili et al.  I  Artificial Intelligence 85 (1996) 59-99 
+
+79 
+
+As  already  observed  by  different 
+
+authors, 
+
+provide  a  good  measure  of  the  quality  of  different 
+are  not  sensitive 
+
+to  the  complexity  of  the  decision  tusk  at  hand  [34]. 
+
+accuracy  and  precision  do  not 
+inductive  systems,  since  they 
+
+This  criticism  can  be  intuitively  understood  with  the  following  example:  Say  we 
+to  one  of  n  classes.  The 
+wish  to  assign  instances  of  an  observed  phenomenon 
+“blind”  probability 
+to  assign  the  correct  class  in  absence  of  any  decision  strategy 
+is  l/n.  Clearly,  an  inductive  system  that  selects  the  correct  class  over  n,  with  an 
+80%  precision,  does  in  fact  a  much  better 
+job  than  one  that  exhibits  a  90% 
+precision  at  selecting  among  n/2  classes. 
+
+The  absence  of  a notion  of  blind  probability,  called  in  [34] the  a priori,  or  prior, 
+the  evaluation  of  classification  methods  presented  by  differ- 
+In  this  section,  it  is shown  that  the  information 
+
+probability, 
+renders 
+ent  authors  very  hard  to  compare. 
+gain  is  more  adequate 
+precision, 
+In  what  follows  we  perform  a  systematic  evaluation  of  ARIOSTO_LEX, 
+to  a  task  of  syntactic  disambiguation. 
+
+like  recall  and 
+since  it  takes  into  account  the  complexity  of  the  learning  task  at  hand. 
+limited 
+
+than  other  popular  evaluation  parameters, 
+
+The  problem 
+
+that  we  analyze  numerically 
+
+is  whether 
+
+effects  of  morphology 
+
+tags  still  provides  good  interpretative 
+
+by  very  coarse  classes  could  create  unacceptable 
+
+semantic 
+associations 
+cumulative 
+through  an  interaction 
+polysemy.  Though  obviously 
+with  the  linguist,  who  may  refine  the  CRC,  add  a  new  syntactic  rule,  and  revise 
+some  of  the  classification  choices, 
+to 
+the  adopted 
+
+the  problem  of  over-generality 
+
+initial  noise  can  be  reduced 
+
+lexical  acquisition  model. 
+
+the  use  of  very  high-level 
+In  fact,  clustering  word 
+to 
+and 
+
+syntactic  ambiguity, 
+
+and  parsing  errors, 
+
+noise  due 
+
+is  inherent 
+
+power. 
+
+This  evaluation, 
+
+though  concerning  only  one  aspect  of  ARIOSTO_LEX, 
+
+it  is  not  necessary 
+
+two  advantages:  First, 
+available,  but  only  a  syntactic  analyzer.15  Second, 
+with  other  disambiguation  methods-presented 
+tion  data  are  available 
+developed) 
+
+the  computational 
+
+(see  Section  4). 
+
+in  the  literature 
+
+for 
+
+in 
+
+has 
+to  have  a  complete  NLP  system 
+the  results  can  be  compared 
+since  no  evalua- 
+(or  being 
+
+the  literature, 
+lexicons  developed 
+
+3.1.  Measuring  the  information  gain  of  inductive  linguistic  methodr 
+
+In 
+
+that  modeling 
+
+this  section  we  show 
+
+as  a 
+task  favours  the  definition  of  a more  principled,  and  uniform,  notion 
+the 
+
+classification 
+of  performance. 
+framework 
+different  disambiguation  methods,  and  allows  a  systematic  study  of  performances 
+in  terms  of  information  gain. 
+
+the  PP  attachment 
+
+a  unified  view  of 
+
+This  evaluation 
+
+provides 
+
+problem 
+
+However, 
+
+the  linguistic  nature  of  the  classification  problem  at  hand  renders  a 
+rather  more  complex 
+the  prior  probability 
+
+formal  definition  of  the  prior 
+than  for  other  “standard”  classification 
+of  a  given  class  is  often  evaluated  as  the  number  of  available  training  instances  in 
+
+(and  posterior)  probability 
+
+tasks.  For  example, 
+
+I5 This  is  not  an  easy  matter,  but  we  developed  a full  (i.e.,  not  shallow)  grammar  of  the  legal  language 
+that  produced  complete  parse  trees  for  over  400  complex  sentences 
+
+in  the  LD. 
+
+x0 
+
+I?.  Basilr  et  al.  I  Artificial 
+
+Intelligence  85  (1996)  59-W 
+
+the  class 
+the  case  of  lexical 
+a  noisy,  unsupervised 
+
+[34].  Furthermore, 
+learning, 
+
+In  this  section  we  devise  a  formal  definition 
+
+set  of  instances, 
+
+i.e., 
+
+the 
+
+the 
+instead, 
+
+test  set  is  relatively 
+the  acquisition 
+
+small  and  well  assessed. 
+is  triggered 
+
+In 
+by 
+
+disambiguation 
+syntactic 
+and 
+the  semantic 
+evaluation  method 
+
+task.  The  definition 
+
+will  be  applied 
+
+disambiguation 
+
+methods, 
+
+precisely 
+
+expectation 
+can  easily  be  extended 
+
+computed 
+
+First  we  show  how  syntactic 
+
+disambiguation 
+
+task.  Any  sample 
+parse 
+tree 
+forest  y(s). 
+
+set  of  sentences 
+t(s).  A  given  grammar 
+
+In  general, 
+
+y(s) 
+all  the  parse 
+
+includes 
+trees 
+
+Furthermore, 
+
+G,  the  class  of  correct 
+s  by  any 
+generated 
+
+language 
+by  some  deficiency 
+
+user, 
+
+(or  meaningful) 
+
+and  E, 
+
+2  is  characterized 
+r  provides, 
+also 
+
+for  each  sentence 
+t(s), 
+
+the  correct  parse 
+
+in  y(s)  are  partitioned 
+that  express 
+the  class  of  wrong, 
+
+trees, 
+
+of  the  adopted 
+
+grammatical  model. 
+
+training 
+
+of  information 
+corpus. 
+of  the  information 
+to 
+
+in 
+to  other 
+
+the  popular 
+the  ARIOSTO_LEX 
+lexical 
+can  be  modelled 
+
+of 
+
+learning 
+
+gain  of  the  PP 
+two 
+[31] 
+The 
+
+the  evaluation 
+lexical  association 
+system. 
+tasks. 
+as  a  classification 
+by  one  (or  more)  underlying 
+s  E  2,  a  related 
+t(s)  E  y(s). 
+i.e., 
+classes: 
+to 
+
+in  two  disjoint 
+
+assigned 
+
+the  structure 
+or  meaningless, 
+
+More  generally, 
+
+for  all 
+
+the  available 
+
+sentences 
+
+2,  we  have  a  sample 
+
+C! =  U,,s  y(s) of  all  the  derived 
+
+trees 
+
+that 
+
+is  partitioned 
+
+into 
+
+two  disjoint 
+
+G={t~Rl3s: 
+
+t(s)=t), 
+
+E=R-G. 
+
+parses, 
+
+space 
+classes: 
+
+Given 
+
+a  universe  R, 
+
+of  y(s) 
+
+the  syntactic 
+into 
+is  reduced 
+
+method 
+
+universe 
+
+classifying  members 
+disambiguation 
+that  several 
+given 
+position-noun) 
+disambiguation 
+the  space  of  structures 
+elementary 
+
+syntactic 
+
+substructures 
+
+types  of  syntactic 
+J2.  Simpler 
+are  correct 
+is  a  classification 
+generated 
+
+syntactic 
+or  wrong  with 
+into 
+by  a  sentence). 
+structure  will  be  formalized 
+
+relations 
+
+analysis 
+
+of  a  sentence 
+
+s  is  equivalent 
+
+to 
+
+the  set  E  or  G.  The  evaluation 
+of  the  related 
+to  the  evaluation 
+
+of  a  syntactic 
+classifier.  Note 
+in  a 
+
+(not  only 
+(e.g. 
+
+respect 
+
+to 
+
+trees)  can  be  modelled 
+subject-verb, 
+the  source 
+
+sentences 
+
+or  noun-pre- 
+
+the  class  of  correct  or  wrong  ones 
+The  notion  of  correctness 
+in  the  next  section. 
+
+and 
+(within 
+of  an 
+
+used  by  the  corpus 
+since 
+[34], 
+
+classifiers 
+
+linguistics 
+they 
+
+produce 
+
+community 
+
+cannot 
+a  probability 
+
+In  other  words,  corpus  driven  disambiguation 
+
+instances 
+
+rather 
+
+than  selecting 
+methods 
+
+one  class  for  each 
+assign  confidence 
+
+Most  disambiguation 
+
+methods 
+
+categorical 
+the  ambiguous 
+
+over 
+
+considered 
+
+to  competing 
+
+be 
+distribution 
+instance. 
+factors 
+correctness 
+when  one  of  the  competing 
+for 
+others 
+as  for  example 
+structures. 
+
+of  the  related 
+
+example 
+
+(as 
+
+candidates: 
+
+these 
+interpretations. 
+
+interpretations 
+In 
+[31]). 
+
+in 
+
+factors  can  be  seen  as  probabilities 
+
+Decisions 
+
+are  generally 
+is  significantly  more  confident 
+sentences 
+
+ambiguous 
+
+undertaken 
+
+like  VN_prep_N 
+
+than 
+
+of  the 
+only 
+the 
+
+watching  girls  with  binoculars 
+
+readings 
+
+competing 
+(1) 
+(2) 
+
+may  have 
+distribution 
+
+and 
+
+(girls-with-binoculars) 
+(to-watch-with-binocular) 
+a  computed 
+confidence 
+{ ( 1,  (Y, ) . (2,  (Y,)}  we  can  normalize 
+
+factor 
+
+(Y,  and  CY~, respectively. 
+the  cy, thus  obtaining 
+
+this 
+
+Given 
+a  probabili- 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+81 
+
+ty  distribution 
+confidence 
+that  the  system  assigns  to  the  following  statements: 
+correct  reading  that  we  will  denote  P’( 1 E  G)  (or  P’(2  E  G)). 
+
+(2,  P’(2))},  where  P’(1) 
+
+{ (1,  P’(l)), 
+
+(or  P’(2)) 
+
+the 
+is  simply 
+(1)  (or  (2))  is the 
+
+In  absence  of  any  lexical  or  distributional  knowledge  about  to-watch,  girl,  and 
+that  an  uninformed  classifier  can  assign  to  (1)  and 
+
+binocular  the  blind  confidence 
+(2)  is  simply 
+
+P( 1 E  G)  =  P(2  E  G)  = 0.5  . 
+
+respectively 
+
+that  a  given  syntactic  structure 
+
+With  this  notation  P  and  P’  represent 
+
+posterior  probability 
+tion  system  will  perform  as  well  on  P’  as  P.  P’(t  E  G)  is thus  expected 
+over  the  correct  structures 
+(t  =  (2),  in  the  example).  Vice  versa,  P’(t’  E  E)  is expected 
+structures 
+the  classification 
+P(E)  =  1 -  P(G).  Before  defining  P(G) 
+acterize 
+The 
+
+the  prior  (or  blind)  and 
+is  correct.  A  lexical  acquisi- 
+to  increase 
+t  (t  =  (1)  in  the  example)  and  to  lower  over  wrong  ones 
+to  increase  over  wrong 
+as  well  as 
+let  us  char- 
+
+is  binary  and  P’(E)  =  1 -  P’(G) 
+and  P’(G)  more  formally, 
+
+the  information  gain  in  our  lexical  learning  framework. 
+
+information  gain  of  an  inductive 
+
+t’  because 
+
+task  is  defined 
+in  number  of  bits  necessary 
+Our  definition  of 
+
+in  information 
+to  describe 
+information  score  for 
+
+follows  closely 
+
+the  general  definition  provided, 
+
+theory  as 
+the  correct 
+the  PP 
+for 
+
+reduction 
+
+the  average 
+classification/disambiguation. 
+disambiguation 
+example, 
+
+problem 
+
+in  [34]. 
+
+Definition  1 (Information  score).  Given  a sample  space  0,  if the  classifier  performs 
+a  correct 
+(i.e.,  P’(G)  >  P(G)  when  t E  G  or  P’(E)  >  P(E) 
+when  t E  E)  of  t,  then  the  information  score  (I) 
+
+(useful)  classification 
+
+is 
+
+Z =  -log  P(G)  +  log  P’(G) 
+
+, 
+
+or  (for  a  correct  classification 
+
+in  E): 
+
+Z =  -log  P(E)  +  log  P’(E) 
+
+. 
+
+If  the  corresponding 
+P’(E)  <  P(E)  w h en  t E  E) 
+is: 
+magnitude 
+
+decision 
+
+is  misleading  (i.e.,  P’(G)  <P(G)  when  t E  G  or 
+score  (I)  is  a  penalty,  whose 
+
+the  information 
+
+then 
+
+-log(l 
+
+-  P(G))  + 
+
+P’(G)) 
+
+or  (for  a  wrong  classification 
+
+in  E): 
+
+-log(l 
+
+-  P(E))  +  log(1  -  P’(E)) 
+
+and  thus  the  information 
+
+score  is 
+
+Z =  log(  1 -  P(G)) 
+
+-  log( 1 -  P’(G) 
+
+(or  Z =  log(1  -  P(E)) 
+
+-  log(1  -  P’(E))) 
+
+. 
+
+The  overall  performance 
+scores  Z of  all  the  testing  cases  averaged  by  their  cardinality  12 I. 
+
+index  I,  over  the  test  set  2  is the  sum  of  the  information 
+
+83 
+
+R.  Basili  et  ul.  I  Artificial 
+
+Intelligence  8.5 (19%)  59-W 
+
+The 
+
+important 
+
+aspect  of  this  definition 
+
+it  assigns  to  an  inductive  step  a 
+score  that is as positive  as  the  classification  is correct  and  the  complexity  of  the  task 
+was  high,  and  a  penalty  as  strong  as  the  classification 
+is  incorrect  and  the 
+complexity  of  the  task  is  low. 
+
+is  that 
+
+3.2.  Syntactic  disambiguation  as  a  classification  task 
+
+In  order 
+
+algorithm 
+probability 
+perspective 
+probability 
+confidence 
+further 
+confidence 
+the  syntactic 
+
+to  evaluate 
+it 
+
+the 
+
+information 
+
+gain 
+
+that 
+
+a  given 
+
+lexical 
+
+acquisition 
+
+in 
+
+or  P(E)) 
+
+is  necessary 
+
+the  previous 
+
+provides, 
+(P(G) 
+of  the  linguistic 
+of  any  syntactic 
+that  a  system 
+
+syntactic  disambiguation), 
+a  tree) 
+of  the  structure, 
+probability 
+gained  by  virtue  of  some  model  of  the  test  set  (i.e., 
+
+to  carefully  model  what  we  called  prior 
+specific 
+the  prior 
+the  blind 
+any 
+the  same 
+source  corpus)  or 
+
+task  at  hand 
+structure 
+in 
+
+has 
+Correspondingly, 
+
+(not  necessarily 
+
+the  correctness 
+
+the  posterior 
+
+the  very 
+
+is  simply 
+
+sections. 
+
+without 
+
+is  just 
+
+(i.e., 
+
+In 
+
+information. 
+
+structure 
+
+itself 
+
+(i.e., 
+
+the  semantics 
+
+of  its  constituents). 
+
+3.2.1.  Modelling  prior  probability 
+
+space 
+
+In  order 
+(1)  define 
+sample 
+probabilities 
+tion  methods 
+In  corpus 
+sublanguage 
+the  model 
+disambiguation. 
+following 
+
+to  define 
+suitable 
+a  set  of  syntactic 
+
+notions 
+phenomena 
+
+in  which 
+
+the  events 
+
+are  actually 
+
+of  prior  and  posterior 
+
+probability 
+
+that  can  be  observed; 
+observed; 
+
+(3)  determine 
+
+(2)  establish 
+
+we  must: 
+the 
+the  prior 
+
+of  such  events 
+
+in  the  sample 
+
+(4)  interpret 
+
+lexical  disambigua- 
+
+[31])  as  posterior 
+
+(e.g. 
+linguistics, 
+_Y. by  analyzing 
+of  use  of  2%.  The  majority 
+
+it  is  a  common 
+
+a  reference 
+
+in  the  sample 
+
+to  extrapolate 
+
+space. 
+the  properties 
+
+of  a 
+
+corpus  %‘. We  can  say  that  Ce embodies 
+syntactic 
+
+of  methods 
+of 
+
+for  automatic 
+section, 
+
+this 
+
+rely  on 
+
+the 
+
+whose 
+
+evaluation 
+
+is  the  concern 
+
+space: 
+probabilities 
+practice 
+
+hypothesis: 
+
+(Hl) 
+
+in  the  corpus  % the  more  we  can 
+The  more  we  observe  u phenomenon 
+rely  on  the  assertion  that it is meaningful 
+(=  semantically  plausible)  for 
+the  related  language  Y.  Vice  versa:  rare  observations  may  be  markers 
+of  inconsistency 
+
+(or  noise  during  the  observation  phase). 
+
+structures 
+than  complete 
+
+observed 
+
+The 
+literature, 
+syntactic 
+simpler 
+subject-verb-object 
+these 
+note 
+In  order 
+
+structures 
+to  evaluate 
+
+that 
+R. 
+
+they  observe 
+If  ESS(s) 
+
+denotes 
+
+from 
+
+phenomena, 
+
+in 
+
+the  majority 
+
+are  word  collocations, 
+
+augmented 
+
+observed  may  vary 
+
+significantly, 
+
+parse 
+
+trees.  For  example, 
+
+(SVO) 
+
+or  verb-prepositional 
+
+of  methods 
+by  syntactic  markers. 
+but 
+
+The 
+
+proposed 
+
+in  general 
+
+the 
+in 
+type  of 
+are 
+like 
+(V-prep-N).  We  de- 
+
+they 
+triples 
+
+they  are  productive 
+modifier 
+
+as  elementary  syntactic  structures  (esss).‘” 
+
+the  different  methods  we  will  rely  on  the  set  of  structures 
+the  corpus  %.  This  set  will  be  our  global 
+sample  universe 
+the 
+
+set  of  elementary 
+
+structures 
+
+syntactic 
+
+that 
+
+can  be 
+
+‘“Though 
+general 
+
+it  may  be  confusing.  wc  USC‘ the 
+
+surface 
+
+syntactic 
+
+structures 
+
+in  a  more 
+
+sense, 
+
+that 
+
+includes  SVO,  esl.  and  other 
+
+defined 
+
+in  the 
+
+literature. 
+
+term  ess  to  indicate 
+surface 
+
+structures 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+83 
+
+observed 
+then 
+
+(and  are  actually  observed 
+
+in  ARIOSTO) 
+
+in  sentences  of  the  corpus, 
+
+n  =  UV  ESS(s)  . 
+
+(1) 
+
+that  different 
+
+sentences  may  generate 
+
+the  same  ess.  However,  multiple 
+Note 
+in  0,  as  they  are  indexed  by  the  source 
+versions  of  the  same  ess  are  different 
+is in  fact  a  local  property  of  an  ess  since  it  depends  on  the 
+sentence  s.  Correctness 
+of  the  same  ess  should  be  classified 
+context.  Therefore  multiple  occurrences 
+separately.  Note  also  that  (1)  locates  the  performance 
+evaluation  methods  within 
+the  sample  space  produced  by  an  underlying  grammatical  model.  The  global 
+ambiguity 
+is necessary, 
+to  the  different  disambiguation  methods  being  compared. 
+but  it  applies  uniformly 
+
+is thus  a function  of  the  adopted  grammar.  This  restriction 
+
+As  a  consequence  of  (1)  the  overall  set  of  correct  esss,  which  we  denote  with 
+
+G  G 0, 
+
+is  the  union  of  the  correct  esss  of  each  sentence  s,  i.e., 
+
+G=U 
+
+G, 
+
+SE% 
+
+(2) 
+
+the  set  of  wrong 
+
+where  G,  is  the  set  of  correct  esss  for  the  sentence  s.  Clearly 
+(i.e., 
+
+locally  meaningless)  syntactic  structures  E  is  simply  given  by: 
+
+E  =  U 
+
+(ESS(s)  -  G,)  =  0  -  G  . 
+
+SE% 
+
+(3) 
+
+As  an  example  consider  a  corpus  restricted 
+
+to  the  single  sentence 
+
+(sl) 
+
+the  system  acquires  data  from  the  satellite 
+
+It  follows  that: 
+
+fi  =  ES(s)  =  {  (i)  (system,  to-acquire), 
+
+(ii)  (to-acquire,  data), 
+
+(iii)  (to-acquire, 
+
+from,  satellite), 
+
+(iv)  (data,  from,  satellite)} 
+
+where  G  =  {(i),  (ii),  (iii)}  and  E  = {(iv)}. 
+
+Note  that  this  classification 
+
+is  local  to  (~1).  In  fact  in  the  sentence  the  program 
+
+processes  data  from  satellite,  (iv)  would  belong  to  the  class  G  of  correct  esss. 
+
+In  order  to  derive  a  prior  probability 
+
+for  the  different  esss  we  can  simply  count 
+the  number  of  correct  esss  over  the  cardinality  of  the  whole  sample  universe  0, 
+for  all  the  sentences  of  a  real  corpus, 
+This  process  however  cannot  be  replicated 
+In  fact  we  simply  do  not  know  a 
+where  noisy  unsupervised 
+priori  which  esss  are  correct. 
+
+learning  is performed. 
+
+for  modelling 
+
+the  prior  probability  would  be  simply 
+
+solution 
+to 
+the  average  number  of  correct  esss  in  a  sentence.  Each  sentence 
+that  cannot 
+to  the  same  reading  of  the  sentence.  Trivial  collision  sets  are  single, 
+(iii)  and 
+the  elementary 
+
+A  better 
+approximate 
+produces  one  or  more  collision  sets,  that 
+belong 
+non-ambiguous 
+In  (sl), 
+(iv)  form  a  nontrivial  collision  set.  For  each  sentence  s,  ES(s) 
+
+is,  groups  of  structures 
+
+syntactic  structures 
+
+can  be  partitioned 
+
+structures. 
+
+84 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  -59-99 
+
+into 
+the  elements 
+
+the  set  of  its  collision 
+of  ESS(s)/p 
+
+sets  that  will  be  denoted 
+are  the  following 
+
+collision 
+
+sets: 
+
+by  ESS(s)lp.” 
+
+In  the  example, 
+
+Cl  =  {(i))  =  {(system.  acquires)} 
+
+, 
+
+C2  =  {(ii)}  =  {(acquires, 
+
+data)} 
+
+. 
+
+C3  =  {(iii), 
+
+(iv)}  =  {(acquires, 
+
+f ram,  satellite),  (data,  from,  satellite) }  . 
+
+Let  us  now  model 
+
+the  prior  probability 
+
+P(G)  of  the  correct 
+
+ess  as  follows: 
+
+c  P(G,) 
+
+P(G)  =  Si’f’,w, 
+
+P(G,T)  is  the  probability 
+This  value 
+is  dependent 
+s. 
+
+of  elementary 
+on  the  collision 
+
+(4) 
+
+syntactic 
+sets  that  are  generated 
+
+structures 
+
+being 
+
+locally 
+
+correct. 
+the  sentence 
+
+from 
+
+Let  us  point  out 
+
+that 
+
+in  general, 
+
+each  collision 
+
+set.  This  hypothesis 
+
+there 
+allows 
+
+is  only  one  correct 
+the  following 
+
+definition 
+
+ess  (i.e.,  E  G,Y),  in 
+for  P(G,): 
+
+P(G 
+
+) =  IESS(s)lp 
+s 
+
+\ESWj 
+
+( =  #  of  collision 
+
+sets 
+
+#  of  esss 
+
+(5) 
+
+In  the  example  P(G)  =  314  is  the  (blind) 
+ess  is  correct, 
+
+given  % =  {s }  Correspondingly, 
+
+probability 
+
+that  any  elementary 
+
+structure 
+
+P(E,)  =  1 -  P(G,) 
+
+(6) 
+
+The  definition 
+sentences 
+
+are  disjoint, 
+
+i.e., 
+
+of  P(G)  clearly 
+
+follows 
+
+from 
+
+the  observation 
+
+that  esss  of  different 
+
+ES(s) 
+
+n  ESS(s’)  =  (8) 
+
+k’s zs 
+
+Thus,  P(G  10)  =  P(G)  can  be  derived 
+
+from  each  P(G,)  as  follows: 
+
+P(G) = ,rzq P(G.,V’(s 1’6 I= j& <z,, P(G,) . 
+
+(7) 
+
+3.2.2.  Modelling  posterior  probability 
+
+The  posterior 
+
+probability 
+
+is  the  probability 
+
+of  being 
+
+in  a  class 
+
+system 
+
+assigned  by  the  trained 
+driven  methods 
+corpus 
+driven 
+score 
+from 
+these  methods  we  must  express 
+
+the  raw  texts. 
+
+to  extensive 
+
+In  order 
+
+for  automatic 
+collections 
+
+to  the  test  instances 
+
+(i.e.,  esss)  of  a  sentence 
+
+disambiguation 
+
+assign 
+
+patterns 
+i.e., 
+to  use  the  information  gain  as  a  performance 
+
+of  data, 
+
+syntactic 
+
+in  a  more  appropriate 
+
+form 
+
+the  preference 
+
+index  of 
+scores 
+
+(G,  or  ES),  as 
+s.  All 
+
+some  probability 
+extracted 
+
+”  p  is  used 
+collision 
+be  found 
+
+to  indicate 
+
+the  equivalence 
+sets  in  fact  are  the  elements 
+in  [2-4,  91. 
+
+relation 
+
+that  holds  between 
+
+conflicting 
+
+syntactic 
+
+of  the  quotient 
+
+set,  ESS(s)/p.  More  details  about 
+
+structures. 
+relation 
+
+The 
+p  can 
+
+R.  Basili  et  al. 
+
+I  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+85 
+
+defined  for  each  method.  The  problem  here  is  that  each  syntactic  disambiguation 
+operator 
+this  is  essential  for  the  evaluation  of  the  information  gain. 
+
+in  the  literature  has  a  probabilistic 
+
+flavour  but  is  not  a  probability.  Yet 
+
+Given  any  disambiguation 
+
+the  preference 
+should  obey  the  following  condition: 
+
+function  cr,  i.e., 
+
+score  a,  the  posterior  probability  PL  derived 
+according 
+
+the  probability  of  correctness 
+
+.,20,, 
+
+P’  ess  E  G,  1 toll)  =  1  Vcoll  E  ESS(s)lp 
+
+,( 
+
+where  calf  denotes  a  collision  set  for  the  sentence  s. 
+
+from 
+to  (+, 
+
+(8) 
+
+is  a  partition  of  ES(s) 
+
+In  fact  the  global  probability  of  being  correct  within  a  given  collision  set  co11 is 
+so  that  the  collision  set  coll(ess)  to 
+the  syntactic 
+set, 
+scores  provide  a redistribution  of  preference  among  the  members. 
+in  a  sentence  s  is  given 
+
+1.  Note  that  ESS(s)lp 
+which  a  given  ess  belongs 
+disambiguation 
+For  this  reason  the  probability 
+by: 
+
+is  unique.  Within  a  collision 
+
+that  a  given  ess  is  correct 
+
+Pb(ess  E  G,)  = 
+
+c 
+
+Pb(ess  E  G,  1 coll)Pb(coll  1 s) 
+
+colIEESS(s)lp 
+
+=  Pb(ess  E  G,  1 coU(ess))Pb(coll(ess) 
+
+( s) 
+
+(9) 
+
+since  ess  belongs  only  to  the  collision  set  coll(ess),  and  thus 
+
+Pb(ess  E  G,  I toll)  =  0  Vcoll  #  coll(ess)  . 
+
+A  definition  of  Pb(ess  E  G,  I coU(ess))  that  applies  to  any  disambiguation 
+
+score 
+
+(+ is  the  following: 
+
+Pb(ess  E  G,  I coZl(ess)) = 
+
+c+(ess) 
+
+2 
+
+c+(ess’)  ’ 
+
+ess’Ecoll(ess) 
+
+Pb(coll(ess) 
+includes  at  least  one  correct  ess),  thus  implying: 
+
+Is)  is  the  probability 
+
+that  colZ(ess)  is  correct 
+
+(10) 
+
+in  a  sentence 
+
+(i.e., 
+
+it 
+
+Pb(coll(ess) 
+
+I s)  =  1 . 
+
+For  example 
+
+the  following  scores  for  the  example 
+
+let  us  assume  that  a  hypothetical 
+(~1): 
+
+puted 
+
+disambiguation 
+
+score  v  com- 
+
+(11) 
+
+cr((to_ucquire, 
+
+from,  satellite))  =  0.5  , 
+
+a((dutu, 
+
+from,  satellite))  =  0.1  . 
+
+Using  (9),  (lo), 
+
+(ll), 
+
+the  posterior  probabilities 
+
+are  computed  as  follows: 
+
+PXWew  to-acquire) E G,) = cr((system 
+
+to  acquire))  P(Cl I s) = 1 v 
+
+a((system,  to-acquire)) 
+
+Pb(to_ucquire,  dutu)  E  G,)  =  c+((to  acquire’  data))  P(C2  I S) =  1 y 
+
+7 
+
+a((to_ucquiri 
+
+data)) 
+
+X6 
+
+R.  Basili  et  al.  I  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+P~((to_acquire, 
+
+from,  satellite)  E  G,) 
+
+a((to_ucquire, 
+
+from,  satellite)) 
+
+o((to_acquire, 
+
+from,  satellite))  +  a((dutu,  from,  satellite)) 
+
+P(C3  I s) 
+
+0.5 
+
+=  o.s  +  o.  1 =  0.83  . 
+
+P:((dutu. 
+
+from,  satellite)  E  G,, ) 
+
+a((dutu,  from,  satellite)) 
+
+=  a((dutu,  from,  satellite))  +  a((dutu,  from,  satellite)) 
+
+P(C3  / s) 
+
+=  o.J;o,l 
+
+EO.17 
+
+In  this  example 
+that  P’ 
+P(ess  E  G)  =  ]{Cl.  C2.  C3}//(1CII  +  IC2)  +  IC3))  =0.75. 
+signs 
+
+the  role  of  the  information 
+over  P  can  be  easily 
+
+the  e.sSs the  following 
+
+seen.  Note 
+
+to  both 
+
+implies 
+
+scores: 
+
+gain  as  a  measure 
+
+of  the  improvement 
+probability 
+
+that 
+
+the  prior 
+The  distribution 
+
+P’  as- 
+
+P’((to_ucqztire.  from,  satellite))  =  0.83  . 
+
+P ‘((data,  from,  satehire))  =  0.17 
+
+As  a  result  both  decisions 
+C)  and 
+
+the  following 
+
+values 
+
+are  obtained: 
+
+are  useful 
+
+(P’(C)  >  P(C)  for  the  correct  classification 
+
+in 
+
+I  =  -log(P((iii) 
+
+E  G))  +  log(P’(iii)  E  G))  =  log(O.83/0.17) 
+
+=  2.3  , 
+
+I  =  -log(P((iv) 
+
+E  E))  +  log(P’(iv)  E  E))  =  log(O.83/0.17) 
+
+=  2.3 
+
+notion 
+
+(10)  and 
+
+(9), 
+appropriate 
+lexical  association  (LA) 
+modelled 
+in 
+Clearly, 
+(9), 
+learning 
+
+the  applicability 
+
+( 10).  and 
+
+algorithms. 
+
+(11)  allow 
+
+to  model 
+
+any  disumbiguution  method,  given 
+
+of  collision 
+
+set  is  defined. 
+
+In  the  following,  we  evaluate 
+
+that  an 
+the 
+(see  Section  2.3)) 
+
+[31]  and 
+terms  of  probability 
+
+the  semantic  expectation  (SE) 
+
+distributions 
+
+over 
+
+sets  of  training 
+
+instances. 
+
+of  this  framework 
+
+is  not 
+
+( 11)  can  be  easily 
+
+extended 
+
+limited 
+to  other 
+
+to  these  methods, 
+corpus-based 
+
+since 
+language 
+
+3.3.  Posterior  probability  bused  on  lexical  association 
+
+lexical 
+
+association 
+
+(LA) 
+of  the  more  classical 
+
+is  a  preference 
+t-score  measure 
+
+The 
+extension 
+sentence 
+
+frameworks 
+
+like 
+
+verb  dir_obj  prep  noun 
+
+introduced 
+
+score 
+[48].  LA 
+
+is  used 
+
+in  [31]  as  an 
+in  ambiguous 
+
+(12) 
+
+the  correct 
+
+to  select 
+(significantly) 
+positive, 
+noun);  when  negative, 
+
+referent 
+
+of  the  PP  constituent 
+is  given 
+the  opposite 
+
+to 
+
+preference 
+it  suggests 
+
+the  verb 
+attachment 
+
+(prep  noun). 
+
+attachment 
+
+If  the  score 
+
+is 
+(verb  prep 
+
+(dir_obj  prep  noun). 
+
+R.  Basili  et  al.  I  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+87 
+
+To  summarize,  we  will  recall  the  definition 
+
+that  models  syntactic  preference 
+
+in 
+
+sentences 
+
+like  (12).  The  LA  value  is  defined  [31]  by: 
+
+LA(verb 
+
+dir_obj  prep)  =  log, 
+
+P( prep  ) verb)P(NULL 
+
+) dir_obj) 
+
+P( prep  1 dir_obj) 
+
+(13) 
+
+where  P(NULL  1 dir_obj) 
+for  dir_obj. 
+to  extend 
+like  (12).18  In  order 
+the  test  set,  we  must  model  also  sentence  structures 
+
+is the  probability  of  observing  no  prepositional  modifier 
+frame  sentences 
+to  other  ambiguous  structures  within 
+
+In  this  form,  (13)  is  useful  only  within  ambiguous 
+
+its  coverage 
+
+like 
+
+word, 
+
+. . . [prep,]  word,  . .  . [prep,]  word,  . . . prep,  word, 
+
+(14) 
+
+to  the  definition 
+
+readings 
+(i.e.,  chains  of  prepositional  modifiers).  Since  in  these  cases  alternative 
+than  two  referents,  we  cannot  use  a  single  LA  value. 
+may  give  rise  to  more 
+for  a 
+(13),  we  will  express  a  modified  preference 
+According 
+referent  as  follows.  This  preference 
+score,  which  is slightly  different  from  LA,  fits 
+our  experimental  purposes,  and  will  be  denoted  by  oLra. When  the  referent  of  a 
+the 
+post  modifier, 
+preference 
+
+score  follows  the  philosophy  used  for  the  denominator 
+
+is  the  closest  word, 
+
+(prep,  word,), 
+
+i.e.,  word3, 
+
+in  (13): 
+
+then 
+
+i.e., 
+
+q,(word,, 
+
+prep)  =  P(prep  1 word,) 
+
+else,  the  score  is  given,  as  in  the  numerator 
+
+in  (13),  by: 
+
+a;,(wordi, 
+
+prep)  =  P(prep 
+
+I word,)P(NULL 
+
+I word,) 
+
+, 
+
+i #  3 
+
+(15) 
+
+(16) 
+
+where  word,  is  the  preferred 
+mation  of  the  LA,  and  is  appropriate 
+preference 
+derived  as  follows,  by  the  use  of  (10). 
+
+is  fully  defined, 
+
+score  a;, 
+
+referent 
+
+in  (14).  This  definition 
+
+is  a  close  approxi- 
+for  our  evaluation  purposes.  When 
+the 
+the  associated  posterior  probability  can  be 
+
+Definition 2  (Posterior  probability  distributions  based  on  lexical  association).  Given 
+a  sentence 
+has  a  posterior 
+probability  based  on  LA,  PL,(ess(w,, 
+
+ess(w,,  p,  w2)  E  ES(s) 
+p,  w2)  E  G,),  given  by: 
+
+s,  any  syntactic 
+
+structure 
+
+PLA(ess  E  G,)  =  PL,(ess  E  G,  ( coll(ess))P(colZ(ess) 
+
+(s) 
+
+(17) 
+
+where  coll(ess)  is  the  actual  collision  set  of  ess(w,,  p,  wz),  and  _  stands  for  any 
+word. 
+
+I8 The  authors  derive  P(prep  1 verb),  P(NULL 
+source  corpus, that  are  manually  validated. 
+
+( dir_obj),  P(prep  1 dir_obj) 
+
+from  partial  parses  of  the 
+
+88 
+
+R.  Basili  et  al.  I  Artificial 
+
+Intelligence  g.5  (1996)  59-99 
+
+3.4.  Posterior  probability  based  on  semantic  expectation 
+
+The  disambiguation  method  based  on  the  semantic  expectation 
+
+lexicon  acquired  by  ARIOSTO_LEX. 
+
+case-based 
+according  to  their  semantic  expectation 
+a  typical  lexical  entry  acquired  from  the  corpus  by: 
+
+is guided  by  the 
+Syntactic  relations  are  validated 
+in  the  lexicon.  In  Section  2.4  we  described 
+
+pre_sem_lex(word. 
+
+conceptual_relation,  semantic_class, 
+
+direction,  esl_type.  prep,  SYNT,  SE,  CF) 
+
+. 
+
+(18) 
+
+The 
+
+semantic 
+
+expectation 
+
+(SE) 
+
+is  the  probability 
+
+between  word  and  any  word  belonging 
+(Section  2.4).  In  the  following,  we  will  denote 
+
+to  semantic_class  occurs 
+
+that  conceptual_relation 
+in  the  corpus 
+
+the  SE  factor  in  (18)  as 
+
+SE(word,  prep,  conceptual_relation.  semantic-tag) 
+
+. 
+
+(19) 
+
+Given  a  sentence  s,  and  a  collision  set  cofl(ess)  derived  from  an  ambiguous  PP 
+the  semantic 
+is  defined  as 
+
+( 14), 
+of  any  elementary 
+
+score  based  on 
+in  cofl(ess), 
+
+the  preference 
+syntactic 
+
+as  in  (12)  or 
+
+structure 
+
+referent, 
+expectation 
+follows: 
+
+SE(ess(  word,,  prep,  word,  )) 
+
+=  .,IIK& 
+
+k=i. 
+
+j, 
+
+(SE(word,,  prep.  conc_rel,  C’),  SE(word,,  prep,  cone_rel,  C,))  , 
+
+1 
+
+(20) 
+
+where  ess(word,,  prep,  word,)  E  cofl(ess).  and  {C,}  is  the  set  of  all  supertypes 
+(i.e.,  semantic 
+
+tags)  of  word,. 
+
+that 
+
+Note 
+
+the  algorithm 
+ceptual  relations)  of  the  ess,  according 
+generalizations 
+found  for  a  given  ess,  SE  is  0. 
+
+in  (20)  considers  all  the  interpretations 
+
+(i.e.,  con- 
+to  the  preposition  prep  and  the  possible 
+is 
+
+interpretation 
+
+of  word,  and  word,.  Clearly,  when  no  semantic 
+
+According 
+correspondingly 
+
+derived: 
+
+to  (lo), 
+
+the  posterior  probability 
+
+associated  with  the  SE  score 
+
+is 
+
+p&ss(w,. prep, Wj) E G,) 
+
+=  P&(ess(wi,  prep,  w,)  E  G,  1 coll(ess))Pk,(coll(ess) 
+
+1 s) 
+
+SE(ess(w,,  prep,  w,>> 
+
+zzz 
+
+c 
+
+SE(ess’) 
+
+r.,.,‘~co//(es) 
+
+(21) 
+
+where  again  coU(ess)  is  the  collision  set  of  ess(word,,  prep,  word,). 
+
+3.5.  Evaluation  results 
+
+We  selected  a test  set  and  evaluated 
+
+the  accuracy  and  information  score  derived 
+
+by  using  LA.  and  SE  in  the  disambiguation  phase. 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (19%)  59-99 
+
+89 
+
+V-N 
+
+experiments) 
+
+The 
+
+test  corpus 
+
+in  other  evaluation 
+
+(which  we  used  also 
+
+(noun-preposition-noun), 
+
+in  Italian.  The  Italian  grammar  adopted 
+
+trees  per  sentence).  Sentences  belonged 
+
+including  103  rules.  In  the  7871  parse  trees,  4117  elementary 
+
+2 
+from  which  7871  parse  trees  have  been  derived 
+to  the  legal 
+in  the  test  is  a  definite  clause 
+syntactic 
+syntactic  structures  of 
+(verb- 
+
+includes  232  complex  sentences 
+(an  average  of  33  parse 
+domain 
+grammar, 
+structures  have  been  detected.  The  classes  of  elementary 
+interest  are  the  following:  N_prep_N 
+preposition-noun), 
+V-nil  (verb-NULL), 
+(i.e.,  class  E 
+and  G  have  been  defined  for  the  collision  sets  of  each  sentence)  by  three  human 
+judges.  The  number  of  correct  (according 
+the 
+is an  average  of  1.3  correct  trees  per  sentence),  while 
+number  of  sentences 
+is  1540.  The 
+links  (with  repetitions) 
+the  number  of  correct  elementary 
+prior  probability  of  any  ess  being  correct 
+to 
+and  the 
+(5)  and  (7),  0.66.”  Fig.  3  provides  examples  of  sentence 
+in  brackets 
+related 
+indicate 
+represents 
+for  the 
+the  ambiguous  PP,  and  Italic  characters 
+
+the  collision  set.  Bold  characters 
+the  words  that  compete 
+
+. . . .  The  test  set  has  been  manually  validated 
+
+in  the  learning  corpus  is,  according 
+
+(noun-verb),  N  nil  (noun-NULL), 
+
+to  the  judges)  parses  approximates 
+
+fragment  of  each  sentence 
+
+(verb-noun),  N-V 
+
+that  originates 
+
+the  segment 
+
+fragments, 
+
+sets.  The 
+
+syntactic 
+
+enclosed 
+
+collision 
+
+V-prep-N 
+
+indicate 
+
+(there 
+
+Examples  of  Simple  Collision  aet8: 
+Minimal  Attachment: 
+
+1. 
+1.1 
+su  richiasta  de1 ministm  per  le  finanze  , il  [ (setiio di  tigiJatzs  sulle  aziendej  di  cradito]  (’  service o/  catrol  of 
+agencies of  credit)  controlla  I esattezza delle  attestazioni  contenute  nel  cmtificato  .’ 
+
+~*a*,I~_N_p~~p_*,*.~Zi~“da.di.credito)l,0.945, 
+maas~~~-N_prap_~,r,“i~i~anza.di.credito)l.0.0001 
+meas~[g_Ngrep_Nl6.servizio,d~,cr~difo)l.0.00061 
+
+Q.ge”Cy-Of-CEdlL 
+Woncrol-of-credit 
+%service-of-credit 
+
+Non-Minimal  Attachment 
+
+1.2 
+i  sostituti  d  imposta  davono  [(presentare 
+pagamenti  fatti  e  agli  utili  distribuiti  nail  anno  1974)  l ntm  il  15_aprilc_l975  1.  (‘must  present tk  declaratton of  which 
+at  comma 4th  of item 9,  wJatimJy 
+to  tk  payment  done  and  tk  pxfit  distributed in  tk  year  1974,  within  aprJJ  15,  1974) 
+
+la dichinrazione di_cui_a  quart0  comms  dell  articolo 9,  relatizwmmte  ai 
+
+measllg~~rep~~17.articolo.sntro.x_l5_aprilel975~1.0.0001 
+meas~Lg_V~rep_Nl7,distrikire.enCro.x_l5_aprile_l97Sl1.0.166l 
+
+moaa(~g~dvqrep_N~ll.relativamente,~”tro.x_l5_april~_l975l1,0.0001 
+
+measllg~~rep_N119.canma.entro.x_lS_aprile_l97Sll.0.000l 
+meas~~g_Ngrep~~22,dichiaa~ione.entro.x_15_apri1e_197511.0.107~ 
+
+meas,Ig_“_~rep_N(24,presenLare.entro.x_l5_apr~~~_~~7~~1.0.166, 
+
+2. 
+
+ComplexCollision  Sat (i.c  non singletons  memben) 
+
+%iCem-wihCi”-~pril_l5ch 
+%ta_di*tTibute-within_April_l5th 
+
+Ore~atively-within-*pril_l5th 
+
+%comma-within-April_l5th 
+Odeclaration-vithi”-*p=i~_~~~h 
+
+%t~_pT.8e”t-withi”-Rpril_l5th 
+
+gJi organi  de1 hibutario  possono  dicbiarare  non  dovute  le pena  pecuniarie  quando  la violazione 
+obiettive  cmdizimi  di  inurtezza  aulia  portata  a sull  ambito]  (’ it is justtpd 
+scope  and  ambit)  di  applicazione  delle  disposizioni  alle  quali  si  riferisce. 
+
+[a’ giustftita 
+by objective omditions of unurtsinty  on  the 
+
+da 
+
+meas~[g_N~rep_N~4,co”dirione.su.portata),g_Nqrep_N~7,c~“dizione.su.ambito~1.0.0121 
+
+measl[g_V_prep_Nl7,g~ustificare.su.portata),g_V_prep_NllO.giustificare,su,~bito~l.0.000~ 
+
+%co”ditio”-on-scope 
+
+%co”ditio”-on-&at 
+
+%to_justify-on-scope 
+
+%to_3ustify-on-ambit 
+
+___________-____-___-____-_-____-_-----_----___-- 
+
+_____ --  ________ 
+
+Fig.  3.  Examples  of  collision  sets  in  the  test  set. 
+
+l9 In  other  corpora  we  found  slightly  different  values,  0.60  for  a  domain  of  ecological  newspaper 
+articles,  and  0.57  for  the  RSD  in  English. 
+
+90 
+
+R.  Basili  et  ul.  I  Artificial  lntelligmcr  8.5 (1996)  59-99 
+
+PP  attachment. 
+provided. 
+reported. 
+
+A  word-by-word 
+
+translation 
+
+of 
+
+the 
+
+segment 
+
+For  each  competing 
+
+set, 
+
+the  semantic 
+
+expectation 
+
+English 
+es1  in  a  collision 
+
+is  also 
+is 
+
+Example 
+
+1.1  is  a  straightforward 
+
+example 
+
+esls  of  different 
+that  esls  2  and  5  in  the  collision 
+
+types 
+
+several 
+Notice 
+
+1.2, 
+example 
+Adi!_prep-N). 
+expectation. 
+(e.g.  distribute  within  April  15th).  The 
+distance 
+
+in  words  between 
+
+In  this  case.  a  simple  heuristic 
+
+the  two  co-occurring 
+
+words. 
+
+of  colliding 
+collide 
+
+esls  of  the  same 
+(N-prep-N, 
+
+set  1.2  have 
+
+is  to  select 
+
+first  argument 
+
+the  nearest 
+of  each  es1  is  in  fact 
+
+In 
+
+type. 
+V-prep-N, 
+the  same 
+pair  of  words 
+the 
+
+Finally, 
+
+including 
+interpretations 
+
+example 
+a  coordination 
+
+are  represented 
+
+by  pairs  of  esls. 
+
+2  shows 
+
+the  collision 
+
+sets  created 
+
+by  a  prepositional 
+
+phrase 
+
+(on  the  scope  and  ambit).  In  this  case, 
+
+the  alternative 
+
+To 
+
+run 
+
+the  experiment, 
+word  senses.  We  did  not  use  the  limbo 
+(18).  These 
+pre_sem_fex 
+Furthermore, 
+Table  3.) 
+The 
+
+test  set  was  not 
+
+first  row  shows 
+
+the  information 
+
+the 
+
+we  acquired  with  ARIOSTO_LEX 
+
+a  lexicon 
+
+of  961 
+
+lexicon,  but  only 
+
+the  selectional 
+
+data  have  not  been 
+incorporated 
+
+supervised 
+into 
+
+the 
+
+by  a  human 
+learning 
+
+restrictions 
+analyst. 
+(See 
+
+corpus. 
+
+score 
+
+Ix  obtained 
+
+by  the  two  disambigua- 
+
+for  the  collision 
+information 
+less  complex 
+
+sets.  Both  methods 
+gain.  To  make  a  comparison, 
+
+perform 
+
+rather  well,  as  shown 
+
+in  [34], 
+
+the 
+
+information 
+
+classification 
+
+tasks  (e.g.  with  a  prior  probability 
+
+class  not  higher 
+
+than  45%,,  and  with  supervised 
+
+learning 
+
+of  the 
+algo- 
+
+tion  methods 
+by  the  good 
+gain  of  rather 
+most  probable 
+rithms) 
+
+for  groups  of  sentences  with  a  number 
+
+shown 
+
+is  about  1. 
+this 
+is  not 
+of  the  test  set. 
+
+Though 
+complexity 
+values 
+to  90.  and  over  90.  Rather, 
+the 
+increasing 
+since 
+linguistic 
+dependencies, 
+domains 
+
+all  PP  disambiguation 
+
+is  our 
+by  experimenting 
+of  growing  dimensions 
+
+set.  We  obtained 
+corpus 
+
+patterns. 
+
+learning 
+
+learning 
+
+the 
+
+It 
+
+in 
+
+the 
+
+table.  Z>  values 
+In  fact,  we  did  not  observe 
+
+sensitive 
+of  trees  between 
+
+to 
+
+are  not 
+
+the 
+sensitive 
+in  the  Z, 
+changes 
+2  and  30,  from  30 
+of 
+for  both  methods  when 
+
+the  dimension 
+
+and 
+
+Ix  is  sensitive 
+growing 
+
+to  the  complexity 
+performances 
+
+from  200,000 
+
+to  500,000  words.  This 
+
+is  intuitive, 
+
+methods 
+future 
+
+perform 
+objective 
+
+as  they  gain  evidence 
+
+better 
+to  observe  more 
+
+closely 
+and  with 
+
+of 
+these 
+fixed 
+
+linguistic 
+on  different 
+(possibly,  well  over  a  million  words). 
+
+domains, 
+
+Table  3 
+Experimental 
+
+results: 
+
+information 
+
+score  versus  accuracy 
+
+I,  on  all  csss 
+II  on  correct 
+Accuracy 
+I,  averaged 
+
+ess 
+
+over  ess 
+
+on  sentences 
+
+SE 
+
+0.203 
+0.748 
+hX.h”h 
+0.33 
+
+LA 
+
+0.174 
+0.673 
+61.4!‘r 
+0.70 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+91 
+
+Row  3 provides 
+
+the  accuracy”  of  the  two  methods  at  selecting  the  correct  ess  in 
+
+low  for  both 
+in  the  literature. 
+
+each  collision  set  according 
+The  reader  may  notice 
+
+to  a  simple  maximum 
+
+likelihood  method. 
+
+that 
+
+the  accuracy  values  are  relatively 
+
+result 
+
+should 
+
+in  order 
+
+(e.g.  anaphora, 
+
+figures  reported 
+
+phrases  and  coordination 
+
+the  analysis.  Then,  we  analyzed 
+
+if  compared  with  other  performance 
+
+is  that  our  learning  set  is  of  500,000  words  rather 
+
+reason 
+In  our  experiment  we  considered 
+
+methods, 
+Hindle  and  Rooths  for  example  report  a  78.1%  accuracy  in  their  paper.  The  first 
+reason 
+than  millions  of  words. 
+score  (i.e.,  LA  and  SE)  provides  any  model  of  many 
+Second  neither  preference 
+adjectival  or  adverbial  PP  referents). 
+ambiguity  phenomena 
+in  higher  accuracy  values. 
+Suitable  models  of  such  phenomena 
+is  that  the  LA  method  has  been  only  tested  on  V  N 
+Another 
+important 
+several  types  of  ambiguity, 
+prep  N  sentences. 
+including  multiple  prepositional 
+(see  the  examples  of 
+Fig.  3).  Our  point  is  that  we  wish  to  test  the  system  over  real  cases.  V  N  prep  N 
+it 
+phrases  are  only  a  small  fragment  of  the  possible  ambiguities,  and  in  addition, 
+would  have  been  necessary 
+in 
+to  extract  by  hand  these  phrases  from  the  sentences 
+the  corpus, 
+to  build  the  test  set.  Rather,  we  let  our  DCG  grammar  run 
+over  the  corpus,  and  we  retained  all  the  sentences  for  which  the  grammar  could 
+successfully  complete 
+these  sentences  by  hand, 
+we  rejected 
+the  sentences  for  which  we  judged  that  the  grammar  did  not  produce 
+the  complete  set  of  parses,  and  we  marked  the  (semantically)  correct  parse  for  the 
+(232)  sentences.  This  task  was  facilitated  by  a  graphic  interface.  When 
+remaining 
+the  results  produced  by  our  disambiguator  over  the  set  we  noticed 
+we  analyzed 
+that  the  system  gained  about  colliding  esls 
+that, 
+does  not  allow  a  reliable  choice.  Many  eels  have  a  very  close  SE  value, 
+like 
+(to_distribute,  within,  april))  and 
+(distribuire, 
+(to-present,  within,  upril))  in  the  second  example  of  Fig.  3.  In 
+entro,  uprile)  (i.e., 
+the  example, 
+the  choice  is performed  on  a 
+“nearest  best”  basis.  When  the  values  are  close,  but  not  the  same,  we  use  the 
+likelihood  method.  Many  methods  use  a  threshold  under  which  the 
+maximum 
+system  is prevented 
+ly  observed 
+choices.  Once  again,  we  think  that  the  accuracy 
+more  “reliable” 
+P’(esl  E  G) 
+probable” 
+the  preceding 
+
+the  number  of  useful 
+is  not  an  adequate  measure.  A 
+approach  would  be  to  retain  all  the  ambiguous  eels  for  which 
+the  “most 
+in  Table  3  only  for  the  sake  of  uniformity  with 
+
+from  taking  unreliable  decisions.  However,  we  experimental- 
+
+that  this  criterion  would  significantly 
+
+the  two  values  are  the  same,  therefore 
+
+in  many  cases,  the  confidence 
+
+esl.  We  used  accuracy 
+
+than  crudely 
+
+em-o,  uprile) 
+
+than  P(G), 
+
+(presenture, 
+
+is  higher 
+
+literature. 
+
+selecting 
+
+reduce 
+
+rather 
+
+(i.e., 
+
+the  system 
+
+Given  the  complexity  of  the  task,  we  are  rather  happy  with  our  68.7%  accuracy 
+tags  in  the  lexicon  may 
+and  0.74  information  gain.  Though 
+induce 
+the  combined 
+effect  of  probabilistic  and  semantic  filters  produces  very  acceptable  performances. 
+Consider  also  that  the  testing  conditions  are  particularly 
+the  test 
+set  was  not  included  into  the  learning  set  and  the  limbo  lexicon  was  not  consulted. 
+
+to  accept  some  erroneous 
+
+the  over-generalized 
+
+syntactic  structure, 
+
+severe,  because 
+
+2o Since  the  methods  are  forced  to  make  always  a  choice,  accuracy  and  precision  are  here  the  same. 
+
+92 
+
+K.  Basili  Ed ul. 
+
+i  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+This  means 
+necessary 
+this  was  often 
+
+Finally, 
+
+that 
+
+the  system  might  have  not  acquired 
+
+to  accept  some  syntactic 
+
+structure 
+
+(and 
+
+the  selectional 
+in  fact  we  manually 
+
+restrictions 
+
+verified 
+
+that 
+
+the  cause  of  errors). 
+
+this  performance 
+than 
+
+evaluation 
+
+filtering  out  wrong  parses: 
+
+does  much  more 
+tion  of  the  accepted  patterns.  But  we  already 
+the  semantic 
+methods 
+
+information 
+have  been  proposed 
+
+in  a  lexicon 
+in  the 
+
+literature 
+
+does  not  consider 
+
+that  ARIOSTO_LEX 
+a  semantic  interpretu- 
+the  quality  of 
+testing 
+for  which  no 
+is  a  very  complex  matter, 
+
+it  provides 
+
+remarked 
+
+that 
+
+so  far. 
+
+4.  Related  research 
+
+In  the  introduction 
+
+we  provided 
+
+a  general 
+
+account 
+
+of  corpus-based  methods 
+in  this  section  we  summarize 
+
+in 
+
+lexicon, 
+
+that 
+
+is  more 
+
+closely 
+
+to  the  system  presented 
+
+linguistics. 
+on 
+
+the  design 
+
+For  sake  of  completeness, 
+
+of  a  computational 
+in  this  paper. 
+recently 
+
+groups  have  been 
+an  unrestricted 
+(MRDs) 
+
+semantic 
+and  corpora 
+based  on  MRDs 
+
+engaged 
+lexicon 
+(MRC) 
+
+computational 
+the 
+literature 
+related 
+
+Several 
+
+research 
+
+dictionaries 
+
+tive  of  acquiring 
+readable 
+lexicon 
+taxonomic 
+payment 
+
+acquisition 
+
+Usually, 
+
+methods 
+
+and  structural 
+
+In 
+from  MRD 
+imposed  upon  persons  or  groups  for  governmental  support. 
+an  on-line 
+for  acquisition 
+like  for  example 
+for  automatic 
+
+of  words  are  acquired 
+
+used 
+features 
+
+are  a  majority. 
+
+the  dictionary 
+
+is  LDOCE, 
+
+acquisition, 
+
+patterns 
+
+objec- 
+in  the  challenging 
+for  NLP,  using  machine 
+these, 
+as  sources.  Among 
+[14,21,37,41] 
+(e.g. 
+
+“tax:  u 
+
+(e.g. 
+
+senses. 
+
+of  verbs 
+
+is  mostly 
+
+syntactic 
+using 
+and  Poznanski 
+
+that  has  very  desirable 
+templates 
+describe  word 
+LDOCE 
+can  be  generated 
+Sanfilippo 
+one  of  8  verbs 
+with 
+presents 
+computer 
+i.e., 
+have  also  been  proposed 
+advantage 
+taking 
+
+the  same  genus 
+an  alternative 
+assisted. 
+
+takes  NP  NP).  or  the  use  of  a  restricted 
+
+grammar 
+
+The 
+
+information 
+
+that 
+
+can  be 
+
+reliably 
+
+extracted 
+
+and 
+the  genus 
+
+in  part  semantic. 
+information 
+
+For  example, 
+
+a  word 
+
+included 
+
+in  definitions. 
+
+taxonomy 
+However. 
+
+[42]  remark 
+
+is 
+(cause,  make,  be,  give,  put,  take,  move,  have),  but  many  verbs 
+classes.  The  paper 
+
+that  the  genus  of  over  20%  of  verb  senses 
+
+to  different 
+
+in  fact 
+
+belong 
+
+method 
+it  requires 
+
+to  process 
+
+to  correlate  word 
+
+across  MRDs 
+
+that 
+
+is 
+
+a  constant 
+the  definition 
+grammar 
+
+used 
+
+interaction  with  a  linguist.  Methods 
+
+of  words,  as  for  example 
+in  LDOCE 
+
+for  definitions. 
+
+in  1131 
+
+of  the  simplified 
+
+semantic 
+senses 
+
+.“). 
+dictionary 
+
+lexical 
+to 
+from 
+
+In  [24],  a  system,  ULTRA. 
+language 
+associated  with  each  content  word 
+like: 
+
+MRD,  using  natural 
+information 
+semantic 
+constraints 
+semantic 
+
+is  described 
+processing 
+
+and  heuristic 
+
+for  extracting 
+
+lexical  entries 
+
+techniques. 
+
+Basically, 
+is  a  list  of  pragmatic 
+
+from  an 
+the 
+and 
+
+entity(bank4.1~ 
+
+class.  countable, 
+
+institution,  abstract  object, 
+
+economics, 
+
+banking) 
+
+. 
+
+This 
+
+is  extracted 
+information 
+entered  manually. 
+Even 
+largely  on  human  work. 
+
+in  part  automatically 
+
+from 
+for  acquiring 
+
+the  dictionary, 
+
+lexical 
+
+entries 
+
+in  part 
+relies 
+
+in  [26]  the  method 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  8.5 (1996)  59-99 
+
+93 
+
+None  of  the  aforementioned 
+
+papers  provide  a  performance 
+
+evaluation, 
+
+since 
+
+their  tools  seem  to  be  conceived  primarily 
+
+to  help  lexicographers. 
+
+Very  few  papers  build  a  semantic 
+
+lexicon  using  corpora  as  a  source  of  word 
+In  [45] verbal  case  frames  are  acquired  from  bilingual  corpora. 
+
+sense  information. 
+An  example 
+
+is: 
+
+(buy: 
+
+(agent  HUMAN), 
+
+(object  CONCRETE, 
+
+ABSTRACT), 
+
+(for  HUMAN)) 
+
+. 
+
+Semantic 
+
+tags  (HUMAN, 
+
+syntactic  relations 
+
+etc.)  are  selected  from  an  on-line  thesaurus,  and  case 
+labels  are  the  detected 
+(prepositions,  agent  =  subject,  object). 
+the 
+In  many  cases,  syntactic  and  semantic  ambiguities  are  solved  by  comparing 
+reliable  results  with  a 
+two  languages.  Though  promising, 
+very  limited  coverage:  bilingual  feature  descriptions  have  been  obtained  only  for 
+16  verbs. 
+
+the  approach  produces 
+
+One  generally 
+
+important  problem  with  MRD-based 
+
+(i.e., 
+
+though 
+
+is  that, 
+
+restrictions 
+
+in  dictionaries 
+
+the  definitions 
+
+the  latter  are  in  practice  a  more  easy-to-understand, 
+
+niques 
+simple  selectional 
+formation), 
+of  semantic  knowledge 
+selectional  patterns 
+lexicons,  and  we  think  that  at  some  point  research  on  MRD  and  MRC  should  be 
+integrated. 
+
+the  purpose  of  automatic  NLP.  Structural 
+
+types  of  information 
+
+are  both  relevant 
+
+include  structural 
+
+for  computational 
+
+and  taxonomic 
+
+they 
+
+for 
+
+tech- 
+than 
+in- 
+and  useful,  type 
+and 
+
+lexical  acquisition 
+are  somehow  deeper 
+
+5.  Conclusions  and  future  work 
+
+The  thesis  of  this  paper  was  to  demonstrate 
+
+that,  by  combining  empirical  and 
+the  major  advantages  of  these 
+
+it  is  also  possible  to  combine 
+
+rationalist  methods, 
+two  radically  different  approaches, 
+We  presented  ARIOSTO_LEX, 
+
+that  is,  scaling  up  and  digging  deep. 
+a  two-step  algorithm 
+
+tool, 
+
+selectional 
+
+analysis  of  complex 
+
+from  corpora.  ARIOSTO_LEX 
+
+restrictions 
+tool,  since  it  provides 
+
+for  the  acquisition  of 
+has  a 
+in  a  very  readable  and  compact 
+to  a comparative  analysis  of  sublanguages,  and  to  a 
+
+domain  appropriate 
+utility  as  a  self-standing 
+form  linguistic  data  amenable 
+systematic 
+lexical  categories, 
+however  was  not  conceived  as  a  tool  for  lexicographic  studies,  but  primarily  as  a 
+computational 
+that  could  be  used  in  any  NLP  system  without  any  strong 
+commitment  on  the  designer  of  the  final  application.  The  information  acquired  by 
+ARIOSTO_LEX 
+to 
+selected  corpora.  For  each  lexical  entry,  ARIOSTO_LEX 
+provides  an  account  of 
+all  the  situations 
+in  a  given  domain,  expressed  by 
+is  clearly  only  one  of  the  desirable 
+selectional 
+features  of  a  semantic  lexicon,  yet  no  existing  industrial  or  research  NLP  projects 
+could  demonstrate 
+lexical  data,  and 
+portability 
+
+this 
+In  particular,  ARIOSTO_LEX 
+
+is  a  dynamic  knowledge  base  of  lexical  facts  with  respect 
+
+coverage  of 
+languages  and  domains. 
+
+in  which  a  word  can  participate 
+
+like  verbs.  ARIOSTO_LEX 
+
+restrictions.  This 
+
+an  adequate 
+
+to  different 
+
+information 
+
+type  of 
+
+Y‘l 
+
+R.  Basili  rt  ul.  /  Artificial 
+
+Intelligence  85  (1996)  59-99 
+
+lexical 
+
+could  be  profitably  used for  tuning  an  existing  lexicon,  by  adding  domain  specific 
+to  existing 
+case 
+interest  of  one  such 
+relations 
+tool  needs  not  to  be  stressed,  since  one  could  say  that  the  grand 
+computational 
+challenge 
+is  that  of  systematic  and 
+reliable  linguistic  knowledge  acquisition  on  a large  scale,  which  we  take  to  include 
+lexical  acquisition  as  the  major  part,  since  most  intelligent  applications  are  now 
+lexicon  driven. 
+
+to  natural  language  processing  at  the  moment 
+
+items.  The  potential 
+
+In  this  paper,  we  performed 
+
+In  addition  to  overwhelming 
+produced  by  ARIOSTO_LEX. 
+a  systematic  study  of  sublanguages.  we  gained  experimental 
+impact  on  the  applicability  of  some  popular  approaches 
+processing: 
+
+a  rather  detailed  analysis  of  the  lexical  entries 
+linguistic  material  for 
+that  has  an 
+evidence 
+language 
+to  automatic 
+
+l The  relational  structure  of  verbs  is  highly  variable  and  poorly  overlapping. 
+invariants  of  these  structures 
+
+(i.e.,  a  type  hierarchy), 
+
+is 
+
+Finding  the  common 
+a  task  that  has  inherent 
+
+limitations. 
+
+l Most  verbs 
+
+impose  weak  expectations  on  their  argument 
+
+impact  on  the  validity  of  expectation 
+
+structures.  This 
+driven 
+
+finding  has  a  problematic 
+semantic 
+
+interpreters. 
+
+l The  relational 
+
+structure  of  words  varies  significantly  across  sublanguages. 
+if  the 
+
+to  lexicon  design  seem  inappropriate, 
+
+General  purpose  approaches 
+lexicon  is  to  be  used  by  automatic 
+
+language  processors. 
+
+that  selectional 
+
+them  by  hand 
+
+ARIOSTO_LEX 
+
+task. 
+limitation 
+
+is  that  it  acquires 
+has  its  merits  and  limitations.  The  merit 
+extensively,  with  limited  manual  cost,  a  very  useful  type  of  semantic  knowledge. 
+restrictions  do  not  generalize  across  sublan- 
+We  demonstrated 
+time- 
+guages,  and  acquiring 
+consuming 
+The 
+patterns 
+selectional  power.  On  the  other  hand,  using  more  refined  conceptual 
+lexical  acquisition.  The  performance 
+beg  the  question  of  automatic 
+section,  however,  demonstrated 
+that  in  general 
+the  generality  of  the  semantic 
+lexicon  is  good,  despite 
+
+selectional 
+adequate 
+types  would 
+evaluation 
+the  discriminating  power  of  the 
+
+is  that 
+are  very  high 
+
+in  some  case  may  not  provide 
+
+is  often  an  unintuitive 
+
+the  conceptual 
+
+to  generalize 
+
+types  used 
+
+level,  and 
+
+and  very 
+
+Another, 
+
+limitation 
+
+in  few  over-general 
+
+in  our  view  more  serious, 
+
+senses,  verbs  are  classified 
+
+In  fact,  while 
+for  discriminating  most 
+for  nouns  the  high-level  categories  are  “good  enough” 
+ambiguous 
+categories.  These 
+categories  are  not  sufficient  to  discriminate  among  the  subtle  and  highly  polysem- 
+ous  senses  of  verbs.  Hence,  different  senses  of  the  same  verb  are  collapsed  into  a 
+unique 
+CIAULA, 
+which  classifies 
+in  different 
+algorithm  are,  as  expected,  more  problematic 
+relational 
+variable, 
+advantages  of  a  more  refined  verb  classification 
+clear.  We  believe  that  more  insight  is  needed 
+
+in  [6,10,11],  where  we  presented 
+a  corpus  driven  conceptual  clustering  method  for  word  classification, 
+categories  polysemous  words.  The  results  of  this 
+for  verbs,  because  of  their  highly 
+the 
+are  not  fully 
+
+structure.  Because  of  this  inherent  difficulty, 
+
+lexical  entry.  This  issue  was  explored 
+
+into  this  complex  matter. 
+
+in  ARIOSTO_LEX 
+
+bushy, 
+
+Finally,  an  open  issue  is  an  extensive  on-field  evaluation  of  ARIOSTO_LEX. 
+
+We  proposed 
+
+a  formal  evaluation 
+
+that  was  concerned 
+
+only  with  syntactic 
+
+tags  used. 
+is  verb  polysemy. 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+95 
+
+disambiguation,  while  a  more  appropriate 
+pretative  power  of  the  acquired  selectional 
+application. 
+evaluation  of  ARIOSTO_LEX, 
+
+should  consider 
+the  inter- 
+restrictions  within  some  NLP-based 
+In  Section  3,  we  pointed  out  the  difficulties  of  a  more  substantial 
+
+and  of  computational 
+
+lexicons  in  general. 
+
+evaluation 
+
+Appendix  A.  Ci-synt_rel-Cj  tables 
+
+Legenda21 
+
+CD  (see  Table  A.  1) 
+
+(INDIVIDUAL 
+
++  ORGANIZATION) 
+
+(customer), 
+
+(to  plough), 
+(to  organize), 
+
+(table), 
+
+PA:  PHYSICAL-ACT 
+MA:  MENTAL-ACT 
+ART:  ARTEFACT 
+HE:  HUMAN-ENTITY 
+V:  VEGETABLE 
+B:  BUILDING 
+BP:  BY-PRODUCT 
+MT:  MATTER 
+AN:  ANIMAL 
+MC:  MACHINE 
+P:  PLACE 
+
+(iron), 
+(cow), 
+
+(corn), 
+(greenhouse), 
+(milk), 
+
+(INSTRUMENTALITY) 
+
+(grindstone), 
+
+(LOCATION) 
+
+(beach). 
+
+(see  Table  A.2) 
+A:  ACT  (to  enclose), 
+RE:  REAL-ESTATE 
+G:  GOODS 
+(table), 
+
+(greenhouse), 
+
+Table  A.1 
+C-per-C, 
+
+table,  commercial  domain  (CD) 
+
+per 
+
+PA 
+
+MA 
+
+ART 
+
+HE 
+
+V 
+
+B 
+
+BP 
+
+MT 
+
+AN 
+
+MC 
+
+P 
+
+PA 
+MA 
+ART 
+HE 
+V 
+B 
+BP 
+MT 
+AN 
+MC 
+P 
+
+0.121 
+0.041 
+0.094 
+0.016 
+0.003 
+0.061 
+0.013 
+0.027 
+0.000 
+0.032 
+0.004 
+
+0.075 
+0.054 
+0.068 
+0.024 
+0.001 
+0.030 
+0.004 
+0.008 
+0.001 
+0.036 
+0.004 
+
+0.031 
+0.023 
+0.045 
+0.002 
+0.002 
+0.012 
+0.006 
+0.011 
+- 
+0.010 
+0.000 
+
+0.022 
+0.018 
+0.026 
+0.024 
+0.000 
+0.010 
+0.001 
+0.001 
+- 
+0.002 
+0.000 
+
+0.000 
+0.000 
+0.001 
+0.000 
+- 
+- 
+0.000 
+0.000 
+- 
+0.001 
+- 
+
+0.039 
+0.023 
+0.057 
+0.014 
+0.000 
+0.013 
+0.004 
+0.015 
+0.000 
+0.033 
+0.001 
+
+0.002 
+0.001 
+0.005 
+0.000 
+- 
+0.000 
+0.001 
+0.002 
+- 
+0.001 
+- 
+
+0.002 
+0.000 
+0.005 
+0.001 
+- 
+0.000 
+0.001 
+0.002 
+- 
+0.001 
+0.000 
+
+0.001 
+- 
+0.000 
+- 
+- 
+- 
+0.001 
+- 
+- 
+- 
+- 
+
+0.010 
+0.005 
+0.011 
+0.001 
+0.001 
+0.001 
+0.002 
+0.003 
+- 
+0.004 
+_ 
+
+0.004 
+0.003 
+0.004 
+0.001 
+0.000 
+0.001 
+0.001 
+0.001 
+0.000 
+0.001 
+0.000 
+
+”  ARIOSTO  was  first  implemented  on  the  two  Italian  domains,  for  which  an  automatic  tagger  was  not 
+later  for  the  RSD  domain.  This  explains  why  we  used  in  the 
+available.  WordNet 
+to  WordNet  labels.  When  two  labels  identify  exactly 
+Italian  domains  tag  labels  that  do  not  correspond 
+label  is  between  brackets. 
+the  corresponding  WordNet 
+the  same  category, 
+
+tags  were  adopted 
+
+96 
+
+R.  Busili  ct  ul.  I  Artificial  Intrlligence  X-5 (1996)  5Y-YY 
+
+Table  A.3 
+C-err-C 
+
+table. 
+
+legal  domain 
+
+(LD) 
+
+per 
+
+A 
+RE 
+
+G 
+AM 
+D 
+ABS 
+TE 
+
+HE 
+P 
+s 
+
+A 
+
+0.211 
+0.004 
+
+0.012 
+l1.033 
+0.033 
+(I.030 
+0.01  I 
+
+0.036 
+0.002 
+(1.048 
+
+RE 
+
+0.020 
+0.002 
+
+0.003 
+0.004 
+0.001 
+0.002 
+
+0.010 
+0.001 
+0.003 
+
+G 
+
+AM 
+
+D 
+
+ABS 
+
+TE 
+
+HE 
+
+P 
+
+S 
+
+0.021 
+O.OOI 
+
+I).002 
+0.00x 
+0.001 
+0.00 
+0.00I 
+
+0.005 
+
+O.OOY 
+
+0.071 
+0.001 
+
+0.007 
+0.016 
+0.0(17 
+(I.010 
+0.1lO3 
+
+0.007 
+O.O(ll 
+0.018 
+
+0.031 
+0.001 
+
+0.007 
+0.004 
+O.OOH 
+11.00s 
+0  001 
+
+0.006 
+- 
+0.006 
+
+0.117 
+0.003 
+
+0.001 
+0.016 
+0.(11s 
+0.018 
+0.005 
+
+0.015 
+0.001 
+0.025 
+
+0.055 
+0.002 
+
+0.003 
+0.012 
+0.007 
+0.010 
+0.002 
+
+0.004 
+- 
+0.020 
+
+0.036 
+0.001 
+
+O.(lOl 
+0.006 
+0.010 
+0.01  1 
+O.002 
+
+0.006 
+0.001 
+0.010 
+
+0.007 
+~ 
+
+0.002 
+
+0.001 
+0.001 
+- 
+
+0.001 
+0.001 
+
+0.019 
+_ 
+
+- 
+0.001 
+0.004 
+0.005 
+_ 
+
+0.001 
+0.001 
+0.006 
+
+(income). 
+
+(contract). 
+
+AM:  AMOUNT 
+D:  DOCUMENT 
+ABS:  ABSTRACTION 
+TE:  TEMPORAL-ENTITY 
+HE:  HUMAN-ENTITY 
+P:  PLACE 
+S:  STATUS 
+
+(LOCATION) 
+(obligarion). 
+
+(definitinn). 
+(year). 
+(INDIVIDUAL 
+(beach). 
+
++  ORGANIZATION) 
+
+(company), 
+
+RSD 
+
+(see  Table  A.3  ) 
+
+l DS:  SCIENTIFIC  DISCIPLINE 
+l CO:  COGNITIVE 
+l ART:  ARTIFACT 
+l TE:  TEMPORAL 
+l ORG:  ORGANIZATION, 
+l INST:  INSTRUMENTALITY 
+l LOC:  LOCATION 
+
+PROCESS 
+(image), 
+ENTITY 
+
+(Oregon), 
+
+(geography), 
+(evalztuziion), 
+
+day). 
+
+(month. 
+SOCIAL  GROUP 
+(satellite), 
+
+(university). 
+
+Table  A.3 
+$-for-C‘,  table. 
+
+remote 
+
+sensing  domain 
+
+(RSD) 
+
+DS 
+
+co 
+
+ART 
+
+I’!? 
+
+ORG 
+
+INSI 
+
+L.O(‘ 
+
+PR 
+
+[ND 
+
+NO 
+
+ABS 
+
+ATrR 
+
+Act 
+
+MO 
+
+MT 
+
+PS 
+
+11.11,11 
+
+0.002 
+
+0.002 
+
+0  on2 
+
+11.002 
+
+1l.015 
+
+u.021 
+
+II.042 
+
+U.U3U 
+
+0.092 
+
+u.041 
+
+11.nu4 
+
+1l.U,11 
+
+II  uu4 
+
+0  01 I 
+
+f,.lr!‘l 
+
+,l.cil6 
+
+0  on2 
+
+U.,W 
+
+0.052 
+
+u.004 
+
+0.m 
+
+no01 
+
+- 
+
+o.llU2 
+
+11.0I12 
+
+I,  lull 
+
+KU06 
+
+11.002 
+0  onz 
+,I.009 
+
+U.,H)5 
+
+,l.UO? 
+
+0  rnll 
+
+,I.002 
+
+0  IWH 
+
+IJ.,W 
+
+0  UO2 
+
+u.uo7 
+
+0.002 
+
+0.012 
+
+o.uu3 
+
+11.,111 
+
+I,  OU7 
+
+0  023 
+
+0  ,#I5 
+
+,I.Ull‘l 
+
+U.,Klh 
+
+o.uo3 
+0.01  I 
+U.OO? 
+0.m 
+
+0.001 
+
+u.nw 
+
+unu2 
+
+1J.OUl 
+
+u.011 
+
+1l.01~3 
+
+u.o,15 
+
+- 
+
+0.w 
+
+U.004 
+
+- 
+
+- 
+
+- 
+
+o.not 
+
+0  0115 
+
+1l.005 
+
+0  014 
+
+O.lKl7 
+
+U.016  UUII 
+
+l1.Ull2 
+
+lI.UUI 
+
+U.010 
+
+11.OU5 
+
+U.uU7 
+
+0.012 
+
+0  on5 
+
+0  uox 
+
+0.013 
+
+0.027 
+
+I~.,H13  U.,X,l 
+
+0  OnY 
+
+- 
+
+~1.1103 
+
+u.uu7 
+
+0.n10 
+
+,I.006 
+
+Ulllh 
+
+1l.0117 
+
+I).“01 
+
+O.,HJl 
+
+0.002 
+
+O.lM? 
+
+- 
+
+ns 
+CO 
+
+AR1 
+
+TE 
+
+ORG 
+
+INS7 
+
+LOC 
+
+PR 
+
+IND 
+
+NO 
+
+ABS 
+
+Al-l-R 
+
+Ad 
+
+MO 
+
+MT 
+
+PS 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+97 
+
+(researcher,  chief), 
+
+l PR:  PROPERTY  (emissivity), 
+.  MT:  MATTER  (iron), 
+l IND:  INDIVIDUALS 
+l NO:  NATURAL  OBJECT  (mountain,  sea), 
+l ABS:  ABSTRACTION 
+l AITR:  ATTRIBUTE 
+l Act:  ACT,  HUMAN  ACT  (to  manage), 
+l MO:  MENTAL  OBJECT  (idea,  project), 
+l PS:  PROCESS,  NATURAL  EVENT  (earthquake). 
+
+(data,  model), 
+(smooth,  raw), 
+
+References 
+
+[l]  H.  Alshawi,  Qualitative  and  quantitative  designs  for  speech 
+
+the  balancing  act: 
+to  language,  in:  Proceedings  ACL  Workshop,  Las 
+
+translation, 
+
+combining  symbolic  and  statistical  approaches 
+Cruces,  NM  (1994). 
+
+[2]  R.  Basili,  M.H.  Candito.  M.T.  Pazienza  and  P.  Velardi,  Evaluating 
+
+probability-based  PP-disambiguation  methods, 
+Methods  in  Language  Processing,  Manchester 
+
+the  information  gain  of 
+in:  Proceedings  Znternational  Conference  on  New 
+(1994). 
+
+[3]  R.  Basili,  F.  Grisoli  and  M.T.  Pazienza,  Might  a  semantic 
+
+lexicon  support  hypertextual 
+
+authoring, 
+
+in  Proceedings  Applied  Natural  Language  Processing,  Stuttgart  (1994). 
+
+[4]  R.  Basili,  A.  Marziali  and  M.T.  Pazienza,  Modelling  syntax  uncertainty 
+
+in  lexical  acquisition 
+
+from  texts,  J.  Quant.  Linguist.  1 (1)  (1994). 
+
+[S]  R.  Basili,  M.T.  Pazienza  and  P. Velardi,  A  shallow  syntactic  analyzer  to  extract  word  associations 
+
+from  corpora,  Literary  Linguist.  Comput.  7  (1992)  114-124. 
+
+[6]  R.  Basili,  M.T.  Pazienza  and  P.  Velardi,  Hierarchical  clustering  of  verbs, 
+ACL-SIGLEX  Workshop  on  Lexical  Acquisition,  Columbus,  OH  (1993). 
+
+in:  Proceedings 
+
+[7]  R.  Basili,  M.T.  Pazienza  and  P. Velardi,  Semi-automatic  extraction  of  linguistic  information 
+
+for 
+
+syntactic  disambiguation,  Appl.  Artif.  Intell.  4  (1993). 
+
+[8]  R.  Basili,  M.T.  Pazienza  and  P.Velardi,  What  can  be  learned  from  raw  text? 
+
+., Mach.  Trunsl.  8 
+
+(1993). 
+
+[9]  R.  Basili,  M.T.  Pazienza  and  P. Velardi,  A  (not-so)  shallow  parser  for  collocational  analysis,  in: 
+
+Proceedings  COLING’94,  Kyoto  (1994). 
+
+[lo]  R.  Basili,  M.T.  Pazienza  and  P. Velardi,  A  context  driven  conceptual  clustering  method  for  verb 
+in:  B.  Boguraev  and  J.  Pustejovsky,  eds.,  Corpus  Processing  for  Lexical  Acquisi- 
+
+classification, 
+tion  (MIT  Press,  Cambridge,  MA,  1996). 
+
+[II]  R.  Basili,  M.T.  Pazienza  and  P. Velardi,  Integration  of  probabilistic  and  symbolic  methods  for 
+
+semantic  categorization, 
+
+in:  Proceedings  AAAI  Spring  Symposium,  Stanford,  CA  (1995). 
+
+[12]  R.  Beckwith,  C.  Fellbaum,  D.  Gross  and  G.  Miller,  WordNet:  a  lexical  database  organized  on 
+in:  U.  Zernik,  ed.,  Lexical  Acquisition:  Exploiting  On-Line  Resources 
+
+psycholinguistic  principles, 
+to  Build  a  Lexicon  (Lawrence  Erlbaum,  London,  1991). 
+
+[13]  B.  Boguraev,  Building  a  lexicon: 
+
+the  contribution  of  computers, 
+
+IBM  Report,  T.J.  Watson 
+
+Research  Center  (1991). 
+
+[14]  B.  Boguraev  and  T.  Briscoe,  eds.,  Computational  Lexicography 
+
+for  Natural  Language  Processing 
+
+(Longman,  New  York,  1989). 
+
+[15]  P.  Brown,V.J.  Della  Pietra,  J.  Cocke,  S.A.  Della  Pietra,  F.  Jelinek,  R.  Lafferty,  R.  Mercer  and 
+
+P.  Roossin,  A  statistical  approach 
+
+to  machine  translation,  Comput.  Linguist.  16  (2)  (1990). 
+
+[16]  P.  Brown,  V.J.  Della  Pietra,  P.V. deSouza,  J.C.  Lai  and  R.  Mercer,  Class-based  n-gram  models  of 
+
+natural  language,  Comput.  Linguist.  18 (4)  (1992). 
+
+[17]  K.  Church,  W.  Gale,  P.  Hanks  and  D.  Hindle,  Using  statistics  in:  lexical  analysis,  in:  U.  Zernik, 
+ed.,  Lexical  Acquisition:  Exploiting  On-Line  Resources  to  Build  a  Lexicon  (Lawrence  Erlbaum, 
+London,  1991). 
+
+YH 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  XS (1996)  59-99 
+
+[1X]  K.  Church 
+(1)  (1993). 
+
+and  R.L.  Merccr. 
+
+eds.  . Special  Issue  on  Using  Large  Corpora,  Comput.  Linguist.  19 
+
+[lY]  K.W.  Church 
+
+and  P.  Hanhs.  Word  association 
+
+norms.  mutual 
+
+information. 
+
+and 
+
+lexicography, 
+
+c‘omput.  Linguist.  16  (1)  (IYYO). 
+need 
+
+[20]  C.  Cookson.  Why  computers 
+
+[21]  A.  Copestake, 
+lexicons, 
+
+large 
+[27]  I.  Dagan. 
+
+The  ACQUILEX 
+in:  Proceeding.\  .ird  ANLP  ( 1992). 
+and  L.  Lee.  Similarity-based 
+
+abilities, 
+
+F.  Pereira 
+in:  Procredings 
+
+il(‘f_  Workshop.  Las  Cruces.  NM  (1994). 
+
+estimation 
+
+of  word 
+
+co-occurrences 
+
+prob- 
+
+to  learn  English.  Financial  Times  (September 
+in  semi-automatic 
+LKB: 
+
+representation 
+
+issues 
+
+20th.  1989). 
+
+acquisition 
+
+of 
+
+1231  M.  Evens, 
+1988). 
+1241  D.  Farewell. 
+
+ed.,  Relational  Models  of’  the  Lexicon 
+
+(Cambridge 
+
+University 
+
+Press,  Cambridge. 
+
+L.  Guthrir 
+
+and  y.  Wilka.  Automatically 
+
+creating 
+
+lexical  entries 
+
+for  ULTRA, 
+
+a 
+
+multilingual  MT  system.  M&I.  Tram/.  8  (lYY3)  127~135. 
+
+1251  R.  Grishman. 
+patterns. 
+
+Compur.  Linguist.  12  ( 19X6). 
+
+L.  Hirschman 
+
+and  N.T.  Nhan.  Discovery 
+
+procedures 
+
+for  sublanguage 
+
+selectional 
+
+PI 
+
+[271 
+
+PC 
+
+1291 
+
+[301 
+
+R.  Grishman, 
+in:  Proceedings 
+R.  Grishman 
+Nantes 
+
+(1992). 
+
+C.  MacLeod 
+COLING 
+
+and  A.  Meyers.  Complex 
+(lY94). 
+
+‘OJ.  Kyoto 
+
+syntax:  building 
+
+a  computational 
+
+lexicon. 
+
+and  J.  Sterling,  Acquisition 
+
+of  selcctional 
+
+patterns, 
+
+in:  Proceedings  COLZNG 
+
+‘YJ. 
+
+J.  Sterling,  Generalizing 
+( IYY4). 
+
+‘94.  Kyoto 
+
+R.  Grishman 
+
+and 
+
+automatically 
+
+generated 
+
+selectional 
+
+patterns, 
+
+in: 
+
+Proceedings  COLlNG 
+M.  Hearst 
+Proceedings  ACL-SIGLEX  Workshop  on  Lexical  Acquisition  from  Text,  Columbus.  OH 
+predicate 
+D.  Hindle. 
+
+suite  a  computational 
+
+and  H.  Schuetzc. 
+
+classification 
+
+Customizing 
+
+structures, 
+
+a  lexicon 
+
+to  better 
+
+argument 
+
+(1993). 
+in  Proceedings  ACL 
+
+Noun 
+
+from 
+
+task. 
+
+in: 
+
+[311 
+
+Workshop  (1990). 
+D.  Hindle 
+(lYY3). 
+
+and  M.  Rooths. 
+
+Structural 
+
+ambiguity 
+
+and 
+
+lexical 
+
+relations.  Comput.  Linguist.  19  (1) 
+
+[37] 
+
+L.  Hirschman. 
+
+R.  Grishman 
+
+and  N.  Sager,  Gramatically-based 
+
+automatic  word  class  formation. 
+
+in:  Proceedings  AAXI  Spring  Symposium,  Stanford. 
+
+evaluation 
+
+criterion 
+
+for  classifier‘s 
+
+performance. 
+
+Inform.  Process.  Manage.  11  (1975)  3Y-57. 
+P.  Jacobs.  Text  based 
+CA 
+(1990). 
+I.  Koronenko 
+
+and  1.  Bratko. 
+
+Information-based 
+
+intelligent 
+
+systems. 
+
+Improved 
+
+Tagging  English 
+
+Much.  Learn.  6  (1991)  67-80. 
+F.-M.  Lang  and  L.  Hirschman. 
+patterns. 
+( 1988). 
+B.  Merialdo. 
+S.  Montemagni 
+semantic 
+F.  Pereira,  N.  Tishby  and  L.  Lee,  Distributional 
+Workshop.  Columbus.  OH 
+S.  Pinker. 
+Cambridge,  MA.  1989). 
+Background 
+Powers, 
+A.  Sanfilippo.  Word  knowledge 
+
+and  L.  Vanderwende. 
+from  dictionaries, 
+
+and  experiments 
+
+in  machine 
+
+information 
+
+(1994). 
+
+‘94,  Kyoto 
+
+acquisition. 
+(1994). 
+
+I331 
+
+[341 
+
+[351 
+
+I361 
+[371 
+
+[381 
+
+[391 
+
+[401 
+
+[411 
+
+[421 
+
+Proceedings  COLING 
+A.  Sanfilippo 
+readable 
+(1992). 
+
+dictionary 
+
+in:  Proceedings  Second  Conference  on  Applied  Computational  Linguistics.  Austin,  TX 
+
+parsing 
+
+through 
+
+interactive 
+
+acquisition 
+
+of  selectional 
+
+text  with  a  probabilistic  model,  Comput.  Linguist.  20  (2)  (1994). 
+Structural 
+vs. 
+in  Proceedings  COLZNG 
+clustering 
+
+string 
+‘YZ’. Nantes 
+
+in:  Proceedings  ACL 
+
+of  English  verbs, 
+
+for  extracting 
+
+patterns 
+
+patterns 
+
+(1992). 
+
+Leurnahility  and  C‘ognition -  The  Acquisition  of  Argument  Structure 
+
+(MIT  Press. 
+
+eds.,  Proceedings  Fir.st SHOE  Workshop,  Tilburg 
+
+(1992). 
+
+lexicon  construction 
+
+and  dictionary 
+
+compilation. 
+
+in: 
+
+learning 
+
+of  natural 
+
+language, 
+
+in:  W.  Daelemans 
+
+and  D. 
+
+and  V.  Pozanski, 
+sources. 
+
+The  acquisition 
+
+from  combined  machine- 
+in:  Proceedings  Applied  Natural  Language  Processing.  Povo  Trento 
+
+of  lexical  knowledge 
+
+I431 
+
+[441 
+
+J.J.  Carrol,  S.  Anadianou 
+
+S.  Sekine. 
+in:  Proceedings  Third  ANLP.  Trento 
+J.F.  Sowa.  Conceptual  Structures  in  Mind  and  Machine  (Addison-Wesley, 
+
+and  J.  Tsujii.  Automatic 
+(1992). 
+
+learning 
+
+of  semantic 
+
+collocation, 
+
+Reading.  MA.  1984). 
+
+R.  Basili  et  al.  I  Artificial  Intelligence  85  (1996)  59-99 
+
+99 
+
+[45]  T.  Utsuro,  Y.  Matsumoto  and  M.  Nagao,  Verbal  case  frame  a  acquisition  from  bilingual  corpora, 
+
+in:  Proceedings 
+
+IJCAZ-93,  Chambery 
+
+(1993). 
+
+(461 P. Velardi,  Why  human  translators  still  sleep  in  peace?  (Four  engineering  and  linguistic  gaps  in 
+
+NLP), 
+
+in:  Proceeding  COLING 
+
+‘90,  Helsinki  (1990). 
+
+[47]  D.  Yarowsky,  Word-sense  disambiguation  using  statistical  models  of  Roget’s  categories  trained  on 
+
+large  corpora, 
+
+in:  Proceedings  COLING 
+
+‘92,  Nantes  (1992). 
+
+(481 D.  Hindle  and  M.  Rooth,  Structural  ambiguity  and  lexical  relations, 
+
+in:  Proceedings  ACL 
+
+Workshop,  Berkeley,  CA  (1991). 
+
+

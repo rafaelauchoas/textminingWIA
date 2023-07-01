@@ -1,0 +1,3275 @@
+Artiﬁcial Intelligence 170 (2006) 779–801
+
+www.elsevier.com/locate/artint
+
+Automated reformulation of speciﬁcations by
+safe delay of constraints ✩
+
+Marco Cadoli, Toni Mancini ∗
+
+Dipartimento di Informatica e Sistemistica, Università di Roma “La Sapienza”, Via Salaria 113, I-00198 Roma, Italy
+
+Received 14 September 2004; received in revised form 25 January 2006; accepted 25 January 2006
+
+Abstract
+
+In this paper we propose a form of reasoning on speciﬁcations of combinatorial problems, with the goal of reformulating them
+so that they are more efﬁciently solvable. The reformulation technique highlights constraints that can be safely “delayed”, and
+solved afterwards. Our main contribution is the characterization (with soundness proof) of safe-delay constraints with respect
+to a criterion on the speciﬁcation, thus obtaining a mechanism for the automated reformulation of speciﬁcations applicable to a
+great variety of problems, e.g., graph coloring, bin-packing, and job-shop scheduling. This is an advancement with respect to the
+forms of reasoning done by state-of-the-art-systems, which typically just detect linearity of speciﬁcations. Another contribution
+is an experimentation on the effectiveness of the proposed technique using six different solvers, which reveals promising time
+savings.
+© 2006 Elsevier B.V. All rights reserved.
+
+Keywords: Modelling; Reformulation; Second-order logic; Propositional satisﬁability; Constraint satisfaction problems
+
+1. Introduction
+
+Current state-of-the-art languages and systems for constraint modelling and programming (e.g., AMPL [22],
+OPL [48], XPRESSMP,1 GAMS [9], DLV [31], SMODELS [39], ESRA [21], PS [18] and NP-SPEC [8]) exhibit a strong
+separation between a problem speciﬁcation (e.g., Graph 3-coloring) and its instance (e.g., a graph), usually adopting a
+two-level architecture for ﬁnding solutions: the speciﬁcation is ﬁrstly instantiated (or grounded) against the instance,
+and then an appropriate solver is invoked (cf. Fig. 1). Such a separation leads to several advantages: obviously declar-
+ativeness increases, and the solver is completely decoupled from the speciﬁcation. Ideally, the programmer can focus
+only on the combinatorial aspects of the problem speciﬁcation, without committing a priori to a speciﬁc solver. In
+
+✩ This paper is an extended and revised version of [M. Cadoli, T. Mancini, Automated reformulation of speciﬁcations by safe delay of constraints,
+in: Proceedings of the Ninth International Conference on the Principles of Knowledge Representation and Reasoning (KR 2004), Whistler, BC,
+Canada, AAAI Press/The MIT Press 2004, pp. 388–398].
+* Corresponding author.
+
+E-mail addresses: cadoli@dis.uniroma1.it (M. Cadoli), tmancini@dis.uniroma1.it (T. Mancini).
+
+1 Cf. http://www.dashoptimization.com.
+
+0004-3702/$ – see front matter © 2006 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2006.01.008
+
+780
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+Fig. 1. Two-level architecture of current problem solving systems.
+
+fact, some systems, e.g., AMPL, are able to translate—at the request of the user—a speciﬁcation in various formats,
+suitable for different solvers, e.g., among the others, CPLEX, MINOS,2 LANCELOT.3
+
+Nonetheless, many existing techniques proposed in the literature for optimizing the solution of constraint satisfac-
+tion problems apply after the commitment to the instance: notable examples are, e.g., symmetry detection and breaking
+(cf., e.g., [4,16,37]), the development of techniques for imposing various local consistency notions and of heuristics
+during search (cf., e.g., [17]), the development of algorithms that deal with dependent variables, e.g., those added to
+SAT instances during the clausiﬁcation of non-CNF formulae [27], and with the so-called “equivalence clauses” [32].
+However, in many cases, properties that are amenable to be optimized derive from the problem structure, rather
+than the particular instance considered. Optimization techniques that act on the problem structure have been proposed.
+They include the addition of implied constraints (cf., e.g., [47]), the deletion or abstraction of some of the constraints
+(cf., e.g., [28]), the use of redundant models, i.e., multiple viewpoints synchronized by channelling constraints, in
+order to increase constraint propagation [12,20,29].
+
+Our research follows the latter approach, with the aim of systematize the process of ﬁnding useful reformulations
+by performing a symbolic reasoning on the speciﬁcation. In general, for many properties, symbolic reasoning can be
+more natural and effective than making such “structural” aspects emerge after instantiation, when the structure of the
+problem has been hidden.
+
+An example of system that performs a sort of reasoning on the speciﬁcation is OPL, which is able to automatically
+choose the most appropriate solver for a problem. However, the kind of reasoning offered is very primitive: OPL only
+checks (syntactically) whether a speciﬁcation is linear, in this case invoking a linear—typically more efﬁcient—solver,
+otherwise a general constraint programming one.
+
+Conversely, our research aims to the following long-term goal: the automated reformulation of a declarative con-
+straint problem speciﬁcation, into a form that is more efﬁciently evaluable by the solver at hand. The ultimate goal is to
+handle all properties suitable for optimization that derive from the problem structure at the speciﬁcation level, leaving
+at the subsequent instance level the handling of the remaining ones, i.e., those that truly depend on the instance. In
+fact, it is worthwhile to note that focusing on the speciﬁcation does not rule out the possibility of additionally applying
+existing optimization techniques at the instance level.
+
+The approach we follow is similar, in a sense, to the one used in the database research community for attacking
+the query optimization problem in relational databases. A query planner, whose task is to reformulate the query posed
+by the user in order to improve the efﬁciency of the evaluation, takes into account the query and the database schema
+only, not its current content, i.e., the instance (cf., e.g., [1]).
+
+In general, reformulating a constraint problem speciﬁcation is a difﬁcult task: a speciﬁcation is essentially a formula
+in second-order logic, and it is well known that the equivalence problem is undecidable already in the ﬁrst-order case
+[3]. For this reason, research must focus on controlled and restricted forms of reformulation.
+
+Moreover, the effectiveness of a particular reformulation technique is expected to depend both on the problem and
+on the solver, even if it is possible, in principle, to ﬁnd reformulations that are good for all solvers (or for solvers
+of a certain class, e.g., linear, or SAT-based ones). To this end, in related work (cf. Section 6), we present different
+reformulation strategies that have been proposed in order to speed-up the process of solving a constraint problem.
+
+2 Cf. http://www.sbsi-sol-optimize.com/.
+3 Cf. http://www.cse.clrc.ac.uk/nag/lancelot/lancelot.shtml.
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+781
+
+Fig. 2. Delaying the disjointness constraint in 3-coloring. (a) 1st stage: covering and good coloring; (b) 2nd stage: disjointness.
+
+(a)
+
+(b)
+
+In this paper, we propose a technique that allows us to select constraints in a problem speciﬁcation that can be
+ignored in a ﬁrst step (regardless of the instance), and efﬁciently reinforced once a solution of the simpliﬁed problem
+has been found. We call such constraints safe-delay. Moreover, we experimentally show how reformulating problem
+speciﬁcations by safe-delay improves performances of different (but not all) solvers. On one hand, this gives evidence
+that problem reformulation can be effective in many cases, and on the other, it conﬁrms the intuition that a single
+reformulation technique may have positive effects for some classes of solvers, but negative ones for others, and that
+a portfolio of different and complementary reformulation strategies has to be considered, in general (cf. Section 6 for
+related work).
+
+The NP-complete graph k-coloring problem offers a simple example of a safe-delay constraint. The problem
+
+amounts to ﬁnd an assignment of nodes to k colors such that:
+
+• Each node has at least one color (covering);
+• Each node has at most one color (disjointness);
+• Adjacent nodes have different colors (good coloring).
+
+For each instance of the problem, if we obtain a solution neglecting the disjointness constraint, we can always
+choose for each node one of its colors in an arbitrary way at a later stage (cf. Fig. 2). It is interesting to note that the
+deletion of the disjointness constraints in graph k-coloring has been already proposed as an ad-hoc technique in [46]
+(cf. also [42]), and implemented in, e.g., the standard DIMACS formulation in SAT of k-coloring.
+
+Of course not all constraints are safe-delay: as an example, both the covering and the good coloring constraints are
+not. Intuitively, identifying the set of constraints of a speciﬁcation which are safe-delay may lead to several advantages:
+
+• The instantiation phase (cf. Fig. 1) will typically be faster, since safe-delay constraints are not taken into account.
+As an example, let’s assume we want to use (after instantiation) a SAT solver for the solution of k-coloring on
+a graph with n nodes and e edges. The SAT instance encoding the k-coloring instance—in the obvious way, cf.,
+e.g., [25]—has n · k propositional variables, and a number of clauses which is n, n · k · (k − 1)/2, and e · k for
+covering, disjointness, and good coloring, respectively. If we delay disjointness, n · k · (k − 1)/2 clauses need not
+to be generated.
+
+• Solving the simpliﬁed problem, i.e., the one without disjointness, might be easier than the original formulation for
+some classes of solvers, since removing constraints makes the set of solutions larger. For each instance it holds
+that:
+
+{solutions of original problem} ⊆ {solutions of simpliﬁed problem}.
+
+In our experiments, using six different solvers, including SAT, integer linear programming, and constraint pro-
+gramming ones, we obtained fairly consistent (in some cases, more than one order of magnitude) speed-ups for
+hard instances of various problems, e.g., graph coloring and job-shop scheduling. On top of that, we implicitly
+obtain several good solutions. Results of the experimentation are given in Section 5.
+
+• Ad hoc efﬁcient methods for solving delayed constraints may exist. As an example, for k-coloring, the problem
+
+of choosing only one color for the nodes with more than one color is O(n).
+
+The architecture we propose is illustrated in Fig. 3 and can be applied to any system which separates the instance
+from the speciﬁcation. It is in some sense similar to the well-known divide and conquer technique, cf., e.g., [14], but
+
+782
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+Fig. 3. Reformulation architecture.
+
+rather than dividing the instance, we divide the constraints. In general, the ﬁrst stage will be more computationally
+expensive than the second one, which, in our proposal, will always be doable in polynomial time.
+
+The goal of this paper is to understand in which cases a constraint is safe-delay. Our main contribution is the
+characterization of safe-delay constraints with respect to a semantic criterion on the speciﬁcation. This allows us
+to obtain a mechanism for the automated reformulation of a speciﬁcation that can be applied to a great variety of
+problems, including the so-called functional ones, i.e., those in which the search space is a (total) function from a
+ﬁnite domain to a ﬁnite codomain.
+
+The outline of the paper is as follows: after recalling some preliminaries in Section 2, we present our reformulation
+technique in Section 3, and a discussion on the adopted methodology in Section 4. Afterwards, experimentation on the
+effectiveness of the approach is described in Section 5, on both benchmark and randomly generated instances, using
+SAT and state-of-the-art linear and constraint programming solvers. Finally, conclusions, future and related work are
+presented in Section 6.
+
+2. Preliminaries
+
+The style used for the speciﬁcation of a combinatorial problem varies a lot among different languages for constraint
+programming. In this paper, rather than considering procedural encodings such as those obtained using libraries (in,
+e.g., C++ or PROLOG), we focus on highly declarative languages. Again, the syntax varies a lot among such languages:
+AMPL, OPL, XPRESSMP and GAMS allow the representation of constraints by using algebraic expressions, while DLV,
+SMODELS, and NP-SPEC are rule-based languages. Anyway, from an abstract point of view, all such languages are
+extensions of existential second-order logic (ESO) over ﬁnite databases, where the existential second-order quantiﬁers
+and the ﬁrst-order formula represent, respectively, the guess and check phases of the constraint modelling paradigm.
+In particular, in all such languages it is possible to embed ESO queries, and the other way around is also possible, as
+long as only ﬁnite domains are considered.
+
+To this end, in this paper we use ESO for the speciﬁcation of problems, mainly because of its simplicity and
+because it allows to represent all search problems in the complexity class NP [19,40]. In particular, as we show
+in the remainder of this section, ESO can be considered as the formal basis for virtually all available languages for
+constraint modelling. Intuitively, the relationship between ESO and real modelling languages is similar to that holding
+between Turing machines or assembler, and high-level programming languages. We claim that studying the simpliﬁed
+scenario is a mandatory starting point for more complex investigations, and that our results can serve as a basis for
+reformulating speciﬁcations written in higher-level languages. In Section 4 we discuss further our choice, showing
+how our reformulation technique can be easily lifted in order to deal with problem speciﬁcations written in other and
+richer languages, e.g., AMPL.
+
+Coherently with all state-of-the-art systems, we represent an instance of a problem by means of a relational data-
+
+base. All constants appearing in a database are uninterpreted, i.e., they don’t have a speciﬁc meaning.
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+783
+
+An ESO speciﬁcation describing a search problem π is a formula
+
+.= ∃ (cid:5)S φ( (cid:5)S, (cid:5)R),
+
+ψπ
+
+(1)
+where (cid:5)R = {R1, . . . , Rk} is the input relational schema (i.e., a ﬁxed set of relations of given arities denoting the schema
+for all input instances for π ), and φ is a closed ﬁrst-order formula on the relational vocabulary (cid:5)S ∪ (cid:5)R ∪ {=} (“=” is
+always interpreted as identity), with no function symbols.
+
+An instance I of the problem is given as a relational database over the schema (cid:5)R, i.e., as an extension for all
+relations in (cid:5)R. Predicates (of given arities) in the set (cid:5)S = {S1, . . . , Sn} are called guessed, and their possible extensions
+(with tuples on the domain given by constants occurring in I plus those occurring in φ, i.e., the so called Herbrand
+universe) encode points in the search space for problem π on instance I.
+
+Formula ψπ correctly encodes problem π if, for every input instance I, a bijective mapping exists between solu-
+
+tions to π(I) and extensions of predicates in (cid:5)S which verify φ( (cid:5)S, I). More formally, the following must hold:
+
+For each instance I: Σ is a solution to π(I) ⇐⇒ {Σ, I} |= φ.
+
+It is worthwhile to note that, when a speciﬁcation is instantiated against an input database, a constraint satisfaction
+problem (in the sense of [17]) is obtained.
+
+Example 1. (Graph 3-Coloring [26, Prob. GT4]) In this NP-complete decision problem the input is a graph, and the
+question is whether it is possible to give each of its nodes one out of three colors (red, green, and blue), in such a way
+that adjacent nodes (not including self-loops) are never colored the same way. The question can be easily speciﬁed as
+an ESO formula ψ over a binary relation edge:
+
+∃RGB ∀X R(X) ∨ G(X) ∨ B(X) ∧
+
+∀X R(X) → ¬G(X) ∧
+∀X R(X) → ¬B(X) ∧
+∀X B(X) → ¬G(X) ∧
+∀XY X (cid:13)= Y ∧ R(X) ∧ R(Y ) → ¬edge(X, Y ) ∧
+∀XY X (cid:13)= Y ∧ G(X) ∧ G(Y ) → ¬edge(X, Y ) ∧
+∀XY X (cid:13)= Y ∧ B(X) ∧ B(Y ) → ¬edge(X, Y ),
+
+(2)
+
+(3)
+
+(4)
+
+(5)
+
+(6)
+
+(7)
+
+(8)
+
+where clauses (2), (3–5), and (6–8) represent the covering, disjointness, and good coloring constraints, respectively.
+Referring to the graph in Fig. 2, the Herbrand universe is the set {a, b, c, d, e}, the input database has only one relation,
+i.e., edge, which has ﬁve tuples (one for each edge).
+
+In what follows, the set of tuples from the Herbrand universe taken by guessed predicates will be called their
+extension and denoted with ext(). By referring to the previous example, formula ψ is satisﬁed, e.g., for ext(R) = {d},
+ext(G) = {a, e}, ext(B) = {b, c} (cf. Fig. 2(b)). The symbol ext() will be used also for any ﬁrst-order formula with one
+free variable. An interpretation will be sometimes denoted as the aggregate of several extensions.
+
+Finally, we observe that in this paper we consider basic ESO. Nonetheless, it is known (cf., e.g., [35]) that much
+syntactic sugar can be added to ESO in order to handle types, functions, bounded integers and arithmetics, without
+altering its expressing power. In Section 3.3 we give some examples of the enriched language.
+
+3. Reformulation
+
+In this section we show sufﬁcient conditions for constraints of a speciﬁcation to be safe-delay. We refer to the
+
+architecture of Fig. 3, with some general assumptions:
+
+Assumption 1. As shown in Fig. 2, the output of the ﬁrst stage of computation may—implicitly—contain several
+solutions. As an example, node c can be assigned to either green or blue, and node e to either red or green. In the
+second stage we do not want to compute all of them, but just to arbitrarily select one. In other words, we focus on
+search problems, with no objective function to be optimized.
+
+784
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+(a)
+
+(b)
+
+(c)
+
+Fig. 4. (a) A solution of the ﬁrst (a) and second (b) stage of a graph 3-coloring instance. (c) An alternative view showing how the extension for R
+shrinks when moving from the ﬁrst (dashed area) to the second stage.
+
+Assumption 2. The second stage of computation can only shrink the extension of a guessed predicate. Fig. 4 represents
+a solution of the ﬁrst (a) and second (b) stage on the graph 3-coloring instance in Fig. 2. Fig. 4(c) gives further evidence
+about how the extension for predicate R shrinks when moving from the ﬁrst (ext(R∗)) to the second stage (ext(R))
+(ext(B) and ext(G) are unchanged).
+
+This assumption is coherent with the way most algorithms for constraint satisfaction operate: each variable has
+an associated ﬁnite domain, from which values are progressively eliminated, until a satisfying assignment is found.
+Nonetheless, in Section 3.4 we give examples of problem speciﬁcations which are amenable to safe-delay, although
+with a second stage of different nature.
+
+Identiﬁcation of safe-delay constraints requires reasoning on the whole speciﬁcation, taking into account relations
+between guessed and database predicates. For the sake of simplicity, in Section 3.1 we will initially focus our attention
+on a single monadic guessed predicate, trying to ﬁgure out which constraints concerning it can be delayed. Afterwards,
+in Section 3.2 we extend our results to sets of monadic guessed predicates, then, in Section 3.3, to binary predicates.
+
+3.1. Single monadic predicate
+
+We refer to the 3-coloring speciﬁcation of Example 1, focusing on one of the guessed predicates, R, and trying to
+ﬁnd an intuitive explanation for the fact that clauses (3–4) can be delayed. We immediately note that clauses in the
+speciﬁcation can be partitioned into three subsets: NOR, NEGR, and POSR with—respectively—no, only negative,
+and only positive occurrences of R.
+
+Neither NOR nor NEGR clauses can be violated by shrinking the extension of R. Such constraints will be called
+safe-forget for R, because if we decide to process (and satisfy) them in the ﬁrst stage, they can be safely ignored in the
+second one (which, by Assumption 2 above, can only shrink the extension for R). We note that this is just a possibility,
+and we are not obliged to do that: as an example, clauses (3–4) will not be evaluated in the ﬁrst stage.
+
+Although in general POSR clauses are not safe-forget—because shrinking the extension of R can violate them—
+we now show that clause (2) is safe-forget. In fact, if we equivalently rewrite clauses (2) and (3–4), respectively, as
+follows:
+
+R(X) → ¬B(X) ∧ ¬G(X),
+
+∀X ¬B(X) ∧ ¬G(X) → R(X)
+∀X
+
+(cid:14)
+(2)
+(cid:14)
+(3–4)
+we note that clause (2)(cid:14) sets a lower bound for the extension of R, and clauses (3–4)(cid:14) set an upper bound for it; both the
+lower and the upper bound are ext(¬B(X) ∧ ¬G(X)). If we use—in the ﬁrst stage—clauses (2, 5–8) for computing
+ext(R∗) (in place of ext(R)), then—in the second stage—we can safely deﬁne ext(R) as ext(R∗) ∩ ext(¬B(X) ∧
+¬G(X)), and no constraint will be violated (cf. Fig. 4). The next theorem (all proofs are delayed to Appendix A)
+shows that is not by chance that the antecedent of (2)(cid:14) is semantically related to the consequence of (3–4)(cid:14).
+
+Theorem 1. Let ψ be an ESO formula of the form:
+
+∃S1, . . . , Sh, S Ξ ∧ ∀X α(X) → S(X) ∧ ∀X S(X) → β(X),
+
+in which S is one of the (all monadic) guessed predicates, Ξ is a conjunction of clauses, both α and β are arbitrary
+formulae in which S does not occur and X is the only free variable, and such that the following hypotheses hold:
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+785
+
+Fig. 5. Extensions with and without Hyp 2.
+
+Hyp 1: S either does not occur or occurs negatively in Ξ ;
+Hyp 2: |= ∀X α(X) → β(X).
+
+Let now ψ s be:
+
+∃S1, . . . , Sh, S
+
+∗
+
+∗ ∧ ∀X α(X) → S
+
+∗
+
+Ξ
+
+(X),
+
+where S∗ is a new monadic predicate symbol, and Ξ ∗ is Ξ with all occurrences of S replaced by S∗, and let ψ d be:
+
+∀X S(X) ↔ S
+
+∗
+
+(X) ∧ β(X).
+
+For every input instance I, and every extension M∗ for predicates (S1, . . . , Sh, S∗) such that (M ∗, I) |= ψ s , it holds
+that:
+
+(cid:2)(cid:2)
+
+M
+
+∗ − ext(S
+
+∪ ext(S), I
+where ext(S) is the extension of S as deﬁned by M∗ and ψ d .
+
+|= ψ
+
+∗
+
+(cid:3)
+)
+
+(cid:3)
+
+A comment on the relevance of the above theorem is in order. Referring to Fig. 3, ψ is the speciﬁcation, I is the
+instance, ψ s is the “simpliﬁed speciﬁcation”, and ∀X S(X) → β(X) is the “delayed constraint” (belonging to NEGS ).
+Solving ψ s against I produces—if the instance is satisﬁable—a list of extensions M ∗ (the “output”). Evaluating ψ d
+against M ∗ corresponds to the “PostProcessing” phase in the second stage. The structure of the delayed constraint
+ψ d clearly reﬂects Assumption 2 above, i.e., that extensions for guessed predicates can only be shrunk in the second
+stage. Moreover, since the last stage amounts to the evaluation of a ﬁrst-order formula against a ﬁxed database, it can
+be done in logarithmic space (cf., e.g., [1]), thus in polynomial time.
+
+In other words, Theorem 1 says that, for each satisﬁable instance I of the simpliﬁed speciﬁcation ψ s , each solution
+M ∗ of ψ s can be translated, via ψ d , to a solution of the original speciﬁcation ψ; we can also say that Ξ ∧ ∀X α(X) →
+S(X) is safe-forget, and ∀X S(X) → β(X) is safe-delay.
+
+Referring to the speciﬁcation of Example 1, the distinguished guessed predicate is R, Ξ is the conjunction of
+clauses (5–8), and α(X) and β(X) are both ¬B(X) ∧ ¬G(X), cf. clauses (3–4)(cid:14). Fig. 4 represents possible extensions
+of the red predicate in the ﬁrst (R∗) and second (R) stages, for the instance of Fig. 2, and Fig. 5 (left) gives further
+evidence that, if Hyp 2 holds, the constraint ∀X α(X) → S(X) can never be violated in the second stage.
+
+We are guaranteed that the two-stage process preserves at least one solution of ψ by the following theorem.
+
+Theorem 2. Let I, ψ, ψ s and ψ d as in Theorem 1. For every instance I, if ψ is satisﬁable, ψ s and ψ d are satisﬁable.
+
+To substantiate the reasonableness of the two hypotheses of Theorem 1, we play the devil’s advocate and consider
+
+the following example.
+
+Example 2. (Graph 3-Coloring with red self-loops (Example 1 continued)) In this problem, which is a variation of
+the one in Example 1, the input is the same as for graph 3-Coloring, and the question is whether it is possible to ﬁnd
+a coloring of the graph with the additional constraint that all self-loops insist on red nodes.
+
+A speciﬁcation for this problem can be easily derived from that of Example 1 by adding the following constraint:
+
+∀X edge(X, X) → R(X).
+
+(9)
+
+786
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+Fig. 6. An instance of the graph 3-coloring with red self-loops problem along with a solution of the ﬁrst stage, obtained by delaying only the
+disjointness constraints.
+
+We immediately notice that now clauses (3–4) are not safe-delay: intuitively, after the ﬁrst stage, nodes may be red
+either because of (2) or because of (9), and (3–4) are not enough to set the correct color for a node. Now, if—on top
+of (5–8)—Ξ contains also the constraint (9), Hyp 1 is clearly not satisﬁed. Analogously, if (9) is used to build α(X),
+then α(X) becomes edge(X, X) ∨ (¬B(X) ∧ ¬G(X)), and Hyp 2 is not satisﬁed. Fig. 5, right, gives further evidence
+that the constraint ∀X α(X) → S(X) can be violated if ext(S) is computed using ψ d and ext(α) is not a subset of
+ext(β). An instance of the graph 3-coloring with red self-loops problem is given in Fig. 6, along with a solution of the
+ﬁrst stage, in the case Ξ contains also the constraint (9). It can be observed that constraints (3–4) are not enough to
+set the correct color for node e.
+
+Summing up, a constraint with a positive occurrence of the distinguished guessed predicate S can be safely forgot-
+
+ten (after being evaluated in the ﬁrst stage) only if there is a safe-delay constraint which justiﬁes it.
+
+Some further comments about Theorem 1 are in order. As it can be observed (cf. Appendix A), the theorem proof
+does not formally require Ξ to be a conjunction of clauses; actually, it can be any formula such that, from any structure
+M such that M |= Ξ , by shrinking ext(S) and keeping everything else ﬁxed we obtain another model of Ξ . As an
+example, Ξ may contain the conjunct ∃X S(X) → γ (X) (with γ (X) a ﬁrst-order formula in which S does not occur).
+Secondly, although Hyp 2 calls for a tautology check—which is not decidable in general—we will see in what follows
+that many speciﬁcations satisfy it by design.
+
+3.2. Set of monadic predicates
+
+Theorem 1 states that we can delay some constraints of a speciﬁcation ψ, by focusing on one of its monadic
+guessed predicates, hence obtaining a new speciﬁcation ψ s , and a set of delayed constraints ψ d . Of course, the same
+theorem can be further applied to the speciﬁcation ψ s , by focusing on a different guessed predicate, in order to obtain
+a new simpliﬁed speciﬁcation (ψ s)s and new delayed constraints (ψ s)d . Since, by Theorem 2, satisﬁability of such
+formulae is preserved, it is afterwards possible to translate, via (ψ s)d , each solution of (ψ s)s to a solution of ψ s , and
+then, via ψ d , to a solution of ψ.
+
+The procedure REFORMULATE in Fig. 7 deals with the general case of a set of guessed predicates: if the input
+speciﬁcation ψ is satisﬁable, it returns a simpliﬁed speciﬁcation ψ s and a list of delayed constraints ψ d . Algorithm
+SOLVEBYDELAYING gets any solution of ψ s and translates it, via the evaluation of formulae in the list ψ d —with
+LIFO policy—to a solution of ψ.
+
+As an example, by evaluating the procedure REFORMULATE on the speciﬁcation of Example 1, by focusing on the
+guessed predicates in the order R, G, B, we obtain as output the following simpliﬁed speciﬁcation ψ s , that omits all
+disjointness constraints (i.e., clauses (3–5)):
+
+∃R
+
+∗
+
+∗
+G
+
+B ∀X R
+
+∗
+
+∗
+(X) ∨ G
+(X) ∨ B(X) ∧
+∗
+∗
+(Y ) → ¬edge(X, Y ) ∧
+(X) ∧ R
+∀XY X (cid:13)= Y ∧ R
+∗
+∗
+(Y ) → ¬edge(X, Y ) ∧
+(X) ∧ G
+∀XY X (cid:13)= Y ∧ G
+∀XY X (cid:13)= Y ∧ B(X) ∧ B(Y ) → ¬edge(X, Y ),
+
+and the following list ψ d of delayed constraints:
+
+∗
+
+∀X R(X) ↔ R
+(X) ∧ ¬G(X) ∧ ¬B(X);
+∗
+(X) ∧ ¬B(X).
+∀X G(X) ↔ G
+
+(10)
+
+(11)
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+787
+
+Algorithm SOLVEBYDELAYING
+Input:
+Output: a solution of (cid:17)D, Φ(cid:18), if satisﬁable, ‘unsatisﬁable’ otherwise;
+
+a speciﬁcation Φ, a database D;
+
+begin
+
+(cid:17)Φs , Φd (cid:18) = REFORMULATE(Φ);
+if ((cid:17)Φs , D(cid:18) is satisﬁable) then
+
+begin
+
+let M be a solution of (cid:17)Φs , D(cid:18);
+while (Φd is not empty) do
+begin
+
+Constraint d = Φd .pop();
+M = M∪ solution of d; // cf. Theorem 1
+
+end;
+return M;
+
+end;
+
+else return ‘unsatisﬁable’;
+
+end;
+
+Procedure REFORMULATE
+Input:
+a speciﬁcation Φ;
+Output: the pair (cid:17)Φs , Φd (cid:18), where Φs is a simpliﬁed speciﬁcation, and Φd
+
+a stack of delayed constraints;
+
+begin
+
+Stack Φd = the empty stack;
+Φs = Φ;
+for each monadic guessed pred. S in Φs do
+
+begin
+
+partition constraints in Φs according to Thm 1, in:
+(cid:17)Ξ ; ∀X α(X) → S(X); ∀X S(X) → β(X)(cid:18);
+
+if the previous step is possible with ∀X β(X) (cid:13)= TRUE then
+
+begin
+
+Φd .push(‘∀X S(X) ↔ S∗(X) ∧ β(X)’);
+Φs = Ξ ∗ ∧ ∀X α(X) → S∗(X);
+
+end;
+
+end;
+
+return (cid:17)Φs , Φd (cid:18);
+
+end;
+
+Fig. 7. Algorithm for safe-delay in case of a set of monadic predicates.
+
+It is worth noting that the check that ∀X β(X) is not a tautology prevents the (useless) delayed constraint ∀X B(X) ↔
+B∗(X) to be pushed in ψ d .
+
+From any solution of ψ s , a solution of ψ is obtained by reconstructing ﬁrst of all the extension for G by for-
+mula (11), and then the extension for R by formula (10) (synthesized, respectively, in the second and ﬁrst iteration
+of the algorithm). Since each delayed constraint is ﬁrst-order, the whole second stage is doable in logarithmic space
+(thus in polynomial time) in the size of the instance.
+
+We also observe that the procedure REFORMULATE is intrinsically non-deterministic, because of the partition that
+
+must be applied to the constraints.
+
+3.3. Binary predicates
+
+In this subsection we show how our reformulation technique can be extended in order to deal with speciﬁcations
+with binary (and, in general, n-ary) guessed predicates. This can be formally done by unfolding non-monadic guessed
+predicates into monadic ones, exploiting the ﬁniteness of the Herbrand domain.
+
+To illustrate the point, we consider the speciﬁcation of the k-coloring problem using a binary predicate Col—the
+ﬁrst argument being the node and the second the color, which is as follows (the input schema in this case is given by
+
+788
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+(cid:5)R = {node(·), color(·), edge(·, ·)} encoding the set of nodes, colors, and the graph edges, respectively, and constraints
+force Col to be correctly typed, and to satisfy conditions for covering, disjointness, and good coloring):
+
+∃Col ∀XY Col(X, Y ) → node(X) ∧ color(Y ) ∧
+
+∀X ∃Y node(X) → Col(X, Y ) ∧
+∀XY Z Col(X, Y ) ∧ Col(X, Z) → Y = Z ∧
+∀XY Z X (cid:13)= Y ∧ Col(X, Z) ∧ Col(Y, Z) → ¬edge(X, Y ).
+
+Since the number of colors is ﬁnite, it is always possible to unfold the above constraints with respect to the second
+argument of Col. As an example, if k = 3, we replace the binary predicate Col with three monadic guessed predicates
+Col1, Col2, Col3, one for each value of the second argument (i.e., the color), with the meaning that, if tuple (cid:17)n, c(cid:18)
+belongs to Col, then (cid:17)n(cid:18) belongs to Colc. Constraints of the speciﬁcation must be unfolded accordingly. The output
+of the unfolding process for k = 3—up to an appropriate renaming of Col1, Col2, Col3 into R, G, B—-is exactly the
+speciﬁcation of Example 1.
+
+The above considerations imply that we can use the architecture of Fig. 3 for a large class of speciﬁcations, in-
+cluding the so called functional speciﬁcations, i.e., those in which the search space is a (total) function from a ﬁnite
+domain to a ﬁnite codomain. A safe-delay functional speciﬁcation is an ESO formula of the form
+
+∃P Ξ ∧ ∀X ∃Y P (X, Y ) ∧ ∀XY Z P (X, Y ) ∧ P (X, Z) → Y = Z,
+
+where Ξ is a conjunction of clauses in which P either does not occur or occurs negatively. In particular, the dis-
+jointness constraints are safe-delay, while the covering and the remaining ones, i.e., Ξ , are safe-forget. Formally,
+soundness of the architecture on safe-delay functional formulae is guaranteed by Theorem 1.
+
+Safe-delay functional speciﬁcations are quite common; apart from graph coloring, notable examples are Job-shop
+
+scheduling and Bin packing, that we consider next.
+
+Example 3. (Job-shop scheduling [26, Prob. SS18]) In the Job-shop scheduling problem we have sets (sorts) J for
+jobs, K for tasks, and P for processors. Jobs are ordered collections of tasks and each task has an integer-valued
+length (encoded in binary relation L) and the processor that is requested in order to perform it (in binary relation
+Proc). Each processor can perform a task at the time, and tasks belonging to the same job must be performed in their
+order. Finally, there is a global deadline D that has to be met by all jobs.
+
+An ESO speciﬁcation for this problem is as follows. For simplicity, we assume that relation Aft contains all pairs
+of tasks (cid:17)k(cid:14), k(cid:14)(cid:14)(cid:18) of the same job such that k(cid:14) comes after k(cid:14)(cid:14) in the given order (i.e., it encodes the transitive closure),
+and that relation Time encodes all time points until deadline D (thus it contains exactly D tuples). Moreover, we
+assume that predicate “(cid:2)” and function “+” are correctly deﬁned on constants in Time. It is worth noting that these
+assumptions do not add any expressive power to the ESO formalism, and can be encoded in ESO with standard
+techniques.
+
+∃S ∀k, t S(k, t) → K(k) ∧ T (t) ∧
+
+(cid:14)(cid:14) ∧
+(cid:14)(cid:14)
+
+(cid:14)(cid:14)
+
+(cid:14) = t
+) → t
+, j ) ∧ Job(k
+(cid:14)
+(cid:14)
+
+, j ) ∧
+(cid:14)(cid:14)
+(cid:14)(cid:14)
+
+, t
+
+) ∧ S(k
+
+, t
+
+) ∧
+
+) ∧ S(k
+(cid:14) ∧
+(cid:14) + l
+
+(cid:14)
+
+∀k ∃t S(k, t) ∧
+(cid:14)
+(cid:14)(cid:14)
+∀k, t
+(cid:14)
+∀k
+
+S(k, t
+(cid:14)(cid:14)
+(cid:14)
+
+, t
+(cid:14)(cid:14)
+
+k
+
+, j, t
+
+, l
+, t
+, k
+(cid:14)(cid:14) ∧ Aft(k
+(cid:14) (cid:13)= k
+(cid:14)
+(cid:14)
+) → t
+L(k
+, l
+(cid:14)(cid:14)
+(cid:14)
+(cid:14)(cid:14)
+(cid:14)
+
+∀k
+
+, k
+
+) ∧ S(k, t
+(cid:14)
+(cid:14) Job(k
+(cid:14)
+(cid:14)(cid:14)
+, k
+(cid:14)(cid:14) (cid:2) t
+(cid:14)(cid:14)
+(cid:14)
+, l
+, l
+, p) ∧ Proc(k
+(cid:14)(cid:14)
+) ∧ S(k
+(cid:14)(cid:14) → t
+
+, t
+
+(cid:14)(cid:14)
+
+(cid:14)
+
+(cid:14)
+
+Proc(k
+(cid:14)(cid:14)
+
+, p, t
+(cid:14)
+
+(cid:14) (cid:13)= k
+, p) ∧ k
+(cid:14)(cid:14)
+(cid:14)(cid:14)
+) →
+(cid:14) (cid:3) t
+
+, t
+) ∧ (t
+
+L(k
+(cid:4)
+(t
+
+, l
+(cid:14) (cid:2) t
+
+) ∧ S(k
+(cid:14)(cid:14) (cid:2) t
+(cid:14)(cid:14)
+(cid:14)(cid:14) + l
+∀k, t, l T (k) ∧ S(k, t) ∧ L(k, l) → Time(t + l).
+
+, t
+(cid:14) (cid:2) t
+
+(cid:14)(cid:14) → t
+
+(cid:14)
+
+(cid:14) + l
+
+(cid:5)
+)
+
+∧
+
+(cid:14)(cid:14) ∧ L(k
+
+(cid:14)
+
+(cid:14)
+
+) ∧
+
+, l
+
+(12)
+
+(13)
+
+(14)
+
+(15)
+
+(16)
+
+(17)
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+789
+
+Constraints (12–14) force a solution to contain a tuple (cid:17)k, t(cid:18) (t being a time point) for every task k, hence to encode an
+assignment of exactly a starting time to every task (in particular, (14) assigns at most one starting time to each task).
+Moreover, constraint (15) forces tasks that belong to the same job to be executed in their order without overlapping,
+while (16) avoids a processor to perform more than one task at each time point. Finally, (17) forces the scheduling to
+terminate before deadline D.
+
+It is worth noting that additional syntactic sugar may be added to ESO in order to better deal with scheduling
+problems. As an example, constructs like those commonly found in richer modelling languages for such problems
+(cf., e.g., the part of OPL concerning scheduling) can be made available. However, such enhancements are out of the
+scope of this paper, and will not be taken into account. (cid:2)
+
+As an example, Fig. 8(a) and (b) show, respectively, an instance and a possible solution of the Job-shop scheduling
+problem. The instance consists of 3 jobs (J1, J2, and J3) of, respectively, 4, 3, and 5 tasks each. The order in which
+tasks belonging to the same job have to be performed is given by the letter in parentheses (a, b, c, d, e). Tasks have to
+be executed on 3 processors, P1, P2, and P3, which are denoted by different borderlines. Hence, the processor needed
+to perform a given task is given by the task borderline.
+
+To reformulate the Job-shop scheduling problem, after unfolding the speciﬁcation in such a way to have one
+monadic guessed predicate St for each time point t, we focus on a time point t and partition clauses in the speciﬁcation
+in which St does not occur, occurs positively, or negatively, in order to build Ξ , α(k), and β(k). The output of this
+phase is as follows:
+
+• α(k)
+• β(k)
+
+.=
+.=
+
+(cid:6)
+(cid:6)
+
+t(cid:13)=t
+t(cid:13)=t
+
+¬St (k) (obtained by unfolding (13));
+¬St (k) (obtained by unfolding (14)).
+
+α and β above clearly satisfy Hyp 2 of Theorem 1. Moreover, according to the algorithm in Fig. 7, by iteratively
+focusing on all predicates St , we can delay all such (unfolded) constraints. It is worth noting that the unfolding of
+guessed predicates is needed only to formally characterize the reformulation with respect to Theorem 1, and must not
+be performed in practice.
+
+Intuitively, the constraint we delay, i.e. (14), forces each task to have at most one starting time: thus, by delaying
+it, we allow a task to have multiple starting times, i.e., the task does not overlap with any other task at any of its start
+times. Again, in the second stage, we can arbitrarily choose one of them. We observe that a similar approach has been
+used in [15] for an optimized ad-hoc translation of this problem into SAT, where propositional variables represent the
+encoding of earliest starting times and latest ending times for all tasks, rather than their exact scheduled times. As an
+example, Fig. 8(c) shows a solution of the ﬁrst stage of the reformulated problem for the instance in Fig. 8(a), which
+subsumes the solution in Fig. 8(b).
+
+Example 4. (Bin packing [26, Prob. SR1]) In the Bin packing problem (cf. also [36]), we are asked to pack a set I
+of items, each one having a given size, into a set B of bins, each one having a given capacity. Under the assumption
+that input instances are given as extensions for relations I , S, B, and C, where I encodes the set of items, B the set
+of bins, S the size of items (a tuple (cid:17)i, s(cid:18) for each item i), and C the capacity of bins (a tuple (cid:17)b, c(cid:18) for each bin b), an
+ESO speciﬁcation for this problem is as follows:
+
+∃P ∀i, b P (i, b) → I (i) ∧ B(b) ∧
+∀i ∃b I (i) → P (i, b) ∧
+P (i, b) ∧ P (i, b
+∀i, b, b
+(cid:2)(cid:7)
+∀b, c C(b, c) → sum
+
+(cid:14)
+
+(cid:14)
+
+) → b = b
+
+(cid:14)
+
+s | P (i, b) ∧ S(i, s)
+
+(cid:3) c
+
+(18)
+
+(19)
+
+(20)
+
+(21)
+
+(cid:8)(cid:3)
+
+where, to simplify notations, we assume bounded integers to encode the size of items and capacity of bins, and the
+existence of a function sum that returns the sum of elements that belong to the set given as argument. We remind that
+bounded integers and arithmetic operations over them do not add expressive power to ESO.
+
+In the above speciﬁcation, a solution is a total mapping P from items to bins. Constraints force the mapping to be,
+respectively, over the right relations (18), total (19), mono-valued (20), and satisfying the capacity constraint for every
+bin (21).
+
+790
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+(a)
+
+(b)
+
+(c)
+
+Fig. 8. (a) An instance of the Job-shop scheduling problem, consisting in 3 jobs of, respectively, 4, 3, and 5 tasks each, to be executed on 3
+processors. (b) A possible solution of the whole problem for the instance in (a). (c) A solution of the ﬁrst stage of the reformulated problem, that
+subsumes that in (b). Shades indicate multiple good starting times for tasks.
+
+In particular, by unfolding the guessed predicate P to |I | monadic predicates Pi , one for every item i, and, coher-
+ently, the whole speciﬁcation, the constraints that can be delayed are the unfolding of (20), that force an item to be
+packed in exactly one bin. Thus, by iteratively applying Theorem 1 by focusing on all unfolded guessed predicates,
+we intuitively allow an item to be assigned to several bins. In the second stage, we can arbitrarily choose one bin to
+obtain a solution of the original problem.
+
+Other problems that can be reformulated by safe-delay exist. Some examples are Schur’s Lemma (www.csplib.org,
+Prob. 15) and Ramsey problem (www.csplib.org, Prob. 17). A short discussion on how these reformulations can be
+addressed is given in [7].
+
+As showed in the previous examples, it is worth noting that arithmetic constraints do not interfere with our refor-
+mulation technique. As an instance, in the last example, the “(cid:3)” predicate leads to clauses that remain satisﬁed if the
+extension of the selected guessed predicate is shrunk, while keeping everything else ﬁxed.
+
+3.4. Non-shrink second stages
+
+As speciﬁed at the beginning of Section 3, in this paper we have focused on second stages in which the extension
+
+of the selected guessed predicate can only be shrunk, while those for the other ones remain ﬁxed.
+
+Actually, there are other speciﬁcations which are amenable to be reformulated by safe-delay, although with a
+
+different kind of second stages. As an example, we show a speciﬁcation for the Golomb ruler problem.
+
+Example 5. (Golomb ruler (www.csplib.org, Prob. 6)) In this problem, we are asked to put m marks M1, . . . , Mm on
+different points on a ruler of length l in such a way that:
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+791
+
+(1) Mark i is put on the left (i.e., before) mark j if and only if i < j , and
+(2) The m(m − 1)/2 distances among pairs of distinct marks are all different.
+
+By assuming that input instances are given as extensions for unary relations M (encoding the set of marks) and P
+(encoding the l points on the ruler), and that the function “+” and the predicate “<” are correctly deﬁned on tuples in
+M and on those in P , a speciﬁcation for this problem is as follows:
+
+(cid:14)
+
+(cid:14)
+
+∃G ∀m, i G(m, i) → M(m) ∧ P (i) ∧
+∀m ∃i M(m) → P (m, i) ∧
+(cid:14)
+G(m, i) ∧ G(m, i
+∀m, i, i
+(cid:14)
+∀m, m
+(cid:14)
+∀m, m
+
+) → i = i
+(cid:14)
+(cid:14)
+G(m, i) ∧ G(m
+, j, j
+, n, n
+, i, i
+(cid:14)
+(cid:14)
+G(m, i) ∧ G(m
+(cid:14) ∧ n < n
+m < m
+(cid:14) − i) (cid:13)= (j
+
+, i, i
+
+, i
+
+(i
+
+(cid:14)
+
+(cid:14)
+
+(cid:14)
+
+(cid:14)
+
+(cid:14)
+
+) ∧ G(n, j ) ∧ G(n
+) ∧
+, j
+, i
+(cid:14) ∧ (m < n ∨ (m = n ∧ m
+(cid:14)
+< n
+(cid:14) − j ).
+
+(cid:14) ∧
+
+) ∧ m < m
+
+(cid:14) → i < i
+
+(cid:14)
+
+)) →
+
+(cid:14) ∧
+
+(22)
+
+(23)
+
+(24)
+
+(25)
+
+(26)
+
+A solution is thus an extension for the guessed predicate G which is a mapping (22–24) assigning a point in the
+ruler to every mark, such that the order of marks is respected (25) and distances between two different marks are all
+different (26).
+
+Here, the constraint that can be delayed is (25), which forces the ascending ordering among marks. By neglecting
+it, we extend the set of solutions of the original problem with all their permutations. In the second stage, the correct
+ordering among marks can be enforced in polynomial time.
+
+By unfolding the binary guessed predicate G, we obtain |M| monadic predicates Gm, one for each mark m. Once
+a solution of the simpliﬁed speciﬁcation has been computed, by focusing on all of them, in order to reinforce the
+m(m − 1)/2 unfolded constraints derived from (25), we possibly have to exchange tuples among pairs of predicates
+Gm and Gm(cid:14) , for all m (cid:13)= m(cid:14), and not to shrink the extensions of single guessed predicates. Hence, Theorem 1 does
+not apply. Furthermore, a modiﬁcation of some of the other constraints may be needed to ensure the correctness of the
+reformulation. In particular, in constraint (26) differences must be replaced by their absolute values.
+
+As for the effectiveness of such a reformulation, it can be objected that the constraints delayed actually break the
+permutation symmetry, and removing them is likely to be not a good choice. However, even if this is likely to be
+true for CP solvers, like those based on backtracking, it is not obvious for others, e.g., SAT ones. In [7] we show
+how delaying such constraints signiﬁcantly drops down the instantiation time needed by the NP-SPEC SAT compiler,
+without major variations in the solving times of the best SAT solver (ZCHAFF).
+
+Another class of problems that are amenable to be reformulated by safe-delay is an important subclass of per-
+mutation problems, that includes, e.g., Hamiltonian path (HP), Permutation ﬂow-shop, and Tiling. Some preliminary
+results on how these problems can be reformulated appear in [34]. As an example, HP can be reformulated by looking
+for (small) cliques in the graph, and viewing them as single nodes. If we ﬁnd an HP of the reduced graph, we can, in
+polynomial time, obtain a valid solution of the original problem, since cliques can be traversed in any order.
+
+We are currently investigating the formal aspects of such a generalization, and for which class of solvers this kind
+
+of reformulations are effective in practice.
+
+4. Methodological discussion
+
+In this section we make a discussion on the methodology we adopted in this work, in particular the use of ESO as
+
+a modelling language, and the choice of the solvers for the experimentation.
+
+As already claimed in Section 1, and as the previous examples show, using ESO for specifying problems wipes
+out many aspects of state-of-the-art languages which are somehow difﬁcult to take into account (e.g., numbers,
+arithmetics, constructs for functions, etc.), thus simplifying the task of ﬁnding criteria for reformulating problem
+speciﬁcations. However, it must be observed that ESO, even if somewhat limited, is not too far away from the mod-
+elling languages provided by some commercial systems.
+
+792
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+A good example of such a language is AMPL [22], which admits only linear constraints: in this case, the reformu-
+lation technique described in Theorem 1 can often be straightforwardly applied; as an instance, a speciﬁcation of the
+k-coloring problem in such a language is as follows:
+
+param n_nodes;
+param n_colors integer, > 0;
+set NODES := 1..n_nodes;
+set EDGES within NODES cross NODES;
+set COLORS := 1..n_colors;
+
+# Coloring of nodes as a 2-ary predicate
+var Coloring {NODES,COLORS} binary;
+
+s.t. CoveringAndDisjointness {x in NODES}:
+
+# nodes have exactly one color
+sum {c in COLORS} Coloring[x,c] = 1;
+
+s.t. GoodColoring {(x,y) in EDGES, c in COLORS}:
+
+# nodes linked by an edge have diff. colors
+Coloring[x,c] + Coloring[y,c] <= 1;
+
+The reformulated speciﬁcation can be obtained by simply replacing the “CoveringAndDisjointness” constraint with
+the following one:
+
+s.t. Covering {x in NODES}
+
+sum {c in COLORS} Coloring[x,c] >= 1;
+
+thus leading exactly to the reformulated speciﬁcation of Example 1.
+
+As for languages that admit non-linear constraints, e.g., OPL, it is possible to write a different speciﬁcation using
+integer variables for the colors and inequality of colors between adjacent nodes. In this case it is not possible to
+separate the disjointness constraint from the other ones, since it is implicit in the deﬁnition of the domains. Of course,
+study of safe-delay constraints is relevant also for such languages, because we can always specify in OPL problems
+such as the one of Example 5, which has such constraints, or we may want to write a linear speciﬁcation for a given
+problem, in order to use a linear solver, more efﬁcient in many cases (cf. Section 5).
+
+For what concerns the experimentation, it must be observed that a speciﬁcation written in ESO naturally leads
+to a translation into a SAT instance. For this reason, we have chosen to use, among others, SAT solvers for the
+experimentation of the proposed technique. Moreover we considered also the impressive improving in performances
+recently shown by state-of-the art SAT solvers.
+
+As already claimed in Section 1, the effectiveness of a reformulation technique is expected to strongly depend on
+the particular solver used. To this end, we solved the same set of instances with SAT solvers of very different nature
+(cf. Section 5). Finally, since it is well-known that state-of-the-art linear and constraint programming systems may
+perform better than SAT on some problems, we repeated the experimentation by using commercial systems CPLEX
+(linear) and SOLVER (non-linear), invoked by OPLSTUDIO.4
+
+5. Experimental results
+
+We made an experimentation of our reformulation technique on 3-coloring (randomly generated instances), k-
+coloring (benchmark instances from the DIMACS repository5), and job-shop scheduling (benchmark instances from
+OR library6), using both SAT-based solvers (and the NP-SPEC SAT compiler [8] for the instantiation stage), and the
+constraint and linear programming system OPL [48], obviously using it as a pure modelling language, and omitting
+search procedures.
+
+4 Cf. http://www.ilog.com.
+5 Cf. ftp://dimacs.rutgers.edu/pub/challenge.
+6 Cf. http://www.ms.ic.ac.uk/info.html.
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+793
+
+Table 1
+Experimental results for 3-coloring on random instances with 500 nodes (100 instances for each ﬁxed number of edges). Solving times (in seconds,
+with timeout of 1 hour) are relative to each set of 100 instances
+
+Und.
+edges
+
+e/n ZCHAFF
+(cid:9)
+
+No delay
+
+(cid:9)
+
+Delay % sav.
+
+WALKSAT
+(cid:9)
+
+No delay
+
+(cid:9)
+
+Delay % sav.
+
+BG-WALKSAT
+(cid:9)
+
+(cid:9)
+
+No delay
+
+Delay % sav.
+
+SATZ
+(cid:9)
+
+No delay
+
+(cid:9)
+
+Delay % sav.
+
+500
+600
+700
+800
+900
+1000
+1100
+1200
+1300
+1400
+1500
+
+0.26
+2.0
+0.13
+2.4
+0.22
+2.8
+0.2
+3.2
+0.18
+3.6
+0.16
+4.0
+4.4
+11.25
+4.8 80537.81
+1497.69
+5.2
+60.4
+5.6
+18.77
+6.0
+
+0.00
+0.26
+0.92
+0.22 −69.23
+2.22
+45.45
+0.12
+8.48
+50.00
+0.1
+9.33
+0.14
+22.22
+18.18
+48.77
+56.25
+0.07
+12.07 −7.29 119.70
+86843.41 −7.83 129.35
+3.77 134.50
+1441.24
+59.77
+1.04 145.32
+24.1 −28.40 147.68
+
+0.60
+1.82
+7.58
+8.58
+16.52
+42.82
+105.50
+112.05
+115.80
+119.93
+125.25
+
+34.55
+2.43
+18.05
+3.63
+10.61
+9.92
+8.04
+10.95
+9.17
+19.88
+48.62
+12.20
+11.86 119.47
+13.37 129.75
+13.90 138.37
+17.47 145.53
+15.19 152.82
+
+1.85
+3.00
+8.60
+9.82
+17.87
+42.97
+105.47
+113.78
+117.58
+124.68
+128.97
+
+10.17
+23.97
+8.97
+17.43
+7210.96
+13.28
+10.35
+7208.19
+10.14 14408.3
+11.62 18787.4
+11.72 11825.44
+12.31 16686.21
+700.14
+15.02
+95.09
+14.33
+31.56
+15.61
+
+7.17
+5.08
+
+29.50
+43.37
+10804.02 −49.83
+7240.53 −0.45
+14403.53
+0.03
+21603.45 −14.99
+25.81
+8772.81
+26.41
+12279.19
+22.25
+544.35
+17.69
+78.27
+14.61
+26.95
+
+As for the SAT-based experimentation, we used four solvers of very different nature: the DPLL-based complete
+systems ZCHAFF [38] and SATZ [33], and the local-search based incomplete solvers WALKSAT [45] and BG-WALKSAT
+[51] (the last one being guided by “backbones”). We solved all instances both with and without delaying constraints.
+As for OPL, we wrote both a linear and a non-linear speciﬁcation for the above problems, and applied our reformulation
+technique to the linear one (cf. Section 4). All solvers have been used with their default parameters, without any
+heuristic or tuning that would possibly alter their performances. This is coherent with the declarative approach we
+adopted in this paper.
+
+Experiments were executed on an Intel 2.4 GHz Xeon bi-processor computer. The size of instances was chosen so
+that our machine is able to solve (most of) them in more than a few seconds, and less than one hour. In this way, both
+instantiation and post-processing, i.e., evaluation of delayed constraints, times are negligible, and comparison can be
+done only on the solving time.
+
+In what follows, we refer to the saving percentage, deﬁned as the ratio:
+
+(time_no_delay − time_delay)/time_no_delay
+
+3-coloring. We solved the problem on 1500 randomly generated graph instances with 500 nodes each. The number
+of edges varies, and covers the phase transition region [11]: the ratio (# of directed edges/# of nodes) varies between
+2.0 and 6.0. In particular, we considered sets of 100 instances for each ﬁxed number of edges, and solved each set both
+with and without delaying disjointness constraints (timeout was set at 1 hour). Table 1 shows overall solving times for
+each set of instances, for all the SAT solvers under consideration.
+
+As it can be observed, the saving percentage depends both on the edges/nodes ratio, and on the solver. However,
+we have consistent time savings for many classes of instances. In particular, ZCHAFF seems not to be positively
+affected by safe-delay, and, for some classes of instances, e.g., those with 1500 edges, it seems to be negatively
+affected (−28.40%). On the other hand, both local-search based SAT solvers, i.e., WALKSAT and BG-WALKSAT show
+a consistent improvement with our reformulation technique, saving between 13% and 17% for hard instances. This
+behavior is consistent with the observation that enlarging the set of solutions can be proﬁtable for this kind of solvers,
+and will be discussed at the end of this section, since it has been observed in all our experiments. Even if these are
+incomplete solvers, they have been always able to ﬁnd a solution for satisﬁable instances, except for the class of
+input graphs with 1100 edges: in this case, they found a solution on the 40% (WALKSAT) and 50% (BG-WALKSAT)
+of positive instances. Delaying disjointness constraints does not alter this percentage in a signiﬁcant way. Also SATZ
+beneﬁts from safe-delay, with savings between 22% and 26% for hard instances, even if underconstrained instances
+(e.g., those with 700 edges) highlight poorer performances (−49.83%).
+
+It is worth noting, from the experiments described above, that the effectiveness of the reformulation may depend
+also on some instance-dependent parameters like, e.g., the edges/nodes ratio. However, this does exclude that some
+classes of solvers often beneﬁt from the technique. In particular, it is interesting to note that the best technology, i.e.,
+local search, is always improved.
+
+794
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+For what concerns CPLEX instead, experimental results do not highlight signiﬁcant variations in performances,
+since, in many cases, for the same set of 1500 instances, either both solving times were negligible, or a timeout
+occurred both with and without disjointness constraints. Finally, by solving the linear speciﬁcation with SOLVER we
+observed the following mixed evidence: (i) About 15% of the instances were not solved, regardless of safe-delay;
+(ii) Another 15% of the instances were successfully solved with the original speciﬁcation, but performing safe-delay
+on them prevented the system from terminate within the time limit; (iii) As for the remaining instances, average
+savings in time were often appreciable.
+
+k-coloring. We solved the k-coloring problem on several benchmark instances of various classes of the DIMACS
+
+repository, with k close to the optimum, in order to have non-trivial instances, both positive and negative.
+
+Results of our SAT-based experiments are shown in Table 2. As it can be observed, also here the effectiveness of
+the reformulation technique varies among the different solvers. In particular, ZCHAFF beneﬁts by safe-delay on several
+instances, both positive and negative, but not on all of them. On the other hand, for local search solvers WALKSAT
+and BG-WALKSAT, delaying disjointness constraints always (except for very few cases) speeds-up the computation
+(usually by 20–30%). The same happens when using SATZ with even higher savings, even if this solver timeouts for
+several instances.
+
+As for OPL instead, we have mixed evidence, since it is not the case that the linear speciﬁcation (solved using
+CPLEX) is always more efﬁcient than the non-linear one (solved using SOLVER), or vice versa. Indeed, the linear spec-
+iﬁcation, when solved with CPLEX, often, but not always, beneﬁts from safe-delay. Table 3 shows results obtained
+on graphs of various classes of the benchmark set. Differently from Table 2, in this case, due to the higher number
+of instances solved, we opted for showing aggregate results, grouping together instances of the same class. In partic-
+
+Table 2
+Solving times (seconds) for k-coloring (SAT solvers)
+
+Instance
+
+Colors Sol-
+
+ZCHAFF
+
+WALKSAT
+
+BG-WALKSAT
+
+SATZ
+
+vable?
+
+No delay Delay % sav.
+
+No delay Delay % sav. No delay Delay % sav. No delay Delay % sav.
+
+10
+anna
+11
+anna
+10
+david
+11
+david
+8
+DSJC125.5
+10
+DSJC250.5
+5
+DSJC500.1
+5
+le450_5a
+5
+le450_5b
+5
+le450_5c
+9
+le450_5c
+5
+le450_5d
+9
+miles500
+20
+miles500
+30
+mulsol.i.2
+31
+mulsol.i.2
+30
+mulsol.i.3
+31
+mulsol.i.3
+30
+mulsol.i.4
+31
+mulsol.i.4
+30
+mulsol.i.5
+31
+mulsol.i.5
+5
+myciel5
+6
+myciel5
+9
+queen8_8
+10
+queen9_9
+queen11_11 13
+queen14_14 17
+12
+queen8_12
+
+N
+Y
+N
+Y
+N
+N
+N
+Y
+Y
+Y
+Y
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+Y
+Y
+Y
+Y
+Y
+
+24.87
+0.01
+15.15
+0.1
+41.42
+–
+11.14
+17.23
+27.77
+0.02
+11.20
+0.09
+80.19
+0.01
+–
+0.01
+–
+0.01
+–
+0.01
+–
+0.01
+
+39.61
+15.02
+0.00
+0.01
+13.93
+13.04
+0.00
+0.1
+90.25
+4.04
+>98.54
+52.69
+86.09
+1.55
+94.72
+0.91
+95.10
+1.36
+0.00
+0.02
+83.84
+1.81
+1.20 −1233.33
+31.97
+54.55
+0.00
+0.01
+–
+–
+0.00
+0.01
+–
+–
+0.00
+0.01
+–
+–
+0.00
+0.01
+–
+–
+0.00
+0.01
+413.99 1714.26 <−314.08
+0.00
+0.01
+−53.50
+1397.23 2144.76
+–
+–
+−55.95
+863.14
+114.14 −543.04
+1.78 −1269.23
+
+–
+553.46
+17.75
+0.13
+
+0.01
+
+11.83
+5.71
+6.48
+40.00
+0.05
+0.08
+14.33
+4.78
+5.58
+25.00
+0.07
+0.05
+–
+mem mem
+–
+mem mem
+–
+mem mem
+9.23
+4.91
+5.42
+17.30
+5.10
+6.17*
+13.33
+8.67
+10.00*
+0.00
+1.20
+1.20
+4.31
+8.15
+8.52
+6.24
+8.51
+9.08
+31.25
+0.36
+0.53
+20.75
+28.83 22.85
+44.31
+2.36
+21.12
+29.20 23.03
+41.11
+2.48
+19.78
+29.40 23.58
+40.91
+2.38
+19.91
+26.70 21.38
+45.32
+2.53
+12.50
+1.16
+0.00
+0.02
+24.52
+3.95
+10.95
+8.22* 7.31*
+15.13
+35.79
+9.71
+8.27 11.82 −42.94
+11.08
+4.68
+5.27
+
+4.63
+1.33
+0.02
+5.23
+
+4.25
+
+4.22
+
+4.03
+
+4.0
+6.2
+0.06
+0.1
+4.66
+5.52
+0.05
+0.07
+mem mem
+mem mem
+mem mem
+5.51 4.97*
+6.15*
+5.48
+9.65 9.23*
+1.35
+1.47
+8.40
+8.42
+7.38
+9.70
+0.46
+0.63
+30.18 24.16
+2.80
+4.21
+31.47 24.38
+3.05
+4.60
+30.93 24.81
+2.76
+4.98
+28.48 22.63
+2.88
+5.42
+1.15
+1.33
+0.01
+0.01
+4.13
+5.25
+8.43* 7.61*
+14.47 11.63
+
+4.57
+33.33
+15.41
+25.00
+–
+–
+–
+9.97
+10.84
+4.32
+7.95
+0.20
+23.92
+26.32
+19.93
+33.60
+22.51
+33.70
+19.77
+44.48
+20.54
+46.77
+13.75
+0.00
+21.27
+9.68
+19.59
+9.08 −22.75
+5.25
+5.71
+
+7.40
+6.03
+
+–
+0.29
+–
+0.63
+–
+–
+
+–
+0.09
+–
+0.08
+–
+–
+158.67 145.33
+77.16
+96.83
+93.33
+104.62
+20.02
+22.45
+–
+–
+5.20
+6.00
+–
+–
+3.76
+8.36
+–
+–
+2.67
+5.10
+–
+–
+2.70
+5.04
+–
+–
+2.73
+5.08
+–
+–
+2.74
+5.14
+39.25
+52.89
+0.04
+0.10
+0.22
+0.27
+45.51
+56.91
+205.66 175.62
+943.30 708.92
+0.25
+
+0.35
+
+–
+68.97
+–
+87.30
+–
+–
+8.41
+20.31
+10.79
+10.82
+–
+13.33
+–
+55.02
+–
+47.65
+–
+46.43
+–
+46.26
+–
+46.69
+25.79
+60.00
+18.52
+20.03
+14.61
+24.86
+28.57
+
+(‘–’ means that the solver did not terminate in one hour, while ‘mem’ that an out-of-memory error occurred. A ‘*’ means that the local search solver
+did not ﬁnd a solution.)
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+795
+
+Table 3
+Aggregate results (sum of solving times in seconds) for k-coloring (CPLEX)
+
+Class
+
+Leighton
+(le graphs)
+
+Random
+(DSJC graphs)
+
+Reg. alloc.
+(fpsol, mulsol, zeroin graphs)
+
+SGB book
+(anna, david, huck, jean graphs)
+
+SGB miles
+
+SGB games
+
+SGB queen
+
+Mycielsky
+
+All
+
+Instances
+
+Solvable
+
+Number
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+Y
+N
+Total
+
+3
+6
+9
+
+1
+4
+5
+
+9
+1
+10
+
+4
+4
+8
+
+3
+2
+5
+
+1
+1
+2
+
+11
+4
+15
+
+5
+2
+7
+
+37
+24
+61
+
+CPLEX
+
+No delay
+
+4776.52
+110.64
+4887.16
+
+19.22
+5026.08
+5045.30
+
+12423.85
+22.79
+12446.64
+
+2.16
+1.91
+4.07
+
+138.24
+2.98
+141.22
+
+0.97
+0.97
+1.94
+
+11806.53
+8.93
+11815.46
+
+7.08
+6.08
+13.16
+
+29174.57
+5180.38
+34354.95
+
+Delay
+
+6660.07
+40.42
+6700.49
+
+18.15
+4112.10
+4130.25
+
+11179.64
+14.24
+11193.88
+
+2.27
+1.71
+3.98
+
+197.23
+2.07
+199.30
+
+0.88
+1.05
+1.93
+
+6319.20
+9.33
+6328.53
+
+4.97
+5.57
+10.54
+
+24382.41
+4186.49
+28568.90
+
+Saving
+−1883.55
+70.22
+−1813.33
+
+1.07
+913.98
+915.05
+
+1244.21
+8.55
+1252.76
+−0.11
+0.20
+0.09
+−58.99
+0.91
+−58.08
+
+0.09
+−0.08
+0.01
+
+5487.33
+−0.40
+5486.93
+
+2.11
+0.51
+2.62
+
+4792.16
+993.89
+5786.05
+
+Saving %
+−39.43%
+63.47%
+−37.10%
+
+5.57%
+18.18%
+18.14%
+
+10.01%
+37.52%
+10.07%
+−5.09%
+10.47%
+2.21%
+−42.67%
+30.54%
+−41.13%
+
+9.28%
+−8.25%
+0.52%
+
+46.48%
+−4.48%
+46.44%
+
+29.80%
+8.39%
+19.91%
+
+16.43%
+19.19%
+16.84%
+
+ular, for each class, we write the number of instances solved, and the time needed by CPLEX for both positive and
+negative ones, with and without safe-delay (instances that couldn’t be solved in one hour by both speciﬁcations have
+been removed). It can be observed that the reformulated speciﬁcation is more efﬁcient, on the average, especially on
+negative instances. Actually, safe-delay is really deleterious in only two cases: positive instances of “Leighton” and
+“SGB miles” classes.
+
+Job shop scheduling. We considered 40 benchmark instances known as LA01, . . . , LA40, with the number of tasks
+ranging between 50 and 225, number of jobs between 10 and 15, and number of processors ranging between 5 and 15.
+However, in order to make our solvers (especially the SAT ones) able to deal with such large instances, we reduced
+(and rounded) all task lengths and the global deadline by a factor of 20 (original lengths were up to 100). In this way,
+we obtained instances that are good approximations of the original ones, but with much smaller time horizons, hence
+fewer propositional variables need to be generated.
+
+SAT solving times are listed in Table 4 for different values for the deadline. Again, we have a mixed evidence for
+what concerns ZCHAFF, which beneﬁts from safe-delay on many but not all instances, while savings in time are always
+positive when using local search solvers WALKSAT and BG-WALKSAT (even when they are not able to ﬁnd a solution
+for positive instances, delaying constraints makes them terminate earlier). As for SATZ, savings in performances are
+often very high, even if this solver is able to solve only a small portion of the instance set. Interestingly, the blow-
+down in the number of clauses due to safe-delay, in some cases makes the solver able to handle some large instances
+(cf. Table 4, e.g., instance LA06 with deadline 50), preventing the system from running out of memory (even if, in
+many cases, the out-of-memory error changes to a timeout).
+
+796
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+Table 4
+Solving times (seconds) for job shop scheduling
+
+Instance Proc Tasks Jobs Dead-
+
+line
+
+Sol-
+vable?
+
+ZCHAFF
+
+WALKSAT
+
+BG-WALKSAT
+
+SATZ
+
+No delay Delay % sav.
+
+No delay Delay % sav. No delay Delay % sav. No delay Delay % sav.
+
+la01
+la01
+la02
+la02
+la03
+la03
+la04
+la04
+la05
+la05
+la06
+la06
+la07
+la07
+la08
+la08
+la09
+la09
+la10
+la10
+la16
+la16
+la17
+la17
+la18
+la18
+la19
+la19
+la20
+la20
+la22
+la22
+la23
+la23
+la24
+la24
+la25
+la25
+la29
+la29
+la36
+la36
+la38
+la38
+la39
+la39
+la40
+la40
+
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+15
+15
+15
+15
+15
+15
+15
+15
+
+50
+50
+50
+50
+50
+50
+50
+50
+50
+50
+75
+75
+75
+75
+75
+75
+75
+75
+75
+75
+100
+100
+100
+100
+100
+100
+100
+100
+100
+100
+150
+150
+150
+150
+150
+150
+150
+150
+200
+200
+225
+225
+225
+225
+225
+225
+225
+225
+
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+15
+15
+15
+15
+15
+15
+15
+15
+15
+15
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+15
+15
+15
+15
+15
+15
+15
+15
+20
+20
+15
+15
+15
+15
+15
+15
+15
+15
+
+33
+34
+32
+33
+31
+32
+29
+30
+28
+29
+46
+50
+43
+50
+42
+43
+46
+50
+46
+50
+47
+48
+39
+40
+41
+42
+42
+43
+44
+45
+48
+50
+50
+53
+46
+48
+48
+50
+50
+75
+62
+65
+58
+75
+61
+62
+59
+75
+
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+N
+Y
+
+0.69
+0.13
+1.75
+2.34
+2.77
+1.92
+1.11
+4.05
+1.33
+0.29
+–
+0.44
+–
+1.27
+–
+
+0.85 −23.19
+1.24 −853.85
+8.00
+1.61
+54.27
+1.07
+24.19
+2.10
+83.85
+0.31
+4.50
+1.06
+30.12
+2.83
+0.99
+25.56
+0.57 −96.55
+–
+1.89 −329.55
+–
+22.83
+–
+30.83
+–
+
+–
+
+–
+
+–
+0.98
+–
+262.44 181.53
+–
+–
+0.31
+5.76
+–
+–
+2.23
+15.44
+155.26
+41.58
+90.71
+151.64
+87.66
+18.71
+5.42
+3.72
+31.37
+4.19 −13.86
+3.68
+6.31
+33.28
+4.21
+5.75
+3.27
+43.13
+33.87
+33.09
+50.04
+120.68 154.67 −28.17
+11.75
+5.33
+33.32
+13.91
+–
+–
+47.19
+619.5
+– 934.79 >48.07
+42.86
+– 1028.56
+10.70
+138.15 123.37
+– 1083.31 >39.82
+3.52
+356.56 344.02
+438.27 510.21 −16.41
+69.26
+705.09 216.74
+– 1387.73 >22.90
+36.84
+– 527.86 >70.67
+– 844.58 >53.08
+– <−35.36
+1329.74
+1193.76 1773.00 −48.52
+787.54 918.24 −16.60
+27.98
+989.98 712.96
+−8.87
+1154.18 1256.54
+
+6.04
+20.86
+–
+1173.04
+
+1238.04
+
+782
+
+39.83 31.13 21.84
+40.77* 31.42* 22.94
+36.63 28.63 21.84
+37.37* 28.80* 22.93
+32.78 25.37 22.62
+32.85* 25.53* 22.27
+33.22 26.10 21.42
+33.25* 26.22* 21.15
+28.92 22.83 21.04
+26.42 18.40 30.35
+78.10 62.92 19.44
+77.32 60.20* 22.14
+78.35 62.21 20.59
+78.62* 60.78* 22.68
+77.02 60.72 21.16
+76.83* 62.02* 19.28
+86.58 67.20 22.39
+85.73* 65.40* 23.72
+80.80 64.86 19.72
+80.10* 61.90* 22.72
+69.33 51.73 25.38
+69.87* 51.55* 26.22
+57.03 44.46 22.03
+57.82* 44.20* 23.55
+62.30 47.53 23.70
+63.72* 47.50* 25.45
+63.28 47.17 25.47
+64.83* 48.53* 25.14
+66.52 50.68 23.80
+68.87* 50.60* 26.52
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+
+39.55 31.21 21.07
+40.72* 31.95* 21.53
+37.95 29.92 21.17
+38.23* 29.10* 23.89
+32.92 25.11 23.70
+32.67* 26.31* 19.44
+33.48 26.06 22.15
+34.47* 26.02* 24.52
+29.25 23.10 21.03
+27.73* 19.46 29.81
+79.98 63.00 21.23
+78.77* 60.37* 23.36
+80.10 62.55 21.91
+78.08* 59.40* 23.93
+76.18 60.17 21.02
+77.25* 61.07* 20.95
+86.57 67.15 22.43
+83.65* 63.30 24.33
+81.42 63.07 22.54
+80.97* 61.05* 24.60
+67.47 51.11 24.23
+70.70* 51.53* 27.11
+56.23 43.78 22.14
+58.80* 43.71* 25.65
+61.12 45.48 25.58
+62.17* 46.85* 24.64
+47.4 25.90
+63.97
+63.52* 47.58* 25.09
+66.22 49.53 25.20
+67.47* 49.40* 26.78
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+mem mem
+
+–
+
+–
+
+–
+
+–
+–
+–
+–
+
+–
+–
+–
+–
+–
+
+–
+154.49
+–
+–
+–
+–
+
+–
+1.76 98.86
+–
+–
+–
+–
+904.38 189.44 79.05
+699.77 295.12 57.83
+–
+–
+0.89
+0.58 34.83
+mem
+–
+mem
+4.87 100.00
+–
+–
+mem
+–
+–
+–
+–
+–
+–
+mem
+mem 3108.10 100.00
+–
+mem
+–
+–
+mem
+–
+–
+mem
+–
+–
+mem
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+–
+– 3524.02 >2.11
+–
+–
+–
+–
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+–
+mem
+
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+mem
+
+(‘–’ means that the solver did not terminate in one hour, while ‘mem’ that an out-of-memory error occurred. A ‘*’ means that the local search solver
+did not ﬁnd a solution.)
+
+For what concerns the experiments in OPL instead, both CPLEX and SOLVER (run on the linear speciﬁcation), seem
+not to be much affected by delaying constraints (or even affected negatively), and anyway are typically slower than
+SAT. For this reason, detailed results are omitted.
+
+Summing up, we solved several thousands of instances. On the average, delaying constraints seems to be useful
+when using a SAT solver. In particular, local search solvers like WALKSAT and BG-WALKSAT almost always beneﬁt
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+797
+
+from the reformulation. The same happens when using SATZ. As for ZCHAFF, we have mixed evidence, since in
+some cases it seems not to be affected by safe-delay (cf., e.g., results in Table 1), or affected negatively, while in
+others it beneﬁts from the reformulation (cf., e.g., Tables 2 and 4). The behavior of SAT solvers can be explained by
+considering the two phenomena that safe-delay produces: (i) The reduction of the number of clauses, and (ii) The
+enlargement of the set of solutions. The latter phenomenon is particularly beneﬁcial when dealing with local search,
+as already observed in, e.g., [41,43] where symmetry-breaking (a technique that reduces the solution density) has been
+experimentally proven to be an obstacle for these algorithms. Of course, also the reduced number of clauses in general
+helps the solver. Nonetheless, it is worth noting that clauses derived from disjointness constraints are short, and this
+intuitively explains why the most efﬁcient complete solver, ZCHAFF, that has powerful algorithms to efﬁciently deal
+with short clauses (with respect to SATZ), not always beneﬁts from safe-delay.
+
+As far as CPLEX and SOLVER are concerned, we have mixed evidence. First of all, as already observed, it is not
+always the case that the linear speciﬁcation solved with CPLEX is always faster than the non-linear one solved with
+SOLVER, or vice versa. However, in those cases in which CPLEX is faster, delaying constraints often speeds-up the
+computation. This is consistent with the observation that, from a theoretical point of view, ﬁnding a partitioning
+is much harder than ﬁnding a covering, and in practice this often holds also in presence of additional constraints.
+Moreover, as for the beneﬁcial behavior highlighted on negative instances, deeper analyses on the number of iterations
+and branches show that (i) More iterations are needed, on the average, by the simplex algorithm when invoked on the
+speciﬁcation with no delay, and (ii) The number of branches is often unaffected when performing safe-delay. In
+particular, the latter issue suggests that each branch-and-bound subproblem is often solved more efﬁciently on the
+speciﬁcation with safe-delay. Unfortunately, since CPLEX is not an open-source system, it is hard to analyze and
+explain its behavior in greater detail.
+
+Finally, as for SOLVER when invoked on the linear speciﬁcation, we observed that safe-delay has often (but not
+always) a negative effect, and this behavior is in line with the common observation, cf., e.g., the literature about
+symmetry-breaking and the addition of implied constraints, that restricting the set of solutions and adding tighter
+constraints helps when dealing with solvers based on backtracking, since this can signiﬁcantly increase the amount of
+propagation, and consequently leads to a better pruning of the search space.
+
+6. Conclusions, related and future work
+
+In this paper we have shown a simple reformulation architecture and proven its soundness for a large class of
+problems. The reformulation allows to delay the solution of some constraints, which often results in faster solving. In
+this way, we have shown that reasoning on a speciﬁcation can be very effective, at least on some classes of solvers.
+
+Although Theorem 1 calls for a tautology checking (cf. Hyp 2), we have shown different speciﬁcations for which
+this test is immediate. Furthermore, we believe that, in practice, an automated theorem prover (ATP) can be used to
+reason on speciﬁcations, thus making it possible to automatically perform the task of choosing constraints to delay.
+Actually, in another paper [6] we have shown that state-of-the-art ATPs usually perform very well in similar tasks
+(i.e., detecting and breaking symmetries and detecting functional dependencies on problem speciﬁcations).
+
+Related work. Several researchers addressed the issue of reformulation of a problem after the instantiation phase:
+as an example, in [50] it is shown how to translate an instantiated CSP into its Boolean form, which is useful for
+ﬁnding different reformulations, while in [13] the proposed approach is to generate a conjunctive decomposition of
+an instantiated CSP, by localizing independent subproblems. Furthermore, in [24], the system CGRASS is presented,
+allowing for the automated breaking of symmetries and the generation of useful implied constraints in a CSP. Finally,
+in [23] it is shown that abstracting problems by simplifying constraints is useful for ﬁnding more efﬁcient reformula-
+tions of the original problem; the abstraction may require backtracking for ﬁnding solutions of the original problem.
+In our work, we focus on reformulation of the speciﬁcation, i.e., regardless of the instance, and, differently from other
+techniques, the approach is backtracking-free: once the ﬁrst stage is completed, a solution will surely be found by
+evaluating the delayed constraints.
+
+Other papers investigate the best way to encode an instance of a problem into a format adequate for a speciﬁc solver.
+As an example, many different ways for encoding graph coloring or permutation problems into SAT have been ﬁgured
+out, cf., e.g., [25,49]. In particular, the idea of looking for “multivalued” functions has been already implemented in
+ad-hoc techniques for encoding various problems into SAT, like Graph coloring [42,46] and Job shop scheduling [15].
+Conversely, in our work we take a speciﬁcation-oriented approach, giving a formal justiﬁcation of why some of the
+
+798
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+constraints can be safely delayed, and presenting sufﬁcient conditions that can be effectively used in order to isolate
+such constraints.
+
+Finally, we point out that a logic-based approach has also been successfully adopted in the ‘80s to study the query
+optimization problem for relational DBs. Analogously to our approach, the query optimization problem has been
+attacked relying on the query (i.e., the speciﬁcation) only, without considering the database (i.e., the instance), and
+it was ﬁrstly studied in a formal way using ﬁrst-order logic (cf., e.g., [2,10,30,44]). In a later stage, the theoretical
+framework has been translated into rules for the automated rewriting of queries expressed in real world languages and
+systems.
+
+Since the effectiveness of a particular reformulation technique is expected to depend both on the problem and on
+the solver (even if this does not rule out, in principle, the possibility to ﬁnd reformulations that are good for all solvers,
+or for solvers of a certain class), our research investigates the reformulation problem in different and complementary
+directions: in particular, in related work, we study how to detect symmetries [35] and functional dependencies [5]
+among predicates in speciﬁcations, and how speciﬁcations can be rewritten by exploiting these properties: symmetries
+can be broken by appropriate symmetry-breaking constraints added to the problem speciﬁcation, and dependencies
+can be exploited by automatically synthesizing suitable search strategies. Experimental analysis shows how these
+approaches are effective in practice, for different classes of solvers. We have also shown [6] how automatic tools, such
+as ﬁrst-order theorem provers and ﬁnite model ﬁnders can be exploited, in practical circumstances, to make this kind
+of reasoning by computer.
+
+Future work. In this paper we have focused on a form of reformulation which partitions the ﬁrst-order part of a
+speciﬁcation. This basic idea can be generalized, as an example by evaluating in both stages of the computation a
+constraint (e.g., (9)), or to allow non-shrink second stages (cf., e.g., the speciﬁcation for the Golomb ruler problem
+in Example 5), in order to allow reformulation for a larger class of speciﬁcations. Even more generally, the sec-
+ond stage may amount to the evaluation of a second-order formula. In the future, we plan—with a more extensive
+experimentation—to check whether such generalizations are effective in practice.
+
+Another important issue is to understand the relationships between delaying constraints and other techniques, e.g.,
+symmetry breaking. In fact, it is not always the case that delaying constraints, and so making the set of solutions larger,
+improves the solving process. Adding, e.g., symmetry-breaking or implied constraints are well known techniques that
+may reach the same goal with the opposite strategy, i.e., reducing the set of solutions. Currently, it is not completely
+clear in which cases removing constraints results in better performances with respect to adding more constraints to the
+speciﬁcation itself, even if it seems that an important role is played by the nature of constraints we remove or add, e.g.,
+by their amenability to propagation in the search tree, together with the nature of the solver used, e.g., backtracking,
+linear, or based on local search. As for the latter class of solvers, it is known that enlarging the set of solutions can
+signiﬁcantly speed-up performances (cf., e.g., [41,43]). Our experiments on WALKSAT and BG-WALKSAT conﬁrm this
+thesis.
+
+Finally, it is our goal to rephrase the theoretical results into rules for automatically reformulating problem speciﬁ-
+
+cations given in more complex languages, e.g. AMPL and OPL, which have higher-level built-in constructs.
+
+Acknowledgements
+
+This research has been supported by MIUR (Italian Ministry for Instruction, University, and Research) under
+the FIRB project ASTRO (Automazione dell’Ingegneria del Software basata su Conoscenza), and under the COFIN
+project “Design and development of a software system for the speciﬁcation and efﬁcient solution of combinatorial
+problems, based on a high-level language, and techniques for intensional reasoning and local search”. The authors are
+grateful to Carlo Mannino and Stefano Smriglio for useful discussions about CPLEX, and to the anonymous reviewers
+for their comments and suggestions.
+
+Appendix A. Proofs of results
+
+Proof of Theorem 1. Let I be an instance, M ∗ be a list of extensions for (S1, . . . , Sh, S∗) such that (M ∗, I) |= ψ s ,
+and ext(S) be an extension for S such that (M ∗, ext(S), I) |= ψ d .
+
+From the deﬁnition of ψ d , it follows that:
+
+(cid:2)
+
+(cid:3)
+
+∗
+
+M
+
+, ext(S), I
+
+|= ∀X S(X) → S
+
+∗
+
+(X),
+
+799
+
+(A.1)
+
+(A.2)
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+and so, since clauses in Ξ ∗ contain at most negative occurrences of S∗, that:
+
+(cid:3)
+
+∗
+
+, ext(S), I
+
+|= Ξ.
+
+(cid:2)
+M
+
+(cid:2)
+M
+
+(cid:2)
+M
+
+∗
+
+(cid:2)
+M
+
+∗
+
+Furthermore, from the deﬁnition of ψ s it follows that:
+
+(cid:3)
+
+∗
+
+, I
+
+|= ∀X α(X) → S
+
+∗
+
+(X),
+
+and from Hyp 2 that:
+∗
+
+(M
+
+, I) |= ∀X α(X) → S
+
+∗
+
+(X) ∧ β(X).
+
+This implies, by the deﬁnition of ψ d , that:
+(cid:3)
+
+, ext(S), I
+
+|= ∀X α(X) → S(X).
+
+Moreover, by the same deﬁnition, it is also true that:
+
+(cid:3)
+
+, ext(S), I
+
+|= ∀X S(X) → β(X).
+
+(A.3)
+From (A.1–A.3), and from the observation that S∗ does not occur in any of the right parts of them, the thesis fol-
+lows. (cid:2)
+
+Proof of Theorem 2. Let I be an input instance, and M be a list of extensions for (S1, . . . , Sh, S) such that (M, I) |=
+ψ . Let S∗ be deﬁned in such a way that ext(S∗) = ext(S).
+
+Since solutions for ψ are also solutions for ψ s , and since ext(S∗) = ext(S), it follows that ((M − ext(S)) ∪ ext(S∗))
+
+is a solution of ψ s .
+
+As for ψ d , we observe that since M (which is a solution for the whole speciﬁcation ψ) is also a solution for one
+of its constraints, namely ∀X S(X) → β(X) (the delayed constraint), then, from ext(S∗) = ext(S), and in particular
+from the fact that ∀X S(X) → S∗(X) holds, it follows that (M, ext(S∗)) |= ∀X S(X) → S∗(X) ∧ β(X).
+
+Conversely, from ext(S∗) = ext(S), and in particular from the fact that ∀X S∗(X) → S(X) holds, it follows that
+
+(M, ext(S∗)) |= ∀X S∗(X) ∧ β(X) → S(X).
+
+Hence, the thesis follows. (cid:2)
+
+References
+
+[1] S. Abiteboul, R. Hull, V. Vianu, Foundations of Databases, Addison Wesley Publishing Company, Reading, MA, 1995.
+[2] A.V. Aho, Y. Sagiv, J.D. Ullman, Equivalences among relational expressions, SIAM Journal on Computing 2 (8) (1979) 218–246.
+[3] E. Börger, E. Gräedel, Y. Gurevich, The Classical Decision Problem, Perspectives in Mathematical Logic, Springer, Berlin, 1997.
+[4] C.A. Brown, L. Finkelstein, P.W. Purdom, Backtrack searching in the presence of symmetry, in: T. Mora (Ed.), Proceedings of the Sixth
+International Conference on Applied Algebra, Algebraic Algorithms and Error Correcting Codes, Rome, Italy, in: Lecture Notes in Computer
+Science, vol. 357, Springer, Berlin, 1988, pp. 99–110.
+
+[5] M. Cadoli, T. Mancini, Exploiting functional dependencies in declarative problem speciﬁcations, in: Proceedings of the Ninth European
+Conference on Logics in Artiﬁcial Intelligence (JELIA 2004), Lisbon, Portugal, in: Lecture Notes in Artiﬁcial Intelligence, vol. 3229, Springer,
+Berlin, 2004.
+
+[6] M. Cadoli, T. Mancini, Using a theorem prover for reasoning on constraint problems, in: Proceedings of the Ninth Conference of the Italian
+Association for Artiﬁcial Intelligence (AI*IA 2005), Milano, Italy, in: Lecture Notes in Artiﬁcial Intelligence, vol. 3673, Springer, Berlin,
+2005, pp. 38–49.
+
+[7] M. Cadoli, T. Mancini, F. Patrizi, SAT as an effective solving technology for constraint problems, in: Proceedings of the Twentieth Convegno
+
+Italiano di Logica Computazionale (CILC 2005), Roma, Italy, 2005.
+
+[8] M. Cadoli, A. Schaerf, Compiling problem speciﬁcations into SAT, Artiﬁcial Intelligence 162 (2005) 89–120.
+[9] E. Castillo, A.J. Conejo, P. Pedregal, R. García, N. Alguacil, Building and Solving Mathematical Programming Models in Engineering and
+
+Science, John Wiley & Sons, 2001.
+
+[10] A.K. Chandra, P.M. Merlin, Optimal implementation of conjunctive queries in relational databases, in: Proceedings of the Ninth ACM Sym-
+
+posium on Theory of Computing (STOC’77), Boulder, CO, ACM Press, 1977, pp. 77–90.
+
+[11] P. Cheeseman, B. Kanefski, W.M. Taylor, Where the really hard problem are, in: Proceedings of the Twelfth International Joint Conference
+
+on Artiﬁcial Intelligence (IJCAI’91), Sydney, Australia, Morgan Kaufmann, Los Altos, CA, 1991, pp. 163–169.
+
+[12] B.M.W. Cheng, K.M.F. Choi, J.H.-M. Lee, J.C.K. Wu, Increasing constraint propagation by redundant modeling: an experience report, Con-
+
+straints 4 (2) (1999) 167–192.
+
+[13] B.Y. Choueiry, G. Noubir, On the computation of local interchangeability in discrete constraint satisfaction problems, in: Proceedings of the
+
+Fifteenth National Conference on Artiﬁcial Intelligence (AAAI’98), Madison, WI, AAAI Press/The MIT Press, 1998, pp. 326–333.
+
+800
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+[14] T.H. Cormen, C.E. Leiserson, R.L. Rivest, Introduction to Algorithms, The MIT Press, 1990.
+[15] J.M. Crawford, A.B. Baker, Experimental results on the application of satisﬁability algorithms to scheduling problems, in: Proceedings of the
+
+Twelfth National Conference on Artiﬁcial Intelligence (AAAI’94), Seattle, WA, AAAI Press/The MIT Press, 1994, pp. 1092–1097.
+
+[16] J.M. Crawford, M.L. Ginsberg, E.M. Luks, A. Roy, Symmetry-breaking predicates for search problems, in: Proceedings of the Fifth Interna-
+tional Conference on the Principles of Knowledge Representation and Reasoning (KR’96), Cambridge, MA, Morgan Kaufmann, Los Altos,
+CA, 1996, pp. 148–159.
+
+[17] R. Dechter, Constraint networks (survey), in: Encyclopedia of Artiﬁcial Intelligence, second ed., John Wiley & Sons, 1992, pp. 276–285.
+[18] D. East, M. Truszczy`nski, Predicate-calculus based logics for modeling and solving search problems ACM Transactions on Computational
+
+Logic, 2004, submitted for publication.
+
+[19] R. Fagin, Generalized ﬁrst-order spectra and polynomial-time recognizable sets, in: R.M. Karp (Ed.), Complexity of Computation, American
+
+Mathematical Society, Providence, RI, 1974, pp. 43–74.
+
+[20] P. Flener, Towards relational modelling of combinatorial optimisation problems, in: C. Bessière (Ed.), Proceedings of the International Work-
+shop on Modelling and Solving Problems with Constraints, in conjunction with the Seventeenth International Joint Conference on Artiﬁcial
+Intelligence (IJCAI 2001), Seattle, WA, 2001.
+
+[21] P. Flener, J. Pearson, M. Ågren, Introducing ESRA, a relational language for modelling combinatorial problems, in: Proceedings of the Eigh-
+
+teenth IEEE Symposium on Logic in Computer Science (LICS 2004), Uppsala, Sweden, Springer, Berlin, 2003, pp. 214–232.
+
+[22] R. Fourer, D.M. Gay, B.W. Kernigham, AMPL: A Modeling Language for Mathematical Programming, International Thomson Publishing,
+
+1993.
+
+[23] E.C. Freuder, D. Sabin, Interchangeability supports abstraction and reformulation for multi-dimensional constraint satisfaction, in: Pro-
+ceedings of the Fourteenth National Conference on Artiﬁcial Intelligence (AAAI’97), Providence, RI, AAAI Press/The MIT Press, 1997,
+pp. 191–196.
+
+[24] A. Frisch, I. Miguel, T. Walsh, CGRASS: A system for transforming constraint satisfaction problems, in: Proceedings of the Joint Workshop of
+the ERCIM Working Group on Constraints and the CologNet area on Constraint and Logic Programming on Constraint Solving and Constraint
+Logic Programming (ERCIM 2002), Cork, Ireland, in: Lecture Notes in Artiﬁcial Intelligence, vol. 2627, Springer, Berlin, 2002, pp. 15–30.
+[25] A.M. Frisch, T.J. Peugniez, Solving non-boolean satisﬁability problems with stochastic local search, in: Proceedings of the Seventeenth
+
+International Joint Conference on Artiﬁcial Intelligence (IJCAI 2001), Seattle, WA, Morgan Kaufmann, Los Altos, CA, 2001, pp. 282–290.
+
+[26] M.R. Garey, D.S. Johnson, Computers and Intractability: A Guide to the Theory of NP-Completeness, W.H. Freeman and Company, San
+
+Francisco, CA, 1979.
+
+[27] E. Giunchiglia, R. Sebastiani, Applying the Davis–Putnam procedure to non-clausal formulas, in: Proceedings of the Sixth Conference of
+the Italian Association for Artiﬁcial Intelligence (AI*IA’99), Bologna, Italy, in: Lecture Notes in Artiﬁcial Intelligence, vol. 1792, Springer,
+Berlin, 2000, pp. 84–94.
+
+[28] F. Giunchiglia, T. Walsh, A theory of abstraction, Artiﬁcial Intelligence 57 (1992) 323–389.
+[29] T. Hnich, T. Walsh, Why Channel? Multiple viewpoints for branching heuristics, in: Proceedings of the Second International Workshop on
+Modelling and Reformulating CSPs: Towards Systematisation and Automation, in conjunction with the Ninth International Conference on
+Principles and Practice of Constraint Programming (CP 2003), Kinsale, Ireland, 2003.
+
+[30] A. Klug, On conjunctive queries containing inequalities, Journal of the ACM 1 (35) (1988) 146–160.
+[31] N. Leone, G. Pfeifer, W. Faber, T. Eiter, G. Gottlob, S. Perri, F. Scarcello, The DLV System for knowledge representation and reasoning, in:
+
+ACM Transactions on Computational Logic, submitted for publication.
+
+[32] C.M. Li, Integrating equivalency reasoning into Davis–Putnam procedure, in: Proceedings of the Seventeenth National Conference on Artiﬁcial
+
+Intelligence (AAAI 2000), Austin, TX, AAAI Press/The MIT Press, 2000, pp. 291–296.
+
+[33] C.M. Li, Anbulagan, Heuristics based on unit propagation for satisﬁability problems, in: Proceedings of the Fifteenth International Joint
+
+Conference on Artiﬁcial Intelligence (IJCAI’97), Nagoya, Japan, Morgan Kaufmann, Los Altos, CA, 1997, pp. 366–371.
+
+[34] T. Mancini, Reformulation techniques for a class of permutation problems, in: Proceedings of the Ninth International Conference on Principles
+and Practice of Constraint Programming (CP 2003), Kinsale, Ireland, in: Lecture Notes in Computer Science, vol. 2833, Springer, Berlin, 2003,
+p. 984.
+
+[35] T. Mancini, M. Cadoli, Detecting and breaking symmetries by reasoning on problem speciﬁcations, in: Proceedings of the Sixth International
+Symposium on Abstraction, Reformulation and Approximation (SARA 2005), Airth Castle, Scotland, UK, in: Lecture Notes in Artiﬁcial
+Intelligence, vol. 3607, Springer, Berlin, 2005, pp. 165–181.
+
+[36] S. Martello, P. Toth, Knapsack Problems: Algorithms and Computer Implementation, John Wiley & Sons, 1990.
+[37] B.D. McKay, Nauty user’s guide (version 2.2). Available at http://cs.anu.edu.au/~bdm/nauty/nug.pdf, 2003.
+[38] M.W. Moskewicz, C.F. Madigan, Y. Zhao, L. Zhang, S. Malik, Chaff: Engineering an Efﬁcient SAT Solver, in: Proceedings of the Thirty
+
+Eighth Conference on Design Automation (DAC 2001), Las Vegas, NV, ACM Press, 2001, pp. 530–535.
+
+[39] I. Niemelä, Logic programs with stable model semantics as a constraint programming paradigm, Annals of Mathematics and Artiﬁcial Intel-
+
+ligence 25 (3,4) (1999) 241–273.
+
+[40] C.H. Papadimitriou, Computational Complexity, Addison Wesley Publishing Company, Reading, MA, 1994.
+[41] S.D. Prestwich, Supersymmetric modeling for local search, in: Proceedings of the Second International Workshop on Symmetry in Con-
+straint Satisfaction Problems, in conjunction with the Eighth International Conference on Principles and Practice of Constraint Programming
+(CP 2002), Ithaca, NY, 2002.
+
+[42] S.D. Prestwich, Local search on SAT-encoded colouring problems, in: Proceedings of the Sixth International Conference on Theory and
+Applications of Satisﬁability Testing (SAT 2003), Santa Margherita Ligure, Genova, Italy, in: Lecture Notes in Computer Science, vol. 2919,
+Springer, Berlin, 2004, pp. 105–119.
+
+M. Cadoli, T. Mancini / Artiﬁcial Intelligence 170 (2006) 779–801
+
+801
+
+[43] S.D. Prestwich, A. Roli, Symmetry breaking and local search spaces, in: R. Barták, M. Milano (Eds.), Proceedings of the Second International
+Conference on Integration of AI and OR Techniques in Constraint Programming for Combinatorial Optimization Problems (CPAIOR 2005),
+Prague, CZ, in: Lecture Notes in Computer Science, vol. 3524, Springer, Berlin, 2005, pp. 273–287.
+
+[44] Y. Sagiv, M. Yannakakis, Equivalence among relational expressions with the union and difference operations, Journal of the ACM 4 (27)
+
+(1980) 633–655.
+
+[45] B. Selman, H.A. Kautz, B. Cohen, Local search strategies for satisﬁability testing, in: M. Trick, D.S. Johnson (Eds.), Proceedings of the
+
+Second DIMACS Challenge on Cliques, Coloring, and Satisﬁability, Providence, RI, 1993.
+
+[46] B. Selman, H. Levesque, D. Mitchell, A new method for solving hard satisﬁability instances, in: Proceedings of the Tenth National Conference
+
+on Artiﬁcial Intelligence (AAAI’92), San Jose, CA, AAAI Press/The MIT Press, 1992.
+
+[47] B.M. Smith, K. Stergiou, T. Walsh, Using auxiliary variables and implied constraints to model non-binary problems, in: Proceedings of the
+Seventeenth National Conference on Artiﬁcial Intelligence (AAAI 2000), Austin, TX, AAAI Press/The MIT Press, 2000, pp. 182–187.
+
+[48] P. Van Hentenryck, The OPL Optimization Programming Language, The MIT Press, 1999.
+[49] T. Walsh, Permutation problems and channelling constraints, in: R. Nieuwenhuis, A. Voronkov (Eds.), Proceedings of the Eighth International
+Conference on Logic for Programming and Automated Reasoning (LPAR 2001), Havana, Cuba, in: Lecture Notes in Computer Science,
+vol. 2250, Springer, Berlin, 2001, pp. 377–391.
+
+[50] R. Weigel, C. Bliek, On reformulation of constraint satisfaction problems, in: Proceedings of the Thirteenth European Conference on Artiﬁcial
+
+Intelligence (ECAI’98), Brighton, UK, John Wiley & Sons, 1998, pp. 254–258.
+
+[51] W. Zhang, A. Rangan, M. Looks, Backbone guided local search for maximum satisﬁability, in: Proceedings of the Eighteenth International
+Joint Conference on Artiﬁcial Intelligence (IJCAI 2003), Acapulco, Mexico, Morgan Kaufmann, Los Altos, CA, 2003, pp. 1179–1186.
+
+

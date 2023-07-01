@@ -1,0 +1,2837 @@
+Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+
+www.elsevier.com/locate/artint
+
+Voting almost maximizes social welfare despite limited communication ✩
+Ioannis Caragiannis a, Ariel D. Procaccia b,∗
+
+a Research Academic Computer Technology Institute & Department of Computer Engineering and Informatics, University of Patras, Greece
+b School of Engineering and Applied Sciences, Harvard University, USA
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 7 December 2010
+Received in revised form 14 March 2011
+Accepted 23 March 2011
+Available online 5 April 2011
+
+Keywords:
+Computational social choice
+
+In cooperative multiagent systems an alternative that maximizes the social welfare—the sum
+of utilities—can only be selected if each agent reports its full utility function. This may be
+infeasible in environments where communication is restricted. Employing a voting rule to
+choose an alternative greatly reduces the communication burden, but leads to a possible
+gap between the social welfare of the optimal alternative and the social welfare of the
+one that is ultimately elected. Procaccia and Rosenschein (2006) [13] have introduced the
+concept of distortion to quantify this gap.
+In this paper, we present the notion of embeddings into voting rules: functions that receive
+an agent’s utility function and return the agent’s vote. We establish that very low distortion
+can be obtained using randomized embeddings, especially when the number of agents is
+large compared to the number of alternatives. We investigate our ideas in the context
+of three prominent voting rules with low communication costs: Plurality, Approval, and
+Veto. Our results arguably provide a compelling reason for employing voting in cooperative
+multiagent systems.
+
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+
+A major challenge that arises in the design and implementation of multiagent systems is the aggregation of the pref-
+erences of the agents. Voting theory provides a neat solution by giving extremely well-studied methods of preference
+aggregation. In recent years the theoretical aspects of computational voting have been enthusiastically investigated, es-
+pecially within the AI community (see, e.g., [15, Chapter 1] and the many references therein). Moreover, voting has been
+applied for preference aggregation in areas as diverse as Planning, Scheduling, Recommender Systems, Collaborative Filtering,
+Information Extraction, and Computational Linguistics (see, e.g., [7,12,16]).
+
+While the appeal of voting in the context of heterogeneous, competitive multiagent systems is apparent, some multiagent
+systems are centrally designed and fully cooperative (e.g., systems for planning and scheduling, recommender systems, collab-
+orative ﬁltering, and so on). We believe that, to date, the beneﬁt of employing voting in such domains was unclear. Indeed,
+agents are normally assumed to compute a utility for every possible alternative. If the agents are cooperative then they can
+simply communicate their utilities for the different alternatives, and subsequently select an alternative that maximizes the
+social welfare, i.e., the sum of utilities.
+
+However, accurately conveying an agent’s utility function for each alternative may be very costly in terms of commu-
+nication. This could prove to be a serious obstacle in domains where communication is restricted. Communication may
+be limited by the physical properties of the system (e.g., slow or error-prone transmitters, systems with low energy con-
+
+✩
+
+A preliminary version of the paper appeared in the Proceedings of AAAI’10.
+
+* Corresponding author.
+
+E-mail addresses: caragian@ceid.upatras.gr (I. Caragiannis), arielpro@seas.harvard.edu (A.D. Procaccia).
+
+0004-3702/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2011.03.005
+
+1656
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+sumption requirements, etc.) or the representation of the full utility functions may require a huge amount of information.
+Blumrosen et al. [1] outline additional persuasive reasons why communication should be restricted in multiagent settings.
+Fortunately, some prominent voting rules—functions that select an alternative given the preferences of the agents—impose
+a very small communication burden [5], and are moreover resistant to errors in communication [14].
+
+For example, consider the paradigmatic cooperative multiagent system domain: scanning an area on Mars with multiple
+rovers (which are known to have limited communication capabilities). Suppose the rovers must select or update their joint
+plan (this may happen very often), and there are one million alternatives. Moreover, suppose each rover computes a utility
+for each alternative on a scale of one to one million (this is, in fact, a very coarse scale). A rover would need to communicate
+106 · log(106) ≈ 20 · 106 bits in order to report its utility function. In contrast, under the Plurality voting rule, where each
+agent votes for a single alternative and the alternative with most votes wins, a rover only needs to transmit twenty bits. Even
+though current applications may involve a small number of rovers, the research in wireless communication systems already
+envisages large-scale applications (e.g., for environment monitoring, disaster relief, battleﬁeld operations and surveillance)
+with many ultra-small, possibly mobile, wireless devices such as sensors or mini-robots that cooperate towards a common
+goal. Such devices are expected to be fully autonomous, a property that calls for low energy consumption and, consequently,
+for low communication requirements. The Harvard Micro Air Vehicles Project1 provides a concrete example of such a system.
+In this paper we shall argue that, in some cooperative multiagent systems, exact maximization of the social welfare can
+be replaced by very simple voting rules (given an extra ingredient that we present below). The beneﬁt is a huge reduction
+in the communication burden, whereas the cost, a deterioration in the social welfare of the outcome, will be shown to be
+almost negligible in some settings. This arguably provides a pivotal reason for employing voting in cooperative multiagent
+systems, and in AI in general.
+
+1.1. Our approach
+
+The degree to which the social welfare of the outcome can decrease when voting is used is captured by the notion
+of distortion, introduced by Procaccia and Rosenschein [13]. They focus on voting rules that receive as input a ranking of
+the alternatives, and, crucially, assume that each agent reports a ranking such that the alternative that is ranked in the
+kth place has the kth highest utility. Under this assumption, they deﬁne the distortion of a voting rule to be the worst-case
+ratio between the maximum social welfare over all the alternatives, and the social welfare of the winner of the election; the
+worst-case is taken over all the possible utility functions of the agents. After proving some impossibility results, Procaccia
+and Rosenschein further restrict the structure of the utility functions. Even under this additional (very strong) assumption,
+they show that the distortion of most prominent voting rules is linear in the number of alternatives. The approach of
+Procaccia and Rosenschein is descriptive: they propose to use the notion of distortion as a criterion in the comparison of
+different voting rules.
+
+Our main conceptual contribution is the consideration of embeddings into voting rules. An embedding is a set of instruc-
+tions that inform each agent how to vote, based only on the agent’s own utility function, that is, without any communication
+or coordination between different agents. More accurately, an embedding into a speciﬁc voting rule is a function from utility
+functions to votes that are valid under the voting rule. For instance, consider the simple Plurality rule described above. Given
+a utility function, an embedding into Plurality returns the alternative that the agent votes for. Procaccia and Rosenschein
+implicitly use one speciﬁc embedding, but many different embeddings exist. In this sense, our approach is algorithmic: we
+wish to design embeddings in a way that minimizes the distortion.
+
+We redeﬁne the notion of distortion to take embeddings into account. The distortion of an embedding into a voting rule is
+still the worst-case ratio between the maximum social welfare and the social welfare of the winner, but now the winner
+depends both on the voting rule and on the embedding, that is, on the way the utilities of the agents are translated into
+votes. The worst-case is taken over all possible utilities; we do not make any assumption regarding the utilities, except that
+they are normalized.
+
+We take the idea of embeddings into voting rules one step further by allowing randomized embeddings. A randomized
+embedding randomly chooses the agent’s vote, according to some probability distribution. The distortion is deﬁned similarly,
+by taking into account the expected social welfare of the winner of the election. As we shall see, randomization gives us
+great power and ﬂexibility, and ultimately provides us with the tools to design truly low-distortion embeddings.
+
+We wish to design low-distortion embeddings into voting rules with low communication complexity. Indeed, given that
+each of our cooperative agents votes according to the instructions provided by the embedding (in a fully decentralized way),
+then an alternative with social welfare close to optimal may be elected in the face of restricted communication. We ﬁnd the
+existence of low-distortion embeddings rather striking, as the social welfare is a centralized concept.
+
+1.2. Our results
+
+We study the distortion of embeddings into three voting rules: Plurality, Approval (each agent approves a subset of
+alternatives), and Veto (each agent gives a “negative point” to one alternative). Plurality and Veto have the smallest com-
+
+1 http://robobees.seas.harvard.edu.
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1657
+
+munication burden among all prominent voting rules: only log m bits per agent, where m is the number of alternatives.
+Approval requires more communication, m bits per agent, but still less than other prominent voting rules.
+
+We ﬁrst deal with the Plurality rule. We show that any deterministic embedding into Plurality has distortion Ω(m2),
+and also provide a matching upper bound. Our main result deals with randomized embeddings into Plurality: we show that
+the naïve embedding into Plurality, which selects an alternative with probability proportional to its utility, yields constant
+distortion when n = Ω(m ln m), where n is the number of agents, and has extremely low distortion, speciﬁcally 1 + o(1), for
+larger values of n.
+
+Next we investigate the Approval rule. We give a lower bound of Ω(m) for deterministic embeddings, and also present
+a matching upper bound. Our randomized upper bounds for Approval follow directly from the upper bounds for Plurality,
+since any embedding into Plurality is also an embedding into Approval.
+
+These results apply to the case n (cid:2) m. Even though we have no positive theoretical results for the case n (cid:3) m, we present
+experimental results from the application of randomized embeddings into Plurality and Approval on random utility proﬁles;
+the results suggest that relatively low distortion can also be achieved in this case as well provided that the number of
+agents is not very small.
+
+Finally, we consider the Veto rule. We show that any deterministic embedding into Veto has inﬁnite distortion, and the
+same is true for randomized embeddings if n < m − 1. We further show that low-distortion embeddings into Veto can be
+obtained, albeit using a large number of agents. Our related positive result is stated in a more general form and applies to
+any scoring protocol.
+
+2. Embeddings into Plurality
+
+We denote by N = {1, . . . , n} the set of agents, and by A, | A| = m, the set of alternatives.
+We assume that the agents have normalized cardinal utilities over A. Speciﬁcally, let U = U ( A) be the set of utility
+x∈ A u(x) = 1. Each agent i has a utility function u ∈ U . A utility
+
+functions u over A such that for each x ∈ A, u(x) (cid:2) 0, and
+proﬁle is a vector of utility functions
+
+(cid:2)
+
+u = (cid:5)u1, . . . , un(cid:6) ∈ U n.
+
+The social welfare of an alternative x ∈ A with respect to u ∈ U n, denoted by sw(x, u), is the sum of the utilities of x for all
+agents:
+
+sw(x, u) =
+
+(cid:3)
+
+i∈N
+
+ui(x).
+
+In our formal presentation, a voting rule is deﬁned as a function that selects a set of alternatives rather than a single
+alternative. Such a function is formally known as a voting correspondence, hence the term voting rule is slightly abused. We
+must deal with sets of winners since our rules are based on notions of score, and there might be a tie with respect to the
+maximum score.
+
+Under the Plurality rule, each agent casts its vote in favor of a single alternative. The set of winners is the set of alterna-
+
+tives with a maximum number of votes.
+
+A deterministic embedding into Plurality is a function f : U → A. Informally, given an agent i ∈ N with a utility function
+f (u) is the alternative which agent i votes for under the embedding f . Given a utility proﬁle u ∈ U n and an
+
+u ∈ U ,
+embedding f , denote the (Plurality) score of x ∈ A by
+
+sc(x, f , u) =
+
+(cid:4)
+(cid:5)
+(cid:4)
+
+i ∈ N: f (ui) = x
+
+(cid:6)(cid:4)
+(cid:4),
+
+and denote the set of winners by
+
+win( f , u) = argmax
+
+x∈ A
+
+sc(x, f , u).
+
+Note that the argmax function returns a set of maximal alternatives.
+
+A randomized embedding randomly selects one of the alternatives, that is, it is a function f : U → (cid:3)( A), where (cid:3)( A) is
+the space of probability distributions over A. Put another way, given u ∈ U ,
+f (u) is a random variable that takes the value
+x∈ A p(x) = 1. With respect to a randomized embedding f , sc(x, f , u) is a random variable
+x ∈ A with probability p(x), i.e.,
+that takes values in {1, . . . , n}, and win( f , u) is a random variable that takes values in 2 A , the powerset of A. Less formally,
+given a randomized embedding f , a utility proﬁle u, and S ⊆ A, we have some probability (possibly zero) of S being the
+set of winners when f
+
+is applied to u.
+
+(cid:2)
+
+As a measure of the quality of an embedding, we use the notion of distortion, introduced by Procaccia and Rosenschein
+
+[13], but adapt it to apply to general embeddings.
+
+1658
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+Deﬁnition 1 (Distortion).
+
+1. Let f : U → A be a deterministic embedding, u ∈ U n. The distortion of f at u is
+
+dist( f , u) = max y∈ A sw( y, u)
+
+minx∈win( f ,u) sw(x, u)
+
+.
+
+2. Let f : U → (cid:3)( A) be a randomized embedding, u ∈ U n. The distortion of f at u is
+
+dist( f , u) =
+
+max y∈ A sw( y, u)
+E[minx∈win( f ,u) sw(x, u)]
+
+.
+
+3. Let f be a deterministic or randomized embedding. The distortion of f
+
+is
+
+dist( f ) = max
+u∈U n
+
+dist( f , u).
+
+Let us give an intuitive interpretation of this important deﬁnition. The distortion of a deterministic embedding is the
+worst-case ratio between the social welfare of the most popular alternative, and the social welfare of the least popular
+winner, where the worst-case is with respect to all possible utility proﬁles. In other words, we are interested in the question:
+how small can the social welfare of one of the winners be, when compared to the alternative with maximum social welfare?
+Our focus on the social welfare of the “worst” winner is appropriate since the analysis is worst-case. Alternatively, it is
+possible to think of voting rules that elect only one of the alternatives with maximum score, but in the worst-case the most
+unpopular one is elected, that is, in the worst-case ties are broken in favor of alternatives with lower social welfare; this is
+the interpretation of Procaccia and Rosenschein [13].
+
+The deﬁnition of distortion with respect to randomized embeddings is slightly more subtle. Here there is no deﬁnite
+winner. However, given a utility proﬁle u ∈ U , we can talk about the expected minimum social welfare among the winners,
+since the set of winners is simply a random variable that takes values in 2 A , hence minx∈win( f ,u) sw(x, u) is a random
+variable that takes values in the interval [0, n] and its expectation is well deﬁned. The rest of the deﬁnition is identical to
+the deterministic case.
+
+2.1. Deterministic embeddings
+
+Procaccia and Rosenschein [13] consider a speciﬁc, naïve deterministic embedding into Plurality. Their embedding simply
+maps a utility function u ∈ U to an alternative with maximum utility, that is,
+f (u) ∈ argmaxx∈ A u(x). They show that its
+distortion is m − 1 under a very restricted deﬁnition of distortion (called misrepresentation) that assumes a speciﬁc structure
+of utility functions.
+
+It is easy to see that the distortion of this naïve embedding, according to Deﬁnition 1, is at most m2. Indeed, let u ∈ U ,
+is the naïve embedding. By the Pigeonhole Principle, it must hold that sc(x, f , u) (cid:2) n/m.
+and let x ∈ win( f , u), where f
+Now, for each agent i ∈ N such that f (ui) = x, it must hold that ui(x) (cid:2) 1/m, since x has maximum utility and there must
+exist an alternative with utility 1/m (again, by the Pigeonhole Principle). We deduce that sw(x, u) (cid:2) n/m2. On the other
+hand, for any y ∈ A, sw( y, u) (cid:3) n. Therefore,
+
+dist( f ) = max
+u∈U n
+
+max y∈ A sw( y, u)
+minx∈win( f ,u) sw(x, u)
+
+(cid:3) n
+
+n/m2
+
+= m2.
+
+We wish to ask whether there is a clever deterministic embedding into Plurality that (asymptotically) beats the m2 upper
+
+bound given by the naïve one. Our ﬁrst theorem answers this question in the negative.
+
+Theorem 2. Let | A| = m (cid:2) 3, |N| = n (cid:2) (cid:9) m+1
+2
+Ω(m2).
+
+(cid:10), and let f : U → A be a deterministic embedding into Plurality. Then dist( f ) =
+
+Proof. Let f be a deterministic embedding into Plurality. For every pair of distinct alternatives x, y ∈ A, let uxy ∈ U such
+that uxy(x) = 1/2, uxy( y) = 1/2, and uxy(z) = 0 for every z ∈ A \ {x, y}. We claim that we can assume that f (uxy) ∈ {x, y},
+since otherwise the distortion is inﬁnite. Indeed, if f (uxy) = z /∈ {x, y}, then consider a utility proﬁles u where ui ≡ uxy for
+all i ∈ N. Then win( f , u) = {z}, but sw(z, u) = 0, whereas, say, sw(x, u) = n/2 > 0.
+
+Let T be a tournament on A, that is, a complete asymmetric binary relation (see, e.g., [10]). For every two alternatives
+x, y ∈ A, we have that xT y (read: x dominates y) if f (uxy) = x, and yT x if f (uxy) = y. By our claim above, T is well deﬁned.
+, by the Pigeonhole Principle there must be an alternative that
+
+Since the number of pairs of alternatives is
+
+(cid:8)
+
+(cid:7)
+m
+2
+
+= m(m−1)
+2
+
+other alternatives; without loss of generality this alternative is a ∈ A. Let A
+
+(cid:12)
+
+(cid:10) such that for all x ∈ A
+∗ ∈ U as follows: for every x ∈ A
+
+(cid:12)
+
+, xT a. Further, let A
+
+(cid:12)(cid:12) = A \ ( A
+
+(cid:12)(cid:12)
+
+∗(x) = 1/| A
+
+(cid:12)(cid:12)|; for every x ∈ A \ A
+
+, u
+
+(cid:12) ∪ {a}) and notice that | A
+, u
+
+be a subset of
+(cid:12)(cid:12)| = (cid:14) m−1
+(cid:15). Deﬁne
+∗(x) = 0. Then without loss of
+
+(cid:12)(cid:12)
+
+2
+
+is dominated by at least m−1
+2
+alternatives of size (cid:9) m−1
+2
+a utility function u
+generality f (u
+
+∗) = b, with b ∈ A
+
+(cid:12)(cid:12)
+
+, otherwise the distortion is inﬁnite by the same reasoning as above.
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1659
+
+Now, we have | A
+
+(cid:12)| + 1)(cid:15). All the agents in the ﬁrst
+(cid:12)| + 1 blocks of agents, each of size either (cid:9)n/(| A
+block, which is at least as large as any other, have the utility function u
+, there
+is a block of agents with the utility function uax (hence they vote for x). Given this utility proﬁle u, b must be among the
+winners, that is, b ∈ win( f , u). We have that
+
+(therefore they vote for b). For each x ∈ A
+
+(cid:12)| + 1)(cid:10) or (cid:14)n/(| A
+∗
+
+(cid:12)
+
+sw(b, u) (cid:3)
+
+(cid:9)
+
+(cid:10)
+
+n
+(cid:9) m−1
+(cid:10) + 1
+2
+
+·
+
+1
+(cid:14) m−1
+2
+
+(cid:15)
+
+(cid:3) 8n
+m2
+
+,
+
+whereas
+
+(cid:11)
+
+(cid:9)
+
+sw(a, u) (cid:2)
+
+n −
+
+n
+(cid:9) m−1
+(cid:10) + 1
+2
+
+(cid:10)(cid:12)
+
+· 1
+2
+
+(cid:2) n
+6
+
+.
+
+The distortion is at least as large as the ratio between the maximum social welfare and the social welfare of a winner with
+respect to the speciﬁc utility proﬁle u, that is,
+
+∗)
+dist( f ) (cid:2) dist( f , u) (cid:2) sw(a, u
+sw(b, u∗)
+
+(cid:8)
+
+(cid:7)
+m2
+
+.
+
+= Ω
+
+(cid:2)
+
+2.2. Randomized embeddings
+
+Theorem 2 implies that the distortion of any deterministic embedding into Plurality is quite high. Can we do better using
+randomized embeddings? In general, the answer is deﬁnitely positive. However, we start our investigation of randomized
+embeddings into Plurality with a negative result that holds when the number of agents is small.
+
+Theorem 3. Let |N| = n (cid:3) m = | A|. Then any randomized embedding f : U → (cid:3)( A) into Plurality has distortion Ω(m/n).
+
+Proof. Let f be an embedding into Plurality. Consider a utility function u
+exist x
+
+with probability at most 1/m.
+
+∗ ∈ A such that f (u
+
+∗
+∗) = x
+
+un(x
+
+∗
+For i = 1, 2, . . . , n − 1, let ui ≡ u
+∗) = 1, un(x) = 0 for all x ∈ A \ {x
+Now, the probability that {x
+
+be the utility function of agent i, and let the utility function of agent n be deﬁned by
+m , sw(x, u) = n−1
+∗}. We have that sw(x
+
+m for any x ∈ A \ {x
+
+∗, u) = 1 + n−1
+
+∗}.
+
+∗
+∗} = win( f , u) is at most the probability that x
+
+receives a vote from one of the agents
+
+1, 2, . . . , n − 1, i.e., at most (n − 1)/m. We conclude that the distortion of f at u is at least
+
+∗ ∈ U where u
+
+∗(x) = 1/m for all x ∈ A. There must
+
+dist( f , u) =
+
+n−1
+m
+
+1 + n−1
+m
+m ) + (1 − n−1
+
+m ) · n−1
+
+m
+
+· (1 + n−1
+
+=
+
+m
+2(n − 1)
+
++ 1
+2
+
+,
+
+hence dist( f ) = Ω(m/n). (cid:2)
+
+We now turn to our presentation of low-distortion embeddings. It turns out that when the number of agents is at least as
+large as the number of alternatives, a huge reduction in the distortion can be achieved using randomized embeddings. If the
+number of agents is signiﬁcantly larger, the distortion can be very close to one. Indeed, consider the following embedding.
+
+Embedding 1 (Naïve randomized embedding into Plurality). Given a utility function u ∈ U , select alternative x ∈ A with proba-
+bility u(x).
+
+The following powerful theorem is our main result.
+
+Theorem 4. Let |N| = n (cid:2) m = | A|, and denote Embedding 1 by f . Then:
+
+1. dist( f ) = O(m2m/n).
+2. dist( f ) = O(
+3. Let n (cid:2) 3 and (cid:4)(n, m) = 4
+
+m ).
+
+√
+
+(cid:13)
+
+m ln n
+n
+
+. If (cid:4)(n, m) < 1, then dist( f ) (cid:3)
+
+1
+1−(cid:4)(n,m) .
+
+All three bounds on the distortion are required, since each has values of n and m where its guarantees are stronger
+than the others. Asymptotically, the most powerful bound is the one given in Part 1: it guarantees that the distortion of
+Embedding 1 is already constant when n = Ω(m ln m), that is, when the number of agents is slightly larger than the number
+of alternatives. This is very close to the necessary condition n = Ω(m) for obtaining constant distortion that is implied by
+Theorem 3. Part 1 yields a very weak result for the case n = m; in this case, we get by Part 2 that the distortion is O(
+m ).
+Finally, for large values of n we do not ﬁnd it suﬃcient to show that the distortion is constant, we want to establish that it
+
+√
+
+1660
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+is almost one. This does not follow from Part 1 due to the constant hidden in the O notation. However, from Part 3 we get
+that for, e.g., n (cid:2) m2, the distortion is 1 + o(1).
+
+We now prove the theorem. We will require several results regarding the sums of random variables.
+
+Lemma 5. Let X1, . . . , Xn be independent heterogeneous Bernoulli trials. Denote by μ the expectation of the random variable X =
+(cid:2)
+
+i Xi . Then (see, e.g., [11] for the different variations on the Chernoff bounds):
+
+1. (Jogdeo and Samuels [9]) Pr[ X < (cid:14)μ(cid:15)] < 1/2.
+2. (Lower tail Chernoff bound) For any δ ∈ [0, 1],
+(cid:8)
+.
+
+−μδ2/2
+3. (Upper tail Chernoff bound) For any δ (cid:2) 0,
+
+(cid:15)
+X (cid:3) (1 − δ)μ
+
+(cid:3) exp
+
+Pr
+
+(cid:7)
+
+(cid:14)
+
+(cid:14)
+
+(cid:15)
+X (cid:2) (1 + δ)μ
+
+Pr
+
+(cid:3)
+
+(cid:11)
+
+e
+1 + δ
+
+(cid:12)(1+δ)μ
+
+.
+
+4. For δ (cid:2) 2e − 1,
+
+(cid:14)
+
+(cid:15)
+X (cid:2) (1 + δ)μ
+
+Pr
+
+(cid:3) 2
+
+−(1+δ)μ.
+
+5. For δ < 2e − 1 we can use the simpliﬁed inequality
+
+(cid:14)
+
+(cid:15)
+X (cid:2) (1 + δ)μ
+
+Pr
+
+(cid:7)
+
+(cid:3) exp
+
+−μδ2/5
+
+(cid:8)
+.
+
+(1)
+
+(2)
+
+(3)
+
+(4)
+
+Proof of Theorem 4. We prove the theorem’s three parts separately. Part 1 is the most straightforward, while Part 2 is
+similar but slightly more involved, and the proof of Part 3 is quite different and signiﬁcantly more complicated.
+
+is sw(x, u). Let x
+
+Proof of Part 1. Let u ∈ U n be a utility proﬁle. First notice that the expected Plurality score of x ∈ A under the embedding
+∗ ∈ argmaxx∈ A sw(x, u) be an alternative with maximum social welfare. We have that
+x∈ A sw(x, u) = n;
+f
+∗, u) (cid:2) n/m (cid:2) 1. By Part 1 of Lemma 5, with probability at least 1/2 it
+by the assumption that n (cid:2) m, it follows that sw(x
+holds that sc(x
+
+(cid:2)
+
+∗, f , u) (cid:2) (cid:14)sw(x
+Consider some alternative x ∈ A such that
+
+∗, u)(cid:15).
+
+sw(x, u) <
+
+∗, u)
+sw(x
+2e(4m)2m/n
+
+.
+
+(5)
+
+We apply the upper tail Chernoff bound (2) to the random variable sc(x, f , u) with expectation μ = sw(x, u) using (1 +
+δ)μ = (cid:14)sw(x
+
+∗, u)/2, we also have 1 + δ > e(4m)2m/n. Therefore,
+
+∗, u)(cid:15) > sw(x
+
+∗, u)(cid:15). By (5) and since (cid:14)sw(x
+(cid:11)
+
+(cid:14)
+sc(x, f , u) (cid:2)
+Pr
+
+(cid:16)
+
+(cid:7)
+sw
+
+∗
+x
+
+, u
+
+(cid:8)(cid:17)(cid:15)
+
+(cid:3)
+
+1
+(4m)2m/n
+
+(cid:12)(cid:14)sw(x
+
+∗,u)(cid:15)
+
+(cid:11)
+
+(cid:3)
+
+1
+(4m)2m/n
+
+(cid:12)
+
+sw(x
+
+∗,u)/2
+
+(cid:3) 1
+4m
+
+,
+
+where the last inequality follows since sw(x
+
+∗, u) (cid:2) n/m.
+By the union bound, the probability that either sc(x
+
+∗, u)(cid:15), or some alternative x that satisﬁes (5) has
+is at most 3/4. Therefore, with probability 1/4 all the winners have social welfare at least
+
+∗, f , u) < (cid:14)sw(x
+
+sc(x, f , u) (cid:2) (cid:14)sw(x
+sw(x
+
+∗, u)(cid:15),
+
+∗, u)/(2e(4m)2m/n). Hence
+∗, u)
+dist( f , u) (cid:3) sw(x
+sw(x∗,u)
+2e(4m)2m/n
+
+1
+4
+
+·
+
+= 8e · (4m)2m/n.
+
+Since n (cid:2) m, we have that 42m/n (cid:3) 16. It follows that the distortion of f
+
+is as announced.
+
+∗
+Proof of Part 2. The proof is similar to Part 1. Given u ∈ U n, we once again denote by x
+social welfare, and we let L ⊂ A be the set of alternatives with social welfare smaller than sw(x
+
+the alternative with maximum
+
+√
+
+∗, u)/(3e
+
+m ), that is,
+
+(cid:18)
+
+L =
+
+x ∈ A: sw(x, u) <
+
+∗, u)
+sw(x
+√
+m
+
+3e
+
+(cid:19)
+
+.
+
+If L = ∅ then the claim follows trivially, hence we can restrict our attention to three cases. In all three cases we demonstrate
+that with constant probability no alternative in L is among the winners, that is, with probability bounded away from zero
+an alternative with social welfare at least sw(x
+
+m ) is elected, which directly yields the bound on the distortion.
+
+∗, u)/(3e
+
+√
+
+Case 1: sw(x
+probability that sc(x
+√
+2/(3e
+
+∗, u) < 2 and |L| = 1. Since n (cid:2) m it also holds that sw(x
+
+∗, f , u) = 0 is at most 1/2. Let x be the element of L. Since sw(x
+
+∗, u) (cid:2) 1 and, hence, by Jogdeo and Samuels the
+∗, u) < 2, it also holds that sw(x, u) <
+√
+
+m ) and, by Markov’s inequality, we have that the probability that sc(x, f , u) (cid:2) 1 is at most 2/(3e
+
+m ) < 1/4.
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1661
+
+Case 2: sw(x
+votes for an alternative not in L. We have that
+
+∗, u) < 2 and |L| > 1. For each i ∈ N, let Xi be a random variable such that Xi = 1 if f (ui) /∈ L, that is, agent i
+
+(cid:3)
+
+Xi =
+
+(cid:3)
+
+x /∈L
+
+sc(x, f , u).
+
+i∈N
+
+(cid:2)
+
+The sum
+
+x /∈L sc(x, f , u) has expectation at least
+
+m − 2
+√
+3e
+
+m
+
+· |L| > m − |L| + 1.
+
+By Jogdeo and Samuels (using the fact that the Xi are independent) with probability at least 1/2 it holds that
+(cid:2)
+x /∈L sc(x, f , u) (cid:2) m − |L| + 1. If so then by the Pigeonhole Principle there exists some alternative x0 ∈ A \ {L} which has
+
+sc(x0, f , u) (cid:2) 2.
+
+Now, consider some alternative x ∈ L. We apply Eq. (2) to the random variable sc(x, f , u) with expectation μ = sw(x, u)
+
+√
+
+√
+
+using (1 + δ)μ = 2. Since μ (cid:3) 2/(3e
+
+m ), it holds that 1 + δ > 3e
+
+m. We conclude that
+
+(cid:14)
+sc(x, f , u) (cid:2) 2
+Pr
+
+(cid:15)
+
+(cid:3)
+
+(cid:12)
+2
+
+(cid:11)
+
+1
+√
+
+3
+
+m
+
+= 1
+9m
+
+.
+
+By the union bound the probability that some alternative in L is among the winners is at most (1/9m) · m + 1/2 = 11/18.
+∗, u)(cid:15) is at most 1/2. Next we consider
+
+Case 3: sw(x
+some alternative x ∈ L. We apply (2) to the random variable sc(x, f , u) with expectation μ = sw(x, u) using
+
+∗, u) (cid:2) 2. By Jogdeo and Samuels, the probability that sc(x
+
+∗, f , u) < (cid:14)sw(x
+
+(1 + δ)μ =
+
+(cid:16)
+
+sw
+
+(cid:7)
+
+∗
+x
+
+(cid:8)(cid:17)
+
+, u
+
+.
+
+Since
+
+μ <
+
+∗, u)
+sw(x
+√
+m
+
+3e
+
+it holds that 1 + δ > 2e
+
+∗, u)(cid:15)
+(cid:14)sw(x
+√
+m
+2e
+
+,
+
+(cid:3)
+
+√
+
+m. We conclude that
+(cid:12)(cid:14)sw(x∗,u)(cid:15)
+
+(cid:11)
+
+(cid:14)
+sc(x, f , u) (cid:2) 2
+Pr
+
+(cid:15)
+
+(cid:3)
+
+1
+√
+
+(cid:11)
+
+(cid:3)
+
+1
+√
+
+(cid:12)
+
+2
+
+= 1
+4m
+
+.
+
+m
+Similarly to Case 2, we apply the union bound and conclude that the probability that sc(x, f , u) (cid:2) sc(x
+
+m
+
+2
+
+2
+
+∗, f , u) for some
+
+x ∈ L is at most (1/4m) · m + 1/2 = 3/4.
+
+Proof of Part 3. Given u ∈ U n we consider the alternative x
+√
+set of alternatives with social welfare at most sw(x
+there exists x ∈ L such that sc(x, f , u) (cid:2) sc(x
+either
+
+∗ ∈ A with the maximum social welfare. Denote by L ⊂ A the
+sw(x∗, u) ln n. We will show that the probability that
+2 +
+∗, f , u) is at most m/n. Speciﬁcally, we will establish that the probability that
+
+∗, u) − (
+
+5 )
+
+√
+
+√
+
+(cid:7)
+
+(cid:8)
+, f , u
+
+∗
+x
+
+sc
+
+(cid:7)
+
+(cid:8)
+, u
+
+∗
+x
+
+−
+
+(cid:3) sw
+
+(cid:7)
+2 sw
+
+(cid:8)
+x∗, u
+
+ln n
+
+(cid:13)
+
+∗, f , u) with δ =
+
+(cid:20)
+
+(2 ln n)/(sw(x∗, u)). Since the expectation of
+
+(cid:3) 1
+n
+Next we consider an alternative x ∈ L and the random variable sc(x, f , u). This variable has expectation μ < sw(x
+2 +
+
+sw(x∗, u) ln n. We apply the upper tail Chernoff bound with δ such that
+
+2 sw
+
+ln n
+
+5 )
+
+√
+
+√
+
+.
+
+√
+(
+
+∗, u) −
+
+or
+
+(cid:7)
+sc(x, f , u) (cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+−
+
+(cid:13)
+
+(cid:7)
+2 sw
+
+(cid:8)
+x∗, u
+
+ln n
+
+for some x ∈ L is at most m/n.
+
+sc(x
+
+We ﬁrst apply bound (1) to the random variable sc(x
+∗, f , u) is sw(x
+(cid:7)
+
+∗, u) we have that
+(cid:7)
+(cid:8)
+(cid:3) sw
+, f , u
+
+(cid:8)
+x∗, u
+
+(cid:14)
+sc
+Pr
+
+(cid:8)
+, u
+
+∗
+x
+
+∗
+x
+
+(cid:13)
+
+−
+
+(cid:7)
+
+(cid:15)
+
+(cid:7)
+(1 + δ)μ = sw
+√
+
+(cid:13)
+
+(cid:8)
+, u
+
+∗
+x
+
+−
+
+(cid:7)
+
+(cid:8)
+x∗, u
+
+ln n.
+
+2 sw
+
+Clearly, δμ >
+
+5 sw(x∗, u) ln n. If δ (cid:2) 2e − 1, Eq. (3) yields
+(cid:13)
+
+(cid:14)
+sc(x, f , u) (cid:2) sw
+Pr
+
+(cid:7)
+
+∗
+x
+
+(cid:8)
+, u
+
+−
+
+2 sw
+
+(cid:7)
+
+(cid:8)
+x∗, u
+
+(cid:15)
+
+ln n
+
+(cid:3) 2
+
+−(sw(x
+
+∗,u)−
+
+√
+2 sw(x∗,u) ln n ) (cid:3) 2
+
+−(16−4
+
+√
+2 ) ln n (cid:3) 1
+n
+
+1662
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+where the second inequality follows from the fact that sw(x
+n/m > 16 ln n.
+
+If δ < 2e − 1, Eq. (4) yields
+
+(cid:14)
+sc(x, f , u) (cid:2) sw
+Pr
+
+(cid:7)
+
+∗
+x
+
+(cid:8)
+, u
+
+−
+
+(cid:13)
+
+(cid:7)
+2 sw
+
+(cid:8)
+x∗, u
+
+ln n
+
+(cid:15)
+
+(cid:3) exp
+
+(cid:11)
+
+− (δμ)2
+5μ
+
+(cid:12)
+
+(cid:11)
+
+< exp
+
+− sw(x
+
+∗, u) ln n
+μ
+
+(cid:12)
+
+(cid:3) 1
+n
+
+.
+
+∗, u) (cid:2) n/m and since the assumption (cid:4)(n, m) < 1 implies that
+
+By the union bound, we have that the probability that some of the undesired events happen is at most m/n (there are at
+most m such events). Hence, with probability at least 1 − m/n some alternative x ∈ A \ L is the winner, and the expected
+score of the worst winner is at least
+
+(cid:7)
+
+(cid:7)
+sw
+
+∗
+x
+
+(cid:8)
+, u
+
+√
+
+− (
+
+2 +
+
+√
+
+5 )
+
+sw
+
+(cid:13)
+
+(cid:8)
+
+ln n
+
+(cid:7)
+
+(cid:8)
+x∗, u
+(cid:21)
+
+(cid:11)
+
+(cid:12)
+
+1 − m
+n
+(cid:12)(cid:11)
+
+(cid:11)
+
+(cid:11)
+
+(cid:7)
+
+(cid:8)
+, u
+
+∗
+x
+
+= sw
+
+(cid:7)
+(cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+(cid:7)
+(cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+(cid:7)
+(cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+√
+
+1 − (
+
+2 +
+
+√
+
+√
+
+5 )
+
+(cid:22)
+
+ln n
+sw(x∗, u)
+(cid:12)(cid:11)
+
+m ln n
+
+√
+
+1 − (
+(cid:11)
+
+(cid:11)
+
+1 −
+
+(cid:11)
+
+(cid:22)
+
+1 − 4
+
+2 +
+
+5 )
+
+√
+
+√
+
+2 +
+
+m ln n
+
+5 + 1
+4
+(cid:12)
+
+n
+(cid:12)(cid:22)
+
+1 −
+(cid:12)
+
+m ln n
+
+n
+
+(cid:7)
+
+∗
+x
+
+= sw
+
+(cid:8)(cid:7)
+
+, u
+
+n
+(cid:8)
+1 − (cid:4)(n, m)
+
+.
+
+(cid:12)
+
+1 − m
+n
+(cid:22)
+
+(cid:12)
+
+m ln n
+
+16n
+
+The second transition holds since n (cid:2) 3 together with (cid:4)(n, m) < 1 imply that
+
+(cid:22)
+
+(cid:22)
+
+(cid:3)
+
+m
+
+n
+
+m
+
+(cid:3)
+
+16n ln n
+
+m ln n
+
+16n
+
+and, furthermore, sw(x
+α, β ∈ [0, 1]. (cid:2)
+
+∗, u) (cid:2) n/m. The third transition follows from the inequality (1 − α)(1 − β) (cid:2) (1 − α − β) for any
+
+Our ﬁnal result regarding embeddings into Plurality asserts that the upper bound of O(
+
+m ) for the case of n = m, which
+follows from Part 2 of Theorem 4, is almost tight. This case is especially interesting since for slightly larger values of n the
+distortion is constant.
+
+√
+
+Theorem 6. Let |N| = n = m = | A|, and denote Embedding 1 by f . Then dist( f ) = Ω(
+
+(cid:13)
+
+m
+ln m ).
+
+Proof. The main idea is the construction of a utility proﬁle with “heavy” (high social welfare) alternatives and “light” (low
+social welfare) alternatives; the heavy alternatives have social welfare and score of exactly two, whereas the light alterna-
+tives have low social welfare and expected score. However, since there are many light alternatives, with high probability at
+least one such alternative has a score of two.
+
+Formally, let t, λ, and k be integers to be deﬁned later. Consider an instance with N = N
+(cid:12) ∪ A
+(cid:12)(cid:12)| = λ (i.e., n = t + λ). Furthermore, let A = A
+(cid:12)(cid:12)
+|N
+that m = n, which implies that m = λ(k − 1). We construct a utility proﬁle u ∈ U n as follows. Each x ∈ A
+1 with respect to the utility functions of exactly two agents in N
+1/k with respect to the utility functions of exactly two of the agents in N
+
+(cid:12)| = t and
+(cid:12)(cid:12)
+(cid:12)(cid:12)| = kλ/2 (i.e., m = t/2 + kλ/2). It also holds
+has utility equal to
+has utility
+
+, that is, for all x ∈ A
+(cid:12)(cid:12)
+
+(cid:12)| = t/2 and | A
+
+, where |N
+
+, where | A
+
+(cid:12) ∪ N
+
+(cid:12)
+
+(cid:12)
+
+(cid:12)(cid:12)
+, sw(x, u) = 2. Each x ∈ A
+, sw(x, u) = 2/k.
+
+(cid:12)
+, hence for all x ∈ A
+k2 . Moreover, the probability that sc(x, f , u) < 2
+k2 . Therefore (by an implicit application
+
+(cid:12)(cid:12)
+
+The probability that an alternative x ∈ A
+(cid:12)(cid:12)
+
+given that a subset other alternatives in A
+of the chain rule) the probability that no x ∈ A
+
+(cid:12)(cid:12)
+
+satisﬁes sc(x, f , u) < 2 is 1 − 1
+
+have score less than two is at most 1 − 1
+
+(cid:12)(cid:12)
+
+has score two is at most
+
+(cid:12)
+
+kλ/2
+
+(cid:11)
+
+1 − 1
+k2
+
+(cid:3) exp
+
+(cid:11)
+− λ
+2k
+
+(cid:12)
+
+.
+
+Selecting λ = 2(cid:9)k ln k(cid:10), we have that the probability that no alternative in A
+the distortion is at least
+
+(cid:12)(cid:12)
+
+has score two is at most 1/k. It follows that
+
+2
+· (1 − 1
++ 2
+k )
+k
+
+(cid:2) k
+2
+
+.
+
+2 · 1
+k
+
+Clearly m = O(k2 ln k) and, hence, the bound on the distortion follows. (cid:2)
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1663
+
+3. Embeddings into Approval
+
+Under the Approval rule, each agent approves a subset of the alternatives. Each approved alternative receives one point.
+
+The set of winners includes the alternatives with most points, summed over all the agents.
+
+We must reformulate some of our deﬁnitions in order to apply our notions to Approval voting. A deterministic embedding
+into Approval is a function f : U → 2 A , where 2 A is the powerset of alternatives. In words, an agent with a utility function
+u approves each of the alternatives in f (u). The (Approval) score of an alternative is redeﬁned to be
+
+sc(x, f , u) =
+
+(cid:4)
+(cid:5)
+(cid:4)
+
+i ∈ N: x ∈ f (ui)
+
+(cid:6)(cid:4)
+(cid:4).
+
+A randomized embedding is a function f : U → (cid:3)(2 A). The rest of the deﬁnitions (in particular, the deﬁnition of distortion)
+are the same as before.
+
+3.1. Deterministic embeddings
+
+In Section 2 we have seen that no deterministic embedding into Plurality can achieve distortion better than Ω(m2) (The-
+orem 2). As it turns out, better results can be achieved with respect to Approval. Indeed, consider the following Embedding.
+
+Embedding 2 (Deterministic embedding into Approval). Given a utility function u, approve the subset of alternatives x ∈ A such
+that u(x) (cid:2) 1/m.
+
+The following straightforward result establishes that the distortion of this embedding is O(m).
+
+Theorem 7. Let |N| = n, | A| = m, and denote Embedding 2 by f . Then dist( f ) (cid:3) 2m − 1.
+
+Proof. Let u be a utility proﬁle. Let x ∈ win( f , u) be a winning alternative, and let x
+∗
+the social welfare. Alternative x
+respect to sc(x
+
+∗) < 1/m with respect to n − sc(x
+
+∗, f , u) agents. Hence,
+
+has ui(x
+
+∗ ∈ A be an alternative which maximizes
+∗, f , u) agents i, and has utility at most one with
+
+(cid:7)
+
+(cid:8)
+, u
+
+∗
+x
+
+sw
+
+(cid:7)
+
+∗
+x
+
+< sc
+
+(cid:7)
+
+(cid:7)
+n − sc
+
+∗
+x
+
++
+
+(cid:8)(cid:8)
+
+, f , u
+
+· 1
+m
+
+(cid:12)
+
+(cid:7)
+
+(cid:8)
+, f , u
+
+∗
+x
+
+· sc
+
+(cid:8)
+, f , u
+(cid:11)
+
+1 − 1
+m
+(cid:12)
+
++
+
+= n
+m
+(cid:11)
+2 − 1
+m
+
+(cid:3)
+
+· sc(x, f , u) (cid:3) (2m − 1) · sw(x, u).
+
+∗, f , u) (cid:3) sc(x, f , u)) and also has score at least
+The third transition holds since x is a winning alternative (and, hence, sc(x
+n/m (since, by the deﬁnition of the embedding, at least one alternative is approved by each agent). The last transition
+follows from the deﬁnition of the embedding, which implies that sc(x, f , u) (cid:3) m · sw(x, u). (cid:2)
+
+Unfortunately, it is impossible to design low-distortion deterministic embeddings into Approval. In fact, the following
+
+theorem asserts that the simple Embedding 2 is asymptotically optimal.
+
+Theorem 8. Let |N| = n (cid:2) 2, | A| = m (cid:2) 3, and let f : U → 2 A be a deterministic embedding into Approval. Then dist( f ) (cid:2) (m − 1)/2.
+
+Proof. Let f be a deterministic embedding into Approval. Consider the utility function u1 ∈ U where u1(a) = 0, u1(x) =
+∗ ∈ A \ {a}, otherwise
+1/(m − 1) for all x ∈ A \ {a}. We can assume that f (u1) does not approve a and approves at least one x
+we get inﬁnite distortion by considering the utility proﬁle where ui ≡ u1 for all i ∈ N. Without loss of generality f (u1)
+approves b ∈ A \ {a}.
+
+Now, let u2 ∈ U be deﬁned by u2(a) = 1, u2(x) = 0 for all x ∈ A \ {a} (in particular, u2(b) = 0). We deﬁne a utility
+proﬁle u ∈ U n by setting ui ≡ u1 for (cid:9)n/2(cid:10) agents i, and ui ≡ u2 for (cid:14)n/2(cid:15) agents i. By the argument above it holds that
+b ∈ win( f , u), but (using the assumption on the size of n and m) it holds that
+
+dist( f , u) (cid:2) sw(b, u)
+sw(a, u)
+
+(cid:2) m − 1
+2
+
+.
+
+We conclude that dist( f ) (cid:2) (m − 1)/2. (cid:2)
+
+1664
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+3.2. Randomized embeddings
+
+In the context of deterministic embeddings, we have seen that there is a gap between the distortion of embeddings into
+Approval and embeddings into Plurality. It turns out that there is also a huge gap with respect to randomized embeddings,
+when the number of agents is very small.
+
+Indeed, consider the randomized embedding f
+
+into Approval that, with probability 1/2, approves an alternative with
+maximum utility, and with probability 1/2 approves all the alternatives. Further, assume that N = {1, 2}, and let u ∈ U 2.
+∗) (cid:2) ui(x) for all x ∈ A and all i ∈ N. Then clearly, for every
+Without loss of generality there exists x
+∗} with probability at least 1/4. Hence, the distortion
+x ∈ A, sw(x, u) (cid:3) 2 · sw(x
+of this embedding is at most eight, i.e., constant. This reasoning can easily be extended to obtain constant distortion with
+respect to any constant n. Compare this result with Theorem 3.
+
+∗, u). Moreover, it holds that win( f , u) = {x
+
+∗ ∈ A such that u1(x
+
+However, as before, we are mostly interested in the case of a large number of agents. Crucially, every embedding into
+Plurality can also be seen as an embedding into Approval, where for every utility function exactly one alternative is ap-
+proved. Hence, the powerful positive result regarding Embedding 1, namely Theorem 4, also holds with respect to Approval.
+
+It is natural to consider the following embedding into Approval.
+
+Embedding 3 (Naïve randomized embedding into Approval). Given a utility proﬁle u ∈ U n, independently approve each alter-
+native x ∈ A with probability u(x).
+
+So, in contrast to Embedding 1 into Plurality, under Embedding 3 multiple alternatives can be approved. However, the
+expected score of an alternative under both embeddings is identical. This implies (not directly) that Theorem 4, and even
+the lower bound given in Theorem 6, apply to Embedding 3 as well.
+
+It remains open whether there is a gap in the distortion of randomized embeddings into Plurality and randomized em-
+beddings into Approval when n (cid:2) m. Interestingly enough, the lower bound of Ω(
+m/ ln m ) for n = m (Theorem 6) also
+holds with respect to some natural embeddings into Approval which may approve multiple alternatives, such as Embed-
+ding 4 that is considered in the next section.
+
+(cid:20)
+
+4. Experimental results
+
+In this section, we present experimental results concerning representative randomized embeddings into Plurality and
+Approval. Our aim is to shed some light on the enigmatic case in which the number of agents is smaller than the number
+of alternatives. The main message from our experiments is that eﬃciency with respect to the distortion can be obtained by
+randomized embeddings in this case as well. Recall that our positive result (Theorem 4) does not apply to this case.
+
+We remark that, since the deﬁnition of distortion involves all utility proﬁles with speciﬁc numbers of agents and alterna-
+tives as well as the expectation of the social welfare of the winning alternative, we should not expect its exact measurement
+in our experiments. Instead, we will approximate the distortion of embeddings by considering many utility proﬁles that are
+produced according to carefully selected probability distributions, which can serve as strong adversaries for our embeddings,
+and by considering the execution of the embeddings many times on each utility proﬁle. Our experimental setting also al-
+lows us to make interesting observations about the eﬃciency of embeddings on particular probability distributions of utility
+proﬁles; in this context, we will examine distortion measurements that deviate from the standard deﬁnition of distortion
+(see below) and are speciﬁc to particular probability distributions.
+
+In more detail, we consider utility proﬁles that are produced randomly according to a family of different probability
+
+distributions. The probability distributions are deﬁned as follows for values of parameter τ in [1, +∞).
+
+τ -biased probability distributions. A speciﬁc alternative x is identiﬁed. For each agent, we pick a random value in the
+range [0, 1] for each alternative. We multiply the value corresponding to the speciﬁc alternative x by τ . These values are
+then normalized (so that their sum is unity) in order to compute the utility function of the agent over the alternatives.
+
+We use the term τ -biased utility proﬁles to refer to utility proﬁles that are produced randomly according to the τ -biased
+
+probability distribution. Such utility proﬁles have the following properties:
+
+• The expected social welfare of all alternatives except x is the same.
+• The expected social welfare of alternative x is τ times the expected social welfare of any other alternative.
+
+The rationale behind the selection of these probability distributions is that they can challenge our embeddings (by
+producing utility proﬁles that are diﬃcult to handle eﬃciently) and reveal empirical statements of some generality about
+their distortion. Intuitively, the social welfare of an alternative will be concentrated around its expectation. In the extreme
+case of τ -biased proﬁles for high values of τ , most agents will also have a high utility for a particular alternative (i.e.,
+alternative x). This alternative probably has the highest social welfare and should be the winner in any low-distortion
+embedding. Indeed, our experimental results will verify this observation. On the other hand, in τ -biased utility proﬁles
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1665
+
+for small values of τ , it may not be apparent that the alternative with the highest social welfare is the one that would
+be selected by the voting rule; recall that the number of alternatives is large, the randomized embeddings make random
+choices and, furthermore, the number of agents is small. The ability of our embeddings to identify alternatives with high
+social welfare (for different values of τ ) will reﬂect their eﬃciency in terms of the distortion.
+
+In the experiments presented below we have run Embedding 1 into Plurality on τ -biased utility proﬁles. We have also
+considered the following embedding into Approval which tries to exploit the extra ﬂexibility Approval provides by allowing
+each agent to approve any number of alternatives.
+
+Embedding 4. For any agent, pick a value in [0, 1] uniformly at random and approve all alternatives (if any) that have utility
+higher than this value.
+
+We remark that Embedding 3 could be a natural embedding to consider here but, not surprisingly, the results obtained
+are similar to those of Embedding 1. Our upper bound analysis (i.e., the statement and proof of Theorem 4) can be easily
+seen to extend to Embedding 4 as well but it does not capture the case in which the number of agents is smaller than the
+number alternatives.
+
+In our experiments, the distortion at a utility proﬁle is computed using Deﬁnition 1.2 as the average social welfare of the
+winner after 1000 executions of the randomized embedding over the maximum social welfare among all alternatives in the
+particular proﬁle. Ties among different winning alternatives are broken in favor of the alternative with the minimum social
+welfare as Deﬁnition 1.2 suggests. The results from a representative set of experiments are depicted in Fig. 1. The four plots
+contain results from the application of Embeddings 1 and 4 on τ -biased utility proﬁles (for values of τ that are powers of 2
+and lie between 1 and 128) with 64 or 128 alternatives and 8 or 16 agents. Here, we have used a distortion measure that is
+speciﬁc to τ -biased utility proﬁles for a given value of τ and particular numbers of agents and alternatives. More precisely,
+for each point in the four plots of Fig. 1, the distortion value was computed as the maximum distortion in 1000 different
+τ -biased utility proﬁles. This gives us a more reﬁned measure of the eﬃciency of randomized embeddings as a function of
+the values of τ .
+
+The results provide information the theoretical analysis cannot provide unless it becomes very detailed and adapted to
+the particular probability distributions. In all experiments we have performed with Embedding 1 for Plurality, the distortion
+is non-monotonic with respect to τ . There exists a particular value (or range of values) of τ for which the distortion is
+maximized (see Fig. 1). The low-distortion values for high values of τ can be easily explained. According to the deﬁnition
+of τ -biased utility proﬁles, many agents are expected to have a signiﬁcantly higher utility for the particular alternative x.
+Consequently, Embedding 1 will translate such utilities into a vote for alternative x, and hence x is often selected. For small
+values of τ , the social welfare of the alternatives is around the (same, more or less) expectation, and Embedding 1 computes
+a winner with social welfare that is not far from the maximum one. τ -biased utility proﬁles for intermediate values of τ
+are the most diﬃcult to handle. However, in all cases the distortion is relatively low.
+
+Interestingly, the experimental results indicate that the behavior of Embedding 4 on τ -biased utility proﬁles is different.
+Our observation for Embedding 1 for high values of τ applies to Embedding 4 as well. On the other hand, Embedding 4
+seems to have its highest distortion for small values of τ (unlike Embedding 1, which eﬃciently handles such utility pro-
+ﬁles). This is due to the fact that, by its deﬁnition, Embedding 4 cannot help an agent distinguish between alternatives that
+have comparable utility since (unlike Embedding 1) it may translate the utility function of an agents to approvals for all such
+alternatives. This effect almost vanishes as τ increases and, for most values of the parameter τ , Embedding 4 signiﬁcantly
+outperforms Embedding 1, quickly reaching optimal distortion. This last phenomenon is more apparent when the number
+of agents is large (compare Figs. 1(c) and 1(d) with Figs. 1(a) and 1(b), respectively) and implies that the extra ﬂexibility of
+Embedding 4 is beneﬁcial in this case.
+
+A summary of the results of our experiments with proﬁles with 64 or 128 alternatives and a number of agents that is a
+power of 2 between 2 and 64 or 128, respectively, is depicted in the two plots of Fig. 2. These results are similar in spirit to
+our upper bound statements (e.g., Theorem 4) in the sense that the distortion bounds are worst-case among utility proﬁles
+produced according to different probability distributions. Each point in these plots represents the maximum distortion
+observed in τ -biased proﬁles for all different values of τ that are powers of 2 with the particular number of agents and
+number of alternatives corresponding to the point. For example, the point of Fig. 2(b) that corresponds to the execution of
+Embedding 1 with 16 agents has a distortion value equal to the maximum (i.e., 4.73) among the eight distortion values for
+this embedding in Fig. 1(d) (that is obtained for τ = 8). So, the distortion value at each point in the plots of Fig. 2 is the
+maximum distortion observed in 8000 different utility proﬁles. The remaining points have been produced by running the
+two embeddings in utility proﬁles with appropriate parameters.
+
+The results suggest a threshold behavior with respect to the relative performance of the two embeddings: Embedding 1
+outperforms Embedding 4 in proﬁles with small number of agents, whereas the opposite is true when the number of agents
+is high. The transition takes place when the number of agents goes from 8 to 16 and pinpoints the threshold at which the
+extra ﬂexibility that Approval provides (and Embedding 4 exploits) becomes beneﬁcial. Alternatively, this transition in the
+behavior of Embeddings 1 and 4 can be observed by examining the maximum distortion (over all values of τ ) of each
+embedding in the four plots of Fig. 1 (and can be explained by the discussion on the behavior of Embedding 4 above).
+However, in general, the results indicate that, at least for the particular family of probability distributions of utility proﬁles,
+the distortion of both embeddings is O (m/n). This claim is supported by the 13 pairs of points depicted in Fig. 2 as well as
+
+1666
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+Fig. 1. Experiments in proﬁles with 64 or 128 alternatives and 8 or 16 agents. The distortion is a function of parameter τ which takes as values the powers
+of 2 from 1 to 128. Note that the scale of the x-axis is logarithmic.
+
+by other experiments on utility proﬁles with intermediate numbers of alternatives and agents that are not reported here.
+This bound matches asymptotically the theoretical lower bound of Theorem 3 and is superior to the theoretical upper bound
+of Theorem 4 (for n = m). The latter is to be expected since the lower bound construction used in the proof of Theorem 3
+is unlikely to be produced by the τ -biased probability distributions.
+
+5. Embeddings into Veto
+
+Under the Veto rule, each agent vetoes a single (presumably least preferred) alternative. The set of winners includes all
+the alternatives that are vetoed the least number of times. Equivalently, each agent awards one point to all the alternatives
+except one, and the alternatives with most points are the winners.
+
+The Veto rule can be interpreted as a scoring rule. Such a rule is deﬁned by a vector of real numbers (α1, α2, . . . , αm)
+with α1 = 1 (cid:2) α2 (cid:2) · · · (cid:2) αm−1 (cid:2) αm = 0. Let L( A) denote the set of rankings over A. The vote of each agent is an element
+of L( A). The number of points awarded by an agent to the alternative ranked in the kth position is αk. Veto then is the
+scoring rule deﬁned by (1, . . . , 1, 0). Plurality is the scoring rule deﬁned by (1, 0, . . . , 0).
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1667
+
+Fig. 2. Summary of experiments in proﬁles with 64 or 128 alternatives. The distortion is a function of the number of agents (which takes as values the
+powers of 2 from 2 to the number of alternatives). Note that the scale in both axes is logarithmic.
+
+In this section we are mostly interested in the Veto rule, due to its low communication costs (log m bits per agent).
+However, one can think of other scoring rules with low communication costs, e.g., 2-approval deﬁned by (1, 1, 0, . . . , 0) or
+2-antiapproval deﬁned by (1, . . . , 1, 0, 0). Hence, we will formulate some of our results for scoring rules in general. Note
+that a deterministic embedding into a scoring rule R is a function f : U → L( A), whereas a randomized embedding is a
+function f : U → (cid:3)(L( A)).
+
+5.1. Deterministic embeddings
+
+The Plurality and Veto rules are closely related in the sense that agents must award an equal number of points to
+almost all alternatives, and therefore cannot make a distinction in their votes between very desirable and very undesirable
+alternatives. However, this turns out to be a more acute problem under Veto, since agents cannot even single out one good
+alternative. The following deﬁnition allows us to quantify this property.
+
+Deﬁnition 9. Let R be a scoring rule with score vector (α1, α2, . . . , αm) over m alternatives with 1 = α1 (cid:2) α2 (cid:2) · · · (cid:2) αm−1 (cid:2)
+αm = 0. The decisiveness dR of R is deﬁned as dR = m −
+m
+i=1 αi .
+
+(cid:2)
+
+Observe that the decisiveness of a scoring rule lies between 1 (for Veto) to m − 1 (for Plurality). Procaccia and Rosen-
+schein [13] (implicitly) relate the distortion of the naïve deterministic embedding to decisiveness. The naïve deterministic
+embedding simply computes a non-increasing ordering of the alternatives with respect to their utilities, breaking ties among
+the alternatives according to a predeﬁned rule (e.g., lexicographically).
+
+Theorem 10. (See Procaccia and Rosenschein [13].) The naïve deterministic embedding into a scoring rule R with decisiveness at most
+m − 2 has inﬁnite distortion.
+
+We can extend the above impossibility result to any deterministic embedding.
+
+Theorem 11. Let |N| = n (cid:2) 1 and | A| = m (cid:2) 3, and let f : U → A be a deterministic embedding into a scoring rule with α1 = α2.
+Then dist( f ) = ∞.
+
+Proof. Let a ∈ A and u be a utility proﬁle such that for all i ∈ N, ui(a) = 1, and ui(x) = 0 for all x ∈ A \ {a}. Let f be an
+embedding into a scoring rule with α1 = α2 = 1. Let y ∈ A \ {a} that is ranked in one of the ﬁrst two positions of the
+ranking f (u). Then, y has a score of n and, hence, y ∈ win( f , u). Since sw(a, u) = n and sw( y, u) = 0, it follows that the
+distortion of f
+
+is inﬁnite. (cid:2)
+
+It follows that for all the scoring protocols that could be of interest due to their low communication requirements,
+
+deterministic embeddings have inﬁnite distortion.
+
+1668
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+5.2. Randomized embeddings
+
+First, observe that if n < m − 1, then any randomized embedding into Veto has inﬁnite distortion, for reasons similar to
+∗ ∈ A and 0 for the remaining
+the deterministic case (Theorem 11). Indeed, consider n agents with utility 1 for alternative x
+m − 1 alternatives. At least one of these m − 1 alternatives is not vetoed, and hence it is included in the set of winners.
+However, for larger values of n it is possible to obtain positive results; we consider the following embedding into any scoring
+rule.
+
+Embedding 5 (Randomized embedding into scoring rules). Given a utility function u ∈ U , select an alternative x ∈ A with
+probability u(x) to be ranked ﬁrst; denote the selected alternative by x
+. Now, complete the ranking at positions 2, . . . , m
+by selecting a random permutation among the alternatives in A \ {x
+
+∗}.
+
+∗
+
+For Veto Embedding 5 reduces to the following scheme. As in the general embedding, select an alternative x ∈ A with
+. Now, the vetoed alternative f (u) is selected uniformly at ran-
+∗} is selected with probability 1/(m − 1)). Interestingly, for Plurality
+
+∗} (that is, each alternative in A \ {x
+
+probability u(x), and denote the selected alternative by x
+dom from A \ {x
+Embedding 5 reduces to Embedding 1.
+
+∗
+
+We have the following upper bound on the distortion of Embedding 5.
+
+Theorem 12. Let |N| = n (cid:2) m = | A|, n (cid:2) 3, and denote by f the Embedding 5 to a scoring rule R with decisiveness dR ∈ [1, m − 1].
+Furthermore, let
+
+(cid:22)
+
+(cid:4)(n, m) = 2m(m − 1)
+
+dR
+
+ln n
+
+n
+
+.
+
+If (cid:4)(n, m) < 1, then dist( f ) (cid:3)
+
+1
+1−(cid:4)(n,m) .
+
+The proof of this theorem is along similar lines to the proof of Part 3 of Theorem 4. The main difference is that, instead
+of using Lemma 5 which applies to sums of Bernoulli trials, we now have to use a more general inequality due to Hoeffding
+[8] which applies to sums of independent heterogeneous random variables (taking values in the range [0, 1]). We note that,
+since this inequality is more general, it yields a weaker bound for Plurality than the one obtained in Part 3 of Theorem 4.
+
+Lemma 13. (See Hoeffding [8].) Let X1, . . . , Xn be independent heterogeneous random variables with Xi ∈ [0, 1]. Denote by μ the
+expectation of the random variable X =
+
+(cid:2)
+
+i Xi . Then for any λ > 0,
+
+Pr[| X − μ| (cid:2) λ] (cid:3) exp
+
+(cid:11)
+
+(cid:12)
+
+.
+
+− 2λ2
+n
+
+Proof of Theorem 12. Let λ = 1
+2
+by L the set of alternatives with social welfare less than sw(x
+
+∗
+n ln n. Given u ∈ U n, consider the alternative x
+
+∗, u) − 2λ m−1
+dR
+
+. We will show that the probability that either
+
+with maximum social welfare and denote
+
+√
+
+(cid:7)
+
+(cid:8)
+, f , u
+
+∗
+x
+
+sc
+
+(cid:14)
+
+(cid:7)
+
+sc
+
+∗
+x
+
+(cid:3) E
+
+(cid:8)(cid:15)
+
+, f , u
+
+− λ
+
+or
+
+sc(x, f , u) (cid:2) E
+
+(cid:7)
+
+(cid:14)
+sc
+
+∗
+x
+
+(cid:8)(cid:15)
+
+− λ
+
+, f , u
+√
+
+for some x ∈ L is at most m/
+
+n.
+Using the Hoeffding bound for the random variable sc(x
+
+(cid:7)
+
+(cid:14)
+sc
+Pr
+
+∗
+x
+
+(cid:8)
+, f , u
+
+(cid:14)
+
+(cid:7)
+
+sc
+
+∗
+x
+
+(cid:3) E
+
+(cid:8)(cid:15)
+
+, f , u
+
+(cid:15)
+
+(cid:14)(cid:4)
+(cid:4)sc
+
+(cid:3) Pr
+
+(cid:7)
+
+∗
+x
+
+− λ
+
+∗, f , u), we have
+(cid:14)
+sc
+
+− E
+
+(cid:8)
+, f , u
+
+∗
+x
+
+(cid:7)
+
+(cid:8)(cid:15)(cid:4)
+
+(cid:4) (cid:2) λ
+
+, f , u
+
+(cid:15)
+
+(cid:3) exp
+
+(cid:12)
+
+(cid:11)
+− 2λ2
+n
+
+= 1√
+n
+
+.
+
+Now, observe that for any x ∈ A and i ∈ N, the score x receives from agent i when applying f on the utility proﬁle ui is
+α1 = 1 with probability ui(x) and α j with probability 1−ui (x)
+m−1
+(cid:24)
+
+for j = 2, . . . , m. Hence,
+
+(cid:23)
+
+(cid:15)
+(cid:14)
+sc(x, f , u)
+
+E
+
+=
+
+=
+
+(cid:3)
+
+i∈N
+(cid:3)
+
+(cid:11)
+
+i∈N
+
+ui(x) · 1 +
+
+m(cid:3)
+
+j=2
+
+1 − ui(x)
+m − 1
+
+· α j
+
+ui(x) +
+
+(cid:7)
+1 − ui(x)
+
+(cid:8) m − dR − 1
+m − 1
+
+(cid:12)
+
+= m − dR − 1
+m − 1
+
+n + dR
+
+m − 1
+
+sw(x, u).
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1669
+
+Therefore for every alternative x ∈ L it holds that
+
+(cid:14)
+
+(cid:7)
+
+sc
+
+∗
+x
+
+E
+
+(cid:8)(cid:15)
+
+, f , u
+
+n + dR
+
+− λ = m − dR − 1
+m − 1
+(cid:2) m − dR − 1
+n + dR
+m − 1
+(cid:14)
+(cid:15)
+sc(x, f , u)
+
++ λ.
+
+= E
+
+m − 1
+
+m − 1
+
+(cid:7)
+
+(cid:8)
+, u
+
+∗
+x
+
+sw
+
+− λ
+
+sw(x, u) + λ
+
+Using this last observation and the Hoeffding bound for the random variable sc(x, f , u), we have
+(cid:14)
+(cid:3) Pr
+
+(cid:15)
+sc(x, f , u)
+
+∗
+x
+
+(cid:8)(cid:15)
+
+(cid:7)
+
+(cid:14)
+
+(cid:15)
+
+(cid:14)
+sc(x, f , u) (cid:2) E
+Pr
+(cid:2) E
+
+(cid:14)
+
+(cid:14)
+sc(x, f , u)
+
+(cid:15)(cid:4)
+(cid:4) (cid:2) λ
+
+(cid:15)
+
+By the union bound the probability that some of the undesirable events happen is at most m/
+
+n. Hence, with probability
+n there is no x ∈ L among the winners. We conclude that the expected social welfare of the worst winner
+
+√
+
+√
+
+− λ
+(cid:15)
+
+, f , u
+sc
+sc(x, f , u) + λ
+(cid:14)(cid:4)
+(cid:4)sc(x, f , u) − E
+(cid:12)
+(cid:11)
+− 2λ2
+n
+
+(cid:3) Pr
+
+(cid:3) exp
+
+= 1√
+n
+
+.
+
+at least 1 − m/
+is at least
+
+(cid:11)
+
+(cid:7)
+sw
+
+∗
+x
+
+(cid:8)
+, u
+
+− 2λ(m − 1)
+dR
+
+(cid:12)(cid:11)
+
+1 − m√
+n
+
+(cid:12)(cid:11)
+
+(cid:12)
+
+(cid:12)
+
+(cid:12)(cid:11)
+
+1 − m√
+n
+1 − m√
+n
+
+(cid:12)
+
+(cid:11)
+
+(cid:7)
+
+(cid:8)
+, u
+
+∗
+x
+
+= sw
+
+√
+1 − (m − 1)
+
+n ln n
+dR · sw(x∗, u)
+ln n
+
+(cid:22)
+
+(cid:7)
+(cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+(cid:7)
+(cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+(cid:7)
+(cid:2) sw
+
+∗
+x
+
+(cid:8)
+, u
+
+(cid:7)
+
+∗
+x
+
+= sw
+
+, u
+
+(cid:8)(cid:7)
+
+(cid:11)
+1 − m(m − 1)
+dR
+(cid:11)
+1 − m(m − 1)
+dR
+(cid:11)
+1 − 2m(m − 1)
+dR
+(cid:8)
+1 − (cid:4)(n, m)
+
+.
+
+(cid:22)
+
+n
+
+ln n
+
+(cid:12)
+
+2
+
+(cid:12)
+
+n
+
+(cid:22)
+
+ln n
+
+n
+
+∗, u) (cid:2) n/m, the third transition easily
+The ﬁrst transition follows by substituting λ, the second transition holds since sw(x
+follows by the condition on (cid:4)(n, m) using n (cid:2) 3, and the fourth transition follows from (1 − α)2 (cid:2) 1 − 2α. This concludes
+the theorem’s proof. (cid:2)
+
+As corollaries, we have that if n/ ln n (cid:2) 16m2(m − 1)2, then the distortion of Embedding 5 into Veto is at most two. In
+
+addition, for instances with (cid:4)(n, m) = o(1), the distortion is at most 1 + o(1).
+
+When n is not much larger than m we can show an exponential lower bound on the distortion of Embedding 5 into Veto
+by exploiting the relation to the well-known coupon collector problem (see, e.g., [11]). Indeed, consider an instance with n
+∗
+and 0 for all other alternatives. Then, our embedding into Veto should
+agents with utility 1 for a particular alternative x
+∗
+the one that will not get score 1 (i.e., the one that will be ranked
+select equiprobably among all alternatives besides x
+was ranked last in the preferences of some agent is the
+last). Hence, the question of whether every alternative besides x
+same as the question of whether all m − 1 coupons will be randomly selected after n trials. When n = (m − 1) ln(m − 1)/2
+the probability that this happens is exponentially low (i.e., O (exp(−
+n ))) and, therefore, the expected social welfare of
+√
+the alternative to be selected will be at most O (exp(−
+n )). More generally we
+have the following theorem. Note that, in order to keep the exposition simple, we assume that f simply returns the vetoed
+alternative (as opposed to a ranking of all the alternatives).
+
+n )) and the distortion at least Ω(exp(
+
+√
+
+√
+
+∗
+
+Theorem 14. Let n = |N| (cid:2) | A| = m, and let f : U → (cid:3)( A) be a randomized embedding into Veto. Then dist( f ) = Ω(m/
+
+√
+
+n ).
+
+Proof. Let f be a randomized embedding into Veto. Let N = N
+later. We deﬁne a utility proﬁle u ∈ U n as follows. For all i ∈ N
+utility 1/m for each alternative. Let x
+this utility proﬁle, i.e., for all i ∈ N
+
+(cid:12)(cid:12)| = λ, with λ to be deﬁned
+have
+∗ ∈ A be the alternative that has the highest probability of being vetoed under f given
+
+(cid:12)(cid:12)
+and x ∈ A, ui(x) = 1/m, that is, all the agents in N
+
+(cid:12)| = n − λ and |N
+
+, where |N
+
+(cid:12) ∪ N
+(cid:12)
+
+,
+
+(cid:12)
+
+(cid:12)
+
+(cid:14)
+Pr
+
+∗
+f (ui) = x
+
+(cid:15)
+
+(cid:14)
+(cid:2) Pr
+
+(cid:15)
+f (ui) = x
+
+.
+
+(6)
+
+1670
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+Furthermore, for all i ∈ N
+sw(x, u) = (n − λ)/m for all x ∈ A \ {x
+
+we have ui(x
+∗}.
+
+(cid:12)(cid:12)
+
+∗) = 1, ui(x) = 0 for all x ∈ A \ {x
+
+∗}. Note that sw(x
+
+∗, u) = λ + (n − λ)/m, whereas
+
+(cid:12)
+
+It follows from Eq. (6) that the probability that x
+
+is among the λ + 1 alternatives that are vetoed least by the agents
+is at most (λ + 1)/m. Therefore with probability at least 1 − (λ + 1)/m there are λ + 1 alternatives that are vetoed
+as there are only λ such
+, and at least one of them is not vetoed by the agents in N
+
+by N
+
+(cid:12)(cid:12)
+
+(cid:12)
+
+in N
+∗
+at most as many times as x
+agents. We conclude that the distortion of f
+
+is at least
+
+∗
+
+dist( f , u) (cid:2)
+
+λ + n−λ
+m ) + (1 − λ+1
+n ), we get that dist( f ) (cid:2) Ω(m/
+
+· (λ + n−λ
+
+λ+1
+m
+
+m
+
+m ) · n−λ
+√
+
+m
+n ). (cid:2)
+
+=
+
+√
+
+Taking λ = Θ(
+
+λ + n−λ
+
+m
+
+λ+1
+m
+
+· λ + n−λ
+
+m
+
+.
+
+Theorem 14 provides a necessary condition n = Ω(m2) in order to obtain constant distortion into Veto, whereas Em-
+bedding 1 yields a constant upper bound when n = Θ(m ln m) with respect to Plurality and Approval. Hence, randomized
+embeddings into Veto are provably less eﬃcient even when the number of agents is larger than the number of alternatives.
+
+6. Discussion
+
+In this section we discuss a few prominent issues.
+
+6.1. On the interpretation of our results
+
+Interestingly, our technical results deal with embeddings into voting rules and are not directly related to communication,
+
+therefore the results may lend themselves to different interpretations.
+
+Procaccia and Rosenschein [13] motivate their work by arguing that in some systems voting must be used since utilities
+cannot be calculated or cannot be compared, even though exact and comparable utilities conceivably exist. This situation
+is less common in systems that are populated entirely by computational agents (although bounded rationality may be an
+issue), and more common in systems that also involve humans. Procaccia and Rosenschein do assume that the agents rank
+the alternatives according to decreasing utility, but this does not require calculating the exact utilities.
+
+In contrast, the randomized embeddings introduced in this paper require the computation of exact utilities. So, we are
+dealing with systems (that are presumably populated solely by computational agents) where one could potentially gather
+exact utilities and select the best alternative. One possible interpretation of our results is that they can be used to improve
+the performance of systems that, by design, are unnecessarily constrained to use voting when utilities could have been
+reported, but this is not an approach we wish to advocate. We feel that our interpretation in terms of communication
+reduction, as presented in the introduction, provides a robust motivation that ties in closely to the results.
+
+6.2. Relation to work on compact preferences
+
+A signiﬁcant body of work in AI is devoted to compactly representing preferences. A prominent example is the work on
+CP-nets [2], a graphical representation of preferences that employs conditional ceteris paribus (all else being equal) prefer-
+ence statements. This representation is often compact and admits eﬃcient algorithms for different inference tasks. Another
+example is a recently proposed representation of utility functions using weighted propositional formulas [17]. By consider-
+ing different restrictions on the syntax of formulas and the weights one can obtain different representation languages, each
+capturing a different class of utility functions.
+
+This line of work proposes to reduce communication and computation burdens by making arguably natural assumptions
+regarding the utility functions. In contrast, in this paper we impose no restrictions on the utility functions (with the ex-
+ception of the extremely weak normalization assumption, see below); rather, we reduce communication by slightly relaxing
+the optimality of the outcome.
+
+6.3. Generality of normalized utilities
+
+It is easy to see that very strong lower bounds would hold without assuming that the utilities are normalized. We
+argue though that this assumption is essentially without loss of generality. Indeed, the setting we have in mind (which is
+consistent with our motivation and examples) is one where all agents have equal weight in deciding the social quality of
+alternatives, and are merely trying to evaluate which alternative is best for the system. For example, we are precluding a
+situation where one agent has utility one for x and zero for the rest, and a second agent has utility 1/2 for x and zero for
+the rest: if both believe that x is the only reasonable alternative, they would both give that alternative their entire “pool
+of points”. In other words, the only real assumption is that agents have equal weight; normalized utilities logically follow.
+Note that a similar assumption is typically made in social choice contexts concerning the fair division of a good among
+agents with cardinal utilities over parts of the good (see, e.g., [3]); it is assumed that the sum of an agent’s utilities for
+every partition of the good is one.
+
+I. Caragiannis, A.D. Procaccia / Artiﬁcial Intelligence 175 (2011) 1655–1671
+
+1671
+
+6.4. Future work
+
+Our notion of embeddings into voting rules is extremely decentralized, that is, the agents cast their votes independently
+according to the embedding. On the other extreme, if full coordination is allowed, the distortion would always be one, as
+the agents would be able to ﬁnd out which alternative maximizes social welfare and coordinate their votes in a way that
+this alternative is elected (assuming the voting rule is onto the set of alternatives). It would be interesting to investigate a
+notion of embedding that allows for partial communication between the agents.
+
+Our strongest positive results hold in settings where the number of agents is larger than the number of alternatives. This
+is indeed the case in many environments, notably in political elections. However, one can think of a variety of multiagent
+settings where the number of alternatives is larger. Our experimental results shed some light to the distortion of randomized
+embeddings into Plurality and Approval in this case. In future work, we would like to achieve a better understanding of the
+achievable distortion when n = o(m).
+
+The results in this paper mainly concern three voting rules: Plurality, Approval, and Veto. Certainly, low distortion can
+also be achieved using randomized embeddings into any scoring protocol as Theorem 12 indicates. Among others, this
+includes k-approval and k-antiapproval voting rules, according to which each agent approves or vetoes k alternatives, re-
+spectively; these voting rules require O (k log m) bits to be communicated by each agent and meet the low communication
+requirement when k is small. Furthermore, it includes the Borda rule which, in our context, can be deﬁned as follows: each
+agent awards 1 − k−1
+m−1 points to the alternative ranked in the kth position. Extending this line of work to other prominent
+voting that either have low communication requirements, such as Plurality with Runoff or Single Transferable Vote [5], or
+are based on pairwise comparisons, such as Copeland or Maximin, could prove challenging but rewarding.
+
+Finally, it is interesting to think about maximizing social welfare via methods that require minimal communication
+and are not necessarily constrained by voting rules. This question is related to work in the theory of computer science
+community on streaming algorithms (see, e.g., [4,6]).
+
+References
+
+[1] L. Blumrosen, N. Nisan, I. Segal, Auctions with severely bounded communication, Journal of Artiﬁcial Intelligence Research 28 (2007) 233–266.
+[2] C. Boutilier, R.I. Brafman, C. Domshlak, H.H. Hoos, D. Poole, CP-nets: A tool for representing and reasoning with conditional ceteris paribus preference
+
+statements, Journal of Artiﬁcial Intelligence Research 21 (2004) 135–191.
+
+[3] S.J. Brams, A.D. Taylor, Fair Division: From Cake-Cutting to Dispute Resolution, Cambridge University Press, 1996.
+[4] M. Charikar, K. Chen, M. Farach-Colton, Finding frequent items in data streams, Theoretical Computer Science 312 (2004) 3–15.
+[5] V. Conitzer, T. Sandholm, Communication complexity of common voting rules, in: Proceedings of the 6th ACM Conference on Electronic Commerce
+
+(EC), 2005, pp. 78–87.
+
+[6] G. Cormode, S. Muthukrishnan, An improved data stream summary: the count-min sketch and its applications, Journal of Algorithms 55 (2005) 58–75.
+[7] S. Ghosh, M. Mundhe, K. Hernandez, S. Sen, Voting for movies: The anatomy of a recommender system, in: Proceedings of the 3rd Annual Conference
+
+on Autonomous Agents (AGENTS), 1999, pp. 434–435.
+
+[8] W. Hoeffding, Probability inequalities for sums of bounded random variables, Journal of the American Statistical Association 58 (301) (1963) 13–30.
+[9] K. Jogdeo, S. Samuels, Monotone convergence of binomial probabilities and a generalization of Ramanujan’s equation, Annals of Mathematical Statis-
+
+tics 39 (1968) 1191–1195.
+
+[10] J.W. Moon, Topics on Tournaments, Holt, Reinhart and Winston, 1968.
+[11] R. Motwani, P. Raghavan, Randomized Algorithms, Cambridge University Press, 1995.
+[12] D. Pennock, E. Horvitz, L. Giles, Social choice theory and recommender systems: Analysis of the axiomatic foundations of collaborative ﬁltering, in:
+
+Proceedings of the 17th AAAI Conference on Artiﬁcial Intelligence (AAAI), 2000, pp. 729–734.
+
+[13] A.D. Procaccia, J.S. Rosenschein, The distortion of cardinal preferences in voting, in: Proceedings of the 10th International Workshop on Cooperative
+
+Information Agents (CIA), in: Lecture Notes in Computer Science (LNCS), vol. 4149, Springer, 2006, pp. 317–331.
+
+[14] A.D. Procaccia, J.S. Rosenschein, G.A. Kaminka, On the robustness of preference aggregation in noisy environments, in: Proceedings of the 6th Interna-
+
+tional Joint Conference on Autonomous Agents and Multi-Agent Systems (AAMAS), 2007, pp. 416–422.
+
+[15] Ariel D. Procaccia, Computational voting theory: Of the agents, by the agents, for the agents, PhD thesis, The Hebrew University of Jerusalem, 2008.
+[16] G. Sigletos, G. Paliouras, C. Spyropoulos, M. Hatzopoulos, Combining information extractions systems using voting and stacked generalization, Journal
+
+of Machine Learning Research 6 (2005) 1751–1782.
+
+[17] J. Uckelman, Y. Chevaleyre, U. Endriss, J. Lang, Representing utility functions via weighted goals, Mathematical Logic Quarterly 55 (4) (2009) 341–361.
+
+

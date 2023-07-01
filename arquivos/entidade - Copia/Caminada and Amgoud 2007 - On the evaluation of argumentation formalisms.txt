@@ -1,0 +1,1707 @@
+Artiﬁcial Intelligence 171 (2007) 286–310
+
+www.elsevier.com/locate/artint
+
+On the evaluation of argumentation formalisms ✩
+
+Martin Caminada a, Leila Amgoud b,∗
+
+a Institute of Information and Computing Sciences, Universiteit Utrecht, Utrecht, The Netherlands
+b Institut de Recherche en Informatique de Toulouse, 118 route de Narbonne, 31062 Toulouse Cedex 9, France
+
+Received 9 March 2006; received in revised form 26 February 2007; accepted 26 February 2007
+
+Available online 3 March 2007
+
+Abstract
+
+Argumentation theory has become an important topic in the ﬁeld of AI. The basic idea is to construct arguments in favor and
+against a statement, to select the “acceptable” ones and, ﬁnally, to determine whether the original statement can be accepted or not.
+Several argumentation systems have been proposed in the literature. Some of them, the so-called rule-based systems, use a particular
+logical language with strict and defeasible rules. While these systems are useful in different domains (e.g. legal reasoning), they
+unfortunately lead to very unintuitive results, as is discussed in this paper. In order to avoid such anomalies, in this paper we are
+interested in deﬁning principles, called rationality postulates, that can be used to judge the quality of a rule-based argumentation
+system. In particular, we deﬁne two important rationality postulates that should be satisﬁed: the consistency and the closure of the
+results returned by that system. We then provide a relatively easy way in which these rationality postulates can be warranted for a
+particular rule-based argumentation system developed within a European project on argumentation.
+© 2007 Elsevier B.V. All rights reserved.
+
+Keywords: Formal argumentation; Nonmonotonic logic; Commonsense reasoning
+
+1. Introduction
+
+Agents express claims and judgments when engaged in decision making, drawing conclusions, imparting informa-
+tion, and when persuading and negotiating with other agents. Information may be uncertain and incomplete, or there
+may be relevant but partially conﬂicting information. Also, in multi-agents systems, conﬂicts of interest are inevitable.
+To address these problems, agents can use argumentation, a process based on the exchange and valuation of arguments
+for and against opinions, proposals, claims and decisions.
+
+Argumentation, in its essence, can be seen as a particular useful and intuitive paradigm for doing nonmonotonic
+reasoning. The advantage of argumentation is that the reasoning process is composed of modular and quite intuitive
+steps, and thus avoids the monolithic approach of many traditional logics for defeasible reasoning. The process of
+argumentation starts with the construction of a set of arguments based on a given knowledge base. As some of these
+arguments may attack each other, one needs to apply a criterion for determining the sets of arguments that can be re-
+garded as “acceptable”: the argument-based extensions. The last step is then to examine whether a particular statement
+
+✩ This work has been supported by the EU-ASPIC project.
+* Corresponding author.
+
+E-mail addresses: martinc@cs.uu.nl (M. Caminada), amgoud@irit.fr (L. Amgoud).
+
+0004-3702/$ – see front matter © 2007 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2007.02.003
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+287
+
+can be regarded as justiﬁed. This can for instance be the case if every extension contains an argument which has this
+statement as its conclusion. An interesting property of the argumentation approach is that it can be given dialectical
+proof procedures that are quite close to the process by which humans would discuss an issue. The similarity with
+human-style discussions gives formal argumentation an advantage that can be useful in many contexts.
+
+Argumentation has developed into an important area of study in artiﬁcial intelligence over the last ﬁfteen years,
+especially in sub-ﬁelds such as nonmonotonic reasoning (e.g. [19,25,26,28,43,45]), multiple-source information sys-
+tems (e.g. [7,9,21]), decision making (e.g. [2,11,12,20,30–32]), and modeling interactions between agents (e.g. [3,8,
+10,14,18,35–38,41]). Several argumentation systems have been developed for handling inconsistency in knowledge
+bases (e.g. [5,15–17,29,33,34,39,42,44]), in other words for inference. All these systems are built around a logical
+language and an associated consequence relation that is used for deﬁning an argument. Some of these systems, called
+rule-based systems, use a particular logical language deﬁned over a set of literals, and two kinds of rules: strict rules
+and defeasible ones. Arguments and conﬂicts among them are ﬁrst identiﬁed, and then an acceptability semantics (e.g.
+Dung’s semantics) is applied in order to determine the “acceptable” arguments. Examples of such systems are Prakken
+and Sartor’s system [42], Garcia and Simari’s system [33], Governatori et al.’s system [34], and Amgoud et al.’s sys-
+tem [4]. Such systems are suitable in some domains like legal reasoning, where knowledge cannot be represented in
+a classical propositional language for instance. Unfortunately, existing rule-based systems fail to meet the objectives
+of an inference system, and can lead to very unintuitive results. Indeed, with these systems it may be the case that an
+agent believes that “if a then it is always the case that b”, and the system returns as output a but not b. Worse yet, if
+the agent also believes that “if c then it is always the case that ¬b”, the system may return a and c, which means that
+the output of the system is indirectly inconsistent.
+
+In what follows, we will focus only on rule-based argumentation systems. In order to avoid anomalies like the
+ones discussed above, the aim of this paper is twofold: on the one hand, as in the ﬁeld of belief revision, where the
+well-known AGM-postulates serve as general properties a system for belief revision should fulﬁll, we are interested in
+deﬁning some principles (called rationality postulates) that any rule-based argumentation system should obey. These
+postulates will govern the sound deﬁnition of an argumentation system and will avoid anomalous results. In this paper
+we focus particularly on two important postulates: the closure and the consistency of the results that an argumentation
+system may produce. These postulates are violated in systems such as [4,33,34,42]. On the other hand, we study
+various ways in which these postulates can be warranted in the argumentation system developed in [4], as well as in
+various other systems.
+
+This paper is structured as follows. First, in Section 2, we recall the basic concepts behind argumentation theory.
+We present the abstract argumentation framework of Dung [28], as well as one particular instantiation of it, for
+which we have chosen the ASPIC argumentation formalism [4]. In Section 3, we show some examples that yield
+very unintuitive and undesirable results, not only for the ASPIC argumentation system, but also for various other
+argumentation formalisms. Then, in Section 4, we state a number of postulates, based on the analysis of the examples
+in Section 3, that we think any rule-based argumentation formalism should satisfy. Section 5 proposes a number
+of generic solutions which can be applied to the argumentation formalism described in Section 2, as well as to other
+argumentation formalisms where similar problems occur (such as [33,34,42]). Two main solutions are suggested, each
+of which satisﬁes all the earlier mentioned rationality postulates. The ﬁrst approach is applicable to formalisms that
+make use of classical logic, the other one is applicable to formalisms that do not. Section 6 then contains an overview
+of the main results of this paper, as well as some open research issues.
+
+2. Argumentation process
+
+Argumentation can be seen as a reasoning process consisting of the following four steps:
+
+(1) Constructing arguments (in favor of/against a “statement”) from a knowledge base.
+(2) Determining the different conﬂicts among the arguments.
+(3) Evaluating the acceptability of the different arguments.
+(4) Concluding, or deﬁning the justiﬁed conclusions.
+
+Some argumentation formalisms also allow arguments to be of different strengths, but for the sake of simplicity we
+will not address this issue in the current paper. Many argumentation formalisms are built around an underlying logical
+
+288
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+language L and an associated notion of logical consequence, deﬁning the notion of argument. Argument construction
+is a monotonic process: new knowledge cannot rule out an argument but only gives rise to new arguments which may
+interact with the ﬁrst argument. Since the knowledge bases may give rise to inconsistent conclusions, the arguments
+may be conﬂicting too. Consequently, it is important to determine among all the available arguments, the ones that are
+ultimately acceptable. In [28], an argumentation system is deﬁned as follows:
+
+Deﬁnition 1 (Argumentation system). An argumentation system is a pair (cid:3)A, Def (cid:4) where A is a set of arguments and
+Def ⊆ A × A is a defeat relation. We say that an argument A defeats an argument B iff (A, B) ∈ Def (or A Def B).
+
+Starting from the set of all (possibly conﬂicting) arguments, it is important to know which of them can be relied on
+for inferring conclusions and for making decisions. To answer this question, different attempts for deﬁning semantics
+for the notion of acceptability have been made. Some approaches return a unique set of acceptable arguments, called
+an extension, giving a unique status to each argument, whereas others return several extensions, allowing multiple
+status for arguments. In [28] different semantics for the notion of acceptability have been proposed. These last have
+been recently reﬁned in [13,24]. In what follows, only Dung’s semantics are recalled for illustration purposes.
+
+Deﬁnition 2 (Conﬂict-free, Defense). Let A and B be sets of arguments, and let B ⊆ A.
+
+• B is conﬂict-free iff there exist no A, B in B such that A Def B.
+• B defends an argument A iff for each argument B ∈ A, if B Def A, then there exists an argument C in B such that
+
+C Def B.
+
+Deﬁnition 3 (Acceptability semantics). Let B be a conﬂict-free set of arguments, and let F : 2A (cid:7)→ 2A be a function
+such that F(B) = {A | B defends A}.
+
+• B is admissible iff it is conﬂict-free and defends every element in B.
+• B is a complete extension iff B = F(B).
+• B is a grounded extension iff it is the minimal (w.r.t. set-inclusion) complete extension.
+• B is a preferred extension iff it is a maximal (w.r.t. set-inclusion) complete extension.
+• B is a stable extension iff it is a preferred extension that defeats w.r.t. Def all arguments in A\B.
+
+Note that a unique grounded extension always exists, although it may be the empty set. It contains all the arguments
+which are not defeated, as well as the arguments which are defended directly or indirectly by non-defeated arguments.
+In the remainder of this paper we use the expression “Dung’s standard semantics” to refer to complete, grounded
+and preferred semantics. We use the unqualiﬁed term “extension” to refer to a complete, grounded or preferred exten-
+sion.
+
+Dung’s abstract argumentation theory leaves open the question of how arguments actually look like, how they
+are constructed from a knowledge base and the conditions under which one argument defeats the other. Several for-
+malisms, such as [4,34,42] aim to ﬁll this gap.
+
+In this paper we have chosen to treat one particular argumentation formalism called ASPIC system [4], as an illus-
+tration of how Dung’s abstract argumentation formalism can be applied for reasoning in the presence of inconsistency,
+or for inference. The choice of ASPIC formalism is, we must admit, somewhat arbitrary. We have chosen it mainly
+because of its relative simplicity, and the fact that we have been closely connected to its development. In fact, much
+of the current paper is a result of an analysis of the difﬁculties we encountered when constructing the formalism,
+difﬁculties that turned out also to play a role in other formalisms for argumentation and nonmonotonic reasoning.
+
+In what follows, L is a set of literals. We assume the availability of a function “−”, which works with L, such that
+
+−ψ = φ iff ψ = ¬φ and −ψ = ¬φ iff ψ = φ.
+
+A strict rule is an expression of the form φ1, . . . , φn −→ ψ (n (cid:2) 0), indicating that if φ1, . . . , φn hold, then without
+exception it holds that ψ. A defeasible rule is an expression of the form φ1, . . . , φn (cid:9)⇒ ψ (n (cid:2) 0), indicating that if
+φ1, . . . , φn hold, then it usually holds that ψ. For both a strict and defeasible rule it holds that each φi (1 (cid:3) i (cid:3) n) as
+well as ψ are elements of L.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+289
+
+Deﬁnition 4 (Theory). A defeasible theory T is a pair (cid:3)S, D(cid:4) where S is a set of strict rules and D is a set of defeasible
+rules.
+
+Deﬁnition 5 (Closure of a set of formulas). Let P ⊆ L. The closure of P under the set S of strict rules, denoted
+ClS (P), is the smallest set such that:
+
+• P ⊆ ClS (P).
+• if φ1, . . . , φn → ψ ∈ S and φ1, . . . , φn ∈ ClS (P) then ψ ∈ ClS (P).
+
+If P = ClS (P), then P is said to be closed under the set S.
+
+Deﬁnition 6 (Consistent set). Let P ⊆ L. P is consistent iff (cid:2)ψ, φ ∈ P such that ψ = −φ, otherwise it is said to be
+inconsistent.
+
+From a defeasible theory (cid:3)S, D(cid:4), arguments can be built. Before deﬁning the arguments, we ﬁrst introduce some
+functions. The function Conc returns the “top” conclusion of an argument (i.e. the last conclusion), Sub returns all
+its sub-arguments and ﬁnally the functions StrictRules and DefRules return respectively all the strict rules and
+the defeasible rules used in an argument.
+
+In what follows, an argument has a deductive form and is constructed in a recursive way by applying one or more
+strict or defeasible rules. In order to distinguish them from the strict and defeasible object level rules, we use short
+arrows for the strict and defeasible argument construction rules.
+
+Deﬁnition 7 (Argument). Let (cid:3)S, D(cid:4) be a defeasible theory. An argument A is:
+
+• A1, . . . , An → ψ if A1, . . . , An, with n (cid:2) 0, are arguments such that there exists a strict rule Conc(A1), . . . ,
+
+Conc(An) −→ ψ .
+Conc(A) = ψ ,
+Sub(A) = Sub(A1) ∪ · · · ∪ Sub(An) ∪ {A}.
+StrictRules(A) = StrictRules(A1) ∪ · · · ∪ StrictRules(An) ∪ {Conc(A1), . . . , Conc(An) −→ ψ},
+DefRules(A) = DefRules(A1) ∪ · · · ∪ DefRules(An).
+
+• A1, . . . , An ⇒ ψ if A1, . . . , An, with n (cid:2) 0, are arguments such that there exists a defeasible rule Conc(A1), . . . ,
+
+Conc(An) (cid:9)⇒ ψ .
+Conc(A) = ψ ,
+Sub(A) = Sub(A1) ∪ · · · ∪ Sub(An) ∪ {A},
+StrictRules(A) = StrictRules(A1) ∪ · · · ∪ StrictRules(An),
+DefRules(A) = DefRules(A1) ∪ · · · ∪ DefRules(An) ∪ {Conc(A1), . . . , Conc(An) (cid:9)⇒ ψ}.
+
+Arg denotes the set of all arguments that can be built from the theory (cid:3)S, D(cid:4). Let A, A(cid:12) ∈ Arg.
+
+• A(cid:12) is a subargument of A iff A(cid:12) ∈ Sub(A).
+• A(cid:12) is a direct subargument of A iff A(cid:12) ∈ Sub(A), (cid:2)A(cid:12)(cid:12) ∈ Arg, A(cid:12)(cid:12) ∈ Sub(A), A(cid:12) ∈ Sub(A(cid:12)(cid:12)), A (cid:13)= A(cid:12)(cid:12), and
+
+A(cid:12) (cid:13)= A(cid:12)(cid:12).
+
+• A is an atomic argument iff (cid:2)A(cid:12) ∈ Arg, A(cid:12) (cid:13)= A, and A(cid:12) ∈ Sub(A).
+
+Let us illustrate the above deﬁnition with the following example.
+
+Example 1. Let S = {−→ a; −→ d} and D = {a (cid:9)⇒ b; d (cid:9)⇒ ¬b}. The following arguments can be built:
+
+A1 : [→ a]
+A2 : [→ d]
+
+A3 : [A1 ⇒ b]
+A4 : [A2 ⇒ ¬b]
+
+A1 and A2 are atomic arguments. A1 is a direct subargument of A3, and A2 is a direct subargument of A4.
+
+290
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+An argument may be either strict if no defeasible rule is involved in it, or defeasible otherwise. Formally:
+
+Deﬁnition 8 (Strict vs. defeasible argument). Let A be an argument. A is strict iff DefRules(A) = ∅, otherwise A
+is called defeasible.
+
+Generally arguments may be in conﬂict with each other in different manners. The ﬁrst kind of conﬂicts concerns
+the conclusions of the arguments. Indeed, two arguments may conﬂict with each other if they support contradictory
+conclusions.
+
+Deﬁnition 9 (Rebutting). Let A, B ∈ Arg. A rebuts B iff ∃A(cid:12) ∈ Sub(A) with Conc(A(cid:12)) = φ and ∃B(cid:12) ∈ Sub(B) with
+B(cid:12) a non-strict argument and Conc(B(cid:12)) = −φ.
+
+Example 2. Let S = {−→ a; −→ t; a −→ b}, D = {b (cid:9)⇒ c; t (cid:9)⇒ ¬b; ¬b (cid:9)⇒ d}. The argument [[[→ a] → b] ⇒ c]
+rebuts [[[→ t] ⇒ ¬b] ⇒ d]. The reverse is not true.
+
+The above deﬁnition puts strict arguments above defeasible ones in the sense that a strict argument can rebut a
+defeasible one, but the reverse cannot be the case. Note that this deﬁnition of rebutting is more general than the
+classical one deﬁned in [29]. Indeed, in [29], an argument is supposed to have only one conclusion. The intermediate
+consequences obtained when building that argument are not taken into account. However, in [4] arguments may
+disagree not only on their conclusions, but also on their intermediate consequences.
+
+Two arguments may also conﬂict if one of them uses a defeasible rule whose applicability is disputed by the
+other argument. In the following deﬁnition, (cid:16).(cid:17) stands for the objectivation operator [40], which converts a meta-
+level expression (in our case: a defeasible rule) into an object-level expression (in our case: a literal). This is needed
+because, syntactically, the conclusion of a rule can only be a literal, whereas with undercutting one wants to express
+the inapplicability of a rule.
+
+Deﬁnition 10 (Undercutting). Let A and B be arguments. A undercuts B iff ∃B(cid:12) ∈ Sub(B) of the form B(cid:12)(cid:12)
+ψ and ∃A(cid:12) ∈ Sub(A) with Conc(A(cid:12)) = ¬(cid:16)Conc(B(cid:12)(cid:12)
+
+1 ), . . . , Conc(B(cid:12)(cid:12)
+
+n ) (cid:9)⇒ ψ(cid:17).
+
+1 , . . . , B(cid:12)(cid:12)
+
+n
+
+⇒
+
+As an example to illustrate the difference between rebutting and undercutting, consider argument A: “The object
+is red because John says it looks red”. A rebutter of A could be (B1) “The object is not red because Suzy says it looks
+blue”. An undercutter of A could be [40] (B2) “The object is merely illuminated by a red light.” This, of course, is
+not a reason for it not being red, but merely indicates that the fact that it looks red is no longer a reason for it actually
+being red.
+
+The two relations: undercut and rebut are brought together is the deﬁnition of “defeat” as follows:1
+
+Deﬁnition 11 (Defeat). Let A and B be elements of Arg. We say that A defeats B iff
+
+(1) A rebuts B, or
+(2) A undercuts B.
+
+The ASPIC system, built from a theory T = (cid:3)S, D(cid:4), is a pair (cid:3)Arg, Defeat(cid:4), where Arg is the set of arguments
+built from T using Deﬁnition 7, and Defeat is the relation given in the above Deﬁnition 11. For determining among
+elements of Arg the acceptable arguments, any of Dung’s standard semantics (Deﬁnition 3) can be applied. We will
+write E1, . . . , En to denote the different extensions under one of those semantics.
+
+We can show that if an argument is in a given extension, then all its sub-arguments are also in that extension.
+
+1 In the original ASPIC system, it is also possible to take into account the relative strength of the arguments when determining when argument A
+defeats argument B. For reasons of simplicity, argument strength is not treated in the current discussion. In [6], it has been shown that it is
+straightforward to extend the system to handle preferences.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+291
+
+Proposition 1. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system, and let E1, . . . , En be its different extensions under
+one of Dung’s standard semantics. ∀Ei ∈ {E1, . . . , En}, ∀A ∈ Ei , Sub(A) ⊆ Ei .2
+
+The last step of an argumentation process consists of determining, among all the conclusions of the different
+arguments, the ones that can ultimately be accepted: the justiﬁed conclusions. Let Output denote this set of justiﬁed
+conclusions. One way of deﬁning Output is to consider the conclusions that are supported by at least one argument
+in each extension. The idea is that one should not only deﬁne rationality postulates for each individual extension, but
+also for the overall justiﬁed conclusions, thus the need for Output.
+
+Deﬁnition 12 (Justiﬁed conclusions). Let (cid:3)Arg, Defeat(cid:4) be an argumentation system, and {E1, . . . , En} (n (cid:2) 1) be its
+set of extensions under one of Dung’s standard semantics.
+
+• Concs(Ei) = {Conc(A) | A ∈ Ei} (1 (cid:3) i (cid:3) n).
+• Output =
+i=1...n Concs(Ei).
+
+(cid:2)
+
+It should be noticed that Output is deﬁned using a skeptical attitude. This is a deliberate choice, since basing
+Output on a credulous attitude can result in inconsistencies, even in the case where each individual extension has
+consistent conclusions. In the remainder of this paper, we are interested in both the conclusions of an individual
+extension (Concs(Ei)) as well as in the overall justiﬁed conclusions (Output).
+
+It should also be noticed that for simplicity we do not consider the case where there are no extensions. This, for
+
+instance, rules out a treatment of stable semantics in this paper.
+
+Let us consider the following illustrative example as an illustration of the above deﬁnitions.
+
+Example 3. Let S = {−→ a; −→ d} and D = {a (cid:9)⇒ b; d (cid:9)⇒ ¬b}. The following arguments can be constructed:
+
+A1 : [→ a]
+A2 : [→ d]
+
+A3 : [A1 ⇒ b]
+A4 : [A2 ⇒ ¬b]
+
+Argument A3 defeats A4 and vice versa. However, the arguments A1 and A2 do not have any defeaters. Thus, they
+belong to each extension. Consequently, a and d will be considered as justiﬁed conclusions.
+
+3. Some problems in argumentation frameworks
+
+In this section, we start ﬁrst by proving some interesting properties of the formalism described in the previous
+section, especially regarding the consistency of its conclusions. It will then be argued that these properties may not be
+enough to warrant a good quality of the formalism. It turns out that there exist anomalies that occur not only in the
+above described ﬁrst version of the ASPIC formalism, but also in several other of today’s argumentation formalisms.
+Before discussing all these issues in detail, let us ﬁrst introduce a notion that is useful for the rest of the paper, that of
+consistency of a set S of strict rules.
+
+Deﬁnition 13 (Consistent set of strict rules). Let S be a set of strict rules. S is said to be consistent iff (cid:2)A, B ∈ Arg
+such that A and B are strict arguments and Conc(A) = −Conc(B).
+
+In the remainder of this paper, we will use the pair (cid:3)A, Def (cid:4) to refer to any argumentation system that is built
+around a defeasible theory T . The structure of arguments and the conﬂict relation are unspeciﬁed. This means that
+arguments in A may be deﬁned for instance as a tree, a sequence, etc. Similarly, one may consider any deﬁnition
+of the relation Def . Moreover, this argumentation system may use any acceptability semantics, i.e. Dung’s standards
+ones or their different reﬁnements or alternatives proposed in the literature.
+
+2 Proofs for propositions and theorems can be found in Appendix A of the paper.
+
+292
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+3.1. Consistency
+
+The ASPIC system, like many other formalisms in the ﬁeld of argumentation and defeasible reasoning, satisﬁes
+
+the requirement that each extension has consistent conclusions.
+
+Proposition 2. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from a theory (cid:3)S, D(cid:4) with S consistent, and
+E1, . . . , En its different extensions under one of Dung’s standard semantics. Concs(Ei) is consistent for each 1 (cid:3)
+i (cid:3) n.
+
+We can verify that if the sets of conclusions of the different extensions are consistent, then the output of the system
+is also consistent. Note that this result is general in the sense that it does not depend on the particular deﬁnitions of
+argument structure and defeat of the ASPIC system.
+
+Proposition 3. Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Let E1, . . . , En be
+its extensions under one of Dung’s standard semantics, and Output be as in Deﬁnition 12.
+
+If Concs(Ei) is consistent for each 1 (cid:3) i (cid:3) n then Output is consistent.
+
+From Propositions 2 and 3, we can then deduce that the output of the ASPIC system is consistent.
+
+Property 1. Let T be a defeasible theory with S consistent, (cid:3)Arg, Defeat(cid:4) be an argumentation system built from T .
+Then, Output is consistent.
+
+3.2. Some problematic examples
+
+The sole fact that a formalism for defeasible reasoning or argumentation returns consistent results may in many
+cases not be enough to warrant the absence of other anomalies. To make this point more clear, it is interesting to
+consider the following example.
+
+Example 4 (Married John). Let S = {−→ wr; −→ go; b −→ ¬hw; m −→ hw} and D = {wr (cid:9)⇒ m; go (cid:9)⇒ b} with:
+wr = “John wears something that looks like a wedding ring”, m = “John is married”, hw = “John has a wife”, go =
+“John often goes out until late with his friends”, b = “John is a bachelor”. The following arguments can be constructed:
+
+A1 : [→ wr]
+A2 : [→ go]
+A3 : [A1 ⇒ m]
+
+A4 : [A2 ⇒ b]
+A5 : [A3 → hw]
+A6 : [A4 → ¬hw]
+
+The argument A5 defeats the argument A6 and vice versa. However, the arguments A1, A2, A3 and A4 do not have
+any defeaters. If one applies, for instance, grounded semantics, the grounded extension then becomes {A1, A2, A3,
+A4}. Consequently, Output = {wr, go, m, b}, this means that both m (“John is married”) and b (“John is a bachelor”)
+are considered justiﬁed.
+
+Example 4 clearly shows that counter-intuitive conclusions may be inferred from a defeasible theory using the
+above argumentation framework. As a consequence, the closure of the set of inferences under the set of strict rules
+may be inconsistent. In the previous example, the closure of Output(= {wr, go, m, b}) under the set of strict rules
+is {wr, go, m, b, hw, ¬hw} which is inconsistent. To some extent, the problem can be identiﬁed as m and b being
+incompatible without the entailment mechanism being strong enough to detect this. If, for instance, in the previous
+example it would be allowed to apply contraposition on m −→ hw and b −→ ¬hw then counterarguments against m
+and b could be constructed, which would prevent them to follow from the same extension.
+
+The above example is problematic not only in the ASPIC system. In fact, the defeasible logic of Donald Nute, as
+described in [34] suffers from exactly the same problem. When one translates the example to Nute’s particular syntax,
+one obtains essentially the same result: m and b are justiﬁed, and hw and ¬hw are left undecided.
+
+It should be noted that another argumentation formalism, stated by Prakken and Sartor [42], is deﬁned in such a
+way to avoid the problematic outcome of Example 4. When translated to the formalism of [42], Example 4 no longer
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+293
+
+yields m and b as justiﬁed conclusions. This is implemented by extending the notion of defeat. Informally, argument
+A rebuts argument B in [42] iff it is possible to “add” strict rules to A and B (like m −→ hw to A and b −→ ¬hw
+to B) such that the extended versions of A and B have opposite conclusions.
+
+Although Prakken and Sartor’s solution works for the case of Example 4, there exist other examples where their
+
+approach still yields anomalies. A relatively straightforward case is the following.
+
+Example 5. Let S = {−→ a; −→ d; −→ c; b, e −→ ¬c} and D = {a (cid:9)⇒ b; d (cid:9)⇒ e}. Here, the arguments
+
+A = [[→ a] ⇒ b]
+B = [[→ d] ⇒ e]
+C = [→ c]
+
+do not have any defeaters. This means that A, B and C are in any Dung-style extension. Therefore, the propositions
+b, e and c are considered justiﬁed. Note that although there exists a strict rule b, e −→ ¬c, ¬c is not a justiﬁed
+conclusion. This shows that the justiﬁed conclusions are not closed under strict rules. Worse yet, the closure of the
+justiﬁed conclusions under strict rules may even be inconsistent.
+
+The last formalism to be discussed is that of García and Simari [33]. It is interesting to notice that this formalism
+can properly handle both Examples 4 and 5. It essentially does so by considering two arguments to be conﬂicting
+(disagreeing) iff from their respective conclusions, an inconsistency can be derived using strict rules only. Although
+this indeed yields the desired results in Examples 4 and 5, there still exist examples that are not handled correctly.
+
+Example 6. Let S = {−→ a; −→ d; −→ g; b, c, e, f −→ ¬g} and D = {a (cid:9)⇒ b; b (cid:9)⇒ c; d (cid:9)⇒ e; e (cid:9)⇒ f }. Now,
+consider the following arguments:
+
+A = [[→ a] ⇒ b]
+B = [[→ d] ⇒ e]
+C = [[A ⇒ c]
+D = [[B ⇒ f ]
+
+The arguments A, B, C and D do not have any defeaters. To see why, consider for instance argument D. D has
+no defeaters because there is no argument that can produce a literal (conclusion) that disagrees with f . Similar
+observations also hold for A, B and C. Because A, B, C and D do not have defeaters, they are automatically ultimately
+acceptable. This means that the literals b, c, e and f are justiﬁed (as well as the facts a and g). This means that the
+closure of the justiﬁed conclusions under strict rules is again inconsistent!
+
+3.3. Discussion
+
+The way the above mentioned argumentation systems deal with the critical examples is unsatisfactory from a
+conceptual point of view. Suppose, for instance, a user wants to use an inference engine of Defeasible Logic [34]. For
+this, he provides the inference engine with a set of strict and defeasible rules. Suppose one of the strict rules is of the
+form: “if m then it is always the case that hw”. Then he may be very surprised to ﬁnd that the outcome of the inference
+engine contains m but not hw. Worse yet, if the user tries to do his own reasoning based on the inference engine’s
+output (“My inference engine says m and I know that m always implies hw, so it must hold that hw. My inference
+engine also says that b and I know that b always implies ¬hw, so it must hold that ¬hw.”) then the outcome is directly
+inconsistent.
+
+The problem with the above examples is that the language used is not expressive enough to capture all the different
+kinds of conﬂicts that may exist between arguments. As a consequence of missing some conﬂicts, the conclusions
+may be counter-intuitive. In Example 4, for instance, it should simply not be possible to conclude that John is both
+married and bachelor, as deriving these conclusions means that problems of inconsistency and non-closure appear.
+
+294
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+4. Rationality postulates
+
+Like any reasoning model, an argumentation-based system should satisfy some principles which support the system
+to be of good quality. The aim of this section is to present and to discuss three important postulates: direct consistency,
+indirect consistency and closure, that any rule-based argumentation-based system should satisfy in order to avoid the
+problems discussed in the previous section.
+
+The idea of closure is that the answer of an argumentation-engine should be closed under strict rules. That is, if we
+provide the engine with a strict rule a −→ b (“if a then it is also without exception the case that b”), together with
+various other rules, and our inference engine outputs a as justiﬁed conclusion, then it should also output b as justiﬁed
+conclusion. Consequently, b should also be supported by an acceptable argument.
+
+We say that an argumentation system satisﬁes closure if its set of justiﬁed conclusions, as well as the set of conclu-
+
+sions supported by each extension are closed.
+
+Postulate 1 (Closure). Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Output is
+its set of justiﬁed conclusions, and E1, . . . , En its extensions under a given semantics. (cid:3)A, Def (cid:4) satisﬁes closure iff :
+
+(1) Concs(Ei) = ClS (Concs(Ei)) for each 1 (cid:3) i (cid:3) n.
+(2) Output = ClS (Output).
+
+The ﬁrst condition says that every extension should be closed in the sense that an extension should contain all the
+arguments acceptable w.r.t. it. As closure is an important property, one should search for ways to alter or constrain
+one’s argumentation formalism in such a way that its resulting extensions and conclusions satisfy closure.
+
+It can be shown that if the different sets of conclusions of the extensions are closed, then the set Output is also
+
+closed.
+
+Proposition 4. Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Let E1, . . . , En be
+its extensions under a given semantics, and Output be as in Deﬁnition 12.
+
+If Concs(Ei) = ClS (Concs(Ei) for each 1 (cid:3) i (cid:3) n, then Output = ClS (Output).
+
+Another important property of an argumentation system is direct consistency. An argumentation system satisﬁes di-
+rect consistency if its set of justiﬁed conclusions and the different sets of conclusions corresponding to each extension
+are consistent. Formally:
+
+Postulate 2 (Direct Consistency). Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T .
+Output is its set of justiﬁed conclusions, and E1, . . . , En its extensions under a given semantics. (cid:3)A, Def (cid:4) satisﬁes
+direct consistency iff :
+
+(1) Concs(Ei) is consistent for each 1 (cid:3) i (cid:3) n.
+(2) Output is consistent.
+
+Most argumentation systems satisfy the above postulate of direct consistency. Unfortunately, they often violate the
+postulate of indirect consistency. By indirect consistency we mean that (1) the closure under the set of strict rules of
+the set of justiﬁed conclusions is consistent, and (2) for each extension, the closure under the set of strict rules of its
+conclusions is consistent. When this postulate is violated, it means that undesirable conclusions can be inferred.
+
+Postulate 3 (Indirect Consistency). Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T .
+Output is its set of justiﬁed conclusions, and E1, . . . , En its extensions under a given semantics. (cid:3)A, Def (cid:4) satisﬁes
+indirect consistency iff :
+
+(1) ClS (Concs(Ei)) is consistent for each 1 (cid:3) i (cid:3) n.
+(2) ClS (Output) is consistent.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+295
+
+Table 1
+The effects of violated postulates
+
+Postulate
+
+Direct consistency
+Indirect consistency
+
+Closure
+
+Violation can result in
+
+Absurdities
+Users not being allowed to apply
+modus ponens on strict rules
+Conclusions that should come
+out appear to be missing
+
+Again, we can show that if all the extensions produce a consistent closed output, then the closure of the set Output
+
+is consistent. Formally:
+
+Proposition 5. Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Let E1, . . . , En be
+its extensions under a given semantics, and let Output be as in Deﬁnition 12.
+
+If ClS (Concs(Ei)) is consistent for each 1 (cid:3) i (cid:3) n, then ClS (Output) is consistent.
+
+Another straightforward result is that, if indirect consistency is satisﬁed by an argumentation system, then direct
+
+consistency is also satisﬁed by that system.
+
+Proposition 6. If an argumentation system (cid:3)A, Def (cid:4) satisﬁes indirect consistency, then it also satisﬁes direct consis-
+tency.
+
+In addition to the above result, one can show that a formalism that satisﬁes closure as well as direct consistency
+
+also satisﬁes indirect consistency.
+
+Proposition 7. Let (cid:3)A, Def (cid:4) be an argumentation system. If (cid:3)A, Def (cid:4) satisﬁes closure and direct consistency, then it
+also satisﬁes indirect consistency.
+
+So far, we have identiﬁed a number of rationality postulates and examined the effects of their violation. Table 1
+provides a brief summary of these effects. As for direct consistency, the situation is straightforward. When direct
+consistency is violated, two contradictory statements (say ψ and ¬ψ) are justiﬁed at the same time, which is clearly
+an absurdity. As for indirect inconsistency—which is for instance violated in the original “Married John” example
+(Example 4)—the situation is somewhat more complex. It can be the case that a formalism satisﬁes direct consistency
+but violates indirect consistency (an example would be the Defeasible Logic of Donald Nute [33]). In that case,
+the users of an implementation of such a system would be disallowed from doing their own reasoning based on its
+outcome. That is, one may not take the outcome of the formalism and apply modus ponens using the strict rules, as
+otherwise absurdities may result.
+
+As for the property of closure, the basic idea is that the conclusions of the formalism should be “complete”. It
+should not be the case that the user must do its own reasoning (take the outcome of the formalism and apply modus
+ponens using the strict rules) to derive statements that the formalism apparently “forgot” to entail. A formalism that
+satisﬁes closure has done all of this work by itself.
+
+5. Possible solutions
+
+The aim of this section is to “repair” the ASPIC system deﬁned in [4], by providing two solutions that satisfy the
+three rationality postulates discussed in the previous section. Thus, in all what follows, we will handle only the system
+of [4]. Nevertheless, the proposed solutions could also be implemented in [33,34,42].
+
+According to Proposition 2 and Property 1, it is clear that this system already satisﬁes direct consistency.
+
+Property 2. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from a theory (cid:3)S, D(cid:4) with S consistent. (cid:3)Arg, Defeat(cid:4)
+satisﬁes direct consistency (i.e. Postulate 2).
+
+296
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+However, as shown through Example 4, the ASPIC system violates closure and indirect consistency. A possible
+analysis of Example 4 is that some strict rules are missing. That is, if the rules ¬hw −→ ¬m and hw −→ ¬b (which
+are the contraposed versions of the existing rules m −→ hw and b −→ ¬hw) are added to S, then one can, for instance,
+construct a counter-argument against [[→ go] ⇒ b]: [[[[→ wr] ⇒ m] → hw] → ¬b]. The basic idea is then to make
+explicit in S this implicit information by computing a closure of the set S. The question then becomes whether it is
+possible to deﬁne a closure operator Cl on S such that the outcome makes sure that the argumentation system built
+on the defeasible theory (cid:3)Cl(S), D(cid:4) satisﬁes closure and consistency.
+
+5.1. Strict rules closed under classical entailment
+
+One way to deﬁne a closure operator given a set of strict rules would be to convert the strict rules to material
+implications, calculate their closure under propositional logic, and convert the result back to strict rules again. In what
+follows, (cid:19) denotes classical inference.
+
+Deﬁnition 14 (Propositional operator). Let S be a set of strict rules and P ⊆ L. We deﬁne the following functions:
+
+• Prop(S) = {φ1 ∧ · · · ∧ φn ⊃ ψ | φ1, . . . , φn −→ ψ ∈ S};
+• Cnprop(P) = {ψ | P (cid:19) ψ};
+• Rules(P) = {φ1, . . . , φn −→ ψ | φ1 ∧ · · · ∧ φn ⊃ ψ ∈ P}.
+
+The propositional closure of S is Clpp(S) = Rules(Cnprop(Prop(S))).
+
+First of all, it can easily be seen that Clpp satisﬁes the following three properties, which follow from the nature of
+
+classical logic:
+
+Property 3. Let S be a set of strict rules and let S1, S2 ⊆ S.
+
+(1) S ⊆ Clpp(S);
+(2) If S1 ⊆ S2 then Clpp(S1) ⊆ Clpp(S2);
+(3) Clpp(Clpp(S)) = Clpp(S).
+
+Furthermore, by using Clpp(S) instead of just S, one guarantees that under grounded semantics the postulates
+closure (Postulate 1), direct consistency (Postulate 2) and indirect consistency (Postulate 3) are warranted for the
+ASPIC system.
+
+Theorem 1. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from the defeasible theory (cid:3)Clpp(S), D(cid:4) such that
+Clpp(S) is consistent. Output is its set of justiﬁed conclusions and E its grounded extension. Then, (cid:3)Arg, defeat(cid:4)
+satisﬁes closure and indirect consistency.
+
+To illustrate how Clpp works, consider again Example 4.
+
+Example 4 (continued). Let S = {−→ wr; −→ go; m −→ hw; b −→ ¬hw} and D = {wr (cid:9)⇒ m; go (cid:9)⇒ b}.
+
+Under (cid:3)Clpp(S), D(cid:4) the following arguments can be constructed:
+
+A1: [→ wr]
+A2: [→ go]
+A3: [A1 ⇒ m]
+A4: [A2 ⇒ b]
+A5: [A3 → hw]
+A6: [A4 → ¬hw]
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+297
+
+A7: [A5 → ¬b]
+A8: [A6 → ¬m]
+
+(using the rule hw −→ ¬b)
+(using the rule ¬hw −→ ¬m)
+
+Now the argument A3 has a defeater which is A8. Since A8 also defeats A3, the two arguments will not be in the
+grounded extension. Consequently, m is no longer a justiﬁed conclusion. Similarly, the two arguments A4 and A7
+are conﬂicting. Therefore, b is not justiﬁed either. Thus, only the premises wr and go are considered justiﬁed in this
+example.
+
+The previous example illustrates that, although the closure of strict rules under Clpp operator solves the issue
+of closure and indirect consistency under grounded semantics, the problem is still open for the other acceptability
+semantics (like complete and preferred semantics). This can be seen by again examining the example of “Married
+John”.
+
+Example 4 (continued). As said before, the argument A4 has a unique defeater which is A7 and A3 has one defeater
+which is A8. However, A4 defeats A7 and A3 defeats A8. Thus, the set {A3, A4} is an admissible extension since
+it defends itself against all its defeaters (A7, A8). And because {A3, A4} is admissible, there also exists a preferred
+extension (a superset of {A3, A4}) with conclusions b and also m. This means that this preferred extension does not
+satisfy closure. Moreover, the closure under the strict rules of its conclusions is inconsistent. However, note that since
+we are using a skeptical reasoning, neither m nor ¬m (resp. neither b nor ¬b) can be inferred from this theory. Thus,
+the problem concerns only the results returned by individual extensions, and not the output of the system.
+
+To solve this problem, an alteration to the core formalism is necessary, in particular to the notion of rebutting. The
+idea is to consider a restricted notion of rebutting so that an argument can only be rebutted on the consequent of one
+of its defeasible rules. This can be stated as follows:
+
+Deﬁnition 15 (Restricted rebutting). Let A and B be arguments. A restrictively rebuts B on (A(cid:12), B(cid:12)) iff A(cid:12) ∈ Sub(A)
+such that Conc(A(cid:12)) = φ and B(cid:12) ∈ Sub(B) such that B(cid:12) is of the form B(cid:12)(cid:12)
+
+⇒ −φ.
+
+1 , . . . , B(cid:12)(cid:12)
+
+n
+
+Note that the restricted version of rebut is a special case of the unrestricted version of rebut.
+
+Property 4. Let A and B be arguments. If A restrictively rebuts B, then A rebuts B. The reverse is not always true.
+
+Let us consider the following counter-example:
+
+Example 4 (continued). In the previous example, the argument A4 rebuts A7, but A4 does not restrictively rebuts A7.
+
+We now consider the following argumentation system: (cid:3)Arg, Defeatr
+
+(cid:4) such that Defeatr is deﬁned as follows:
+
+Deﬁnition 16 (Restricted Defeating). Let A and B be arguments. We say that A defeatsr B iff
+
+(1) A restrictively rebuts B, or
+(2) A undercuts B.
+
+Before showing how restricted rebut can help to solve the issue of postulates, let us ﬁrst introduce an important
+result. In fact, it can be veriﬁed that when “restricted rebutting” is used instead of “rebutting”,3 then the argumentation
+formalism immediately satisﬁes closure, without the need to compute any closure of the set S. On the other hand,
+when “rebutting” is used, it is direct consistency that is immediately satisﬁed, as shown by Property 2.
+
+3 Applying “restricted rebutting” instead of (unrestricted) “rebutting” also affects the validity of some of the results that have been obtained
+until now. Proposition 2, for instance, is not valid under restricted rebutting (Theorems 2 and 4 will repair this). Proposition 1, however, can also
+quite easily be proved under restricted rebutting. Furthermore, results that do not depend on the particular way in which defeat is deﬁned (like
+Propositions 3, 4, 5, 6 and 7) remain valid under restricted rebutting.
+
+298
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+Proposition 8. Let (cid:3)Arg, Defeatr
+extensions. Then, (cid:3)Arg, Defeatr
+
+(cid:4) be an argumentation system built from a theory (cid:3)S, D(cid:4), and E1, . . . , En its complete
+(cid:4) satisﬁes closure.
+
+Now let us consider again the problem of Example 4.
+
+Example 4 (continued). Using the restricted version of defeat, the argument A4 does not defeat A7 and A3 does not
+defeat A8. Thus, the set {A3, A4} is no longer an admissible extension since it does not defend itself against all its
+defeaters (A7, A8).
+
+We will now show that if we consider the Clpp operator and the “restricted rebutting” then the two remaining
+
+postulates (closure and indirect consistency) are satisﬁed under each of Dung’s standard semantics.
+
+Theorem 2. Let (cid:3)Arg, Defeatr
+(cid:4) be an argumentation system built from the theory (cid:3)Clpp(S), D(cid:4) such that S is consis-
+tent, Output its set of justiﬁed conclusions and E1, . . . , En its extensions under one of Dung’s standard semantics.
+
+Then, (cid:3)Arg, Defeatr
+
+(cid:4) satisﬁes direct consistency and indirect consistency.
+
+In the previous example, it can be seen that Clpp can generate a rule (in this case: ¬hw −→ ¬m) that is needed to
+obtain an intuitive outcome. As a side effect, Clpp also generates many rules that are not actually needed to obtain the
+intuitive outcome. An example of such a rule is b −→ ¬m, which corresponds to applying transitivity on the rules
+b −→ ¬hw and ¬hw −→ ¬m. Worse yet, Clpp may also generate rules which are actually harmful for obtaining an
+intuitive outcome. An example of such a rule is p, ¬p −→ ¬q. To see why this is harmful, consider the case of two
+arguments for conﬂicting conclusions (like the Nixon diamond) p and ¬p. With strict rules as classical entailment, one
+can then combine these arguments to form an argument that can defeat an arbitrary statement (like q), as p, ¬p (cid:19) ¬q.
+This phenomenon is particularly problematic under grounded semantics [39,40] but also plays a role under preferred
+semantics [22]. Although an approach is given in [22] we will not go into details here.
+
+5.2. Strict rules closed under transposition
+
+In the light of the above, one can observe that the approach of computing the closure of a set of strict rules requires
+a closure operator that generates at least those rules that are needed to satisfy closure and consistency, but at the same
+time does generate rules which can be used to build new arguments that may keep “good” arguments from becoming
+acceptable, and consequently keep their conclusions from becoming justiﬁed. In other words, the closure operator
+should not generate too little, but it should not generate too much either.
+
+We are now about to deﬁne a second closure operator Cltp that is signiﬁcantly weaker than our ﬁrst one (Clpp). Our
+discussion starts with the observation that a strict rule (say φ1, . . . , φn −→ ψ), when translated to propositional logic
+(φ1 ∧ · · · ∧ φn ⊃ ψ) is equivalent to a disjunction (¬φ1 ∨ · · · ∨ ¬φn ∨ ψ). In this disjunction, different literals can be
+put in front (like ¬φi in ¬φ1 ∨ · · · ∨ ¬φi−1 ∨ ψ ∨ ¬φi+1 ∨ · · · ∨ ¬φn ∨ ¬φi ), which can again be translated to a strict
+rule (φ1, . . . , φi−1, ¬ψ, φi+1, . . . , φn −→ ¬φi ). This leads to the following deﬁnition.
+
+Deﬁnition 17 (Transposition). A strict rule s is a transposition of φ1, . . . , φn −→ ψ iff s = φ1, . . . , φi−1, ¬ψ, φi+1,
+. . . , φn −→ ¬φi for some 1 (cid:3) i (cid:3) n.
+
+Based on the thus deﬁned notion of transposition, we now deﬁne our second closure operator.
+
+Deﬁnition 18 (Transposition operator). Let S be a set of strict rules. Cltp(S) is a minimal set such that:
+
+• S ⊆ Cltp(S), and
+• If s ∈ Cltp(S) and t is a transposition of s then t ∈ Cltp(S).
+
+We say that S is closed under transposition iff Cltp(S) = S.
+
+It is easily veriﬁed that with the Cltp operator, Example 4 (Married John) is handled correctly. More generally, the
+
+use of such an operator allows the three rationality postulates to be satisﬁed.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+299
+
+Theorem 3. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from (cid:3)Cltp(S), D(cid:4) where Cltp(S) is consistent,
+Output its set of justiﬁed conclusions and E its grounded extension. Then, (cid:3)Arg, Defeat(cid:4) satisﬁes closure and indi-
+rect consistency.
+
+Note that (cid:3)Arg, Defeat(cid:4) satisﬁes also consistency (according to Property 2) since the unrestricted version of the
+rebutting relation is considered here. As for the Clpp operator, the Cltp operator by itself is not enough to guarantee
+the closure and indirect consistency of an argumentation system for the other acceptability semantics (like complete
+and preferred semantics). Let us consider another example to illustrate this issue.
+
+Example 7. Let S = {−→ a; −→ b; −→ c; −→ g; d, e, f −→ ¬g} and D = {a (cid:9)⇒ d; b (cid:9)⇒ e; c (cid:9)⇒ f }.
+
+Now, consider the following arguments:
+
+A1 : [[→ a] ⇒ d]
+A2 : [[→ b] ⇒ e]
+A3 : [[→ c] ⇒ f ]
+
+One can easily verify that without Cltp, the arguments A1, A2 and A3 do not have any counter-arguments (which
+makes them members of each Dung-style extension). However, if one would replace the defeasible theory (cid:3)S, D(cid:4) by
+(cid:3)Cltp(S), D(cid:4), then counter-arguments against A1, A2 and A3 do exist. For instance, A4 = [[[→ b] ⇒ e], [[→ c] ⇒
+f ], [→ g] → ¬d] defeats A1 (because e, f, g −→ ¬d ∈ Cltp(S)).
+
+The counter-arguments against A1, A2 and A3 make sure that, under grounded semantics, neither d, e nor f is
+justiﬁed. At the same time, however, it must be observed that the set {A1, A2, A3} is admissible. Even though A4
+defeats A1, A1 also defeats A4, and similar observations can also be made with respect to A2 and A3. And because
+{A1, A2, A3} is admissible, there also exists a preferred extension (a superset of {A1, A2, A3}) with conclusions d, e,
+f and also g. This means that this preferred extension does not satisfy closure. Moreover, the closure under the strict
+rules of its conclusions is inconsistent.
+
+So, while the closure of strict rules under transposition solves the issue of closure and indirect consistency under
+grounded semantics, the problem is still open for preferred semantics. For this, we will consider again the argumenta-
+tion system (cid:3)Arg, Defeatr
+
+(cid:4) with the restricted version of rebutting.
+
+To see how the restricted rebut can help to solve the issue of postulates, consider again the problem of Example 7.
+
+Example 7 (continued). Again consider the following arguments:
+
+A1 : [[→ a] ⇒ d]
+A2 : [[→ b] ⇒ e]
+A3 : [[→ c] ⇒ f ]
+
+Under the restricted version of rebutting, it holds that {A1, A2, A3} is not an admissible set under (cid:3)Cltp(S), D(cid:4). For
+instance, the argument [[[→ b] ⇒ e], [[→ c] ⇒ f ], [→ g] → ¬d] (A4) now rebuts A1 but A1 does not rebut A4, nor
+does any other argument in {A1, A2, A3} defeat A4. Thus {A1, A2, A3} is not admissible in (cid:3)Cltp(S), D(cid:4) under the
+restricted deﬁnition of rebutting.
+
+We will now show that if we consider the transposition closure Cltp and the restricted version of the rebutting
+
+relation then direct and indirect consistency are satisﬁed under each of Dung’s standard semantics.
+
+Theorem 4. Let (cid:3)Arg, Defeatr
+(cid:4) be an argumentation system built from the theory (cid:3)Cltp(S), D(cid:4) with S is consistent.
+Output its set of justiﬁed conclusions and E1, . . . , En its extensions under one of Dung’s standard semantics. Then,
+(cid:3)Arg, Defeatr
+
+(cid:4) satisﬁes direct consistency and indirect consistency.
+
+Note that (cid:3)Arg, Defeat(cid:4) satisﬁes also closure as shown by Proposition 8 in Appendix A.
+
+300
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+Table 2
+Consistency and closure with the two closure operators
+
+Type of rebutting
+
+Rebut
+
+Restricted Rebut
+
+5.3. Conclusions
+
+Direct consistency
+
+Under any
+semantics
+
+Under any
+semantics
+
+Indirect consistency
+
+Under grounded
+extension
+
+Under any
+semantics
+
+Closure
+
+Under grounded
+extension
+
+Under any
+semantics
+
+So far, we have proposed two solutions for satisfying the three rationality postulates for the argumentation frame-
+work proposed in [4]. Table 2 summarizes the different results obtained concerning direct consistency, indirect
+consistency and closure. In what follows, we will use the wording “any extension” in order to refer to all Dung’s
+standard semantics.
+
+6. Summary and discussion
+
+Although various systems for formal argumentation have been deﬁned during recent years, many of them can easily
+produce results that, when given a closer inspection, are very problematic to serve as a basis for beliefs, or for any
+other purpose that allows for introspection on the results.
+
+In order to avoid such problems, the aim of this paper is to deﬁne a number of postulates that any argumentation
+system should satisfy. These postulates should warrant that an argumentation formalism is well-deﬁned and guarantee
+some basic suitability of its outputs. We have focused on three important postulates: the closure, the direct consistency
+and the indirect consistency of the results of a system. These are violated by several argumentation systems such as
+[33,34,42]. We then studied ways in which these postulates can be warranted for an instantiation of the Dung system. In
+particular, we have proposed two closure operators that allow to make more explicit some implicit information. Thus,
+the contribution of this paper is not to state an entirely new formalism for argumentation and defeasible reasoning.
+Instead, we have stated a number of general approaches (like transposition) that can be applied to a wide variety of
+argumentation formalisms, including [4,33,34,42].
+
+It should be mentioned that the problem of rationality postulates is not necessarily connected to argumentation
+formalisms that use Dung-style semantics. For instance, as was explained in Section 3, the formalism of [33] violates
+the rationality postulates of closure and indirect consistency, even though it does not use any of Dung’s standard
+semantics. The point is that many of the problematic examples, as discussed in Section 3 arise because some arguments
+do not have counterarguments (like is for instance the case in the Married John example), although intuitively they
+should have. In almost all semantics that we know of, such arguments without defeaters are in each extension; this is
+not only the case for the standard semantics (i.e. grounded, preferred, complete and stable), but also for semi-stable
+[24], ideal [1] and CF2 [13].
+
+As for the proposed solutions, in Section 5 it was stated that the approach of transposition (Cltp) in combination
+with restricted rebutting satisﬁes the rationality postulates for any of Dung’s standard semantics. Actually, one could
+even generalize this result. As the proof of Theorem 4 works for each semantics of which the extensions are a non-
+empty subset of the complete extensions, this not only includes preferred, complete or grounded semantics, but also for
+instance ideal semantics [1] or even relatively new approaches like semi-stable semantics [24]. For all these semantics,
+the approach of transposition in combination with restricted rebutting satisﬁes the rationality postulates discussed in
+this paper.
+
+Although in most of this paper, the rationality postulates are discussed using Dung’s analysis of formal argumen-
+tation [28], it should be mentioned that the issue of rationality postulates is not necessarily bound to it. In fact, the
+rationality postulates are applicable to any formalism for defeasible reasoning (be it argumentation or a more tra-
+ditional nonmonotonic logic) that uses a knowledge base containing strict and defeasible rules to entail extensions
+with associated conclusions. This includes approaches like [39] and [33]. The reason why we have selected Dung’s
+approach to illustrate some of the problems is mainly because it is relatively well-known among researchers in formal
+argumentation and nonmonotonic logic.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+301
+
+A different issue is that of computational complexity of the proposed solutions. While it is true that the approach
+of propositional closure (Clpp) involves the usual issues of computational complexity that are associated with propo-
+sitional logic, the approach of transposition (Cltp) can be seen as a more lightweight approach. It should be observed
+that a strict rule has at most k transpositions, where k is the size of its body. If we assume that a set S of n strict rules
+has an average body size of k then this generates at most n times k transpositions of S. Thus, generating the necessary
+transpositions is a task that is linear to the size of S. Experiences from the ﬁrst experimental implementations4 using
+Cltp indicate that the added computational complexity from transposition does not cause any serious problems.
+
+At a ﬁrst sight, the rationality postulate of closure seems to require the property of logical omniscience, but this is
+not necessarily the case. The point is that an implementation of an argumentation formalism may very well be query-
+based. For semantics like grounded, complete or preferred, it is very well possible to answer the question whether a
+formula p follows from at least one extension, or even from every extension [42,46] without actually computing all
+extensions under the semantics in question. With the query-based approach, logical omniscience is not an issue since
+one only generates the conclusions and arguments that one actually needs in order to answer a query.
+
+The approach of closing the strict rules under transposition (Cltp) is to some extent comparable with the approach
+of Clark completion for logic programs [27]. Both make explicit information that was left implicit in the original
+formalization. The difference, however, is that Clark completion is related to the Closed World Assumption. That is, if
+something does not follow from the knowledge base, then it is assumed not to hold. Transposition, on the other hand,
+is based on the idea that something may not be explicitly in the original knowledge base, but it still should be assumed
+to hold since it logically follows from this knowledge base.
+
+A topic related to the one discussed in the current paper is whether one can state rationality postulates not so much
+with respect to the conclusions of the argumentation formalism, but with respect to the argument-based semantics
+applied by it. It is interesting to see that this topic has caught some recent attention. Caminada, for instance, is
+able to capture the traditional Dung-style semantics (grounded, preferred, complete and stable) as well as the newly
+invented semi-stable semantics essentially in one postulate [23]. Baroni and Giacomin apply a total of nine postulates
+with which they are able not only to evaluate the traditional Dung-style semantics, but also non admissibility based
+semantics, such as CF2 [13]. Thus, the approach of applying postulates in formal argumentation has many useful
+applications.
+
+Acknowledgements
+
+This work was supported by the Commission of the European Communities under contract IST-2004-002307,
+
+ASPIC project “Argumentation Service Platform with Integrated Components”.
+
+We would like to thank Gerard Vreeswijk for his comments and discussions, and Matt South for implementing
+transposition and restricted rebutting in his implementation of Argumentation System (http://aspic.acl.icnet.uk), as
+well as the anonymous reviewers for their useful comments.
+
+Appendix A
+
+The following two lemmas follow directly from [28].
+
+Lemma 1. Let (cid:3)A, Def (cid:4) be an argumentation framework and B ⊆ A. If B is admissible, then B ⊆ F(B).
+
+Proof. Suppose that B is admissible. Now take an arbitrary argument A ∈ B. As A is defended by B (because B is
+admissible), it is also in F(B). Therefore, B ⊆ F(B). (cid:2)
+
+Lemma 2. Let (cid:3)A, Def (cid:4) be an argumentation framework and B ⊆ A. If B is admissible, then F(B) is also admissible.
+
+Proof. Suppose B is admissible. In order to prove that F(B) is also admissible, we have to prove two things:
+
+4 See http://aspic.acl.icnet.uk/.
+
+302
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+(1) F(B) is conﬂict-free.
+
+Suppose F(B) is not conﬂict-free. That is, there exists some A, B ∈ F(B) such that A defeats B. The fact that
+B ∈ F(B) means that B must defend B against A. That is, B contains some C that defeats A. But the fact that
+A ∈ F(B) means that B must defend A against C. Therefore, B must contain some D that defeats C. But then B
+would not be conﬂict-free. Contradiction.
+(2) For each A ∈ F(B): A is defended by F(B).
+
+This follows almost immediately from Lemma 1. (cid:2)
+
+Proposition 1. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system and E1, . . . , En its different extensions under one of
+Dung’s standard semantics. ∀Ei ∈ {E1, . . . , En}, ∀A ∈ Ei , Sub(A) ⊆ Ei .
+
+Proof. As every complete, grounded or preferred extension is also a complete extension, we only have to prove this
+under complete semantics. Let E be a complete extension. Suppose that A ∈ E and A(cid:12) ∈ Sub(A). Suppose also that
+A(cid:12) /∈ E. Since E is a complete extension, then this means that either E ∪ {A(cid:12)} is not conﬂict-free, or E does not
+defend A(cid:12).
+
+Case 1: Suppose that E ∪ {A(cid:12)} is not conﬂict-free. This means that ∃B ∈ E such that B defeats A(cid:12), or A(cid:12) defeats B.
+Suppose that B defeats A(cid:12), thus, B rebuts A(cid:12) or B undercuts A(cid:12) on A(cid:12)(cid:12) ∈ Sub(A(cid:12)). However, A(cid:12)(cid:12) ∈ Sub(A).
+This means that B defeats A to. This means that E is not conﬂict-free. Contradiction with the fact that E is
+a complete extension.
+Suppose that A(cid:12) defeats B, thus, A(cid:12) rebuts B or A(cid:12) undercuts B on B(cid:12) ∈ Sub(B). This means also that A
+defeats B on B(cid:12) since A(cid:12) ∈ Sub(A) and B(cid:12) ∈ Sub(B) (according to the deﬁnitions of Rebutting and Under-
+cutting). This means that E is not conﬂict-free. Contradiction with the fact that E is a complete extension.
+
+Case 2: Suppose that E does not defend A(cid:12). This means that ∃B ∈ Arg such that B defeats A(cid:12) on some A(cid:12)(cid:12) ∈ Sub(A(cid:12))
+and (cid:2)C ∈ E such that C defeats B. Since A(cid:12)(cid:12) ∈ Sub(A) it holds that B defeats A. Since E is a complete
+extension and A ∈ E, then E defends A against B. Contradiction. (cid:2)
+
+Proposition 2. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from a theory (cid:3)S, D(cid:4) with S consistent, and
+E1, . . . , En its different extensions under one of Dung’s standard semantics. Concs(Ei) is consistent for each 1 (cid:3)
+i (cid:3) n.
+
+Proof. Let E be a complete extension. Suppose that {Conc(A) | A ∈ E} is inconsistent. This means that ∃A, B ∈
+E, Conc(A) = −Conc(B). Since E is a complete extension, E is conﬂict-free. This means that A does not defeat B
+and B does not defeat A. According to the deﬁnition of defeat, this means that A does not rebut B and B does not re-
+but A. Consequently, A and B are strict arguments (according to the deﬁnition of rebutting). Thus, StrictRules(A)
+∪ StrictRules(B) is inconsistent. However, StrictRules(A) ∪ StrictRules(B) ⊆ S, and S is consistent.
+Contradiction. (cid:2)
+
+Proposition 3. Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Let E1, . . . , En be
+its extensions under one of Dung’s standard semantics, and Output be as in Deﬁnition 12.
+
+If Concs(Ei) is consistent for each 1 (cid:3) i (cid:3) n then Output is consistent.
+
+Proof. Suppose that ∀Ei , {Conc(A) | A ∈ Ei} is consistent. Suppose also that Output is inconsistent. According to
+Deﬁnition 6 this means that ∃ψ, −ψ ∈ Output. According to Deﬁnition 12, it holds that ∀Ei , ∃Ai, Bi ∈ Ei such that
+Conc(Ai) = ψ and Conc(Bi) = −ψ. This means that ∀Ei , {Conc(A) | A ∈ Ei} is inconsistent. Contradiction. (cid:2)
+
+Proposition 4. Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Let E1, . . . , En be
+its extensions under one of Dung’s standard semantics, and Output be as in Deﬁnition 12.
+If Concs(Ei) = ClS (Concs(Ei) for each 1 (cid:3) i (cid:3) n then Output = ClS (Output).
+
+Proof. Suppose that ∀Ei , {Conc(A) | A ∈ Ei} = ClS ({Conc(A) | A ∈ Ei}). Suppose also that Output (cid:13)=
+ClS (Output) then ∃ψ ∈ ClS (Output) such that ψ /∈ Output.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+303
+
+Case 1: ∃φ1, . . . , φn −→ ψ ∈ S such that φ1, . . . , φn ∈ Output.
+
+Since φ1, . . . , φn ∈ Output then for each φk (1 (cid:3) k (cid:3) n) it holds that ∀Ei , ∃Aj ∈ Ei with Conc(Aj ) =
+
+φk.
+
+Then ∀Ei , φ1, . . . , φn ∈ {Conc(A) | A ∈ Ei}.
+However, ∀Ei , {Conc(A) | A ∈ Ei} = ClS ({Conc(A) | A ∈ Ei}). This means that ∀Ei , ψ ∈ {Conc(A) |
+
+A ∈ Ei}. Consequently, ψ ∈ Output. Contradiction.
+
+Case 2: By induction, the above reasoning is generalized to the case where φ1, . . . , φn ∈ ClS (Output). (cid:2)
+
+Proposition 5. Let T be a defeasible theory, (cid:3)A, Def (cid:4) be an argumentation system built from T . Let E1, . . . , En be
+its extensions under one of Dung’s standard semantics and let Output be as in Deﬁnition 12.
+If ClS ({Concs(Ei)}) is consistent for each 1 (cid:3) i (cid:3) n, then ClS (Output) is consistent.
+
+Proof. Suppose that ∀Ei , ClS ({Conc(A) | A ∈ Ei}) is consistent. Suppose also that ClS (Output) is inconsistent.
+This means that ∃ψ, −ψ ∈ ClS (Output).
+
+Case 1: ∃ψ, −ψ ∈ ClS (Output) means that ∃φ1, . . . , φn −→ ψ ∈ S such that φ1, . . . , φn ∈ Output and
+∃φ(cid:12)
+∈
+m
+{Conc(A) | A ∈ Ei}, ∀Ei . As a consequence, ψ, −ψ ∈ ClS ({Conc(A) | A ∈ Ei}). This means that
+ClS ({Conc(A) | A ∈ Ei}) is inconsistent. Contradiction.
+
+∈ Output. This means that φ1, . . . , φn, φ(cid:12)
+
+−→ −ψ ∈ S such that φ(cid:12)
+
+1, . . . , φ(cid:12)
+
+1, . . . , φ(cid:12)
+
+1, . . . , φ(cid:12)
+
+Case 2: ∃ψ, −ψ ∈ ClS (Output) means that ∃φ1, . . . , φn −→ ψ ∈ S such that φ1, . . . , φn ∈ ClS (Output) and
+
+m
+
+m
+
+1, . . . , φ(cid:12)
+
+∃φ(cid:12)
+−→ −ψ ∈ S such that φ(cid:12)
+By induction, we apply the reasoning of case 1. (cid:2)
+
+1, . . . , φ(cid:12)
+
+m
+
+m
+
+∈ ClS (Output).
+
+Proposition 6. If an argumentation system (cid:3)A, Def (cid:4) satisﬁes indirect consistency, then it also satisﬁes direct consis-
+tency.
+
+Proof. According to Deﬁnition 5, Output ⊆ ClS (Output). Therefore, if ClS (Output) is consistent, then
+Output is also consistent. Similarly, since {Conc(A) | A ∈ Ei} ⊆ ClS ({Conc(A) | A ∈ Ei}), then if ClS ({Conc(A) |
+A ∈ Ei}) is consistent, then {Conc(A) | A ∈ Ei} is also consistent. Consequently, if an argumentation system satisﬁes
+indirect consistency, then it also satisﬁes direct consistency. (cid:2)
+
+Proposition 7. Let (cid:3)A, Def (cid:4) be an argumentation system. If (cid:3)A, Def (cid:4) satisﬁes closure and direct consistency, then it
+also satisﬁes indirect consistency.
+
+Proof. Suppose that the argumentation system satisﬁes closure, then Output = ClS (Output). Suppose also that
+the system satisﬁes direct consistency, then Output is consistent. Consequently, ClS (Output) is also consistent.
+
+Similarly, we have {Conc(A) | A ∈ Ei} = ClS ({Conc(A) | A ∈ Ei}) (due to the closure of the system). Moreover,
+{Conc(A) | A ∈ Ei} is consistent (because of direct consistency). Thus, ClS ({Conc(A) | A ∈ Ei}) is also consistent.
+Consequently, the system satisﬁes indirect consistency. (cid:2)
+
+Lemma 3. Let P be a set of propositions that is closed under propositional entailment (that is: Cn(P ) = P ). It holds
+that Cn(Prop(Rules(P ))) = P .
+
+Proof. We have to prove two things:
+
+(1) Cn(Prop(Rules(P ) ⊆ P
+
+(2) P ⊆ Cn(Prop(Rules(P )))
+
+First of all, it should be mentioned that from the deﬁnitions of Prop and Rules it follows that Prop(Rules(P )) ⊆ P .
+As in propositional logic Cn is a monotonic function, it also holds that Cn(Prop(Rules(P ))) ⊆ Cn(P ). As we have
+that Cn(P ) = P , it also holds that Cn(Prop(Rules(P ))) ⊆ P .
+
+Let φ ∈ P . Let φCNF be a proposition in Conjunctive Normal Form that is logically equivalent to φ. As-
+sume, without loss of generality, that φCNF is of the form (p1 ∨ · · · ∨ pn) ∧ · · · ∧ (q1 ∨ · · · ∨ qm). As P
+
+304
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+is closed under propositional entailment, it holds that φCNF ∈ P . This means that P also contains the for-
+mulas ¬p1 ∧ · · · ∧ ¬pn−1 ⊃ pn, . . . , ¬q1 ∧ · · · ∧ ¬qm−1 ⊃ qm. These formulas, by deﬁnition of Rules and
+Prop, will also be in Prop(Rules(P )). Together, these formulas entail φCNF and therefore also φ. Therefore,
+φ ∈ Cn(Prop(Rules(P ))). (cid:2)
+
+Property 3. Let S be a set of strict rules, and let S1, S2 ⊆ S.
+
+(1) S ⊆ Clpp(S);
+(2) if S1 ⊆ S2 then Clpp(S1) ⊆ Clpp(S2);
+(3) Clpp(Clpp(S)) = Clpp(S).
+
+Proof.
+
+(1) S ⊆ Clpp(S). This follows directly from Deﬁnition 14.
+(2) If S1 ⊆ S2 then Clpp(S1) ⊆ Clpp(S2).
+
+Since S1 ⊆ S2 then Prop(S1) ⊆ Prop(S2) (according to Deﬁnition 14 of the function Prop). Due to the mono-
+tonicity of the classical inference relation (cid:19), we have Cnprop(Prop(S1)) ⊆ Cnprop(P rop(S2)). According to the
+deﬁnition of the function Rules in Deﬁnition 14, we have Rules(Cnprop(Prop(S1))) ⊆ Rules(Cnprop(Prop(S2))).
+Thus, Clpp(S1) ⊆ Clpp(S2).
+
+(3) Clpp(Clpp(S)) = Clpp(S).
+
+From the deﬁnition of Clpp it follows that:
+
+Clpp(Clpp(S)) = Rules(Cn(Prop(Rules(Cn(Prop(S)))))).
+
+As Cn(Prop(S)) is closed under propositional consequence, we can apply Lemma 3. From this, it follows that:
+
+Rules(Cn(Prop(Rules(Cn(Prop(S)))))) = Rules(Cn(Prop(S))).
+
+Applying the deﬁnition of Clpp yields: Rules(Cn(Prop(S))) = Clpp(S) .
+By applying transitivity on the thus derived equations, we obtain: Clpp(Clpp(S)) = Clpp(S). (cid:2)
+
+Lemma 4. Let S be a set of strict rules. Clpp(S) is closed under transposition. That is: Cltp(Clpp(S)) = Clpp(S).
+
+Proof. We have to prove two things:
+
+(1) Clpp(S) ⊆ Cltp(Clpp(S)). This follows directly from Deﬁnition 18.
+(2) Cltp(Clpp(S)) ⊆ Clpp(S). Let s ∈ Cltp(Clpp(S)). Then, according to Deﬁnition 18, there are two possibilities:
+
+(a) s ∈ Clpp(S). In that case, we’re done.
+(b) s is a transposition of some rule s(cid:12) ∈ Clpp(S). Let s(cid:12) = φ1, . . . , φn −→ ψ and s = φ1, . . . , φi−1, −ψ, φi+1,
+. . . , φn −→ −φi . From the fact that s(cid:12) ∈ Clpp(S) it follows that s ∈ Clpp(Clpp(S)) (this is because φ1 ∧ · · · ∧
+φn ⊃ ψ (cid:19) φ1 ∧ · · · ∧ φi−1 ∧ −ψ ∧ φi+1 ∧ · · · ∧ φn ⊃ −φi ). From Property 3 (Clpp(Clpp(S)) = Clpp(S)) it
+then follows that s ∈ Clpp(S). (cid:2)
+
+Theorem 1. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from the defeasible theory (cid:3)Clpp(S), D(cid:4) such that
+Clpp(S) is consistent. Output is its set of justiﬁed conclusions and E its grounded extension.
+
+(cid:3)Arg, Defeat(cid:4) satisﬁes closure and indirect consistency.
+
+Proof. From Lemma 4 it follows that (cid:3)Clpp(S), D(cid:4) = (cid:3)Cltp(Clpp(S)), D(cid:4). From Theorem 1 it follows that the argu-
+mentation system (cid:3)Arg, Defeat(cid:4) built from (cid:3)Cltp(Clpp(S)), D(cid:4) satisﬁes closure and indirect consistency. (cid:2)
+
+Property 4. Let A and B be arguments. If A restrictively rebuts B, then A rebuts B. The reverse is not always true.
+
+Proof. Let A and B be arguments. Suppose that A restrictively rebuts B. This means that ∃A(cid:12) ∈ Sub(A) with
+Conc(A(cid:12)) = φ and ∃B(cid:12) ∈ Sub(B) of the form B(cid:12)(cid:12)
+⇒ −φ. B(cid:12) is a non-strict argument, moreover, Conc(B(cid:12)) =
+n
+−φ. Thus, A rebuts B. (cid:2)
+
+1 , . . . , B(cid:12)(cid:12)
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+305
+
+Proposition 8. Let (cid:3)Arg, Defeatr
+plete extensions. (cid:3)Arg, Defeatr
+
+(cid:4) satisﬁes closure.
+
+(cid:4) be an argumentation system built from the theory (cid:3)S, D(cid:4), and E1, . . . , En its com-
+
+Proof. In order to prove closure, it is sufﬁcient to show that ∀Ei , {Conc(A) | A ∈ Ei} = ClS ({Conc(A) | A ∈ Ei}).
+Because, according to Proposition 4, this means that Output = ClS (Output). Consequently, the argumentation
+system satisﬁes both aspects of closure (Proposition 4).
+
+Let E be a complete extension. Suppose that {Conc(A) | A ∈ E} (cid:13)= ClS ({Conc(A) | A ∈ E}). This means that
+there exist arguments A1, . . . , An ∈ E with Conc(A1) = φ1, . . . , Conc(An) = φn and ∃φ1, . . . , φn −→ ψ ∈ S, but
+A = A1, . . . , An → ψ /∈ E. Two possible cases exist:
+
+Case 1: E ∪ {A} is not conﬂict-free. Then either ∃B ∈ E such that B defeats A, or ∃B ∈ E such that A defeats B.
+
+Suppose that ∃B ∈ E such that B defeats A on a sub-argument A(cid:12). Thus, A(cid:12) ∈ Sub(A). However, Sub(A) =
+Sub(A1) ∪ · · · ∪ Sub(An) ∪ {A}. According to the deﬁnition of restricted rebutting and that of undercut,
+the top rule of A(cid:12) is defeasible. Thus, A(cid:12) ∈ Sub(A1) ∪ · · · ∪ Sub(An). Then, A(cid:12) ∈ Sub(A1), or . . . , or
+A(cid:12) ∈ Sub(An). According to Proposition 1, since Ai ∈ E (1 (cid:3) i (cid:3) n), then Sub(Ai) ⊆ E (1 (cid:3) i (cid:3) n).
+Consequently, A(cid:12) ∈ E. Thus, B defeats A(cid:12) (according to the deﬁnition of rebutting and undercut). Thus, E is
+not conﬂict-free. Contradiction.
+Now suppose that ∃B ∈ E such that A defeats B. As E is an admissible set, it must defend itself against A.
+This can only be the case if E contains some argument C such that C defeats A1 or . . . or An (this is because
+C cannot defeat A on A’s top-rule). But then E would not be conﬂict-free. Contradiction.
+
+Case 2: E does not defend A. This means that ∃B ∈ Arg such that B defeats A and (cid:2)C ∈ E such that C defeats
+B. Since B defeats A, it must hold that B rebuts or undercut A on a sub-argument A(cid:12) whose top rule is
+defeasible. Thus, B rebuts or undercut A(cid:12). However, since A(cid:12) ∈ Sub(A), it must hold that A(cid:12) ∈ Sub(A1) ∪
+· · · ∪ Sub(An). Then, ∃i = 1, . . . , n such that A(cid:12) ∈ Sub(Ai). According to Proposition 1, since Ai ∈ E, then
+Sub(Ai) ⊆ E, thus, A(cid:12) ∈ E. Consequently, A(cid:12) is defended by E against B. Contradiction. (cid:2)
+
+Theorem 2. Let (cid:3)Arg, Defeatr
+Output its set of justiﬁed conclusions and E1, . . . , En its complete extensions.
+
+(cid:4) be an argumentation system built from the theory (cid:3)Clpp(S), D(cid:4) with S is consistent,
+
+(cid:3)Arg, Defeatr
+
+(cid:4) satisﬁes direct consistency and indirect consistency.
+
+Proof. From Lemma 4 it follows that (cid:3)Clpp(S), D(cid:4) = (cid:3)Cltp(Clpp(S)), D(cid:4). From Theorem 4, it follows that the argu-
+mentation system built from (cid:3)Cltp(Clpp(S), D(cid:4) satisﬁes direct consistency and indirect consistency. (cid:2)
+
+In order to prove Theorem 3, in particular Closure, we need ﬁrst to prove the following result:
+
+Lemma 5. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from the defeasible theory (cid:3)Cltp(S), D(cid:4). Let B be an
+admissible set of arguments under this theory. If the set {Conc(A) such that A ∈ B} is closed, then the set {Conc(A)
+such that A ∈ F(B)} is closed as well.
+
+Proof. Let B be an admissible set of arguments. Suppose that {Conc(A) such that A ∈ B} is closed, and that
+{Conc(A) such that A ∈ F(B)} is not closed. The fact that {Conc(A) such that A ∈ F(B)} is not closed means
+that there exists some rule φ1, . . . , φn −→ ψ such that F(B) contains arguments A1, . . . , An with Conc(A1) =
+φ1, . . . , Conc(An) = φn but no argument with conclusion ψ. Now consider the argument A = A1, . . . , An → ψ.
+It holds that A /∈ F(B). This means that A is defeated by some argument (say B) that is not defeated by B. The fact
+that A1, . . . , An ∈ F(B) means that B does not defeat A1, . . . , An. Therefore, B must have conclusion −ψ.
+
+Now, let Ai be an arbitrary element of {A1, . . . , An} (1 (cid:3) i (cid:3) n) containing at least one defeasible rule (such
+an argument always exists, since otherwise B could not defeat A). Let B(cid:12)
+= A1, . . . , Ai−1, B, Ai+1, . . . , An →
+i
+−Conc(Ai) (such an argument can be constructed as Cltp(S) is closed under transposition). The fact that Ai ∈ F (B)
+means that B contains some argument (say A(cid:12)
+i cannot defeat any of A1, . . . , An (otherwise F(B)
+wouldn’t be conﬂict-free, since it contains A1, . . . , An as well as A(cid:12) (since B ⊆ F(B) for an admissible set B)), nor
+does A(cid:12)
+i defeat B (since our assumption is that B contains no defeaters of B). Therefore, the only way for A(cid:12)
+i to defeat
+i is to rebut −Conc(Ai). That is, A(cid:12)
+B(cid:12)
+
+i has the same conclusion as Ai .
+
+1) against B(cid:12)
+
+i . This A(cid:12)
+
+306
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+B contains arguments with conclusions φ1, . . . , φn. This is because of the fact that for each Ai with at least one
+defeasible rule, B contains an argument A(cid:12)
+i with the same conclusion, and for each Ai without any defeasible rule, B
+contains Ai (since Ai is strict and B is assumed to be closed under strict rules). But the fact that B is closed under
+strict rules means that B also contains an argument (say C) with Conc(C) = ψ. Therefore (as B ⊆ F(B)), F(B) also
+contains C. Contradiction. (cid:2)
+
+Theorem 3. Let (cid:3)Arg, Defeat(cid:4) be an argumentation system built from the defeasible theory (cid:3)Cltp(S), D(cid:4) such that
+Cltp(S) is consistent. Output is its set of justiﬁed conclusions and E its grounded extension. (cid:3)Arg, Defeat(cid:4) satisﬁes
+closure and indirect consistency.
+
+Proof.
+
+Closure: In order to prove closure, it is sufﬁcient to show that {Conc(A) | A ∈ E} = ClS ({Conc(A) | A ∈ E}).
+This is because, under grounded semantics, there exists exactly one grounded extension. Output =
+ClS (Output). Consequently, the argumentation system satisﬁes closure.
+
+Let E be the grounded extension, thus E =
+
+i(cid:2)1 F(∅). We prove this by induction using the inductive
+
+(cid:3)
+
+deﬁnition of grounded semantics. Let A0 = ∅ and Ai+1 = F(Ai) (i (cid:2) 0).
+
+basis
+
+(i = 1) Let A1 be the set of all arguments that do not have defeaters. We now prove that A1 is an
+admissible set that satisﬁes closure.
+
+Admissible The set of all arguments that do not have any defeaters is automatically admissible.
+Closure Suppose the conclusions of A1 are not closed under strict rules. Then there exists a strict
+rule φ1, . . . , φn −→ ψ such that A1 contains arguments A1, . . . , An with Conc(A1) =
+φ1, . . . , Conc(An) = φn but no argument with conclusion ψ. Now consider the argument
+A = A1, . . . , An → ψ. It holds that A /∈ A. This means that A has a defeater (say B).
+But B does not defeat A1, . . . , An (as the fact that A1, . . . , An ∈ A means they have no
+defeaters). Therefore, the only way B can defeat A is by having a conclusion ¬ψ. It must
+hold that at least one of A1, . . . , An contains a defeasible rule (otherwise A would be strict
+and have no defeaters). Let Ai ∈ {A1, . . . , An} be an argument containing at least one
+defeasible rule. The fact that Cltp(S) is closed under transposition means that Cltp(S) also
+contains a rule φ1, . . . , φn−1, ¬ψ, φi+1, . . . , φn −→ ¬φi . The argument A1, . . . , Ai−1, B,
+Ai+1, . . . , An → ¬φi is now a rebutter of Ai . Contradiction.
+
+step
+
+(i (cid:2) 1) Let us assume that Ai (i (cid:2) 1) is admissible and closed. We will now prove that Ai+1
+(= F (Ai)) is admissible and closed.
+
+Admissible: This follows directly from Lemma 2.
+Closure: This follows directly from Lemma 5.
+
+Indirect Consistency: Since the argumentation system satisﬁes closure (above) and direct consistency (Proposition 2),
+
+then according to Proposition 7, then it also satisﬁes indirect consistency. (cid:2)
+
+Before treating Theorem 4, we ﬁrst have to give some additional terminology that is used in the proof of Theorem 4
+
+as well as in the proof of Lemma 6.
+
+First, we deﬁne the depth of an argument.
+
+Deﬁnition 19. Let A be an argument. The depth of A (depth(A)) is:
+
+• 1, if A is an atomic argument, or else
+• 1 + depth(A(cid:12)), where A(cid:12) is a direct subargument of A such that depth(A(cid:12)) is maximal.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+307
+
+Next, we deﬁne the depth of a rule in an argument. The problem, however, is that a rule can occur several times in
+
+an argument. In that case, the deﬁnition below simply takes the rule with the smallest depth.
+
+Deﬁnition 20. Let A be an argument and r be a rule applied in the construction of A. We say that the depth of r in A
+(depth(r, A)) is:
+
+• 0, if r is the top-rule of A, or else
+• 1 + depth(r, A(cid:12)), where A(cid:12) is a direct subargument of A such that depth(r, A(cid:12)) is minimal.
+
+The next thing to deﬁne is when two subarguments are at equal level in some superargument. Again, an issue
+is what to do when a subargument is contained in a superargument more than once. The approach of the following
+deﬁnition is to see if we can ﬁnd some occurrence of a subargument A1 that is at the same level as some occurrence
+of a subargument A2.
+
+Deﬁnition 21. Let A1 and A2 be arguments and A(cid:12)
+1
+level in A1 as A(cid:12)
+
+2 in A2 iff:
+
+∈ Sub(A1) and A(cid:12)
+2
+
+∈ Sub(A2). We say that A(cid:12)
+
+1 is at the same
+
+1 is a direct subargument of A1, and A(cid:12)
+
+• A(cid:12)
+• there exists a direct subargument A(cid:12)(cid:12)
+2), and A(cid:12)
+
+∈ Sub(A(cid:12)(cid:12)
+
+1 is at the same level in A(cid:12)(cid:12)
+
+A(cid:12)
+2
+
+1 of A1 and a direct subargument A(cid:12)(cid:12)
+2 in A(cid:12)(cid:12)
+2.
+
+1 as A(cid:12)
+
+2 is a direct subargument of A2, or else
+
+2 of A2 such that A(cid:12)
+
+1
+
+∈ Sub(A(cid:12)(cid:12)
+
+1) and
+
+We say that A1 is at the same level as A2 in A iff A1 is at the same level in A as A2 in A.
+
+To illustrate the above deﬁnitions, consider the argument A = [[[→ c] → d], [→ a], [[→ a] → b] → e]. Here,
+depth(A) = 3, depth(−→ a, A) = 1, depth(−→ c, A) = 2, and the arguments [→ a] and [→ c] are at the same level
+in A.
+
+Before proving Theorem 4, namely its part concerning direct consistency, we ﬁrst need to prove the following
+
+result:
+
+Lemma 6. Let (S, D) be a defeasible theory where S is closed under transposition, Ass be a nonempty set of assump-
+tions (that is, a set of strict rules with empty antecedents {−→ a1, . . . , −→ an}) and A be a strict argument under
+(S ∪ Ass, D) such that A has conclusion c and contains the atomic subarguments [→ a1], . . . , [→ an]. There exists a
+strict argument B under (S ∪ Ass ∪ {−→ −c}, D) such that B has conclusion −ai (1 (cid:3) i (cid:3) n).
+
+Proof. We prove this by induction on the depth of A.
+
+basis
+
+step
+
+Let us assume that the depth of A is 1. In that case, A consists of a single rule, with empty antecedent. As the
+set of assumptions that is used in A is non-empty, it follows that this rule must be an assumption of the form
+−→ a. Therefore, the conclusion of A is a (that is: c = a). Then, trivially, there also exists a strict argument
+B (with B = [→ −a]) under (S ∪ Ass ∪ {−→ −a}, D) such that B has conclusion −a.
+Suppose the above lemma holds for all strict arguments of depth (cid:3) j . We now prove that it also holds
+for all strict arguments of depth j + 1. Let A be a strict argument under (S ∪ Ass, D) of depth j + 1
+with conclusion c. Let Conc(A1), . . . , Conc(Am) −→ c be the top-rule of A. Let Ai be a direct subar-
+gument of A that contains the assumption ai . Because S is closed under transposition, there exists a rule
+Conc(A1), . . . , Conc(Ai−1), −c, Conc(Ai+1), . . . , Conc(Am) −→ −Conc(Ai). The fact that Ai has a
+depth (cid:3) j means that we can apply the induction hypothesis. That is, there exists a strict argument (say B(cid:12))
+under (S ∪ Ass ∪ {−→ −Conc(Ai)}, D) with conclusion −ai . Now, in B(cid:12), substitute −Conc(Ai) by the
+subargument [A1, . . . , Ai−1, −c, Ai+1, . . . Am → −Conc(Ai)]. The resulting argument (call it B) is a strict
+argument under (S ∪ Ass ∪ {−→ −c}, D) with conclusion −ai . (cid:2)
+
+308
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+Fig. 1. Graphical representation of the proof of Theorem 4.
+
+Theorem 4. Let (cid:3)Arg, Defeatr
+(cid:4) be an argumentation system built from the theory (cid:3)Cltp(S), D(cid:4) with Cltp(S) is consis-
+tent. Output its set of justiﬁed conclusions and E1, . . . , En its extensions under one of Dung’s standard semantics.
+(cid:3)Arg, Defeatr
+
+(cid:4) satisﬁes direct consistency and indirect consistency.
+
+Proof.
+
+Direct Consistency: In order to prove consistency, it is sufﬁcient to show that ∀Ei , {Conc(A) | A ∈ Ei} is consis-
+tent. This is because Proposition 3 would then imply that Output is also consistent. Consequently, the
+argumentation system satisﬁes consistency.
+
+Let E be a complete extension. Suppose the conclusions of E are not consistent. Then E contains an
+argument (say A) with conclusion c and an argument (say B) with conclusion −c. As Cltp(S) is assumed
+to be consistent, at least one of these two arguments must contain a defeasible rule. Let us, without loss
+of generality, assume that A contains at least one defeasible rule. Let d be a defeasible rule in A that has
+minimal depth. Notice that the depth of d must be at least 1, for if d were the top-rule of A, then B would
+defeat A and E would not be conﬂict-free. It now holds that every rule in A with a smaller depth than d is
+a strict rule (see also Fig. 1). Let Ai be a subargument of A that has d as its top-rule. We will now prove
+that there exists an argument (D(cid:12)) in E that defeats Ai . Let A1, . . . , An be the subarguments of A that are
+at the same level as Ai in A. Lemma 6 tells us that with the conclusions of A1, . . . , An, B it is possible to
+construct an argument with a conclusion that is the opposite of the conclusion of Ai . Call this argument D.
+Now, let D(cid:12) be equal to D, but with the assumptions Conc(A1), . . . , Conc(An), Conc(B) substituted by
+the underlying arguments A1, . . . , An, B. It holds that D(cid:12) ∈ E (this is because each defeater of D(cid:12) is also a
+defeater of A1, . . . , An, B ∈ E, and the fact that E is a complete extension means it defends itself against this
+defeater, which means that D(cid:12) ∈ E). D(cid:12), however, defeats Ai on d, so the fact that D(cid:12), Ai ∈ E means that E
+is not conﬂict-free, and hence also no complete extension. Contradiction.
+
+Indirect Consistency: Since the argumentation system satisﬁes Closure and Direct consistency, then according to
+
+Proposition 7, then it also satisﬁes indirect consistency. (cid:2)
+
+References
+
+[1] J. Alferes, P. Dung, L. Pereira, Scenario semantics of extended logic programs, in: A. Nerode, L. Pereira (Eds.), Proc. 2nd International
+
+Workshop on Logic Programming and Non-monotonic Reasoning, MIT Press, 1993, pp. 334–348.
+
+[2] L. Amgoud, A general argumentation framework for inference decision making, in: Proceedings of the 21st Conference on Uncertainty in
+
+Artiﬁcial Intelligence, UAI’05, 2005, pp. 26–33.
+
+[3] L. Amgoud, S. Belabes, H. Prade, Towards a formal framework for the search of a consensus between autonomous agents, in: Proceedings of
+
+the 4th International joint Conference on Autonomous Agents and Multi-Agent Systems, AAMAS’2005, 2005, pp. 537–543.
+
+[4] L. Amgoud, M. Caminada, C. Cayrol, M. Lagasquie, H. Prakken, Towards a consensual formal model: inference part, Technical report, In
+
+Deliverable D2.2: Draft Formal Semantics for Inference and Decision-Making. ASPIC project, 2004. http://www.argumentation.org.
+
+[5] L. Amgoud, C. Cayrol, Inferring from inconsistency in preference-based argumentation frameworks, International Journal of Automated
+
+Reasoning 29 (2) (2002) 125–169.
+
+[6] L. Amgoud, C. Cayrol, A reasoning model based on the production of acceptable arguments, Annals of Mathematics and Artiﬁcial Intelli-
+
+gence 34 (2002) 197–216.
+
+[7] L. Amgoud, S. Kaci, An argumentation framework for merging conﬂicting knowledge bases: The prioritized case, in: 8th European Conference
+
+on Symbolic and Quantitative Approaches to Reasoning with Uncertainty, ECSQARU’2005, 2005, pp. 527–538.
+
+[8] L. Amgoud, N. Maudet, S. Parsons, Arguments, dialogue, and negotiation, in: Proceedings of the 14th European Conference on Artiﬁcial
+
+Intelligence, 2000, pp. 338–342.
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+309
+
+[9] L. Amgoud, S. Parsons, An argumentation framework for merging conﬂicting knowledge bases, in: Proceedings of International Conference
+
+on Logics in Artiﬁcial Intelligence, 2002, pp. 27–37.
+
+[10] L. Amgoud, H. Prade, Reaching agreement through argumentation: A possibilistic approach, in: 9th International Conference on the Principles
+
+of Knowledge Representation and Reasoning, KR’2004, 2004, pp. 175–182.
+
+[11] L. Amgoud, H. Prade, Using arguments for making decisions: A possibilistic logic approach, in: Proceedings of the 20th Conference on
+
+Uncertainty in Artiﬁcial Intelligence, UAI’04, 2004, pp. 10–17.
+
+[12] L. Amgoud, H. Prade, Explaining qualitative decision under uncertainty by argumentation, in: Proceedings of the 21st National Conference
+
+on Artiﬁcial Intelligence, AAAI’06, 2006, pp. 219–224.
+
+[13] P. Baroni, M. Giacomin, Scc-recursiveness: a general schema for argumentation semantics, Artiﬁcial Intelligence 168 (1–2) (2005) 165–210.
+[14] T.J.M. Bench-Capon, Persuasion in practical argument using value-based argumentation frameworks, Journal of Logic and Computation 13 (3)
+
+(2003) 429–448.
+
+[15] S. Benferhat, D. Dubois, H. Prade, Argumentative inference in uncertain and inconsistent knowledge bases, in: D. Heckerman, A. Mamdani
+
+(Eds.), Proc. of the 9th UAI, Morgan-Kaufmann, Washington, DC, 1993, pp. 411–419.
+
+[16] P. Besnard, A. Hunter, A logic-based theory of deductive arguments, Artiﬁcial Intelligence 128 (1–2) (2001) 203–235.
+[17] P. Besnard, A. Hunter, Practical ﬁrst-order argumentation, in: Proceedings of the 20th American National Conference on Artiﬁcial Intelligence
+
+(AAAI’05), 2005, pp. 590–595.
+
+[18] E. Black, A. Hunter, A generative inquiry dialogue system, in: Proceedings of the 6th International Joint Conference on Autonomous Agents
+
+and Multi-Agent Systems (AAMAS’07), 2007.
+
+[19] A. Bondarenko, P. Dung, R. Kowalski, F. Toni, An abstract, argumentation-theoretic approach to default reasoning, Artiﬁcial Intelligence 93
+
+(1997) 63–101.
+
+[20] B. Bonet, H. Geffner, Arguing for decisions: A qualitative model of decision making, in: F.J.E.E. Horwitz (Ed.), Proc. 12th Conf. on Uncer-
+
+tainty in Artiﬁcial Intelligence (UAI’96), Portland, Oregon, 1996, pp. 98–105.
+
+[21] R. Brena, C. Chesñevar, J. Aguirre, Argumentation-supported information distribution in a multiagent system for knowledge management, in:
+
+2nd International Workshop on Argumentation in Multiagent Systems (ArgMAS 2005).
+
+[22] M. Caminada, Contamination in formal argumentation systems, in: Proceedings of the 17th Belgium–Netherlands Conference on Artiﬁcial
+
+Intelligence (BNAIC), 2005, pp. 59–65.
+
+[23] M. Caminada, On the issue of reinstatement in argumentation, in: M. Fischer, W. van der Hoek, B. Konev, A. Lisitsa (Eds.), Logics in Artiﬁcial
+
+Intelligence; 10th European Conference, JELIA 2006, in: Lecture Notes in AI, vol. 4160, Springer, Berlin, 2006, pp. 111–123.
+
+[24] M. Caminada, Semi-stable semantics, in: P. Dunne, T. Bench-Capon (Eds.), Computational Models of Argument; Proceedings of COMMA
+
+2006, IOS Press, 2006, pp. 121–130.
+
+[25] C. Cayrol, M.-C. Lagasquie-Schiex, Graduality in argumentation, Journal of Artiﬁcial Intelligence Research 23 (2005) 245–297.
+[26] C.I. Chesñevar, A. Maguitman, R.P. Loui, Logical models of arguments, ACM Computing Surveys 32 (4) (2000) 337–383.
+[27] K. Clark, Negation as failure, in: H. Gallaire, J. Minker (Eds.), Logic and Data Bases, Plenum Press, New York, 1978, pp. 293–322.
+[28] P.M. Dung, On the acceptability of arguments and its fundamental role in nonmonotonic reasoning, logic programming and n-person games,
+
+Artiﬁcial Intelligence 77 (1995) 321–357.
+
+[29] M. Elvang-Gøransson, J. Fox, P. Krause, Dialectic reasoning with inconsistent information, in: D. Heckerman, A. Mamdani (Eds.), Proc. of
+
+the 9th UAI, Morgan-Kaufmann, Washington, DC, 1993, pp. 114–121.
+
+[30] T.F. Gordon, N. Karacapilidis, The zeno argumentation framework, in: Proceedings of the Sixth International Conference on Artiﬁcial Intelli-
+
+gence and Law, ACM Press, New York, 1997, pp. 10–18.
+
+[31] J. Fox, P. McBurney, Decision making by intelligent agents: logical argument, probabilistic inference and the maintenance of beliefs and acts,
+
+in: Proc. 9th International Workshop on Non-Monotonic Reasoning (NMR’2002), Toulouse, France, April 2002.
+
+[32] J. Fox, S. Parsons, On using arguments for reasoning about actions and values, in: Proceedings of the AAAI Spring Symposium on Qualitative
+
+Preferences in Deliberation and Practical Reasoning, Stanford, 1997.
+
+[33] A. García, G. Simari, Defeasible logic programming: an argumentative approach, Theory and Practice of Logic Programming 4 (1) (2004)
+
+95–138.
+
+[34] G. Governatori, M. Maher, G. Antoniou, D. Billington, Argumentation semantics for defeasible logic, Journal of Logic and Computation 14 (5)
+
+(2004) 675–702.
+
+[35] D. Hitchcock, P. McBurney, S. Parsons, A framework for deliberation dialogues, in: H.V. Hansen, C.W. Tindale, J.A. Blair, R.H. Johnson
+(Eds.), Proceedings of the Fourth Biennial Conference of the Ontario Society for the Study of Argumentation (OSSA 2001), Windsor, Ontario,
+Canada, 2001.
+
+[36] A. Kakas, P. Moraitis, Adaptive agent negotiation via argumentation, in: Proceedings of the 5th International joint Conference on Autonomous
+
+Agents and Multi-Agent Systems, AAMAS’2006, 2006, pp. 384–391.
+
+[37] R.P. Loui, Process and policy: resource-bounded non-demonstrative reasoning, Computational Intelligence 14 (1998) 1–38.
+[38] P. McBurney, S. Parsons, M. Wooldridge, Desiderata for agent argumentation protocols, in: C. Castelfranchi, W.L. Johnson (Eds.), Proceedings
+of the First International Joint Conference on Autonomous Agents and Multi-Agent Systems (AAMAS 2002), Bologna, Italy, ACM Press,
+New York, 2002, pp. 402–409.
+
+[39] J.L. Pollock, How to reason defeasibly, Artiﬁcial Intelligence 57 (1992) 1–42.
+[40] J.L. Pollock, Cognitive Carpentry. A Blueprint for How to Build a Person, MIT Press, Cambridge, MA, 1995.
+[41] H. Prakken, Relating protocols for dynamic dispute with logics for defeasible argumentation, Synthese 127 (2001) 187–219.
+[42] H. Prakken, G. Sartor, Argument-based extended logic programming with defeasible priorities, Journal of Applied Non-Classical Logics 7
+
+(1997) 25–75.
+
+[43] H. Prakken, G.A.W. Vreeswijk, Logics for defeasible argumentation, in: D. Gabbay, F. Günthner (Eds.), Handbook of Philosophical Logic,
+
+vol. 4, second ed., Kluwer Academic Publishers, Dordrecht, Boston, London, 2002, pp. 219–318.
+
+310
+
+M. Caminada, L. Amgoud / Artiﬁcial Intelligence 171 (2007) 286–310
+
+[44] G. Simari, R. Loui, A mathematical treatment of defeasible reasoning and its implementation, Artiﬁcial Intelligence 53 (1992) 125–157.
+[45] G.A.W. Vreeswijk, Abstract argumentation systems, Artiﬁcial Intelligence 90 (1997) 225–279.
+[46] G.A.W. Vreeswijk, H. Prakken, Credulous and skeptical argument games for preferred semantics, in: Proceedings of the 7th European Work-
+
+shop on Logic for Artiﬁcial Intelligence (JELIA-00), in: Lecture Notes in AI, vol. 1919, Springer, Berlin, 2000, pp. 239–253.
+
+

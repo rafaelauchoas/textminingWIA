@@ -1,0 +1,4367 @@
+Artiﬁcial Intelligence 260 (2018) 1–35
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial  Intelligence
+
+www.elsevier.com/locate/artint
+
+Learning  in  the  machine:  Random  backpropagation  and  the 
+deep  learning  channel
+Pierre Baldi a,∗
+,  Peter Sadowski a,  Zhiqin Lu b
+a Department of Computer Science, University of California, Irvine, United States
+b Department of Mathematics, University of California, Irvine, United States
+
+a  r  t  i  c  l  e 
+
+i  n  f  o
+
+a  b  s  t  r  a  c  t
+
+Article history:
+Received 7 December 2016
+Received in revised form 21 December 2017
+Accepted 15 March 2018
+Available online 3 April 2018
+
+Keywords:
+Deep learning
+Neural networks
+Backpropagation
+Local learning
+
+Random backpropagation (RBP) is a variant of the backpropagation algorithm for training 
+neural  networks,  where  the  transpose  of  the  forward  matrices  are  replaced  by  ﬁxed 
+random matrices in the calculation of the weight updates. It is remarkable both because of 
+its effectiveness, in spite of using random matrices to communicate error information, and 
+because it completely removes the taxing requirement of maintaining symmetric weights 
+in a physical neural system. To better understand random backpropagation, we ﬁrst connect 
+it to the notions of local learning and learning channels. Through this connection, we derive 
+several  alternatives  to  RBP,  including  skipped  RBP  (SRBP),  adaptive  RBP  (ARBP),  sparse 
+RBP, and their combinations (e.g. ASRBP) and analyze their computational complexity. We 
+then study their behavior through simulations using the MNIST and CIFAR-10 benchmark
+datasets. These simulations show that most of these variants work robustly, almost as well 
+as backpropagation, and that multiplication by the derivatives of the activation functions 
+is important. As a follow-up, we study also the low-end of the number of bits required to 
+communicate error information over the learning channel. We then provide partial intuitive 
+explanations for some of the remarkable properties of RBP and its variations. Finally, we 
+prove several mathematical results for RBP and its variants including: (1) the convergence 
+to optimal ﬁxed points for linear chains of arbitrary length; (2) convergence to ﬁxed points 
+for  linear  autoencoders  with  decorrelated  data;  (3)  long-term  existence  of  solutions  for 
+linear  systems  with  a  single  hidden  layer,  and  their  convergence  in  special  cases;  and 
+(4) convergence to ﬁxed points of non-linear chains, when the derivative of the activation 
+functions is included.
+
+© 2018 Elsevier B.V. All rights reserved.
+
+1.  Introduction
+
+Over the years, the question of the biological plausibility of the backpropagation algorithm, which implements stochastic 
+gradient descent in neural networks, has been raised several times. The question has gained further relevance due to the 
+numerous  successes  achieved  by  backpropagation  in  a  variety  of  problems  ranging  from  computer  vision  [21,31,30,14] to 
+speech recognition [12] in engineering, and from high energy physics [7,26] to biology [8,32,1] in the natural sciences, as 
+well to recent results on the optimality of backpropagation [6]. There are however, several well known issues facing bio-
+logical neural networks in relation to backpropagation, these include: (1) the continuous real-valued nature of the gradient 
+
+* Corresponding author.
+
+E-mail address: pfbaldi @uci .edu (P. Baldi).
+
+https://doi.org/10.1016/j.artint.2018.03.003
+0004-3702/© 2018 Elsevier B.V. All rights reserved.
+
+2
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+information and its ability to change sign, violating Dale’s Law; (2) the need for some kind of teacher’s signal to provide tar-
+gets; (3) the need for implementing all the linear operations involved in backpropagation; (4) the need for multiplying the 
+backpropagated signal by the derivatives of the forward activations each time a layer is traversed; (5) the need for precise 
+alternation between forward and backward passes; and (6) the complicated geometry of biological neurons and the problem 
+of transmitting error signals with precision down to individual synapses. However, perhaps the most formidable obstacle is 
+that the standard backpropagation algorithm requires propagating error signals backwards using synaptic weights that are 
+identical to  the  corresponding  forward  weights.  Furthermore,  a  related  problem  that  has  not  been  suﬃciently  recognized, 
+is  that  this  weight  symmetry  must  be  maintained  at  all  times  during  learning,  and  not  just  during  early  neural  develop-
+ment. It is hard to imagine mechanisms by which biological neurons could both create and maintain such perfect symmetry. 
+However, recent simulations [24] surprisingly indicate that such symmetry may not be required after all, and that in fact 
+backpropagation works more or less as well when random weights are used to backpropagate the errors. Our general goal 
+here is to investigate backpropagation with random weights and better understand why it works.
+
+The  foundation  for  better  understanding  random  backpropagation  (RBP)  is  provided  by  the  concepts  of  local  learning 
+and  deep  learning  channels  introduced  in  [6].  Thus  we  begin  by  introducing  the  notations  and  connecting  RBP  to  these 
+concepts. In turn, this leads to the derivation of several alternatives to RBP, which we study through simulations on well 
+known benchmark datasets before proceeding with more formal analyses.
+
+2.  Setting, notations, and the learning channel
+
+Throughout this paper, we consider layered feedforward neural networks and supervised learning tasks. We will denote 
+
+such an architecture by
+
+A[N0, . . . , Nh, . . . , N L]
+
+(1)
+
+where N0 is the size of the input layer, Nh is the size of hidden layer h, and N L is the size of the output layer. We assume 
+i j denote the weight connecting neuron  j in layer h − 1 to neuron i in layer h. 
+that the layers are fully connected and let  wh
+The output  O h
+
+i of neuron i in layer h is computed by:
+=
+i (Sh
+
+i j O h−1
+wh
+
+i ) where
+
+(cid:2)
+
+Sh
+i
+
+j
+
+O h
+i
+
+= f h
+
+(2)
+
+j
+
+The transfer functions  f h
+i are usually the same for most neurons, with typical exceptions for the output layer, and usually 
+are monotonic increasing functions. The most typical functions used in artiﬁcial neural networks are the: identity, logistic, 
+hyperbolic tangent, rectiﬁed linear, and softmax.
+
+We  assume  that  there  is  a  training  set  of  M examples  consisting  of  input  and  output-target  pairs  (I(t), T (t)),  with 
+t = 1, . . . , M.  Ii(t) refers  to  the  i-th  component  of  the  t-th  input  training  example,  and  similarly  for  the  target  T i(t).  In 
+addition, there is an error function E to be minimized by the learning process. In general we will assume standard error 
+functions such as the squared error in the case of regression and identity transfer functions in the output layer, or relative 
+entropy in the case of classiﬁcation with logistic (single class) or softmax (multi-class) units in the output layer, although 
+this is not an essential point.
+
+While we focus on supervised learning, it is worth noting that several “unsupervised” learning algorithms for neural net-
+works (e.g. autoencoders, neural autoregressive distribution estimators, generative adversarial networks) come with output 
+targets and thus fall into the framework used here.
+
+2.1.  Standard backpropagation (BP)
+
+Standard backpropagation implements gradient descent on E , and can be applied in a stochastic fashion on-line (or in 
+mini batches) or in batch form, by summing or averaging over all training examples. For a single example, omitting the t
+index for simplicity, the standard backpropagation learning rule is easily obtained by applying the chain rule and given by:
+
+(cid:2)wh
+i j
+
+= −η
+
+∂E
+∂ wh
+i j
+
+= ηBh
+
+i O h−1
+
+j
+
+(3)
+
+where η is the learning rate,  O h−1
+easy to see that the backpropagated error satisﬁes the recurrence relation:
+
+is the presynaptic activity, and Bh
+i
+
+j
+
+is the backpropagated error. Using the chain rule, it is 
+
+Bh
+i
+
+= ∂E
+∂ Sh
+i
+
+(cid:3)
+= ( f h
+i )
+
+(cid:2)
+
+k
+
+k wh+1
+Bh+1
+
+ki
+
+with the boundary condition:
+
+B L
+i
+
+= ∂Ei
+∂ S L
+i
+
+= T i − O L
+i
+
+(4)
+
+(5)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+3
+
+Thus in short the errors are propagated backwards in an essentially linear fashion using the transpose of the forward ma-
+trices, hence the symmetry of the weights, with a multiplication by the derivative of the corresponding forward activations 
+every time a layer is traversed.
+
+2.2.  Standard random backpropagation (RBP)
+
+Standard random backpropagation operates exactly like backpropagation except that the weights used in the backward 
+
+pass are completely random and ﬁxed. Thus the learning rule becomes:
+
+(cid:2)wh
+i j
+
+= ηRh
+
+i O h−1
+
+j
+
+where the randomly backpropagated error satisﬁes the recurrence relation:
+
+(cid:2)
+
+Rh
+i
+
+(cid:3)
+= ( f h
+i )
+
+Rh+1
+
+k
+
+ch+1
+
+ki
+
+k
+and the weights ch+1
+
+ki
+
+are random and ﬁxed. The boundary condition at the top remains the same:
+
+R L
+i
+
+= ∂Ei
+∂ S L
+i
+
+= T i − O L
+i
+
+Thus in RBP the weights in the top layer of the architecture are updated by gradient descent, identically to the BP case.
+
+2.3.  The critical equations
+
+(6)
+
+(7)
+
+(8)
+
+Within the supervised learning framework considered here, the goal is to ﬁnd an optimal set of weights  wh
+
+i j . The equa-
+
+tions that the weights must satisfy at any critical point are simply:
+
+∂E
+∂ wh
+i j
+
+(cid:2)
+
+=
+
+t
+
+i (t)O h−1
+Bh
+
+j
+
+(t) = 0
+
+(9)
+
+Thus in general the optimal weights must depend on both the input and the targets, as well as the other weights in the 
+network. And learning can be viewed as a lossy storage procedure for transferring the information contained in the training 
+set into the weights of the architecture.
+
+The  critical  Equation  (9) shows  that  all  the  necessary  forward  information  about  the  inputs  and  the  lower  weights 
+leading up to layer h − 1 is subsumed by the term  O h−1
+(t). Thus in this framework a separate channel for communicating 
+information about the inputs to the deep weights is not necessary. Thus here we focus on the feedback information about 
+the  targets,  contained  in  the  term  Bh
+i (t) which,  in  a  physical  neural  system,  must  be  transmitted  through  a  dedicated 
+channel.
+
+j
+
+Note  that  Bh
+
+i (t) depends  on  the  output  O L(t),  the  target  T (t),  as  well  as  all  the  weights  in  the  layers  above  h in  the 
+fully  connected  case  (otherwise  just  those  weight  which  are  on  a  path  from  unit  i in  layer  h to  the  output  units),  and 
+in  two  ways:  through  O L(t) and  through  the  backpropagation  process.  In  addition,  Bh
+i (t) depends  also  on  all  the  upper 
+derivatives, i.e. the derivatives of the activations functions for all the neurons above unit i in layer h in the fully connected 
+case (otherwise just those derivatives which are on a path from unit i in layer h to the output units). Thus in general, in a 
+i j must depend on  O h−1
+solution of the critical equations, the weights  wh
+, the outputs, the targets, the upper weights, and 
+the  upper  derivatives.  Backpropagation  shows  that  it  is  suﬃcient  for  the  weights  to  depend  on  O h−1
+,  T − O ,  the  upper 
+weights, and the upper derivatives.
+
+j
+
+j
+
+2.4.  Local learning
+
+Ultimately, for optimal learning, all the information required to reach a critical point of E must appear in the learning 
+rule of the deep weights. In a physical neural system, learning rules must also be local [6], in the sense that they can only 
+involve variables that are available locally in both space and time, although for simplicity here we will focus only on locality 
+in space. Thus typically, in the present formalism, a local learning rule for a deep layer must be of the form
+
+and
+
+(cid:2)wh
+i j
+
+(cid:2)w L
+i j
+
+= F (O h
+
+i , O h−1
+
+j
+
+, wh
+i j)
+
+= F (T i, O L
+
+i , O L−1
+
+j
+
+, w L
+i j)
+
+(10)
+
+(11)
+
+assuming that the targets are local variables for the top layer. Among other things, this allows one to organize and stratify 
+learning rules, for instance by considering polynomial learning rules of degree one, two, and so forth.
+
+4
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Deep local learning is the term we use to describe the use of local learning in all the adaptive layers of a feedforward 
+architecture.  Note  that  Hebbian  learning  [15] is  a  form  of  local  learning,  and  deep  local  learning  has  been  proposed  for 
+instance by Fukushima [10] to train the neocognitron architecture, essentially a feed forward convolutional neural network 
+inspired by the earlier neurophysiological work of Hubel and Wiesel [18]. However, in deep local learning, information about 
+the targets is not propagated to the deep layers and therefore in general deep local learning cannot ﬁnd solutions of the 
+critical equations, and thus cannot succeed at learning complex functions [6].
+
+2.5.  The deep learning channel
+
+From  the  critical  equations,  any  optimal  neural  network  learning  algorithm  must  be  capable  of  communicating  some 
+information about the outputs, the targets, and the upper weights to the deep weights and, in a physical neural system, a 
+communication channel [28,27] must exist to communicate this information. This is the deep learning channel, or learning 
+channel in  short  [6],  which  can  be  studied  using  tools  from  information  and  complexity  theory.  In  physical  systems  the 
+learning channel must correspond to a physical channel and this leads to important considerations regarding its nature, for 
+instance whether it uses the forward connections in the reverse direction or a different set of connections. Here, we focus 
+primarily on how information is coded and sent over this channel.
+
+In general, the information about the outputs and the targets communicated through this channel to  wh
+
+i j is denoted by 
+Ih
+i j(T , O L).  Although  backpropagation  propagates  this  information  from  the  top  layer  to  the  deep  layers  in  a  staged  way, 
+this is not necessary and  Ih
+i j(T , O L) could be sent directly to the deep layer h somehow skipping all the layers above. This 
+observation leads immediately to the skipped variant of RBP described in the next section. It is also important to note that in 
+r) for l ≥ h). However standard backpropagation 
+principle this information should have the form  Ih
+shows  that  it  is  possible  to  send  the  same  information  to  all  the  synapses  impinging  onto  the  same  neuron,  and  thus  it 
+r) for l ≥ h) targeting  the 
+is  possible  to  learn  with  a  simpler  type  of  information  of  the  form  Ih
+postsynaptic neuron i. This class of algorithms or channels is what we call deep targets algorithms, as they are equivalent 
+to providing a target for each deep neuron. Furthermore, backpropagation shows that all the necessary information about 
+the outputs and the targets is contained in the term T − O L so that we only need  Ih
+r) for l > h). 
+Standard backpropagation uses information about the upper weights in two ways: (1) through the output O L which appears 
+in the error terms  T − O L ; and (2) through the backpropagation process itself. Random backpropagation crucially shows that 
+the information about the upper weights contained in the backpropagation process is not necessary. Thus ultimately we can focus 
+r) for l ≥ h),  where  r denotes  a  set  of 
+exclusively  on  information  which  has  the  simple  form:  Ih
+ﬁxed random weights.
+
+i (T − O L, wl
+
+i (T − O L, rl
+
+rs for l ≥ h, f
+
+rs for l ≥ h, f
+
+rs for l > h, f
+
+rs for l > h, f
+
+i j(T , O L, wl
+
+i (T , O L, wl
+
+(cid:3)(Sl
+
+(cid:3)(Sl
+
+(cid:3)(Sl
+
+(cid:3)(Sl
+
+Thus, using the learning channel, we are interested in local learning rules of the form:
+
+(cid:2)wh
+i j
+
+= F (O h
+
+i , O h−1
+
+j
+
+, wh
+
+i j, Ih
+
+i (T − O L, rl
+
+rs for l ≥ h, f
+
+(cid:3)
+
+(Sl
+
+r) for l ≥ h))
+
+In fact, here we shall focus exclusively on learning rules with the multiplicative form:
+
+(cid:2)wh
+i j
+
+= ηIh
+
+i (T − O L, rl
+
+rs for l ≥ h, f
+
+(cid:3)
+
+(Sl
+
+r) for l ≥ h)O h−1
+
+j
+
+(12)
+
+(13)
+
+corresponding to a product of the presynaptic activity with some kind of backpropagated error information, with standard 
+BP and RBP as a special cases. Obvious important questions, for which we will seek full or partial answers, include: (1) what 
+r) for l ≥ h) take (as we shall see there are multiple possibilities)? (2) what 
+kinds of forms can  Ih
+are the corresponding tradeoffs among these forms, for instance in terms of computational complexity or information trans-
+mission? and (3) are the upper derivatives necessary and why?
+
+i (T − O L, rl
+
+rs for l ≥ h, f
+
+(cid:3)(Sl
+
+3.  Random backpropagation algorithms and their computational complexity
+
+We are going to focus on algorithms where the information required for the deep weight updates  I h
+
+r) for
+l ≥ h) is  produced  essentially  through  a  linear process  whereby  the  vector  T (t) − O (t),  computed  in  the  output  layer, 
+is  processed  through  linear  operations,  i.e.  additions  and  multiplications  by  constants  (which  can  include  multiplication 
+by  the  upper  derivatives).  Standard  backpropagation  is  such  an  algorithm,  but  there  are  many  other  possible  ones.  We 
+are  interested  in  the  case  where  the  matrices  are  random.  However,  even  within  this  restricted  setting,  there  are  several 
+possibilities, depending for instance on: (1) whether the information is progressively propagated through the layers (as in 
+the  case  of  BP),  or  broadcasted  directly  to  the  deep  layers;  (2)  whether  multiplication  by  the  derivatives  of  the  forward 
+activations  is  included  or  not;  and  (3)  the  properties  of  the  matrices  in  the  learning  channel  (e.g.  sparse  vs  dense).  This 
+leads to several new algorithms. Here we will use the following notations:
+
+i (T − O L, f
+
+(cid:3)(Sl
+
+• BP = (standard) backpropagation.
+• RBP = random backpropagation, where the transpose of the feedforward matrices are replaced by random matrices.
+
+• SRBP = skipped random backpropagation, where the backpropagated signal arriving onto layer h is given by C h(T − O )
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+5
+
+with a random matrix C h directly connecting the output layer L to layer h, and this for each layer h.
+
+• ARBP  = adaptive  random  backpropagation,  where  the  matrices  in  the  learning  channel  are  initialized  randomly,  and 
+then  progressively  adapted  during  learning  using  the  product  of  the  corresponding  forward  and  backward  signals,  so 
+that (cid:2)cl
+r , where  R denotes the randomly backpropagated error. In this case, the forward channel becomes 
+rs
+the learning channel for the backward weights.
+
+= ηRl+1
+
+s O l
+
+• ASRBP = adaptive skipped random backpropagation, which combines adaptation with skipped random backpropagation.
+• The  default  for  each  algorithm  involves  the  multiplication  at  each  layer  by  the  derivative  of  the  forward  activation 
+
+functions. The variants where this multiplication is omitted will be denoted by: “(no  f
+
+(cid:3)
+
+)”.
+
+• The  default  for  each  algorithm  involves  dense  random  matrices,  generated  for  instance  by  sampling  from  a  normal-
+ized Gaussian for each weight. But one can consider also the case of random ±1 (or (0, 1)) binary matrices, or other 
+distributions, including sparse versions of the above.
+
+• As we shall see, using random weights that have the same sign as the forward weights is not essential, but can lead to 
+improvements in speed and stability. Thus we will use the word “congruent weights” to describe this case. Note that with 
+ﬁxed random matrices in the learning channel initialized congruently, congruence can be lost during learning when the 
+sign of a forward weight changes.
+
+(cid:3)(Sl
+
+SRBP  is  introduced  both  for  information  theoretic  reasons  –  what  happens  if  the  error  information  is  communicated 
+directly? – and because it may facilitate the mathematical analyses since it avoids the backpropagation process. However, 
+in one of the next sections, we will also show empirically that SRBP is a viable learning algorithm, which in practice can 
+work even better than RBP. Importantly, these simulation results suggest that when learning the synaptic weight wh
+i j the information 
+about all the upper derivatives ( f
+
+r) for l ≥ h) is not needed. However the immediate (l = h) derivative  f
+
+Note this suggests yet another possible algorithm, skipped backpropagation (SBP). In this case, for each training exam-
+ple  and  at  each  epoch,  the  matrix  used  in  the  feedback  channel  is  the  product  of  the  corresponding  transposed  forward 
+matrices, ignoring multiplication by the derivative of the forward transfer functions in all the layers above the layer under 
+consideration. Multiplication by the derivative of the forward transfer functions is applied to the layer under consideration. 
+Another possibility is to have a combination of RBP and SRBP in the learning channel, implemented by a combination of 
+long-ranged  connections  carrying  SRBP  signals  with  short-range  connections  carrying  a  backpropagation  procedure,  when 
+no long-range signals are available. This may be relevant for biology since combinations of long-ranged and short-ranged 
+feedback connections is common in biological neural systems.
+
+In  general,  in  the  case  of  linear  networks,  f
+
+(cid:3) = 1 and  therefore  including  or  excluding  derivative  terms  makes  no  dif-
+ference.  Furthermore,  for  any  linear  architecture  A[N, . . . , N, . . . , N] where  all  the  layers  have  the  same  size,  then  RBP  is 
+equivalent to SRBP. However, if the layers do not have the same size, then the layer sizes introduce rank constraints on the 
+information that is backpropagated through RBP that may differ from the information propagated through SRBP. In both the 
+linear and non-linear cases, for any network of depth 3 (L = 3), RBP is equivalent to SRBP, since there is only one random 
+matrix.
+
+i ) is needed.
+
+(cid:3)(Sh
+
+Additional  variations  can  be  obtained  by  using  dropout,  or  multiple  sets  of  random  matrices,  in  the  learning  channel, 
+for instance for averaging purposes. Another variation in the skipped case is cascading, i.e. allowing backward matrices in 
+the  learning  channel  between  all  pairs  of  layers.  Note  that  the  notion  of  cascading  increases  the  number  of  weights  and 
+computations, yet it is still interesting from an exploratory and robustness point of view.
+
+3.1.  Computational complexity considerations
+
+The  number  of  computations  required  to  send  error  information  over  the  learning  channel  is  a  fundamental  quantity 
+which,  however,  depends  on  the  computational  model  used  and  the  cost  associated  with  various  operations.  Obviously, 
+everything  else  being  equal,  the  computational  cost  of  BP  and  RBP  are  basically  the  same  since  they  differ  only  by  the 
+value of the weights being used. However more subtle differences can appear with some of the other algorithms, such as 
+SRBP.
+
+To  illustrate  this,  consider  an  architecture  A[N0, . . . , Nh, . . . , N L],  fully  connected,  and  let  W be  the  total  number  of 
+weights. In general, the primary cost of BP is the multiplication of each synaptic weight by the corresponding signal in the 
+backward pass. Thus it is easy to see that the bulk of the operations required for BP to compute the backpropagated signals 
+scale like  O (W ) (in fact (cid:5)(W )) with:
+
+W = N0 × N1 + N1 × N2 . . . + N L−1 × N L =
+
+L−1(cid:2)
+
+k=0
+
+Nk Nk+1
+
+(14)
+
+Note  that  whether  biases  are  added  separately  or,  equivalently,  implemented  by  adding  a  unit  clamped  to  one  to  each 
+layer, does not change the scaling. Likewise, adding the costs associated with the sums computed by each neuron and the 
+multiplications by the derivatives of the activation functions does not change the scaling, as long as these operations have 
+costs that are within a constant multiplicative factor of the cost for multiplications of signals by synaptic weights.
+
+6
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+As already mentioned, the scaling for RBP is obviously the same, just using different matrices. However the corresponding 
+
+term for SRBP is given by
+
+(cid:3) = N L × N1 + N L × N2 . . . N L × N L−1 = N L
+
+W
+
+k=L−1(cid:2)
+
+Nk
+
+k=1
+
+(15)
+
+In  this  sense,  the  computational  complexity  of  BP  and  SRBP  is  identical  if  all  the  layers  have  the  same  size,  but  it  can 
+be signiﬁcantly different otherwise, especially taking into consideration the tapering off associated with most architectures 
+(cid:3)
+used in practice. In a classiﬁcation problem, for instance, N L = 1 and all the random matrices in SRBP have rank 1, and W
+scales  like  the  total  number  of  neurons,  rather  than  the  total  number  of  forward  connections.  Thus,  provided  it  leads  to 
+effective learning, SRBP could lead to computational savings in a digital computer. However, in a physical neural system, in 
+spite of these savings, the scaling complexity of BP and SRBP could end up being the same. This is because in a physical 
+neural  system,  once  the  backpropagated  signal  has  reached  neuron  i in  layer  h it  still  has  to  be  communicated  to  the 
+synapse.  A physical  model  would  have  to  specify  the  cost  of  such  communication.  Assuming  one  unit  cost,  both  BP  and 
+SRBP would require (cid:5)(W ) operations across the entire architecture. Finally, a full analysis in a physical system would have 
+to take into account also costs associated with wiring, and possibly differential costs between long and short wires as, for 
+instance, SRBP requires longer wires than standard BP or RBP.
+
+4.  Algorithm simulations
+
+In  this  section,  we  simulate  the  various  algorithms  using  standard  benchmark  datasets.  The  primary  focus  is  not  on 
+achieving  state-of-the-art  results,  but  rather  on  better  understanding  these  new  algorithms  and  where  they  break  down. 
+The results are summarized in Table 1 at the end.
+
+4.1.  MNIST
+
+Several learning algorithms were ﬁrst compared on the MNIST [22] classiﬁcation task. The neural network architecture 
+consisted of 784 inputs, four fully-connected hidden layers of 100 tanh units, followed by 10 softmax output units. Weights 
+were  initialized  by  sampling  from  a  scaled  normal  distribution [11].  Training  was  performed  for  100  epochs  using  mini-
+−6 after each update, and no momentum. 
+batches of size 100 with an initial learning rate of 0.1, decaying by a factor of 10
+In Fig. 1, the performance of each algorithm is shown on both the training set (60,000 examples) and test set (10,000 exam-
+ples). Results for the adaptive versions of the random propagation algorithms are shown in Fig. 2, and results for the sparse 
+versions are shown in Figs. 3 and 4.
+
+The main conclusion is that the general concept of RBP is very robust and works almost as well as BP. Performance is 
+unaffected or degrades gracefully when the random backwards weights are initialized from different distributions or even 
+change during training. The skipped versions of the algorithms seem to work slightly better than the non-skipped versions. 
+Very deep networks can be trained with SRBP without any problem (not shown). Finally, RBP and its variants can be used 
+with different neuron activation functions. Multiplication by the derivatives of the activation functions associated with the 
+layer being updated, which are locally available, seems to play an important role.
+
+4.2.  Additional MNIST experiments
+
+In addition to the experiments presented above, the following observations were made by training on MNIST with other 
+
+variations of these algorithms:
+
+1. If  the  matrices  of  the  learning  channel  in  RBP  are  randomly  changed  at  each  stochastic  mini-batch  update,  sampled 
+
+from a distribution with mean 0, performance is poor and similar to training only the top layer.
+
+2. If  the  matrices  of  the  learning  channel  in  RBP  are  randomly  changed  at  each  stochastic  mini-batch  update,  but  each 
+backwards weight is constrained to have the same sign as the corresponding forward weight, then training error goes 
+to 0%. This is the sign-concordance algorithm explored by Liao et al. [23].
+
+3. If the elements of the matrices of the learning channel in RBP or SRBP are sampled from a uniform or normal distribu-
+tion with non-zero mean, performance is unchanged. This is also consistent with the sparsity experiments above, where 
+the means of the sampling distributions are not zero.
+
+4. Updates to a deep layer with RBP or SRBP appear to require updates in the precedent layers in the learning channel. If 
+we ﬁx the weights in layer h, while updating the rest of the layers with SRBP, performance is often worse than if we 
+ﬁx layers l ≤ h.
+
+5. If we remove the magnitude information from the SRBP updates, keeping only the sign, performance is better than the 
+
+Top Layer Only algorithm, but not as good as SRBP. This is further explored in the next section.
+
+6. If we remove the sign information from the SRBP updates, keeping only the absolute value, things do not work at all.
+7. If a different random backward weight is used to send an error signal to each individual weight, rather than to a hidden 
+
+neuron which then updates all its incoming weights, things do not work at all.
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+7
+
+Fig. 1. MNIST training (upper) and test (lower) accuracy, as a function of epoch, for nine different learning algorithms: backpropagation (BP), skip BP (SBP), 
+random BP (RBP), skip random BP (SRBP), the version of each algorithm in which the error signal is not multiplied by the derivative of the post-synaptic 
+), and the case where only the top layer is trained while the lower layer weights are ﬁxed (Top Layer Only). Note that these 
+transfer function (no- f
+algorithms differ only in how they backpropagate error signals to the lower layers; the top layer is always updated according to the typical gradient 
+descent rule. Models are trained ﬁve times with different weight initializations; the trajectory of the mean is shown here.
+
+(cid:3)
+
+8. The  RBP  learning  rules  work  with  different  transfer  functions  as  well,  including  linear,  logistic,  and  ReLU  (rectiﬁed 
+
+linear) units.
+
+4.3.  CIFAR-10
+
+To further test the validity of these results, we performed similar simulations with a convolutional architecture on the 
+CIFAR-10  dataset  [20].  The  speciﬁc  architecture  was  based  on  previous  work  [16],  and  consisted  of  3  sets  of  convolution 
+and max-pooling layers, followed by a densely-connected layer of 1024 tanh units, then a softmax output layer. The input 
+consists of 32-by-32 pixel 3-channel images; each convolution layer consists of 64 tanh channels with 5 × 5 kernel shape 
+and 1 × 1 strides; max-pooling layers have 3 × 3 receptive ﬁelds and 2 × 2 strides. All weights were initialized by sampling 
+from  a  scaled  normal  distribution [11],  and  updated  using  stochastic  gradient  descent  on  mini-batches  of  size  128  and  a 
+−5 after each update. During training, the 
+momentum of 0.9. The learning rate started at 0.01 and decreased by a factor of 10
+training images are randomly translated up to 10% in either direction, horizontally and vertically, and ﬂipped horizontally 
+with probability  p = 0.5.
+
+Examples of results obtained with these 2D convolutional architectures are shown in Figs. 5 and 6. Overall they are very 
+
+similar to those obtained on the MNIST dataset.
+
+8
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Fig. 2. MNIST training (upper) and test (lower) accuracy, as a function of training epoch, for the adaptive versions of the RBP algorithm (ARBP) and SRBP 
+algorithm (ASRBP). In these simulations, adaption slightly improves the performance of SRBP and speeds up training. For the ARBP algorithm, the learning 
+rate was reduced by a factor of 0.1 in these experiments to keep the weights from growing too quickly. Models are trained ﬁve times with different weight 
+initializations; the trajectory of the mean is shown here.
+
+5.  Bit precision in the learning channel
+
+5.1.  Low-precision error signals
+
+In  the  following  experiment,  we  investigate  the  nature  of  the  learning  channel  by  quantizing  the  error  signals  in  the 
+BP,  RBP,  and  SRBP  algorithms.  This  is  distinct  from  other  work  that  uses  quantization  to  reduce  computation [17] or 
+memory [13] costs. Quantization is not applied to the forward activations or weights; quantization is only applied to the 
+i (T − O L), where each weight update after quantization is given 
+backpropagated signal received by each hidden neuron,  J h
+by
+
+(cid:2)wh
+i j
+
+= Ih
+
+i (T − O L) × O h−1
+(cid:4)
+(cid:3)
+i (T − O L)
+J h
+
+= Quantize
+
+j
+
+× ( f h
+i )
+
+(cid:3) × O h−1
+
+j
+
+(16)
+
+(17)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+9
+
+Fig. 3. MNIST training (upper) and test (lower) accuracy, as a function of training epoch, for the sparse versions of the RBP and SRBP algorithms. Experiments 
+are run with different levels of sparsity by controlling the expected number n of non-zero connections sent from one neuron to any other layer it is 
+connected to in the backward learning channel. The random backpropagation matrix connecting any two layers is created by sampling each entry from a 
+(0, 1) Bernoulli distribution, where each element is 1 with probability p = n/(fan − in) and 0 otherwise. For example, in SRBP (Sparse-1), each of the 10
+softmax outputs sends a non-zero (hence with a weight equal to 1) connection to an average of one neuron in each of the hidden layers. We compare to 
+the (Normal) versions of RBP and SRBP, where the elements of these matrices are initialized from a standard Normal distribution scaled in the same way 
+as the forward weight matrices [11]. Models are trained ﬁve times with different weight initializations; the trajectory of the mean is shown here.
+
+i )(cid:3)
+where ( f h
+
+is the derivative of the activation function and
+
+i (T − O L) = J h
+Ih
+
+(cid:3)
+i (T − O L) × ( f h
+i )
+in the non-quantized update. We deﬁne the quantization formula used here as
+
+Quantizeα,bits(x) = α × sign(x) × 2round
+
+(cid:5)
+clip(log2| x
+α
+
+|, −bits+1, 0)
+
+(cid:6)
+
+(18)
+
+(19)
+
+where bits is the number of bits needed to represent 2bits possible values and α is a scale factor such that the quantized 
+values  fall  in  the  range  [−α, α].  Note  that  this  deﬁnition  is  identical  to  the  quantization  function  deﬁned  in  Hubara et 
+al. [17], except that this deﬁnition is more general in that α is not constrained to be a power of 2.
+
+In BP and RBP, the quantization occurs before the error signal is backpropagated to previous layers, so the quantization 
+−3 and  varied  the  bit  width  bits.  Fig. 7 shows 
+errors  accumulate.  In  experiments,  we  used  a  ﬁxed  scale  parameter  α = 2
+that the performance degrades gracefully as the precision of the error signal decreases to small values; for larger values, e.g. 
+bits = 10, the performance is indistinguishable from the unquantized updates with 32-bit ﬂoats.
+
+10
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Fig. 4. MNIST post-training accuracy for the sparse versions of the SRBP algorithm. For extreme values of n, sparse SRBP fails: for n = 0, all the backward 
+weights are set to zero and no error signals are sent; for n = 100 all the backward weights are set to 1, and all the neurons in a given layer receive the 
+same error signal. The performance of the algorithm is surprisingly robust in between these extremes. For sparse RBP (not shown), the backward weights 
+should be scaled by a factor of 1/
+
+n to avoid an exponential growth in the error signals of the lower layers.
+
+√
+
+Table 1
+Summary of experimental results showing the ﬁnal test accuracy (in percentages) for the RBP algorithms after 100 epochs of training on MNIST and 
+CIFAR-10. For the experiments in this section, training was repeated ﬁve times with different weight initializations; in these cases the mean is provided, 
+with the sample standard deviation in parentheses. Also included are the quantization results from Section 5, and the experiments applying dropout to the 
+learning channel from Section 6.
+
+(cid:3)
+
+MNIST Baseline
+No- f
+Adaptive
+Sparse-8
+Sparse-2
+Sparse-1
+Quantized error 5-bit
+Quantized error 3-bit
+Quantized error 1-bit
+Quantized update 5-bit
+Quantized update 3-bit
+Quantized update 1-bit
+LC Dropout 10%
+LC Dropout 20%
+LC Dropout 50%
+
+(cid:3)
+
+CIFAR-10 Baseline
+No- f
+Sparse-8
+Sparse-2
+Sparse-1
+
+BP
+
+97.9 (0.1)
+89.9 (0.3)
+
+97.6
+96.5
+94.6
+95.2
+96.5
+92.5
+97.7
+97.8
+97.7
+
+83.4 (0.2)
+54.8 (3.6)
+
+RBP
+
+97.2 (0.1)
+88.3 (1.1)
+97.3 (0.1)
+96.0 (0.4)
+96.3 (0.5)
+90.3 (1.1)
+95.4
+92.5
+89.8
+94.0
+91.0
+9.6
+96.5
+96.7
+96.7
+
+70.2 (1.1)
+32.7 (6.2)
+46.3 (4.3)
+62.9 (0.9)
+56.7 (2.6)
+
+SRBP
+
+97.2 (0.2)
+88.4 (0.7)
+97.3 (0.1)
+96.9 (0.1)
+95.8 (0.2)
+94.6 (0.6)
+95.1
+93.2
+91.6
+93.3
+92.2
+90.7
+97.1
+97.2
+97.1
+
+72.7 (0.8)
+39.9 (3.9)
+70.9 (0.7)
+65.7 (1.9)
+62.6 (1.8)
+
+Top layer only
+
+84.7 (0.7)
+
+47.9 (0.4)
+
+5.2.  Low-precision weight updates
+
+The  idea  of  using  low-precision  weight  updates  is  not  new [25],  and  Liao et  al. [23] recently  explored  the  use  of 
+low-precision updates with RBP. In the following experiment, we investigate the robustness of both RBP and SRBP to low-
+precision weight updates by controlling the degree of quantization. Equation (19) is again used for quantization, with the 
+−6 since weight updates need to be small. The quantization is applied after the error signals 
+scale factor reduced to α = 2
+have been backpropagated to all the hidden layers, but before summing over the minibatch; as in the previous experiments, 
+we  use  minibatch  updates  of  size  100,  a  non-decaying  learning  rate  of  0.1,  and  no  momentum  term  (Fig. 8).  The  main 
+conclusion is that even very low-precision updates to the weights can be used to train an MNIST classiﬁer to 90% accuracy, 
+and that low-precision weight updates appear to degrade the performance of BP, RBP, and SRBP in roughly the same way.
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+11
+
+Fig. 5. CIFAR-10 training (upper) and test (lower) accuracy, as a function of training epoch, for nine different learning algorithms: backpropagation (BP), 
+skip BP (SBP), random BP (RBP), skip random BP (SRBP), the version of each algorithm in which the error signal is not multiplied by the derivative of the 
+), and the case where only the top layer is trained while the lower layer weights are ﬁxed (Top Layer Only). Models 
+post-synaptic transfer function (no- f
+are trained ﬁve times with different weight initializations; the trajectory of the mean is shown here.
+
+(cid:3)
+
+6.  Observations
+
+In this section, we provide a number of simple observations that provide some intuition for some of the previous simu-
+lation results and why RBP and some of its variations may work. Some of these observations are focused on SRBP which in 
+general is easier to study than standard RBP.
+
+Fact 1. In all these RBPs algorithms, the L-layer at the top with parameters w L
+i j follows the gradient, as it is trained just like 
+BP, since there are no random feedback weights used for learning in the top layer. In other words, BP = RBP = SRBP for 
+the top layer.
+
+Fact 2. For a given input, if the sign of T − O is changed, all the weights updates are changed in the opposite direction. This 
+is true of all the algorithms considered here – BP, RBP, and their variants – even when the derivatives of the activations are 
+included.
+
+Fact 3. In all RBP algorithms, if T − O  = 0 (online or in batch mode) then for all the weights (cid:2)wh
+i j
+mode).
+
+= 0 (on line or in batch 
+
+12
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Fig. 6. CIFAR-10 training (upper) and test (lower) accuracy for the sparse versions of the RBP and SRBP algorithms. Experiments are run with different 
+levels of sparsity by controlling the expected number n of non-zero connections sent from one neuron to any other layer it is connected to in the backward 
+learning channel. The random backpropagation matrix connecting any two layers is created by sampling each entry from a (0, 1) Bernoulli distribution, 
+where each element is 1 with probability p = n/(fan − in) and 0 otherwise. We compare to the (Normal) versions of RBP and SRBP, where the elements 
+of these matrices are initialized from a standard Normal distribution scaled in the same way as the forward weight matrices [11]. Models are trained ﬁve 
+times with different weight initializations; the trajectory of the mean is shown here.
+
+Fact 4. Congruence of weights is not necessary. However it can be helpful sometimes and speed up learning. This can easily 
+be seen in simple cases. For instance, consider a linear or non-linear A[N0, N1, 1] architecture with coherent weights, and 
+denote by a the weights in the bottom layer, by b the weights in the top layer, and by c the weights in the learning channel. 
+Then, for all variants of RBP, all the weights updates are in the same direction as the gradient. This is obvious for the top 
+= η(T − O )ci I j ,  which  is  very  similar 
+layer  (Fact 1 above).  For  the  ﬁrst  layer  of  weights,  the  changes  are  given  by  (cid:2)w 1
+i j
+= η(T − O )bi I j since ci and bi are assumed to be coherent. So while the 
+to the change produced by gradient descent (cid:2)1
+i j
+dynamics of the lower layer is not exactly in the gradient direction, it is always in the same orthant as the gradient and thus 
+downhill with respect to the error function. Additional examples showing the positive but not necessary effect of coherence 
+are given in Section 7.
+
+Fact 5.  SRBP  seems  to  perform  well  showing  that  the  upper  derivatives  are  not  needed.  However  the  derivative  of  the 
+corresponding  layer  seem  to  matter.  In  general,  for  the  activation  functions  considered  here,  these  derivatives  tend  to  be 
+between 0 and 1. Thus learning is attenuated for neurons that are saturated. So an ingredient that seems to matter is to let 
+close to 0).
+the synapses of neurons that are not saturated change more than the synapses of neurons that are saturated ( f
+
+(cid:3)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+13
+
+Fig. 7. MNIST training (upper) and test (lower) accuracy, as a function of training epoch, for the sparse versions of the RBP and SRBP algorithms. Experiments 
+are run with different levels of quantization of the error signal by controlling the bitwidth bits, according to the formula given in the text (Equation (19)).
+
+Fact 6.  Consider  a  multi-class  classiﬁcation  problem,  such  as  MNIST.  All  the  elements  in  the  same  class  tend  to  receive 
+the same backpropagated signal and tend to move in unison. For instance, consider the beginning of learning, with small 
+random weights in the forward network. All the images will tend to produce a more or less uniform output vector similar 
+to (0.1, 0.1, . . . , 0.1). Thus all the images in the “0” class will tend to produce a more or less uniform error vector similar 
+to (0.9, −0.1, . . . , −0.1), and all the images in the “1” class will tend to produce a more or less uniform error vector similar 
+to (−0.1, 0.9, . . . , −0.1), which is essentially orthogonal to the previous error vector, and so forth. In other words, the 10 
+classes can be associated with 10 roughly orthogonal error vectors. When these vectors are multiplied by a ﬁxed random 
+matrix, as in SRBP, they will tend to produce 10 approximately orthogonal vectors in the corresponding hidden layer. Thus 
+the backpropagated error signals tend to be similar within one digit class, and orthogonal across different digit classes. At 
+the  beginning  of  learning,  we  can  expect  roughly  half  of  them  (5  digits  out  of  10  in  the  MNIST  case)  to  be  in  the  same 
+direction as BP.
+
+Thus, in conclusion, an intuitive picture of why RBP may work is that: (1) the random weights introduce a ﬁxed coupling 
+between the learning dynamics of the forward weights (see also mathematical analyses below); (2) the top layer of weights 
+always follows gradient descent and stirs the learning dynamic in the right direction; and (3) the learning dynamic tends 
+to  cluster  inputs  associated  with  the  same  response  and  move  them  away  from  other  similar  clusters.  Next  we  discuss  a 
+possible connection to dropout.
+
+14
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Fig. 8. MNIST training (upper) and test (lower) accuracy, as a function of training epoch, for the sparse versions of the RBP and SRBP algorithms. Experi-
+ments are carried with different levels of quantization of the weight updates by controlling the bitwidth bits, according to the formula given in the text 
+(Equation (19)). Quantization is applied to each example-speciﬁc update, before summing the updates within a minibatch.
+
+6.1.  Connections to dropout
+
+Dropout [16,5] is a very different training algorithm which, however, is also based on using some form of randomness. 
+
+Here we explore some possible connections to RBP.
+
+First observe that the BP equations can be viewed as a form of dropout averaging equations, in the sense that, for a ﬁxed 
+example, they compute the ensemble average activity of all the units in the learning channel. The ensemble average is taken 
+over all the possible backpropagation networks where each unit is dropped stochastically, unit  i in layer h being dropped 
+with probability 1 − f
+o) [assuming the derivatives of the transfer functions are always between 0 and 1 inclusively, which 
+is the case for the standard transfer functions, such as the logistic or the rectiﬁed linear transfer functions – otherwise some 
+rescaling is necessary]. Note that in this way the dropout probabilities change with each example and units that are more 
+saturated are more likely to be dropped, consistently with the remark above that saturated units should learn less.
+
+(cid:3)(Sh
+
+In this view there are two kinds of noise: (1) choice of the dropout probabilities which vary with each example; (2) the 
+actual dropout procedure. Consider now adding a third type of noise on all the symmetric weights in the backward pass in 
+the form
+
+wh
+i j
+
++ ξ h
+i j
+
+(20)
+
+i j) = 0. The distribution of the noise could be Gaussian for instance, but this is not essential. 
+and assume for now that  E(ξ h
+The important point is that the noise on a weight is independent of the noise on the other weights, as well as independent 
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+15
+
+Fig. 9. MNIST training (upper) and test (lower) accuracy, as a function of training epoch, for BP, RBP, and SRBP with different dropout probabilities in the 
+learning channel: 0% (no dropout), 10%, 20%, and 50%. For dropout probability p, the error signals that are not dropped out are scaled by 1/(1 − p). As 
+with dropout in the forward propagation, large dropout probabilities lead to slower training without hurting ﬁnal performance.
+
+of the dropout noise on the units. Under these assumptions, as shown in [5], the expected value of the activity of each unit 
+in  the  backward  pass  is  exactly  given  by  the  standard  BP  equations  and  equal  to  Bh
+for  unit  i in  layer  h.  In other words, 
+i
+standard backpropagation can be viewed as computing the exact average over all backpropagation processes implemented on all the 
+stochastic realizations of the backward network under the three forms of noise described above. Thus we can reverse this argument 
+and consider that RBP approximates this average or BP by averaging over the ﬁrst two kinds of noise, but not the third one 
+where, instead of averaging, a random realization of the weights is selected and then ﬁxed at all epochs. This connection 
+suggests other intermediate RBP variants where several samples of the weights are used, rather than a single one.
+
+Finally, it is possible to use dropout in the backward pass. The forward pass is robust to dropping out neurons, and in 
+fact the dropout procedure can be beneﬁcial [16,5]. Here we apply the dropout procedure to neurons in the learning channel 
+during the backward pass. The results of simulations are reported in Fig. 9 and conﬁrm that BP, RBP, SRBP, are robust with 
+respect to dropout.
+
+7.  Mathematical analysis
+
+7.1.  General considerations
+
+The general strategy to try to derive more precise mathematical results is to proceed from simple architectures to more 
+complex architectures, and from the linear case to the non-linear case. The linear case is more amenable to analysis and, 
+
+16
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+in  this  case,  RBP  and  SRBP  are  equivalent  when  there  is  only  one  hidden  layer,  or  when  all  the  layers  have  the  same 
+size. Thus we study the convergence of RBP to optimal solutions in linear architectures of increasing complexity: A[1, 1, 1], 
+A[1, 1, 1, 1], A[1, 1, . . . , 1], A[1, N, 1] A[N, 1, N], and then the general A[N0, N1, N2] case with a single hidden layer. This 
+is followed by the study of a non-linear A[1, 1, 1] case.
+
+For  each  kind  of  linear  network,  under  a  set  of  standard  assumptions,  one  can  derive a  set  of  non-linear  –  in  fact 
+polynomial – autonomous, ordinary differential equations (ODEs) for the average (or batch) time evolution of the synaptic 
+weights under the RBP or SRBP algorithm. As soon as there is more than one variable and the system is non-linear, there is 
+no general theory to understand the corresponding behavior. In fact, even in two dimensions, the problem of understanding 
+the  upper  bound  on  the  number  and  relative  position  of  the  limit  cycles  of  a  system  of  the  form  dx/dt = P (x, y) and 
+dy/dt = Q (x, y), where  P and  Q are polynomials of degree n is open – in fact this is Hilbert’s 16-th problem in the ﬁeld 
+of dynamical systems [29,19].
+
+When  considering  the  speciﬁc  systems  arising  from  the  RBP/SRBP  learning  equations,  one  must  ﬁrst  prove  that  these 
+systems  have  a  long-term  solution.  Note  that  polynomial  ODEs  may  not  have  long-term  solutions  (e.g.  dx/dt = xα ,  with 
+x(0) (cid:7)= 0,  does  not  have  long-term  solutions  for  α > 1).  If  the  trajectories  are  bounded,  then  long-term  solutions  exist. 
+We  are  particularly  interested  in  long-term  solutions  that  converge  to  a  ﬁxed  point,  as  opposed  to  limit  cycles  or  other 
+behaviors.
+
+A  number  of  interesting  cases  can  be  reduced  to  polynomial  differential  equations  in  one  dimension.  These  can  be 
+
+understood using the following theorem.
+
+Theorem 1. Let dx/dt = Q (x) = k0 + k1x + . . . + knxn be a ﬁrst order polynomial differential equation in one dimension of degree 
+n > 1, and let r1 < r2 . . . < rk (k ≤ n) be the ordered list of distinct real roots of Q (the ﬁxed points). If x(0) = ri then x(t) = ri and 
+the solution is constant If ri < x(0) < ri+1 then x(t) → ri if Q < 0 in (ri, ri+1), and x(t) → ri+1 if Q > 0 in (ri, ri+1). If x(0) < r1 and 
+Q > 0 in the corresponding interval, then x(t) → r1. Otherwise, if Q < 0 in the corresponding interval, there is no long time solution 
+and x(t) diverges to −∞ within a ﬁnite horizon. If x(0) > rk and Q < 0 in the corresponding interval, then x(t) → rk. Otherwise, if 
+Q > 0 in the corresponding interval, there is no long time solution and x(t) diverges to +∞ within a ﬁnite horizon. A necessary and 
+suﬃcient condition for the dynamics to always converge to a ﬁxed point is that the degree n be odd, and the leading coeﬃcient be 
+negative.
+
+Proof. The proof of this theorem is straightforward and can be visualized by plotting the function  Q .
+
+Finally,  in  general  the  matrices  in  the  forward  channel  are  denoted  by  A1, A2, . . . ,  and  the  matrices  in  the  learning 
+channel are denoted by C1, C2, . . . Theorems are stated in concise form and additional important facts are contained in the 
+proofs.
+
+7.2.  The simplest linear chain: A[1, 1, 1]
+
+Derivation of the system. The simplest case correspond to a linear A[1, 1, 1] architecture (Fig. 10). Let us denote by a1 and 
+a2 the weights in the ﬁrst and second layer, and by c1 the random weight of the learning channel. In this case, we have 
+O (t) = a1a2 I(t) and the learning equations are given by:
+
+where α = E(I T ) and β = E(I 2). With the proper scaling of the learning rate (η = (cid:2)t) this leads to the non-linear system 
+of coupled differential equations for the temporal evolution of a1 and a2 during learning:
+
+(cid:2)a1 = ηc1(T − O )I = ηc1(T − a1a2 I)I
+(cid:2)a2 = η(T − O )a1 I = η(T − a1a2 I)a1 I
+
+When averaged over the training set:
+
+(cid:7)
+
+E((cid:2)a1) = ηc1 E(I T ) − ηc1a1a2 E(I 2) = ηc1α − ηc1a1a2β
+E((cid:2)a2) = ηa1 E(I T ) − ηa2
+
+1a2 E(I 2) = ηa1α − ηa2
+
+1a2β
+
+(cid:7)
+
+(cid:8)
+
+da1
+dt
+da2
+dt
+
+= αc1 − βc1a1a2 = c1(α − βa1a2)
+= αa1 − βa2
+
+1a2 = a1(α − βa1a2)
+Note that the dynamic of  P = a1a2 is given by:
+
+d P
+
+dt
+
+= a1
+
+da2
+dt
+
++ a2
+
+da1
+dt
+
+= (a2
+1
+
++ a2c1)(α − β P )
+
+The error is given by:
+
+E = 1
+2
+
+E(T − P I)2 = 1
+2
+
+E(T 2) + 1
+2
+
+P 2β − P α = 1
+2
+
+E(T 2) + 1
+2β
+
+(α − β P )2 − α2
+2β
+
+(21)
+
+(22)
+
+(23)
+
+(24)
+
+(25)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+17
+
+Fig. 10. Left: A[1, 1, 1] architecture. The weights a1 and a2 are adjustable, and the feedback weight c1 is constant. Right: A[1, 1, 1, 1] architecture. The 
+weights a1, a2, and a3 are adjustable, and the feedback weights c1 and c2 are constant.
+
+and:
+
+dE
+d P
+
+= −α + β P with
+
+∂E
+∂ai
+
+= (−α + β P )
+
+P
+
+ai
+
+the last equality requires ai (cid:7)= 0.
+
+(26)
+
+Theorem 2. The system in Equation (23) always converges to a ﬁxed point. Furthermore, except for trivial cases associated with c1 = 0, 
+starting from any initial conditions the system converges to a ﬁxed point corresponding to a global minimum of the quadratic error 
+function. All the ﬁxed points are located on the hyperbolas given by α − β P = 0 and are global minima of the error function. All 
+the ﬁxed points are attractors except those that are interior to a certain parabola. For any starting point, the ﬁnal ﬁxed point can be 
+calculated by solving a cubic equation.
+
+Proof. As this is the ﬁrst example, we ﬁrst deal with the trivial cases in detail. For subsequent systems, we will skip the 
+trivial cases entirely.
+
+Trivial cases: 1) If β = 0 then we must have  I = 0 and thus α = 0. As a result the activity of the input, hidden, and output, 
+neuron  will  always  be  0.  Therefore  the  weights  a1 and  a2 will  remain  constant  (da1/dt = da2/dt = 0)  and  equal  to  their 
+initial values a1(0) and a2(0). The error will also remain constant, and equal to 0 if and only if  T = 0. Thus from now on 
+we can assume that β > 0.
+
+2) If c1 = 0 then the lower weight a1 never changes and remains equal to its initial value. If this initial value satisﬁes 
+a1(0) = 0, then the activity of the hidden and output unit remains equal to 0 at all times, and thus a2 remains constant and 
+equal to its initial value a2 = a2(0). The error remains constant and equal to 0 if only if T is always 0. If a1(0) (cid:7)= 0, then the 
+error is a simple quadratic convex function of a2 and since the rule for adjusting a2 is simply gradient descent, the value of 
+a2 will converge to its optimal value given by: a2 = α/βa1(0).
+General case: Thus from now on, we can assume that β > 0 and c1 (cid:7)= 0. Furthermore, it is easy to check that changing the 
+sign of α corresponds to a reﬂection about the a2-axis. Likewise, changing the sign of c1 corresponds to a reﬂection about 
+the origin (i.e. across both the a1 and a2 axis). Thus in short, it is suﬃcient to focus on the case where: α > 0, β > 0, and 
+c1 > 0.
+
+In this case, the critical points for a1 and a2 are given by:
+
+P = a1a2 = α
+β
+
+= E(I T )
+E(I 2)
+
+= 0
+
+(27)
+
+which  corresponds  to  two  hyperbolas  in  the  two-dimensional  (a1, a2) plane,  in  the  ﬁrst  and  third  quadrant  for  α =
+E(I T ) > 0. Note that these critical points do not depend on the feedback weight c1. All these critical points correspond to global 
+minima of the error function E = 1
+
+2 E[(T − O )2]. Furthermore, the critical points of  P include also the parabola:
+
+a2
+1
+
++ a2c1 = 0 or a2 = −a2
+
+1/c1
+
+(28)
+
+(Fig. 11). These critical points are dependent on the weights in the learning channel. This parabola intersects the hyperbola 
+a1a2 = P = α/β at one point with coordinates: a1 = (−c1α/β)1/3 and a2 = (−α2/3/(c
+
+In  the  upper  half  plane,  where a2 and  c1 are  congruent  and  both  positive,  the  dynamics  is  simple  to  understand.  For 
+instance in the ﬁrst quadrant where a1, a2, c1 > 0, if α − β P > 0 then da1/dt > 0, da2/dt > 0, and d P /dt > 0 everywhere 
+
+1/3
+1 β 2/3).
+
+18
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Fig. 11. Vector ﬁeld for the A[1, 1, 1] linear case with c1 = 1, α = 1, and β = 1. a1 correspond to the horizontal axis and a2 correspond to the vertical axis. 
+The critical points correspond to the two hyperbolas, and all critical points are ﬁxed points and global minima of the error functions. Arrows are colored 
+1/c1 are unstable. All other critical points are attractors. 
+according to the value of d P /dt, showing how the critical points inside the parabola a2 = −a2
+Reversing the sign of α, leads to a reﬂection across the a2-axis; reversing the sign of  c1, leads to a reﬂection across both the a1 and a2 axes. (For 
+interpretation of the colors in the ﬁgure(s), the reader is referred to the web version of this article.)
+
+and therefore the gradient vector ﬂow is directed towards the hyperbola of critical points. If started in this region, a1, a2, 
+and  P will grow monotonically until a critical point is reached and the error will decrease monotonically towards a global 
+minimum.  If  α − β P < 0 then  da1/dt < 0,  da2/dt < 0,  and  d P /dt < 0 everywhere  and  again  the  vector  ﬂow  is  directed 
+towards the hyperbola of critical points. If started in this region, a1, a2, and  P will decrease monotonically until a critical 
+point  is  reached  and  the  error  will  decrease  monotonically  towards  a  global  minimum.  A  similar  situation  is  observed  in 
+the fourth quadrant where a1 < 0 and a2 > 0.
+
+More generally, if a2 and  c1 have the same sign, i.e. are congruent as in BP, then a2
+1
+
++ a2c1 ≥ 0 and  P will increase if 
+α − β P > 0, and decrease if α − β P < 0. Note however that this is also true in general when c1 is small regardless of its 
++ a2c1 is positive. This remains true even if c1 varies, as 
+sign, relative to a1 and a2, since in this case it is still true that a2
+1
+long as it is small. When c1 is small, the dynamics is dominated by the top layer. The lower layer changes slowly and the 
+top layer adapts rapidly so that the system again converges to a global minimum. When a2 = c1 one recovers the convergent 
+dynamic  of  BP,  as  d P /dt always  has  the  same  sign  as  α − β P .  However,  in  the  lower  half  plane,  the  situation  is  slightly 
+more complicated (Fig. 11).
+
+To solve the dynamics in the general case, from Equation (23) we get:
+
+1
+
+= a1
+
+da2
+dt
+c1
+which gives a2 = 1
+2c1
+
+da1
+dt
+
+a2
+1
+
++ C so that ﬁnally:
+
+a2 = 1
+2c1
+
+a2
+1
+
++ b(0) − 1
+2c1
+
+a2
+1(0)
+
+(29)
+
+(30)
+
+Given a starting point a1(0) and a2(0), the system will follow a trajectory given by the parabola in Equation (30) until it 
+converges  to  a  critical  point  (global  optimum)  where  da1/dt = da2/dt = 0.  To  ﬁnd  the  speciﬁc  critical  point  to  which  it 
+converges to, Equations (30) and (27) must be satisﬁed simultaneously which leads to the depressed cubic equation:
+
+a3
+1
+
++ (2c1a2(0) − a1(0)2)a1 − 2
+
+c1α
+β
+
+= 0
+
+(31)
+
+which can be solved using the standard formula for the roots of cubic equations. Note that the parabolic trajectories con-
+tained in the upper half plane intersect the critical hyperbola in only one point and therefore the equation has a single real 
+root. In the lower half plane, the parabolas associated with the trajectories can intersect the hyperbolas in 1, 2, or 3 distinct 
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+19
+
+points corresponding to 1 real root, 2 real roots (1 being double), and 3 real roots. The double root corresponds to the point 
+−(c1α/β)1/3 associated  with  the  intersection  of  the  parabola  of  Equation  (30) with  both  the  hyperbola  of  critical  points 
+a1a2 = α/β and the parabola of additional critical points for  P given by Equation (28).
+
+When there are multiple roots, the convergence point of each trajectory is easily identiﬁed by looking at the derivative 
+vector ﬂow (Fig. 11). Note on the ﬁgure that all the points on the critical hyperbolas are stable attractors, except for those 
+in the lower half-plane that satisfy both a1a2 = α/β and a2c1 + a2
+1 < 0. This can be shown by linearizing the system around 
+its critical points.
+
+Linearization around critical points. If  we  consider  a  small  deviation  a1 + u and  a2 + v around  a  critical  point  a1, a2
+(satisfying α − βa1a2 = 0) and linearize the corresponding system, we get:
+
+(cid:8)
+
+du
+dt
+dv
+dt
+
+= −βc1(a2u + a1 v)
+= −βa1(a2u + a1 v)
+
+with a1a2 = α/β. If we let  w = a2u + a1 v we have:
+
+dw
+
+dt
+
+= −β(c1a2 + a2
+
+1)w thus w = w(0)e
+
+−β(c1a2+a2
+
+1)t
+
+(32)
+
+(33)
+
+Thus if β(c1a2 + a2
+small, or c1 has the same sign as a2. If β(c1a2 + a2
+1) = 0,  w is constant.
+described above. If β(c1a2 + a2
+
+1) > 0, w converges to zero and a1, a2 is an attractor. In particular, this is always the case when c1 is very 
+1) < 0,  w diverges to +∞, and corresponds to unstable critical points as 
+
+Finally, note that in many cases, for instance for trajectories in the upper half plane, the value of  P along the trajectories 
+increases or decreases monotonically towards the global optimum value. However this is not always the case and there are 
+trajectories where d P /dt changes sign, but this can happen only once.
+
+7.3.  Adding depth: the linear chain A[1, 1, 1, 1]
+
+Derivation of the system. In the case of a linear A[1, 1, 1, 1] architecture, for notational simplicity, let us denote by a1, a2
+and a3 the forward weights, and by c1 and c2 the random weights of the learning channel (note the index is equal to the 
+target layer). In this case, we have  O (t) = a1a2a3 I(t) = P I(t). The learning equations are:
+
+⎧
+⎪⎨
+
+⎪⎩
+
+(cid:2)a1 = ηc1(T − O )I = ηc1(T − a1a2a3 I)I
+(cid:2)a2 = ηc2(T − O )a1 I = ηc2(T − a1a2a3 I)a1 I
+(cid:2)a3 = η(T − O )a1a2 I = η(T − a1a2a3 I)a1a2 I
+
+When averaged over the training set:
+
+⎧
+⎪⎨
+
+⎪⎩
+
+E((cid:2)a1) = ηc1 E(I T ) − ηc1 P E(I 2) = ηc1α − ηc1 P β
+E((cid:2)a2) = ηc2a1 E(I T ) − ηc2a1 P E(I 2) = ηc2a1α − ηc2a1 P β
+E((cid:2)a3) = ηa1a2 E(I T ) − ηa1a2 P E(I 2) = ηa1a2β − ηa1a2 P β
+
+(34)
+
+(35)
+
+where  P = a1a2a3.  With  the  proper  scaling  of  the  learning  rate  (η = (cid:2)t)  this  leads  to  the  non-linear  system  of  coupled 
+differential equations for the temporal evolution of a1, a2 and a3 during learning:
+
+⎧
+⎪⎪⎨
+
+⎪⎪⎩
+
+da1
+dt
+da2
+dt
+da3
+dt
+
+= c1(α − β P )
+= c2a1(α − β P )
+= a1a2(α − β P )
+
+The dynamic of  P = a1a2a3 is given by:
+
+d P
+
+dt
+
+= a1a2
+
+da3
+dt
+
++ a2a3
+
+da1
+dt
+
++ a1a3
+
+da2
+dt
+
++ c1a2a3 + c2a2
+
+1a3)(α − β P )
+
+(36)
+
+(37)
+
+= (a2
+
+1a2
+
+2
+
+Theorem 3. Except for trivial cases (associated with c1 = 0 or c2 = 0), starting from any initial conditions the system in Equation (36)
+converges to a ﬁxed point, corresponding to a global minimum of the quadratic error function. All the ﬁxed points are located on the 
+hypersurface given by α − β P = 0 and are global minima of the error function. Along any trajectory, and for each i, ai+1 is a quadratic 
+function of ai . For any starting point, the ﬁnal ﬁxed point can be calculated by solving a polynomial equation of degree seven.
+
+20
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Fig. 12. Left: A[1, . . . , 1] architecture. The weights ai are adjustable, and the feedback weight ci are ﬁxed. The index of each parameter is associated with 
+the corresponding target layer.
+
+Proof. If c1 = 0, a1 remains constant and thus we are back to the linear case of a A[1, 1, 1] architecture where the inputs I
+are replaced by a1 I . Likewise, if c2 = 0 a2 remains constant and the problem can again be reduced to the A[1, 1] case with 
+the proper adjustments. Thus for the rest of this section we can assume c1 (cid:7)= 0 and c2 (cid:7)= 0.
+
+The critical points of the system correspond to α − β P = 0 and do not depend on the weights in the learning channel. 
+These critical points correspond to global minima of the error function. These critical points are also critical points for the 
+1a3 = 0 with  (a1, a2, a3)
+product  P .  Additional  critical  points  for  P are  provided  by  the  hypersurface:  a2
+in R3.
+
++ c1a2a3 + c2a2
+
+1a2
+
+2
+
+The dynamics of the system can be solved by noting that Equation (36) yields:
+
+da2
+dt
+
+= a1c2
+c1
+
+da1
+dt
+
+and
+
+da3
+dt
+
+= a2
+c2
+
+da2
+dt
+
+As a result:
+
+a2 = c2
+2c1
+
+a2
+1
+
++ C1 with C1 = a2(0) − c2
+2c1
+
+a1(0)2
+
+and:
+
+a3 = 1
+2c2
+
+a2
+2
+
++ C2 with C2 = a3(0) − 1
+2c2
+
+a2(0)2
+
+Substituting these results in the ﬁrst equation of the system gives:
+
+da1
+dt
+
+= c1[α − βa1(
+
+and hence:
+da1
+dt
+
+= c1[α − βa1(
+
+c2
+2c1
+
+c2
+2c1
+
+a2
+1
+
++ C1)(
+
+1
+
+2c2
+
+a2
+2
+
++ C2)]
+
+a2
+1
+
++ C1)(
+
+1
+
+2c2
+
+(
+
+c2
+2c1
+
+a2
+1
+
++ C1)2 + C2)]
+
+(38)
+
+(39)
+
+(40)
+
+(41)
+
+(42)
+
+In short da1/dt = Q (a1) where  Q is a polynomial of degree 7 in a1. By expanding and simplifying Equation (42), it is easy 
+to see that the leading term of Q is negative and given by βc2
+1). Therefore, using Theorem 1, for any initial conditions 
+a1(0), a1(t) converges to a ﬁnite ﬁxed point. Since a2 is a quadratic function of a1 it also converges to a ﬁnite ﬁxed point, 
+and  similarly  for  a3.  Thus  in  the  general  case  the  system  always  converges  to  a  global  minimum  of  the  error  function 
+satisfying α − β P = 0. The hypersurface a2
+1a3 = 0 depends on c1, c2 and provides additional critical points 
+for the product  P . It can be shown again by linearization that this hypersurface separates stable from unstable ﬁxed points.
+As in the previous case, small weights and congruent weights can help learning but are not necessary. In particular, if c1
+1a3 > 0 and d P /dt has the same 
+
+and c2 are small, or if c1 is small and c2 is congruent (with a3), then a2
+sign as α − β P .
+
++ c1a2a3 + c2a2
+
++ c1a2a3 + c2a2
+
+2/(16c2
+
+1a2
+
+1a2
+
+2
+
+2
+
+7.4.  The general linear chain: A[1, . . . , 1]
+
+Derivation of the system. The analysis can be extended immediately to a linear chain architecture A[1, . . . , 1] of arbitrary 
+length  (Fig. 12).  In  this  case,  let  a1, a2, . . . , aL denote  the  forward  weights  and  c1, . . . , cL−1 denote  the  feedback  weights. 
+Using the same derivation as in the previous cases and letting  O  = P I = a1a2 . . . aL I gives the system:
+
+(cid:2)ai = ηci(T − O )a1a2 . . . ai−1 I
+
+(43)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+21
+
+for i = 1, . . . , L. Taking expectations as usual leads to the set of differential equations:
+
+= c1(α − β P )
+= c2a1(α − β P )
+
+⎧
+
+⎪⎪⎪⎪⎪⎪⎪⎨
+⎪⎪⎪⎪⎪⎪⎪⎩
+
+da1
+dt
+da2
+dt
+. . .
+daL−1
+dt
+daL
+dt
+
+= cL−1a1a2 . . . aL−2(α − β P )
+
+= a1 . . . aL−1(α − β P )
+
+or, in more compact form:
+
+dai
+dt
+
+= ci
+
+k=i−1(cid:13)
+
+k=1
+
+ak(α − β P )
+
+for
+
+i = 1, . . . , L
+
+with cL = 1. As usual,  P =
+
+(cid:14)
+
+L
+
+i=1 ai , α = E(T I), and β = E(I 2). A simple calculation yields:
+
+d P
+
+dt
+
+=
+
+L(cid:2)
+
+i=1
+
+P
+
+ai
+
+dai
+dt
+
+= (α − β P )
+
+L(cid:2)
+
+i=1
+
+P
+
+ci
+ai
+
+i−1(cid:13)
+
+k=1
+
+ak
+
+the last equality requiring ai (cid:7)= 0 for every i.
+
+(44)
+
+(45)
+
+(46)
+
+Theorem 4. Except for trivial cases, starting from any initial conditions the system in Equation (44) converges to a ﬁxed point, corre-
+sponding to a global minimum of the quadratic error function. All the ﬁxed points are located on the hypersurface given by α − β P = 0
+and are global minima of the error function. Along any trajectory, and for each i, ai+1 is a quadratic function of ai . For any starting 
+point, the ﬁnal ﬁxed point can be calculated by solving a polynomial equation of degree 2L − 1.
+
+Proof. Again,  when  all  the  weights  in  the  learning  channel  are  non-zero,  the  critical  points  correspond  to  the  curve α −
+β P = 0. These critical points are independent of the weights in the learning channel and correspond to global minima of 
+i−1
+the  error  function.  Additional  critical  points  for  the  product  P = a1 . . . aL are  given  by  the  surface 
+k=1 ak = 0. 
+These  critical  points  are  dependent  on  the  weights  in  the  learning  channel.  If  the  ci are  small  or  congruent  with  the 
+a j] > 0 and  d P /dt has  the  same  sign  as  α − β P .  Thus 
+respective  feedforward  weights,  then 
+small or congruent weights can help the learning but they are not necessary.
+
+i(cid:7)=k ai][cL−k
+
+i=1 P ci
+ai
+
+j=k−1
+j=1
+
+L
+k=1
+
+(cid:15)
+
+(cid:15)
+
+(cid:14)
+
+(cid:14)
+
+(cid:14)
+
+[
+
+L
+
+To see the convergence, from Equation (45), we have:
+
+ci
+
+dai+1
+dt
+
+= ci+1ai
+
+dai
+dt
+
+(47)
+
+Note that if one the derivatives dai/dt is zero, then they are all zero and thus there cannot be any limit cycles. Since in the 
+general case all the ci are non-zero, we have:
+
+ai+1 = ci+1
+2ci
+
+a2
+i
+
++ C
+
+(48)
+
+showing that there is a quadratic relationship between ai+1 and ai , with no linear term, for every i. Thus every ai can be 
+expressed as a polynomial function of a1 of degree 2i−1, containing only even terms:
+
+ai = k0 + k1a2
+1
+
++ . . . + ki−1a2i−1
+
+1
+
+and:
+
+ki−1 = ci
+2ci−1
+
+(
+
+ci−1
+2ci−2
+
+)2(
+
+ci−2
+2ci−3
+
+)4 . . . (
+
+)2i−1
+
+c3
+2c2
+
+(49)
+
+(50)
+
+By substituting these relationships in the equation for the derivative of a1, we get da1/dt = Q (a1) where  Q is a polynomial 
+with an odd degree n given by:
+
+n = 1 + 2 + 4 + . . . + 2L−1 = 2L − 1
+
+(51)
+
+Furthermore, from Equation (50) it can be seen that leading coeﬃcient is negative therefore, using Theorem 1, for any set 
+of initial conditions the system must converge to a ﬁnite ﬁxed point. For a given initial condition, the point of convergence 
+can be solved by looking at the nearby roots of the polynomial  Q of degree n.
+
+22
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Gradient descent equations. For comparison, the gradient descent equations are:
+
+dai
+dt
+
+= aL . . . ai+1a1 . . . ai−1(α − β P ) = P
+ai
+
+(α − β P ) = − ∂E
+∂ai
+
+(the equality in the middle requires that ai (cid:7)= 0). In this case, the coupling between neighboring terms is given by:
+
+ai
+
+dai
+dt
+
+= ai+1
+
+dai+1
+dt
+
+Solving this equation yields:
+
+da2
+i
+dt
+
+=
+
+da2
+
+i+1
+dt
+
+or a2
+
+i+1
+
+= a2
+i
+
++ C
+
+7.5.  Adding width (expansive): A[1, N, 1]
+
+(52)
+
+(53)
+
+(54)
+
+Derivation of the system. Consider a linear A[1, N, 1] architecture (Fig. 13). For notational simplicity, we let a1, . . . , aN be 
+the  weights  in  the  lower  layer,  b1, . . . , bN be  the  weights  in  the  upper  layer,  and  c1, . . . , cN the  random  weights  of  the 
+learning channel. In this case, we have  O (t) =
+
+i aibi . The learning equations are:
+
+i aibi I(t). We let  P =
+
+(cid:15)
+
+(cid:15)
+
+(cid:2)ai = ηci(T − O )I = ηci(T −
+(cid:15)
+(cid:2)bi = η(T − O )ai I = η(T −
+
+i aibi I)I
+i aibi I)ai I
+
+(cid:15)
+
+When averaged over the training set:
+
+(cid:8)
+
+E((cid:2)ai) = ηci E(I T ) − ηci P E(I 2) = ηciα − ηci P β
+E((cid:2)bi) = ηai E(I T ) − ηai P E(I 2) = ηaiα − ηai P β
+
+(cid:8)
+
+(cid:8)
+
+= αci − βci P = ci(α − β P )
+= αai − βai P = ai(α − β P )
+
+dai
+dt
+dbi
+dt
+The dynamic of  P =
+
+i aibi is given by:
+
+(cid:15)
+
+d P
+
+dt
+
+=
+
+(cid:2)
+
+i
+
+ai
+
+dbi
+dt
+
++ bi
+
+dai
+dt
+
+= (α − β P )
+
+(cid:2)
+
+i
+
+[bici + a2
+i
+
+]
+
+where α = E(I T ) and β = E(I 2). With the proper scaling of the learning rate (η = (cid:2)t) this leads to the non-linear system 
+of coupled differential equations for the temporal evolution of ai and bi during learning:
+
+(55)
+
+(56)
+
+(57)
+
+(58)
+
+Theorem 5. Except for trivial cases, starting from any initial conditions the system in Equation (57) converges to a ﬁxed point, corre-
+sponding to a global minimum of the quadratic error function. All the ﬁxed points are located on the hypersurface given by α − β P = 0
+and are global minima of the error function. Along any trajectory, each bi is a quadratic polynomial function of ai . Each ai is an aﬃne 
+function of any other a j . For any starting point, the ﬁnal ﬁxed point can be calculated by solving a polynomial differential equation of 
+degree 3.
+
+Proof. Many of the features found in the linear chain are found again in this system using similar analyses. In the general 
+case where the weights in the learning channel are non-zero, the critical points are given by the surface α − β P = 0 and 
+correspond to global optima. These critical points are independent of the weights in the learning channel. Additional critical 
+(cid:15)
++ bici = 0 which depends on the weights in the learning 
+points for the product  P =
++ bici > 0 and d P /dt has the same sign as 
+channel. If the ci ’s are small, or congruent with the respective bi ’s, then 
+α − β P .
+
+i aibi are given by the surface 
+
+i a2
+i
+
+i a2
+i
+
+(cid:15)
+
+(cid:15)
+
+To address the convergence, Equation (57) leads to the vertical coupling between ai and bi :
+
+ai
+
+dai
+dt
+
+= ci
+
+dbi
+dt
+
+or bi = 1
+2ci
+
+a2
+i
+
++ Ci
+
+(59)
+
+for  each  i = 1, . . . , N.  Thus  the  dynamics  of  the ai variables  completely  determines  the  dynamics  of  the bi variables,  and 
+one only needs to understand the behavior of the ai variables. In addition to the vertical coupling between ai and bi , there 
+is an horizontal coupling between the ai variables given again by Equation (57) resulting in:
+
+dai+1
+dt
+
+= ci+1
+ci
+
+dai
+dt
+
+or ai+1 = ci+1
+ci
+
+ai + K i+1
+
+(60)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+23
+
+Fig. 13. Left: Expansive A[1, N, 1] architecture. Right: Compressive A[N, 1N] architecture. In both cases, the parameters ai and bi are adjustable, and the 
+parameters ci are ﬁxed.
+
+Thus, iterating, all the variables ai can be expressed as aﬃne functions of a1 in the form:
+
+ai = ci
+c1
+
+a1 + K
+
+(cid:3)
+i
+
+i = 1, . . . , N
+
+(61)
+
+Thus  solving  the  entire  system  can  be  reduced  to  solving  for a1.  The  differential  equation  for a1 is  of  the  form da1/dt =
+Q (a1) where  Q is a polynomial of degree 3. Its leading term, is the leading term of −c1β P . To ﬁnd its leading term we 
+have:
+
+(cid:2)
+
+P =
+
+aibi =
+
+(cid:2)
+
+i
+
+i
+
+a3
+i
+2ci
+
++ ciai
+
+and thus the leading term of  Q is given by  K a3
+
+1 where:
+
+K = −βc1[ 1
+2c1
+
++ 1
+2c2
+
+c3
+2
+c3
+1
+
++ . . .
+
+1
+
+2cN
+
+c3
+N
+c3
+1
+
+] = − β
+2
+
+1
+c2
+1
+
+N(cid:2)
+[
+
+1
+
+]
+
+c2
+i
+
+(62)
+
+(63)
+
+Thus the leading term of  Q has a negative coeﬃcient, and therefore a1 always converges to a ﬁnite ﬁxed point, and so do 
+all the other variables.
+
+7.6.  Adding width (compressive): A[N, 1, N]
+
+Derivation of the system. Consider a linear A[N, 1, N] architecture (Fig. 13). The on-line learning equations are given by:
+
+(cid:15)
+
+N
+
+(cid:2)ai = η
+(cid:2)bi = η(T i − O i)
+
+k=1 ck(Tk − O k)Ii
+(cid:15)
+N
+k=1 ak Ik
+
+(cid:8)
+
+(cid:8)
+
+(64)
+
+for  i = 1, . . . , N.  As  usual  taking  expectations,  using  matrix  notation  and  a  small  learning  rate,  leads  to  the  system  of 
+differential equations:
+
+d A
+dt
+dB
+dt
+
+= C((cid:9)T I − B A(cid:9)I I )
+= ((cid:9)T I − B A(cid:9)I I ) At
+
+(65)
+
+Here  A is an 1 × N matrix,  B is an N × 1 matrix, and C is an 1 × N matrix, and Mt denotes the transpose of the matrix M. 
+(cid:9)I I = E(I It) and (cid:9)T I = E(T It ) are N × N matrices associated with the data.
+
+Lemma 1. Along the ﬂow of the system deﬁned by Equation (65), the solution satisﬁes:
+
+C B = 1
+2
+
+|| A||2 + K
+
+where K is a constant depending only on the initial values.
+
+Proof. The proof is immediate since:
+
+C
+
+dB
+
+dt
+
+= d A
+dt
+
+At or
+
+(cid:2)
+
+i
+
+ci
+
+dbi
+dt
+
+=
+
+(cid:2)
+
+i
+
+ai
+
+dai
+dt
+
+(cid:2)
+
+or
+
+i
+
+ci
+
+dbi
+dt
+
+= 1
+2
+
+d|| A||2
+dt
+
+where || A||2 = a2
+1
+
++ . . . + a2
+
+N . The theorem is obtained by integration.
+
+(66)
+
+(67)
+
+24
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Theorem 6. In the case of an autoencoder with uncorrelated normalized data (Equation (68)), the system converges to a ﬁxed point 
+satisfying  A = βC , where β is a positive root of a particular cubic equation. At the ﬁxed point, B = C t/(β||C||2) and the product 
+P = B A converges to C t C/||C||2.
+
+Proof. For an autoencoder with uncorrelated and normalized data ((cid:9)T I = (cid:9)I I = Id). In this case the system can be written 
+as:
+
+(68)
+
+(69)
+
+(70)
+
+(cid:8)
+
+d A
+dt
+dB
+dt
+We deﬁne
+
+= C(Id − B A)
+= (Id − B A) At
+
+σ (t) = 1
+2
+
+(cid:10) A(cid:10)2 + K
+
+= C − σ (t) A
+
+dt
+
+and let  A0 = A(0). Note that σ (t) ≥ K . We assume that  C and  A0 are linearly independent, otherwise the proof is easier. 
+Then we have:
+d A
+
+Therefore the solution  A(t) must have the form:
+
+A(t) = f (t)C + g(t) A0
+
+which yields:
+
+(cid:3)
+
+f
+
+(t) = 1 − σ (t) f (t),
+(t) = −σ (t)g(t),
+
+f (0) = 0
+
+g(0) = 1
+
+(cid:3)
+
+g
+
+or:
+
+g(t) = e
+
+−
+
+(cid:16)
+t
+0 σ (s)ds
+
+f (t) = e
+
+(cid:16)
+
+−
+
+t
+0 σ (s)ds
+
+(cid:16)
+
+e
+
+r
+
+0 σ (s)dsdr
+
+t(cid:17)
+
+0
+
+From the above expressions, we know that both  f and  g are nonnegative. We also have
+
+f (t) = g(t)
+
+t(cid:17)
+
+0
+
+1
+g(r)
+
+dr
+
+Since σ (t) ≥ K ,  g(t) is bounded, and thus
+
+∞(cid:17)
+
+0
+
+1
+g(r)
+
+dr = ∞.
+
+(71)
+
+(72)
+
+(73)
+
+(74)
+
+(75)
+
+By a more general theorem shown in the next section, we know also that (cid:10) A(cid:10) is bounded and therefore  f
+Using Equation (74), this implies that g(t) → 0 as t → ∞. Now we consider again the equation:
+
+is also bounded. 
+
+(cid:3) = 1 − σ f
+
+f
+
+Now consider the cubic equation:
+
+1 − (
+
+1
+
+2
+
+t2(cid:10)C(cid:10)2 + K )t = 0
+
+For t large enough, since  g(t) → 0, we have:
+
+σ (t) ≈ 1
+2
+
+f 2(cid:10)V (cid:10)2 + K
+
+Thus Equation (76) is close to the polynomial differential equation:
+
+(cid:3) = 1 − (
+
+h
+
+1
+
+2
+
+h2(cid:10)C(cid:10)2 + K )h
+
+(76)
+
+(77)
+
+(78)
+
+(79)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+25
+
+Fig. 14. General linear case with an architecture A[N0, . . . , N L ]. Each forward matrix Ai is adjustable and of size Ni × Ni−1. In SRBP, each feedback matrices 
+Ci is ﬁxed and of size Ni × N L .
+
+By  Theorem 1,  this  system  is  always  convergent  to  a  positive  root  of  Equation  (77),  and  by  comparison  the  system  in 
+Equation (76) must converge as well. This proves that  f (t) → β as t → ∞, and in combination with  g(t) → 0 as t → ∞, 
+shows that  A converges to βC . As  A converges to a ﬁxed point, the error function converges to a convex function and  B
+performs gradient descent on this convex function and thus must also approach a ﬁxed point. By the results in [2,3], the 
+solution must satisfy  B A At = At . When  A = βC this gives:  B = C t /(βC C t ) = C t /(β(cid:10)C(cid:10)2). In this case, the product  P = B A
+converges to the ﬁxed point:  C t C/(cid:10)C(cid:10)2. The proof can easily be adapted to the slightly more general case where (cid:9)I I is a 
+diagonal matrix.
+
+7.7.  The general linear case: A[N0, N1, . . . , N L]
+Derivation of the system. Although we cannot yet provide a solution for this case, it is still useful to derive its equations. We 
+assume a general feedforward linear architecture (Fig. 14) A[N0, N1, . . . , N L] with adjustable forward matrices  A1, . . . , A L
+and ﬁxed feedback matrices C1, . . . , C L−1 (and C L = Id). Each matrix  Ai is of size Ni × Ni−1 and, in SRBP, each matrix Ci is 
+of size Ni × N L . As usual,  O (t) = P I(t) = (
+
+(cid:14)
+
+L
+i=1 Ai)I(t).
+
+Assuming the same learning rate everywhere, using matrix notation we have:
+
+(cid:2) Ai = ηCi(T − O )( Ai−1 . . . A1 I)t = ηCi(T − O )It At
+
+1 . . . At
+
+i−1
+
+which, after taking averages, leads to the system of differential equations
+
+d Ai
+dt
+
+= Ci((cid:9)T I − P (cid:9)I I ) At
+
+1 . . . At
+
+i−1
+
+(80)
+
+(81)
+
+with  P = A L A L−1 . . . A1, (cid:9)T I = E(T It), and (cid:9)I I = E(I It). (cid:9)T I is a  N L × N0 matrix and (cid:9)I I is a  N0 × N0 matrix. In the case 
+of an autoencoder,  T = I and therefore (cid:9)T I = (cid:9)I I . Equation (81) is true also for i = 1 and i = L with  C L = Id where  Id is 
+the identity matrix. These equations establish a coupling between the layers so that:
+
+d Ai+1
+dt
+
+= Ci+1((cid:9)T I − P (cid:9)I I ) At
+
+1 . . . At
+
+i
+
+When the layers have the same sizes, the coupling can be written as:
+
+C
+
+−1
+i+1
+
+d Ai+1
+dt
+where we can assume that the random matrices Ci are invertible square matrices.
+
+d Ai+1
+dt
+
+= Ci+1C
+
+d Ai
+dt
+
+d Ai
+dt
+
+i or
+
+= C
+
+−1
+i
+
+−1
+i
+
+At
+i
+
+At
+
+Gradient descent equations. For comparison, the gradient descent equations are given by:
+
+d Ai
+dt
+
+= At
+
+i+1 . . . At
+resulting in the coupling:
+
+L((cid:9)T I − P (cid:9)I I ) At
+
+1 . . . At
+
+i−1
+
+At
+
+i+1
+
+Ai+1
+dt
+
+= d Ai
+dt
+
+At
+i
+
+and, by deﬁnition:
+= − ∂E
+∂ Ai
+
+d Ai
+dt
+
+where E = E(T − P I)2/2.
+
+(82)
+
+(83)
+
+(84)
+
+(85)
+
+(86)
+
+26
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+RBP equations. Note that in the case of RBP with backward matrices C1, . . . , C L−1, as opposed to SRBP, one has the system 
+of differential equations:
+
+d Ai
+dt
+
+= Ci . . . C L−1((cid:9)T I − P (cid:9)I I ) At
+
+1 . . . At
+
+i−1
+
+(87)
+
+By  letting  B i = Ci . . . C L−1 one  obtains  the  SRBP  equations  however  the  size  of  the  layers  may  impose  constraints on  the 
+rank of the matrices  B i .
+
+7.8.  The general three-layer linear case A[N0, N1, N2]
+Derivation of the system. Here we let  A1 be the  N1 × N0 matrix of weights in the lower layer,  A2 be  N2 × N1 matrix of 
+weights in the upper layer, and  C1 the  N1 × N2 random matrix of weights in the learning channel. In this case, we have 
+O (t) = A2 A1 I(t) = P I(t) and (cid:9)I I = E(I It) (N0 × N0), and (cid:9)T I = E(T It ) (N2 × N1). The learning equations are given by:
+
+(cid:8)
+
+d A2
+dt
+d A1
+dt
+
+= ((cid:9)T I − P (cid:9)I I ) At
+1
+= C1((cid:9)T I − P (cid:9)I I )
+
+resulting in the coupling:
+
+C1
+
+d A2
+dt
+
+= d A1
+dt
+
+At
+1
+
+(88)
+
+(89)
+
+The corresponding gradient descent equations are obtained immediately by replacing C1 with  At
+2.
+
+Note  that  the  two-layer  linear  case  corresponds  to  the  classical  Least  Square  Method  which  is  well  understood.  The 
+general  theory  of  the  three-layer  linear  case,  however,  is  not  well  understood.  In  this  section,  we  take  a  signiﬁcant  step 
+towards providing a complete treatment of this case. One of the main results is that system deﬁned by Equation (88) has 
+long-term existence, and  C1 P = C1 A2 A1 is convergent and thus, in short, the system is able to learn. However this alone 
+does not imply that the matrix valued functions  A1(t), A2(t) are individually convergent. We can prove the latter in special 
+cases like A[N, 1, N] and A[1, N, 1] studied in the previous sections, as well as A[2, 2, 2].
+
+We begin with the following theorem.
+
+Theorem 7. The general three layer linear system (Equation (88)) always has long-term solutions. Moreover (cid:10) A1(cid:10) is bounded.
+
+Proof. As in Lemma 1, we have:
+
+d(C A2)
+dt
+
+Thus we have:
+
+= C((cid:9)T I − A2 A1(cid:9)I I ) At
+1
+
+= d A1
+dt
+
+At
+1
+
+d((C A2) + (C A2)t)
+dt
+
+= d A1
+dt
+
+At
+1
+
++ A1
+
+d At
+1
+dt
+
+= d
+dt
+
+( A1 At
+
+1).
+
+It follows that:
+
++ C0
+(C A2) + (C A2)t = A1 At
+1
+where C0 is a constant matrix. Let:
+
+f = Tr( A1 At
+
+1).
+
+Using Lemma 2 below, we have:
+
+df
+
+dt
+
+= 2 Tr(
+
+d A1
+dt
+
+1) = 2 Tr(C(cid:9)T I At
+At
+
+1
+
+− C A2 A1(cid:9)I I At
+
+1) ≤ c3(cid:10) A1(cid:10) − 2 Tr(C A2 A1(cid:9)I I At
+
+1).
+
+Since:
+
+or:
+
+2 Tr(C A2 A1(cid:9)I I At
+
+1) = Tr(C A2 A1(cid:9)I I At
+
+1) + Tr( A1(cid:9)I I At
+
+1(C A2)t)
+
+2 Tr(C A2 A1(cid:9)I I At
+
+1) = Tr(C A2 A1(cid:9)I I At
+
+1) + Tr((C A2)t A1(cid:9)I I At
+1)
+
+using Equation (92), we have:
+
+2 Tr(C A2 A1(cid:9)I I At
+
+1) = Tr( A1 At
+
+1 A1(cid:9)I I At
+
+1) + Tr(C0 A1(cid:9)I I At
+1)
+
+(90)
+
+(91)
+
+(92)
+
+(93)
+
+(94)
+
+(95)
+
+(96)
+
+(97)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Using the second inequality in Lemma 2 below, we have:
+
+df
+
+dt
+
+≤ c3|| A1|| + Tr(C0 A1(cid:9)I I At
+
+1) − c1 f 2 ≤ c3
+
+(cid:18)
+
+f + c4 f − c1 f 2 ≤ c5 − 1
+2
+
+c1 f 2
+
+27
+
+(98)
+
+for  positive  constants  c1, . . . , c5.  Since  A1 has  long-term  existence,  so  does  f .  Note  that  it  is  not  possible  for  f
+increasing  as  t → ∞ because  if  we  had  f
+( f ≤
+2c5/
+implies  f ≤
+
+to  be 
+2 c1 f 2 ≥ 0 and  thus  f would  be  bounded 
+c1,  which 
+
+is  not  always  increasing,  at  each  local  maximum  point  of  f we  have  f ≤
+
+(cid:3)(t) ≥ 0,  then  we  would  have  c5 − 1
+
+c1).  But  if  f
+√
+2c5/
+
+c1 everywhere.
+
+√
+√
+
+2c5/
+
+√
+
+√
+
+√
+
+Lemma 2. There is a constant c1 > 0 such that
+
+f ≥ c1(cid:10) A1(cid:10)2,
+
+1.
+2. Tr( A1 At
+
+1 A1(cid:9)I I At
+
+1) ≥ c1 f 2.
+
+Proof. The ﬁrst statement is obvious. To prove the second one, we observe that:
+
+Tr( A1 At
+
+1 A1(cid:9)I I At
+
+1) = Tr( At
+
+1 A1(cid:9)I I At
+
+1 A1) ≥ c2 Tr( At
+
+1 A1 At
+
+1 A1) ≥ c1 f 2
+
+for some constants c1, c2 > 0.
+
+To complete the proof of Theorem 7, we must estimate  A2 to make sure it does not diverge at a ﬁnite time. Let
+
+h = 1
+2
+
+Tr( A2 At
+2)
+
+Then:
+
+dh
+
+dt
+and thus:
+dh
+
+dt
+
+= Tr(((cid:9)T I − A2 A1(cid:9)I I ) At
+
+1 At
+
+2) = Tr((cid:9)T I At
+
+1 At
+
+2) − Tr( A2 A1(cid:9)I I At
+
+1 At
+2)
+
+≤ Tr((cid:9)T I At
+
+1 At
+2)
+
+Since we have shown that || A1|| is bounded:
+
+dh
+
+dt
+
+≤ Tr((cid:9)T I At
+
+1 At
+
+2) ≤ K || A2|| ≤ K
+
+√
+h
+
+for some constant  K . As a result, h ≤ K1t2 + K2 or
+
+(cid:18)
+
+|| A2|| ≤
+
+K1t2 + K2 ≤ K3t + K4
+
+(99)
+
+(100)
+
+(101)
+
+(102)
+
+(103)
+
+(104)
+
+Since for every t, 1/|| A2|| is bounded, the system has long-term solutions.
+
+The main result of this section is as follows.
+
+Theorem 8 (Partial Convergence Theorem). Along the ﬂow of the system in Equation (88),  A1 and C1 A2 are uniformly bounded. 
+Moreover, C1 A2 A1 → C1(cid:9)T I (cid:9)
+
+−1
+I I as t → ∞ and:
+
+∞(cid:17)
+
+0
+
+(cid:10)C1 A2 A1 − C1(cid:9)T I (cid:9)
+
+−1
+I I
+
+(cid:10)2dt < ∞
+
+Proof. Let:
+
+U = C1((cid:9)T I − A2 A1(cid:9)I I )(cid:9)
+
+−1
+I I
+
+Then:
+
+= U (cid:9)I I ,
+
+d(C1 A2)
+dt
+
+= U (cid:9)I I A T
+1
+
+d A1
+dt
+It follows that:
+d(C1 A2)
+dt
+
+(C1 A2)T = U (cid:9)I I A T
+
+1 (C1 A2)T = U (cid:9)I I (C1 A2 A1)T
+
+and
+
+d( A1(C1(cid:9)T I (cid:9)
+
+dt
+
+−1
+I I )T )
+
+= U (cid:9)I I (C1(cid:9)T I (cid:9)
+
+−1
+I I )T = U (C1(cid:9)T I )T
+
+(105)
+
+(106)
+
+(107)
+
+28
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Thus we have:
+
+d(C1 A2)
+dt
+
+(C1 A2)T − d( A1(C1(cid:9)T I (cid:9)
+
+dt
+
+−1
+I I )T )
+
+= −U (cid:9)I I U T ≤ 0
+
+Here, for two matrices  X and Y , we write  X ≤ Y if and only if Y − X is a semi-positive matrix. Let:
+
+V = (C1 A2)(C1 A2)T − A1(C1(cid:9)T I (cid:9)
+
+−1
+I I )T − (C1(cid:9)T I (cid:9)
+
+−1
+I I ) A T
+
+1
+
+Then:
+
+dV
+
+dt
+
+≤ 0
+
+By Theorem 7, there is a lower bound on the matrix V
+
+V ≥ − A1(C1(cid:9)T I (cid:9)
+
+−1
+I I )T − (C1(cid:9)T I (cid:9)
+
+−1
+I I ) A T
+
+1
+
+≥ −C
+
+for a constant matrix C . Thus as t → ∞, V = V (t) is convergent. Using the inequality above, the expression
+
+(C1 A2)(C1 A2)T − A1(C1(cid:9)T I (cid:9)
+
+−1
+I I )T − (C1(cid:9)T I (cid:9)
+
+−1
+I I ) A T
+
+1
+
+(108)
+
+(109)
+
+is monotonically decreasing. Since  A1 is bounded by Theorem 7, and  A2 A T
+2 is nonnegative, the expression is convergent. In 
+particular,  C1 A2 is also bounded along the ﬂow. By the (108), both  A1 and  C1 A2 are  L2 integrable. Thus in fact we have 
+pointwise convergence of C1 A2 A1. Since C1 may not be full rank, we call it partial convergence. If C1 has full rank (which 
+in general is the case of interest), then as C1 A2 A1 is convergent, so is  A2 A1.
+
+When does partial convergence imply the convergences of the solution ( A1(t), A2(t))? The following result gives a suﬃ-
+
+cient condition.
+
+Theorem 9. If the set of matrices A1, A2 satisfying:
+
+−1
+I I
+
+C1 A2 A1 = C1(cid:9)T I (cid:9)
+(C1 A2) + (C1 A2)T − A1 A T
+1
++ A1(C1(cid:9)T I )T + C1(cid:9)T I A T
+C1 A2 A T
+1
+
+2 C T
+
+= K
+
+1
+
+= L
+
+(110)
+
+is discrete, then A1(t) and C1 A2(t) are convergent.
+
+Proof. By  the  proof  of  Theorem 8,  we  know  that  A1(t),  C1 A2(t) are  bounded,  and  the  limiting  points  of  the  pair 
+( A1(t), C1 A2(t)) satisfy the relationships in Equation (110). If the set is discrete, then the limit must be unique and  A1(t)
+and C1 A2(t) converge.
+
+If  C1 has  full  rank,  then  the  system  in  Equation  (88) is  convergent,  if  the  assumptions  in  Theorem 9 are  satisﬁed. 
+Applying this result to the A[1, N, 1] and A[N, 1, N] cases, provides alternative proofs for Theorem 3 and Theorem 6. The 
+details are omitted. Beyond these two cases, the algebraic set deﬁned by Equation (110) is quite complicated to study. The 
+ﬁrst non-trivial case that can be analyzed corresponds to the A[2, 2, 2] architecture. In this special case, we can solve the 
+convergence problem entirely as follows.
+
+For the sake of simplicity, we assume that (cid:9)I I = (cid:9)T I = C1 = I . Then the system associated with Equation (88) can be 
+
+simpliﬁed to:
+(cid:8)
+
+dB
+dt
+d A
+dt
+
+= (I − B A) At
+= (I − B A)
+
+(111)
+
+where  A(t), B(t) are 2 × 2 matrix functions. By Theorem 7, we know that B(t) A(t) is convergent. In order to prove that B(t)
+and  A(t) are individually convergent, we prove the following result.
+
+Theorem 10. Let F be the set of 2 × 2 matrices A, B satisfying the equations:
+
+B + B T − A A T = K
+A + A T − B B T = L
+A B = I
+
+(112)
+
+where K , L are ﬁxed matrices. Then F is a discrete set and the system deﬁned by Equation (111) is convergent.
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+29
+
+Proof. The  proof  is  somewhat  long  and  technical  and  thus  is  given  in  the  Appendix.  It  uses  basic  tools  from  algebraic 
+geometry.
+
+Theorem 10 provides evidence that in general the algebraic set deﬁned by Equation (110) might be discrete. Although at 
+this moment we are not able to prove discreteness in the general case, this is a question of separate interest in mathemat-
+ics  (real  algebraic  geometry).  The  system  deﬁned  by  Equation  (110) is  an  over-determined  system  of  algebraic  equations. 
+For  example,  if  A(t), B(t) are n × n matrices,  and  if  C is  non-singular,  then  the  system  contains n(n + 1) equations  with 
+n2 unknowns.  One  can  deﬁne  the  Koszul  complex  [9] associated  with  these  equations  Using  the  complex,  given  speciﬁc 
+matrices C, (cid:9)T I , (cid:9)I I , K , L, there is a constructive algorithmic way to determine whether the set is discrete. If it is, then the 
+corresponding system of ODE is convergent.1
+
+7.9.  A non-linear case
+
+As  can  be  expected,  the  case  of  non-linear  networks  is  challenging  to  analyze  mathematically.  In  the  linear  case,  the 
+transfer functions are the identity and thus all the derivatives of the transfer functions are equal to 1 and thus play no role. 
+The simulations reported above provide evidence that in the non-linear case the derivatives of the activation functions play 
+a role in both RBP and SRBP. Here we study a very simple non-linear case which provides some further evidence.
+
+We consider a simple A[1, 1, 1] architecture, with a single power function non-linearity with power μ (cid:7)= 1 in the hidden 
+layer, so that  O 1(S 1) = (S 1)μ. The ﬁnal output neuron is linear  O 2(S 2) = S 2 and thus the overall input-output relationship 
+is:  O  = a2(a1 I)μ.  Setting  μ to  1/3,  for  instance,  provides  an  S-shaped  transfer  function  for  the  hidden  layer,  and  setting 
+μ = 1 corresponds to the linear case analyzed in a previous section. The weights are a1 and a2 in the forward network, and 
+c1 in the learning channel.
+
+(cid:8)
+
+Derivation of the system without derivatives. When no derivatives are included, one obtains:
+μ
+[E(T Iμ) − a2a
+1 (α − βa2a
+μ
+μ
+1 E(Iμ+1)] = c1(γ − δa2a
+1 )
+
+= a
+= c1[E(T I) − a2a
+
+μ
+1 E(μI 2)] = a
+
+da2
+dt
+da1
+dt
+
+μ
+1 )
+
+μ
+1
+
+(113)
+
+where here α = E(T Iμ), β = E(I 2μ), γ = E(T I), and δ = E(Iμ+1). Except for trivial cases, such a system cannot have ﬁxed 
+μ
+points since in general one cannot have a2a
+1
+
+= γ /δ at the same time.
+
+= α/β and a2a
+
+μ
+1
+
+Derivation of the system with derivatives. In contrast, when the derivative of the forward activation is included the system 
+becomes:
+
+(cid:8)
+
+da2
+dt
+da1
+dt
+
+μ
+= a
+1
+= c1μa
+
+[E(T Iμ) − a2a
+
+μ
+1 E(I 2μ)] = a
+2μ−1
+1
+
+μ
+1 (α − βa2a
+E(I 2μ) = a
+
+μ
+1 )
+μ−1
+1
+
+E(T Iμ) − a2c1μa
+
+μ−1
+1
+
+This leads to the coupling:
+
+a1
+
+da1
+dt
+
+= c1μ
+
+da2
+dt
+
+or a2 = a2
+1
+2c1μ
+
++ K
+
+c1μ(α − βa2a
+
+μ
+1 )
+
+(114)
+
+(115)
+
+excluding as usual the trivial cases where c1 = 0 or μ = 0. Here  K is a constant depending only on a1(0) and a2(0). The 
+coupling shows that if da1/dt = 0 then da2/dt = 0 and therefore in general limit cycles are not possible. The critical points 
+are given by the equation:
+
+α − βa2a
+
+μ
+1
+
+= 0 or a2 = α
+βa
+
+μ
+1
+
+(116)
+
+and  do  not  depend  on  the  weight  in  the  learning  channel.  Thus,  in  the  non-trivial  cases,  a2 is  an  hyperbolic  function  of 
+μ
+1 . It is easy to see, at least in some cases, that the system converges to a ﬁxed point. For instance, when α > 0, c1 > 0, 
+a
+μ > 1, and a1(0) and a2(0) are small and positive, then da1/dt > 0 and da2/dt > 0 and both derivatives are monotonically 
+μ
+increasing and α − βa2a
+1 decreases monotonically until convergence to a critical point. Thus in general the system including 
+the derivatives of the forward activations is simpler and better behaved. In fact, we have a more general theorem.
+
+Theorem 12. Assume that α > 0, β > 0 c1 > 0, and μ ≥ 1. Then for any positive initial values a1(0) ≥ 0 and a2(0) ≥ 0, the system 
+described by Equation (114) is convergent to one of the positive roots of the equation for t:
+
+α − β(
+
+t2
+2c1μ
+
++ K )tμ = 0
+
+1 We thank Professor Vladimir Baranovsky for providing this information.
+
+(117)
+
+30
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Table 2
+Postsynaptic information required by deep synapses for optimal learning.  Ih
+i j represents the signal carried 
+by the deep learning channel and the postsynaptic term in the learning rules considered here. Different 
+algorithms reveal the essential ingredients of this signal and how it can be simpliﬁed. In the last row, the 
+function  F can be implemented with sparse or adaptive matrices, carry low precision signals, or include 
+non-linear transformations in the learning channel (see also [4]).
+
+(cid:3)(l ≥ h))
+(cid:3)(l ≥ h))
+
+Information
+= Ih
+= Ih
+= Ih
+= Ih
+= Ih
+= Ih
+= Ih
+= Ih
+
+rs(l > h), f
+rs(l > h), f
+
+i j (T , O , wl
+i (T , O , wl
+(cid:3)(l ≥ h))
+i (T − O , wl
+rs(l > h), f
+rs(l > h + 1), wh+1
+i (T − O , wl
+i (T − O , rl
+rs(l ≥ h + 1), rh
+(cid:3)(l ≥ h))
+i (T − O , rh
+ki, f
+(cid:3)(l = h))
+i (T − O , rh
+ki, f
+(cid:3)(l = h))
+i (F (T − O ), f
+
+Ih
+i j
+Ih
+i j
+Ih
+i j
+Ih
+i j
+Ih
+i j
+Ih
+i j
+Ih
+i j
+Ih
+i j
+
+ki
+ki , f
+
+(cid:3)(l ≥ h))
+
+, f
+(cid:3)(l ≥ h))
+
+Algorithm
+
+General Form
+
+BP (symmetric weights)
+
+BP (symmetric weights)
+
+BP (symmetric weights)
+
+RBP (random weights)
+
+SRBP (random skipped weights)
+
+SRBP (random skipped weights)
+
+F sparse/low-prec./adaptive/non-lin.
+
+Proof. Using Equation (115), the differential equation for a1 can be rewritten as:
+
+da1
+dt
+
+= μa
+
+μ−1
+1
+
+c1(α − β(
+
+a2
+1
+2c1μ
+
++ K )a
+
+μ
+1 ) = Q (a1)
+
+(118)
+
+When μ is an integer,  Q (a1) is a polynomial of odd degree with a leading coeﬃcient that is negative and therefore, using 
+Theorem 1, the system is convergent. If μ is not an integer, let r1 < . . . < rk be the positive roots of the function  Q . The 
+proof  then  proceeds  similarly  to  the  proof  of  Theorem 1.  That  is  this  differential  equation  (Equation  (118))  is  convergent 
+to one of the (non-negative) roots of  Q (t). However, since a1(0) > 0, a more careful analysis shows that it is not for a1 to 
+converge to zero. Thus a1 must converge to a positive root of Equation (117).
+
+Gradient descent equations. Finally, for comparison, in the case of gradient descent, the system is given by:
+
+(cid:8)
+
+[E(T Iμ) − a2a
+
+da2
+dt
+da1
+dt
+
+μ
+= a
+1
+= a2μa
+
+μ−1
+1
+
+E(T Iμ) − a2
+
+μ
+1 E(I 2μ)] = a
+2μ−1
+2μa
+1
+
+μ
+1 (α − βa2a
+E(I 2μ) = a
+
+μ
+1 )
+μ−1
+1
+
+a2μ(α − βa2a
+
+μ
+1 )
+
+(119)
+
+Except for trivial cases, the critical points are again given by Equation (116), and the system always converges to a critical 
+point.
+
+8.  Conclusion
+
+Training  deep  architectures  with  backpropagation  on  digital  computers  is  useful  for  practical  applications,  and  it  has 
+become  easier  than  ever,  in  part  because  of  the  creation  of  software  packages  with  automatic  differentiation  capabilities. 
+This convenience, however, can be misleading as it hampers thinking about the constraints of learning in physical neural 
+systems, which are merely being mimicked on digital computers. Thinking about learning in physical systems is useful in 
+many ways: it leads to the notion of local learning rules, which in turn identiﬁes two fundamental problems facing back-
+propagation in physical systems. First backpropagation is not local, and thus a learning channel is required to communicate 
+error information from the output layer to the deep weights. Second, backpropagation requires symmetric weights, a sig-
+niﬁcant challenge for those physical systems that cannot use the forward channel in the reverse direction, thus requiring a 
+different pathway to communicate errors to the deep weights.
+
+RBP  is  one  mode  for  communicating  information  over  the  learning  channel,  that  completely  bypasses  the  need  for 
+symmetric weights, by using ﬁxed random weights instead. However RBP is only one possibility among many other ones 
+for harnessing randomness in the learning channel. Here we have derived several variants of RBP and studied them through 
+simulations and mathematical analyses. Additional variants are studied in a followup paper [4] which considers additional 
+symmetry  issues  such  as  having  a  learning  channel  with  an  architecture  that  is  not  a  symmetric  version  of  the  forward 
+architecture,  or  having  non-linear  units  in  the  learning  channel  that  are  similar  to  the  non-linear  units  of  the  forward 
+architecture.
+
+In combination, the main emerging picture is that the general concept of RBP is remarkably robust as most of the variants 
+lead to robust learning. RBP and its many variants do not seem to have a practical role in digital simulations as they often 
+lead to slower learning, but they should be useful in the future both to better understand biological neural systems, and to 
+implement new neural physical systems in silicon or other substrates.
+
+In supervised learning, the critical equations show that in principle any deep weights must depend on all the training 
+examples and all the other weights of the network. Backpropagation shows that it is possible to derive effective learning 
+rules of the form (cid:2)wh
+j where the role of the lower part of the network is subsumed by the presynaptic activity 
+i j
+term  O h−1
+i j is a signal communicated through the deep learning channel that carries information about the outputs 
+
+i j O h−1
+
+and  Ih
+
+= ηIh
+
+j
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+31
+
+and the targets to the deep synapses. Here we have studied what kind of information must be carried by the signal  I h
+i j and 
+how much it can be simpliﬁed (Table 2). The main conclusion is that the postsynaptic terms must: (1) implement gradient 
+descent  for  the  top  layer  (i.e.  random  weights  in  the  learning  channel  for  the  top  layer  do  not  work  at  all);  (2)  for  any 
+represents  the  local  derivatives  of  the  activations  of 
+other  deep  layer  h it  should  be  of  the  form f
+the units in layer h (the derivatives for the layers above are not necessary) and  F is some reasonable function of the error 
+T − O . By reasonable, we mean that the function  F can be linear, or a composition of linear propagation with non-linear 
+activation  functions,  it  can  be  ﬁxed  or  slowly  varying,  and  when  matrices  are  involved  these  can  be  random,  sparse,  etc. 
+As  can  be  expected,  it  is  better  if  these  matrices  are  full  rank  although  gracious  degradation,  as  opposed  to  catastrophic 
+failure, is observed when these matrices deviate from the full rank case. Furthermore, the function F should satisfy F (0) = 0
+to prevent weight changes when the error is zero and thus, to a ﬁrst order of approximation,  F should be linear with no 
+biases.
+
+F (T − O ),  where  f
+
+(cid:3)
+
+(cid:3)
+
+The robustness and other properties of these algorithms cry for explanations and more general principles. We have pro-
+vided both intuitive and formal explanations for several of these properties. On the mathematical side, polynomial learning 
+rules in linear networks lead to systems of polynomial differential equations. We have shown in several cases that the cor-
+responding ODEs converge to an optimal solution. However these polynomial systems of ODEs rapidly become complex and, 
+while the results provided are useful, they are not yet complete, thus providing directions for future research.
+
+Acknowledgements
+
+Work supported in part by NSF grant IIS-1550705, DARPA grant D17AP00002, NIH grant NIH GM123558 to PB, and NSF 
+
+grant DMS-1547878 to ZL. We are also grateful for a hardware donation from NVIDIA Corporation.
+
+Appendix A.  Proof of Theorem 10
+
+Assume  that  ( A, B) ∈ F .  If  near  ( A, B),  F is  not  discrete,  then  there  are  real  analytic  matrix-valued  functions 
+
+( A(t), B(t)) ∈ F for small t > 0 such that ( A(0), B(0)) = ( A, B). Moreover, if we write:
+
+A(t) = A + t E + t2
+
+F + t3
+6
+(cid:3)(cid:3)(cid:3), B
+
+2
+(cid:3)(cid:3), A
+(cid:3), A
+
+G + o(t3)
+
+(120)
+
+then E (cid:7)= 0. We use  A
+egy is to prove that  E = 0 or, in the case  E (cid:7)= 0, to take higher order derivatives to reach a contradiction.
+
+to denote  A
+
+(cid:3)(0), A
+
+(cid:3)(cid:3)(0), A
+
+(cid:3)(cid:3)(cid:3)(0), B
+
+(cid:3)(cid:3)(0), B
+
+(cid:3)(0), B
+
+(cid:3)(cid:3), B
+
+(cid:3), B
+
+(cid:3)(cid:3)(cid:3)(0), respectively. The general strat-
+
+(cid:3)(cid:3)(cid:3)
+
+It is easy to compute:
+
+(cid:3) = − A
+
+−1 A
+
+(cid:3)
+
+−1 = −B E B
+
+A
+
+B
+
+By taking the derivative of the ﬁrst two relations in Equation (112), we have:
+
+− B E B − (B E B)T − E A T − A E T = 0
+E + E T + B E B B T + B(B E B)T = 0
+
+Let:
+
+X = E A T + B E B Y = E + B E B B T
+
+(121)
+
+(122)
+
+(123)
+
+Then by the above equations, both  X, Y are skew symmetric, and we have Y A T = X . If Y (cid:7)= 0, using an orthogonal transfor-
+mation and scaling, we may assume that:
+(cid:20)
+
+(cid:19)
+
+Y =
+
+0 −1
+0
+1
+
+Write:
+
+(cid:19)
+
+(cid:20)
+
+a b
+c d
+
+A =
+
+Then:
+
+Y A T =
+
+(cid:20)
+
+(cid:19)
+
+−b −d
+c
+a
+
+(124)
+
+(125)
+
+(126)
+
+Since  X skew-symmetric  also,  we  must  have  b = c = 0,  and a = d.  Thus  A = aI for  a  real  number a (cid:7)= 0.  As  a  result,  we 
+have:
+
+K = (
+
+2
+
+a
+
+− a2)I
+
+L = (2a − 1
+a2
+
+)I
+
+(127)
+
+32
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+and  ( A, B) = (aI, a
+( A(t), B(t)). Since both  K , L are proportional to the identity, ( ˜A(t), ˜B(t)) ∈ F . Now let us write:
+
+−1 I).  Let  ( ˜A(t), ˜B(t)) be  the  upper  triangular  matrices  obtained  by  orthogonal  transformation  from 
+
+˜A(t) =
+
+(cid:19)
+
+(cid:20)
+
+˜b
+˜a
+0 ˜d
+
+Then the equation  B + B T − A A T = K is equivalent to the following system:
+
+⎧
+⎨
+
+⎩
+
+2˜a
+2˜d
+−˜b˜a
+
+−1 − (˜a2 + ˜b2) = 2a
+−1 − ˜d2 = 2a
+−1 − a2
+
+−1 ˜d
+
+−1 − ˜b ˜d = 0
+
+−1 − a2
+
+⎫
+⎬
+
+⎭
+
+(128)
+
+(129)
+
+Since  t is  small,  ˜A(t) should  be  suﬃciently  close  to  aI .  From  the  second  equation  of  the  system  above,  we  have  ˜d = a. 
+If  ˜b = 0, then we conclude from the ﬁrst equation of the same system that  ˜a = a, and hence  ˜A(t) = aI . This implies that 
+( A(t), B(t)) = ( A, B). So in this case  E = 0.
+
+Things  are  more  complicated  when  ˜b (cid:7)= 0.  We  ﬁrst  assume  that  a (cid:7)= −1.  In  this  case,  from  the  third  equation  of  the 
+−2, which 
+system above, we have  ˜a
+is distinct from a. Thus in this case  ˜b must be zero. If a = −1, then we have  ˜d = −1 and  ˜a = −1. Using the ﬁrst equation of 
+the system above, we have  ˜b = 0 and the again ( A(t), B(t)) = ( ˜A(t), ˜B(t)) = ( A, B), and we conclude that  E = 0.
+
+−1 + ˜d = 0. Since we already have  ˜d = a (cid:7)= 1, for suﬃciently small t,  ˜a = −˜d
+
+−2 = −a
+
+From  the  results  above,  we  know  that  if  Y (cid:7)= 0 or  if  A is  proportional  to  the  identity,  near  ( A, B) ∈ F ,  there  are  no 
+other elements in F and thus F is discrete. When  X = Y = 0, it is possible to have  E (cid:7)= 0. However, we have the following 
+Lemma:
+
+−1 ˜d
+
+Lemma 3. If X = Y = 0, and if A (cid:7)= −I , then E is not an invertible matrix.
+
+Proof. By contradiction, assume that  E is invertible. Then from  X = 0, we have:
+
+− A = E B B T E
+
+−1
+
+By taking determinant on both sides, we get:
+
+det A = det(− A) = det(B B T )
+
+Thus we have:
+
+(130)
+
+(131)
+
+det A = 1
+
+(132)
+Since  A is similar to a negative deﬁnite matrix −B B T , the eigenvalues λ1, λ2 of  A are all negative. Since λ1λ2 = det A = 1, 
+we have:
+
+−λ1 − λ2 ≥ 2
+
+Using the same matrix representation as in Equation (125), we have:
+
+−a − d = − Tr A = Tr (B B T ) = a2 + b2 + c2 + d2
+
+However:
+
+(133)
+
+(134)
+
+a2 + b2 + c2 + d2 = (a + d)2 + (b − c)2 − 2 ≥ (a + d)2 − 2 ≥ −a − d,
+
+(135)
+and the equality is true if and only if b = c and a + d = −2. Since −λ1 − λ2 = 2 and λ1λ2 = 1, the eigenvalues of  A must be 
+−1, −1, which implies b = c = 0. Thus  A = −I which is impossible by our assumption.
+
+Next we consider the remaining case: X = Y = 0, and E is not invertible (but not equal to zero), and A is not proportional 
+to the identity. In this case, we have to take up to third order derivatives to reach the conclusion. By taking derivatives of 
+the ﬁrst two relations in Equation (112), we get:
+
+P + P T = Q + Q T = R + R T = S + S T = 0
+
+where:
+
+)T
+
+(cid:3)
+
+(cid:3)
+
+(cid:3)(cid:3)
+
+P = −B
+Q = A
+R = −B
+S = A
+
+(cid:3)(cid:3) + A
+(cid:3)(cid:3) − B
+(cid:3)(cid:3)
+(cid:3)(cid:3)(cid:3) + A
+(cid:3)(cid:3)(cid:3)
+
+(cid:3)(cid:3)(cid:3) − B
+
+A T + A
+(cid:3)
+B T − B
+(cid:3)(cid:3)(cid:3)
+
+(B
+A T + 3 A
+(cid:3)(cid:3)
+
+B T − 3B
+
+( A
+(cid:3)
+)T
+(cid:3)(cid:3)
+
+(B
+
+(cid:3)
+
+)T
+
+( A
+(cid:3)
+)T
+
+(136)
+
+(137)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+Similar to the relations between the matrices  X, Y , we have:
+
+Q A T − P = −B
+
+(cid:3)
+
+(cid:3)
+
+(B
+
+)T A T − A
+
+(cid:3)
+
+( A)T
+
+Since  A B = I , we have:
+
+(cid:3)
+
+(B
+
+)T A T = −B T ( A
+
+(cid:3)
+
+)T
+
+Thus:
+
+Q A T − P = B
+
+(cid:3)
+
+B T A T − E A T = −B E B B T A T − E A T = 0
+
+because  X = 0. Since  A is not proportional to the identity, then we must have  P = Q = 0 as in the case for  X and Y .
+The relationship between  R, S is more complicated, but can be computed using the same idea. We ﬁrst have:
+
+S A T − R = −3B
+
+(cid:3)(cid:3)
+
+(cid:3)
+
+(B
+
+)T A T − 3 A
+
+(cid:3)(cid:3)
+
+(cid:3)
+
+)T
+
+( A
+
+Using Equation (139) and the fact that  P = 0, we have:
+
+S A T − R = −3 A
+
+(cid:3)
+
+(cid:3)
+
+( A
+
+)T B T ( A
+
+(cid:3)
+
+)T = 3E E T B T E T
+
+Since  E is not invertible and we assume that  E (cid:7)= 0, we must have:
+
+E = ξηT
+
+for some column vectors ξ, η. From the fact that Y = 0, we conclude that:
+
+ξηT + BξηT B B T = 0
+
+and:
+
+Bξ = −
+
+(cid:10)η(cid:10)2
+(cid:10)B T η(cid:10)2
+
+ξ
+
+Thus we compute:
+
+E E T B T E T = −
+
+(cid:10)η(cid:10)4 · (cid:13)ξ, η(cid:14)
+(cid:10)B T η(cid:10)2
+
+ξ ξ T
+
+and:
+
+S A T − R = −3
+
+(cid:10)η(cid:10)4 · (cid:13)ξ, η(cid:14)
+(cid:10)B T η(cid:10)2
+
+ξ ξ T
+
+If (cid:13)ξ, η(cid:14) (cid:7)= 0, then  S (cid:7)= 0. Thus:
+
+A T = S
+
+−1 R − 3
+
+(cid:10)η(cid:10)4 · (cid:13)ξ, η(cid:14)
+(cid:10)B T η(cid:10)2
+
+−1ξ ξ T
+
+S
+
+33
+
+(138)
+
+(139)
+
+(140)
+
+(141)
+
+(142)
+
+(143)
+
+(144)
+
+(145)
+
+(146)
+
+(147)
+
+(148)
+
+For  the  matrix  S
+both  S, R are skew-symmetric matrices,  S
+identical eigenvalues. Let λ be an eigenvalue of  A, then:
+
+−1ξ ξ T ,  both  the  trace  and  determinant  are  zero.  So  the  eigenvalues  are  zero.  On  the  other  hand,  since 
+−1 R is proportional to the identity. As a result, the matrix  A T , hence  A, has two 
+
+Tr ( A) = 2λ, det( A) = λ2
+
+Taking the trace in the ﬁrst two relations of Equation (112), we get:
+
+−1 − (cid:10) A(cid:10)2 = Tr (K )
+−2(cid:10) A(cid:10)2 = Tr (L)
+
+4λ
+4λ − λ
+
+(149)
+
+(150)
+
+Thus for ﬁxed  K , L, λ and (cid:10) A(cid:10) can only assume discrete values. Since t is small,  A(t) = Q (t) A Q (t)T for some orthogonal 
+matrix  Q (t). Let us write:
+(cid:19)
+
+(cid:20)
+
+(cid:19)
+
+(cid:20)
+
+A =
+
+λ b
+0 λ
+
+, Q
+
+(cid:3)
+
+(0) =
+
+0 −1
+−1
+0
+
+(151)
+
+34
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+(cid:3)(0) is equal to:
+Then  E = A
+(cid:20)
+(cid:19)
+
+E =
+
+b
+0
+0 −b
+
+(152)
+
+By  Lemma 3,  E is  not  invertible.  Thus  b = 0.  But  if  b = 0,  then  A is  proportional  to  the  identity  and  this  case  has  been 
+discussed above.
+
+We must still deal with the case (cid:13)ξ, η(cid:14) = 0. Without loss of generality, we may assume that:
+
+(cid:19)
+
+(cid:20)
+
+(cid:19)
+
+(cid:20)
+
+ξ =
+
+1
+0
+
+, η =
+
+0
+1
+
+By checking the equation  A E = −E B B T , we can conclude that:
+
+(cid:19)
+
+(cid:20)
+
+.
+
+−2 0
+−d
+d
+0
+
+A =
+
+(153)
+
+(154)
+
+−2 and d for some d (cid:7)= 0. Again, by taking the trace of the ﬁrst 
+
+In fact, when t is small, the eigenvalues of  A(t) must be −d
+two relations in Equation (112), we get:
+−1 − (cid:10) A(cid:10)2 = Tr(K );
+−2 + 2d − d2(cid:10) A(cid:10)2 = Tr(L).
+
+− 2d2 + 2d
+− 2d
+
+Therefore, d is locally uniquely determined by  K , L. Finally, if we write  A(t) = Q (t) A Q (t)T and assume that:
+
+(cid:3)
+
+(0) =
+
+Q
+
+(cid:19)
+
+(cid:20)
+
+,
+
+0 −1
+0
+1
+
+we have:
+
+(cid:19)
+
+E =
+
+0
+d + d
+
+−2
+
+(cid:20)
+
+−2
+
+.
+
+d + d
+0
+
+Since  E must  be  singular,  we  have  d = −1 and  hence  A = −I .  This  case  has  been  covered  above  and  thus  the  proof  of 
+Theorem 10 is complete.
+
+References
+
+(2016), i8–i17.
+
+[1] F. Agostinelli, N. Ceglia, B. Shahbaba, P. Sassone-Corsi, P. Baldi, What time is it? Deep learning approaches for circadian rhythms, Bioinformatics 32 (12) 
+
+[2] P. Baldi, K. Hornik, Neural networks and principal component analysis: learning from examples without local minima, Neural Netw. 2 (1) (1988) 53–58.
+[3] P. Baldi, Z. Lu, Complex-valued autoencoders, Neural Netw. 33 (2012) 136–147.
+[4] P. Baldi, Z. Lu, P. Sadowski, Learning in the machine: the symmetries of the deep learning channel, Neural Netw. 95 (2017) 110–133.
+[5] P. Baldi, P. Sadowski, The dropout learning algorithm, Artif. Intell. 210C (2014) 78–122.
+[6] P. Baldi, P. Sadowski, A theory of local learning, the learning channel, and the optimality of backpropagation, Neural Netw. 83 (2016) 61–74.
+[7] P. Baldi, P. Sadowski, D. Whiteson, Searching for exotic particles in high-energy physics with deep learning, Nat. Commun. 5 (2014).
+[8] P. Di Lena, K. Nagata, P. Baldi, Deep architectures for protein contact map prediction, Bioinformatics 28 (2012) 2449–2457, https://doi .org /10 .1093 /
+
+bioinformatics /bts475. First published online: July 30, 2012.
+
+[9] D. Eisenbud, Commutative Algebra with a View Toward Algebraic Geometry, Grad. Texts Math., vol. 150, Springer-Verlag, New York, 1995.
+[10] K. Fukushima, Neocognitron: a self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position, Biol. 
+
+Cybern. 36 (4) (1980) 193–202.
+
+[11] X. Glorot, Y. Bengio, Understanding the diﬃculty of training deep feedforward neural networks, in: Proceedings of the International Conference on 
+
+Artiﬁcial Intelligence and Statistics, AISTATS10, Society for Artiﬁcial Intelligence and Statistics, 2010.
+
+[12] A. Graves, A.-R. Mohamed, G. Hinton, Speech recognition with deep recurrent neural networks, in: 2013 IEEE International Conference on Acoustics, 
+
+Speech and Signal Processing, ICASSP, IEEE, 2013, pp. 6645–6649.
+
+[13] S.  Han,  H.  Mao, W.J.  Dally,  Deep  compression:  compressing  deep  neural  network  with  pruning,  trained  quantization  and  Huffman coding,  CoRR, 
+
+abs /1510 .00149, 2015.
+
+[14] K. He, X. Zhang, S. Ren, J. Sun, Deep residual learning for image recognition, arXiv preprint, arXiv:1512 .03385, 2015.
+[15] D. Hebb, The Organization of Behavior: A Neuropsychological Study, Wiley Interscience, New York, 1949.
+[16] G.E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever, R.R. Salakhutdinov, Improving neural networks by preventing co-adaptation of feature detectors, 
+
+[17] I. Hubara, M. Courbariaux, D. Soudry, R. El-Yaniv, Y. Bengio, Quantized neural networks: training neural networks with low precision weights and 
+
+arXiv:1207.0580, July 2012.
+
+activations, CoRR, arXiv:1609 .07061, 2016.
+
+[18] D.H. Hubel, T.N. Wiesel, Receptive ﬁelds, binocular interaction and functional architecture in the cat’s visual cortex, J. Physiol. 160 (1) (1962) 106.
+[19] Y. Ilyashenko, Centennial history of Hilbert’s 16th problem, Bull. Am. Math. Soc. 39 (3) (2002) 301–354.
+[20] A. Krizhevsky, G. Hinton, Learning Multiple Layers of Features from Tiny Images, 2009.
+[21] A. Krizhevsky, I. Sutskever, G.E. Hinton, Imagenet classiﬁcation with deep convolutional neural networks, in: Advances in Neural Information Processing 
+
+Systems, 2012, pp. 1097–1105.
+
+[22] Y. LeCun, L. Bottou, Y. Bengio, P. Haffner, Gradient-based learning applied to document recognition, Proc. IEEE 86 (11) (1998) 2278–2324.
+
+(155)
+
+(156)
+
+(157)
+
+P. Baldi et al. / Artiﬁcial Intelligence 260 (2018) 1–35
+
+35
+
+[23] Q. Liao, J. Leibo, T. Poggio, How important is weight symmetry in backpropagation?, in: Proceedings of the Thirtieth AAAI Conference on Artiﬁcial 
+
+[24] T.P. Lillicrap, D. Cownden, D.B. Tweed, C.J. Akerman, Random feedback weights support learning in deep neural networks, arXiv:1411.0247, 2014.
+[25] M. Riedmiller, H. Braun, A direct adaptive method for faster backpropagation learning: the RPROP algorithm, in: IEEE International Conference on 
+
+[26] P. Sadowski, J. Collado, D. Whiteson, P. Baldi, Deep learning, dark knowledge, and dark matter, in: Workshop and Conference Proceedings, J. Mach. 
+
+Intelligence, 2016, pp. 1837–1844.
+
+Neural Networks, vol. 1, 1993, pp. 586–591.
+
+Learn. Res. 42 (2015) 81–97.
+
+[27] C.E. Shannon, A mathematical theory of communication (part III), Bell Syst. Tech. J. XXVII (1948) 623–656.
+[28] C.E. Shannon, A mathematical theory of communication (parts I and II), Bell Syst. Tech. J. XXVII (1948) 379–423.
+[29] S. Smale, Mathematical problems for the next century, Math. Intell. 20 (2) (1998) 7–15.
+[30] R.K. Srivastava, K. Greff, J. Schmidhuber, Training very deep networks, in: Advances in Neural Information Processing Systems, 2015, pp. 2368–2376.
+[31] C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan, V. Vanhoucke, A. Rabinovich, Going deeper with convolutions, in: Proceedings of 
+
+the IEEE Conference on Computer Vision and Pattern Recognition, 2015, pp. 1–9.
+
+[32] J. Zhou, O.G. Troyanskaya, Predicting effects of noncoding variants with deep learning-based sequence model, Nat. Methods 12 (10) (2015) 931–934.
+
+

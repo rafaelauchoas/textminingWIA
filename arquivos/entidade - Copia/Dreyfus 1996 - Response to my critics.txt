@@ -1,0 +1,2768 @@
+EISEVIER 
+
+Artificial  Intelligence  80  (1996)  171-191 
+
+Artificial 
+Intelligence 
+
+Response 
+
+to  my  critics 
+
+Hubert  L.  Dreyfus* 
+
+Philosophy  Department,  Universify  of  California  at  Berkeley,  Berkeley,  CA  94720,  USA 
+
+Received  June  1995 
+
+It 
+
+to 
+
+testing 
+
+action” 
+
+intelligent 
+
+is  dedicated 
+
+to  understanding 
+
+reading  my  critics  and 
+
+talking 
+I  think  that  my  characterization 
+
+to  many  present  and  former  AI  re- 
+After 
+of  what  John  Haugeland  calls  Good 
+searchers, 
+research  program  pursued  only  by 
+Old-Fashioned  AI  (GOFAI)  as  a  degenerating 
+rather 
+a  few  “die-bards”  was  inaccurate.  There  are  really  at  least  three  different 
+is  a  contribution 
+diffuse  research  programs.  The  first,  and  so  far  most  important, 
+in  Newell  and  Simon’s  deservedly 
+to  cognitive  science  which  found  its  expression 
+the 
+famous  paper  on  Physical  Symbol  Systems. 
+that  “A  physical  symbol  system  has  the  necessary  and  sufficient  means 
+hypothesis 
+[15,  pp.  41  and  491.  But  this  is  not  a  unified 
+for  general 
+research  program.  There  are  several  programs  dedicated 
+the 
+human  mind  as  a physical  symbol  system:  Newell’s  group  at  Carnegie-Mellon  with 
+SOAR,  Minsky  at  MIT  with  frames,  and  John  McCarthy  at  Stanford  with  his 
+logic-based  models, 
+to  name  a  few.  Each  group  thinks,  or  at  least  until  recently 
+that  their  program  was  on  the  most  promising  track.  But  none  has  made 
+thought, 
+to  convince  anybody  outside  their  school  or  group  to  join  them. 
+enough  progress 
+to  making  machines  behave 
+Then 
+at  specific  tasks  regardless  of  how  human  being  do  it.  As  Jerry 
+intelligently 
+talk  here  at  Berkeley:  “AI  no  longer  does  Cognitive 
+Feldman  put  it  in  a  recent 
+in  search  of  practical  problems.”  Finally,  for 
+Modeling. 
+to 
+many, 
+symbolic  problem 
+work  on 
+and  action.  This  approach 
+solving  with  connectionist  models  of  perception 
+for  being 
+preserves  being  a  physical  symbol  system  as  a  necessary  condition 
+but  abandons 
+is 
+intelligent 
+since  it  is not  clear  how  the  part  of  the  system  solving  problems  using 
+problematic 
+symbolic  representations 
+to  talk  to  the  other  parts  of  the  system.  As 
+Haugeland  points  out,  the  very  idea  that  the  intellect  sends  symbolic  instructions 
+
+th.e work  in  GOFAI  has  shifted  away  from  the  Newell/Simon  program 
+
+it  as  a  sufficient  condition.  But 
+
+the  AI  engineers  dedicated 
+
+It  is a bunch  of  techniques 
+
+that  combine  high-level, 
+
+this  approach 
+
+architectures 
+
+is  supposed 
+
+integrated 
+
+there 
+
+are 
+
+* E-mail:  clreyfus@cogsci.berkeley.edu. 
+
+0004-3702/96/$15.00  0  1996 Elsevier  Science  B.V.  All  rights  reserved 
+SSDI 
+
+0004-3702(95)00088-7 
+
+172 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+there 
+
+is  a  rival 
+
+to  the  world. 
+representation 
+
+these  orders  may  well  be  a  mistaken  way  of 
+
+and  graduate  students,  neural  networking  modeling.  There 
+
+the  relation  of  intelligence 
+to  symbolic 
+
+to  the  body  which  then  executes 
+conceiving 
+Now 
+that  has  attracted  many 
+researchers 
+is  some 
+from  symbolic  AI  is,  because  neural 
+confusion  about  how  radical  this  departure 
+nets  can  be  simulated  with  algorithms  on  digital  computers  and  in  a  loose  sense 
+in  the  GOFAI  project  were  not  just 
+algorithms  use  symbols,  but  the  symbols 
+strings  of  bits  that  represented 
+to 
+in  the  world.  Of  course,  the 
+be  semantically 
+neural  networks  are  still  representations 
+in  some  sense,  but  they  represent  by  way 
+of  the  weights  on  the  connections  between  simulated  neurons  and  these  do  not 
+symbols.  Even  Newell 
+have 
+acknowledges 
+
+some  state  of  the  computer  but  were  supposed 
+
+context-independent 
+
+the  properties 
+
+as representing 
+
+interpretable 
+
+of  precise, 
+
+features 
+
+that: 
+
+You  can,  in  one  sense,  say  that  connectionist 
+systems  are  systems  that  are 
+nonsymbolic  and  see  how  far  you  can  go  when  you  push  them  to  do  the  same 
+tasks  that  have  been  done  with  symbol  manipulation  without  their  becoming 
+the  physical 
+symbolic  systems.  There 
+symbol  system  hypothesis  and  connectionism. 
+
+is  certainly  an  opposition  between 
+
+[16,  p.  1531 
+
+Daniel  Dennett  spells  out  clearly  what  this  means: 
+
+. . some  of  them  seem  to 
+If  you  look  at  the  nodes  in  a connectionist  network. 
+have  careers,  suggesting  that  they  are  particular  symbols.  This  is  the  symbol 
+this  is  the  symbol  for  “dog.”  It  seems  likely  to  say  that  whenever 
+for  “cat,” 
+if 
+cats  are  the  topic,  that  symbol  is  active;  otherwise 
+cat 
+identification 
+the  mistake  of  a  simple 
+you  make 
+symbol  and  dog  symbol-this 
+it  turns  out  that  you 
+can  disable  this  node,  and  the  system  can  go  right  on  thinking  about  cats. 
+if  you  keep  the  cat  and  dog  nodes  going  and  disable  some  of  the 
+Moreover, 
+that  seem 
+the  system  will  not  work.  The 
+other  nodes 
+competence 
+of  all  its 
+of  the  whole  system  depends  on  the  cooperation 
+elements,  some  of  which  are  very  much  like  symbols.  . . . At  the  same  time, 
+to  those  symbols 
+one  can  recognize 
+that  some  of  the  things  that  happen 
+at  the  symbol 
+cannot  be  correctly  and  adequately  described  or  predicted 
+level.  [5,  pp.  63-641 
+
+it  is  not.  Nevertheless, 
+of  these  nodes-as 
+
+does  not  work.  Because 
+
+to  be  just  noisy, 
+
+Paul  Smolensky  gives  a  detailed  argument 
+level  and  are  related 
+Newtonian  physics  [20]. 
+
+to  symbolic  systems  as  quantum  physics 
+
+that  networks  work  on  a  subsymbolic 
+to 
+
+is  related 
+
+Whether 
+
+the  shift  to  network  research  continues  will  depend  on  whether 
+
+those 
+
+defending  GOFAI  are  making  slow  but  steady  progress  as  McCarthy  claims-and 
+presumably  workers  on  SOAR  claim  too-or  whether  what  now  looks  like  slow 
+that  show  one  is  trying  to 
+progress  comes  to  look  like  the  diminishing  returns 
+solve  the  wrong  problem.  Right  now,  whether  one  calls  the  current  situation 
+in 
+research  program  left  to  the  die-hards  or  a  winnowing  out 
+GOFAI  a  degenerating 
+is  largely  a 
+of  the  faint-hearted 
+
+so  that  only  the  courageous  visionaries 
+
+remain 
+
+H.L.  Dreyfus  I  Artificial  Intelligence  80  (1996)  171-191 
+
+173 
+
+question  of  rhetoric  and,  as  some  of  the  responses 
+Do  show,  generates  more  heat  than  light. 
+
+to  What  Computers  Still  Can’t 
+
+to  be  an 
+
+and  I  take 
+
+commonsense, 
+
+Simon,  McCarthy 
+
+to  GOFAI,  unfortunately 
+
+For  the.  answer  finally  to  become  clear,  what  certainly  should  be  avoided  on 
+both  sides; is the  unscientific  ploy  of  never  admitting  failure  even  when  one  fails  to 
+for  giving  a 
+achieve  one’s  research  goals.  Douglas  Lenat,  whose  Cyc  project 
+computer 
+important 
+still  follows  the  old  approach  of  rewriting 
+contribution 
+his  goals  and  his  time-table  so  as  to  be  able  to  claim  that  his  research  project 
+is 
+to  succeed.  Eleven  years  ago  Lenat  predicted 
+right  on  schedule  and  just  about 
+that  in  10 years  Cyc  would  cope  with  novelty  by  recognizing  analogies  and  would 
+then  be  able  to  teach  itself  by  reading  the  newspapers.  Time  is up  and  he  seems  to 
+least  I  have  seen  no  published  account  of 
+have  made  no  progress  on  this  front-at 
+those 
+Cyc  “noticing  patterns  and  regularities 
+patterns 
+[12,  p.  357  (my 
+rueful  new  analogies,  dependencies, 
+to  this  problem  Lenat  tells  us 
+italics)]  as  promised.  But  rather  than  call  attention 
+that  “After 
+target.  The  CNL 
+is  still  on 
+the  Cyc  project 
+subsystem  is developing  synergisti- 
+(Cyc-based  NL  understanding 
+cally  with  the  Cyc  KB,  and  we  expect  a  sort  of  crossover 
+to  occur  in  the  next  two 
+years,  by  which  we  mean  that  most  of  the  knowledge  entry  will  take  place  by 
+semiautomated  NL  understanding,  with  humans  able  to  take  the  role  of  tutors 
+talk  of 
+rather 
+analogies  and  the  two  additional  years  will  be  up  in  one  year.  For  reasons  given  in 
+to  my  book,  I do  not  think  the  analogy  program  will  work  since  it 
+the  new  preface 
+presupposes  having  solved  the  problem  of  relevance.  But  the  important 
+thing  is to 
+just  what  has  been  accomplished  and  what  has  turned  out  to  be 
+be  told  clearly 
+harder 
+instance,  be  bad  news  for 
+Simon,  who  is  basing  his  current  optimism  on  Lenat’s  success.  In  a  recently 
+published 
+the  commonsense 
+knowledge  problem  by  saying: 
+
+in  the  data,  and  drawing 
+and  generalizations” 
+
+and  why.  That  might,  for 
+
+to  a  question  concerning 
+
+[8,  pp.  127-1421.  There 
+
+interview,  he  responds 
+
+than  brain  surgeons.” 
+
+almost  a  decade, 
+
+than  anticipated 
+
+and  generation) 
+
+is  no  further 
+
+from 
+
+Douglas  Lenat  has  a  ten-year  program  of  building  a  huge  semantic  memory 
+(CYC).  Then  we  will  see.  .  . . When  people  start  to  build  programs  at  that 
+magnitude  and  they  still  cannot  do  what  they  are  supposed 
+to,  then  we  will 
+start  worrying. 
+
+[19,  p.  2391 
+
+Seeing  Simon  worried  would,  in  itself,  be  a  kind  of  progress.  In  the  meantime 
+turn  to  the  substantive 
+
+issues  raised  by  my  critics. 
+
+I’ll 
+
+I  am  grateful  to  Harry  Collins  for  his  detailed  reading  and  his  open  minded  and 
+original  critique.  His  new  arguments  both  for  and  against  the  possibility  of  AI 
+bring  a  breath  of  fresh  air  into  a  stale  debate.  Also  he  touches  upon  most  of  the 
+issues  raised  by  the  other  reviewers  so  I  will  deal  with  his  comments 
+
+in  detail. 
+
+As  I  see  it,  Collins  raises  three  problems 
+
+are  with  a  preview  of  my  response 
+my  work  on  Heidegger  and  Wittgenstein, 
+that  there  is no  way  reality  is in  itself  independent  of  our  social  constructions  of  it. 
+that  it  is  a  mistake  to  read  Heidegger 
+I  note  for  the  exegetical 
+
+they 
+to  each.  First,  Collins  claims  that,  since  I  base 
+I  should  follow  them  in  acknowledging 
+
+for  my  overall  approach.  Here 
+
+record,  however, 
+
+174 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+activity  in  them  can  be  automated 
+
+and  Wittgenstein  as  social  constructivists.  Second,  even  if  all  domains  are  social 
+constructs,  does  it  follow,  as  Collins  claims,  that  the  structure  of  these  domains  is 
+up  to  society  and  that  therefore 
+if  society  so 
+language,  although  clearly 
+chooses? 
+independent 
+socially  constituted, 
+of 
+to  my  preferring 
+how  society  happens 
+I  will  defend  my 
+neural  networks 
+representations. 
+taxonomy  of  domains  of  human  activity,  distinguishing  those  that  are  amenable 
+to 
+the  techniques  of  Symbolic  AI  and  those  that  are  not,  as well  as my  claim  that  this 
+taxonomy  does  not  apply  to  simulated  neural  networks. 
+
+I  will  seek  to  show  that  chess  and  natural 
+have,  once  constituted, 
+to  interpret 
+
+intrinsic  structures 
+them.  Third,  Collins  objects 
+
+In  response, 
+
+to  symbolic 
+
+that 
+
+First, 
+
+relevant 
+
+includes 
+
+is  directly 
+
+The  question 
+
+is  independent 
+
+itself.” 
+to 
+
+interest  certainly 
+
+the  correspondence 
+
+by  physics  is  indeed  nature 
+
+is  not  whether 
+even  if  they  were, 
+
+all  domains  of  objects  are  socially  constituted 
+
+[21,  p.  2301.  Likewise,  Heidegger  holds  that  “What 
+
+just  for  the  record,  as  I  read  Wittgenstein  he  holds  that  meaning  and 
+of  the 
+that 
+between  concepts  and  very 
+is 
+
+truth  presuppose 
+the  domain  of  nature  whose  structure 
+social  world  it  makes  possible.  He  says  in  the  Philosophical  Investigations 
+“our 
+general  facts  of  nature.” 
+represented 
+
+[lo,  p.  1731. 
+the  possibility  of  Symbolic  AI, 
+but 
+however, 
+whether, 
+it  would  show  that  the  structure  of  these  various 
+worlds  was  somehow  up  to  society.  The  domain  of  games  such  as chess  provide  an 
+illuminating  arena  in  which  to  refine  our  distinctions  so  as  to  test  Collins’  claim. 
+Chess  is  clearly  socially  constituted;  moreover 
+it  is  constituted  as  fully  digitaliz- 
+able.  No  one  doubts 
+that  with  enough  power  one  could  calculate  moves  far 
+enough  ahead  to  play  a  winning  game.  But  the  question  for  AI  that  Collins  and  I 
+is  not  whether  eventually  a  computer  will  be  able 
+are  supposed 
+to  play  master 
+the  domain  of 
+chess  is structured  so  that  a  physical  symbol  system  using  rules  like  those  used  by 
+chess  masters  could  achieve  master 
+there  are 
+principles  or  rules  operating  on  context-free 
+that  specify  a  good  move  in 
+there  is  a  theory  of  the  chess  domain. 
+each  situation  or,  in  my  language,  whether 
+
+level  play.  That 
+features 
+
+level  chess.  The  question 
+
+to  be  addressing 
+
+is,  whether 
+
+for  GOFAI 
+
+is  whether 
+
+digitalized, 
+
+The  answer 
+
+the  micro-world 
+the  game  has  a  structure 
+
+is  not  at  all  obvious.  Although 
+to  what  extent 
+
+in  a  theory  has  been  a  subject  of  debate  between 
+for  over  300  years.  The  classicist  (now  represented 
+
+of  chess 
+is 
+completely 
+that  can  be 
+captured 
+classicists  and 
+by  Symbolic  AI 
+romantics 
+enthusiasts  such  as  Simon)  claims  that  chess  skill  must  consist  in  the  interioriza- 
+tion  of  a  theory  of  the  chess  domain  that  allows  the  chess  master  to  generate  good 
+moves.  The 
+and  some 
+romantic 
+that  chess  is a  domain  without  a theoretical 
+connectionists)  holds,  on  the  contrary, 
+structure  and  that  therefore 
+to  give  up  looking 
+responses 
+to  tens  of  thousands  of  typical  whole  board  patterns  [6].  The  question  is 
+not  who  is right,  the  classicist  or  the  romantic,  or  whether  the  truth  is between  the 
+two.  The  point  is  that  society  can  invent  a  digitalized  domain  such  as  chess,  but 
+whether 
+is  up  to  the 
+domain  not  to  society. 
+
+the  only  way  for  a  human  being  to  acquire  mastery  is 
+
+for  chunks  and  principles  and 
+
+the  domain  has  a  structure 
+
+by  the  Dreyfus  brothers 
+
+that  can  be  captured 
+
+learn  appropriate 
+
+(now  represented 
+
+in  theory 
+
+instead 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+175 
+
+One  simple  way  to  focus  our  disagreement 
+
+is  to  see  how  each  of  us  would 
+
+answer  Collins’  interesting  question: 
+
+Given  that  intelligent  machines, 
+and  books  in  general,  are  social  isolates,  how  do  they  work?  [2,  p.  2151 
+
+like  calculators,  slide  rules,  logarithm 
+
+tables, 
+
+Collins  would  explain  the  success  of  AI,  where  it  has  succeeded,  by  pointing  out 
+in  a  context-free  way  like  machines, 
+that  in  so  far  as  we  can  learn  to  function 
+I  would  explain  how 
+machines 
+interactions. 
+can  replace  us  in  context-free 
+intelligently  by 
+symbolic 
+in  those  domains  that  have  a 
+pointing  out  that  machines  can  behave  intelligently 
+known 
+them  with  the  theory  of  the 
+since  we  can  program 
+domain. 
+
+information  processing  systems  can  occasionally  behave 
+
+theoretical 
+
+structure, 
+
+regimented 
+
+An  obvious  domain  in  which  to  test  these  two  accounts 
+
+is  an  isolated, 
+that 
+activity  as  calculating  only  because  mathematics 
+
+is  calculation.  Collins 
+tells  us  tlhat  people  can  take  what  calculators  do  to  be  calculating  because 
+is  such  a 
+calculation 
+isolable, 
+regimented 
+point  that  we 
+formalizable  domain.  Collins  is  making  the  deep  Wittgensteinian 
+could  not  do  mathematics 
+in  our  judgments  and 
+into  certain  regimented  practices;  I  want  to  insist  that  we  could 
+for  apprenticeship 
+not  have  developed  such  rigid  practices 
+if  the  domain  of  numbers  did  not  have  a 
+regular,  digitalizable  structure. 
+
+if it were  not  for  social  agreement 
+
+I  claim 
+
+activity; 
+
+is  an 
+
+there 
+
+fact 
+
+The 
+
+rather 
+
+in  two  ways  to  support, 
+
+calculators  make  subtle  mistakes-mistakes 
+
+that 
+that  mechanical 
+than 
+Collins  has  a  genius  for  teasing  out-seems 
+to  the  domain,  a  structure 
+undermine,  my  thesis  that  there  is an  intrinsic  structure 
+In  Artificial  Experts  Collins  points 
+to  which  our  practices  are  obliged  to  conform. 
+out  that  gi,ven the  problem  7/11  x  11, we  could  agree  to  count  6.99999  as the  right 
+answer.  We  could.  But,  then,  our  arithmetic  would  be  a  mess  and  would  not  give 
+us  a  grasp  of  the  way  things  in  our  world,  let  alone  the  entities  in  the  universe, 
+that  we  don’t  perform 
+generally  behave.  Moreover, 
+the  operations  of  division  and 
+that  we  understand  what  such 
+indicated 
+in  the  order 
+multiplication 
+operations  mean  and  how  they  relate  to  the  domain.  We  do  not  just  carry  them 
+out  mech,anically.  This  understanding 
+in  the 
+domain.  That  we  can  outdo  the  computer 
+in  seeing  such  meaningful  relationships 
+point  Collins  and  I  agree  on  that  applying  formal 
+supports 
+rules  requires 
+informal  skills.  But,  again,  I  want  to  insist  that  the  appropriate 
+order  of  operations 
+It  is  not  up  to  us,  as 
+individuals,  or  as  a  society.  Thus  Collins’  example  seems  to  be  an  argument  fur 
+my  two-substance  view  of  knowledge,  viz.  that  some  domains  are  formalizable 
+and  some  are  not. 
+
+is  a  skill  that  requires  experience 
+
+is  also  a  fact  about 
+
+the  Wittgensteinian 
+
+the  domain. 
+
+reveals 
+
+Another  way  to  put  my  point  is  to  accept  Collins’  observation 
+
+that  “one  finds 
+lines, 
+mimeomorphic 
+and  Some 
+the  golf  Iswing,  high-board 
+that  of  these 
+arithmetical 
+domains  only  computation  has  been  digitalized?  The  high-board  diving  example 
+is  not  sufficient  for  formaliza- 
+suggests  that  being  regimented,  while  necessary, 
+
+actions  in  areas  as  varied  as  work  on  Taylorist  production 
+diving, 
+then,  does 
+
+ideal  bureaucracies 
+it  turn  out 
+
+competition 
+and  ask  why, 
+
+operations”, 
+
+176 
+
+H.L.  Dreyfus 
+
+I  Artijicial  Intelligence  80  (1996)  171-191 
+
+tion.  Collins  would  presumably 
+agree.  But  where  bodily  skills  are  concerned, 
+regimentation  does  not  seem  to  be  necessary  or  sufficient.  If  walking  robots  have 
+been  very  difficult  to  make,  it  is not  because  walking  is unregimented. 
+If  it  were, 
+the  robot  builders  could  give  up  on  walking  while  going  on  to  win  prizes  in  the 
+tightly  regimented  micro-worlds  of  high-diving  and  ballroom  dancing.  Conversely, 
+a  bike  riding  robot  might  succeed  by  following  a  formula  proposed  by  Polanyi 
+is  inversely 
+(“for  a  given  angle  of  unbalance 
+proportional 
+[18,  p. 
+50]),  even  though  bike  riding  cannot  be  broken  down  into  a  series  of  mimeomor- 
+phic  actions. 
+
+to  the  square  of  the  speed  at  which  the  cyclist  is proceeding” 
+
+the  curvature  of  each  winding 
+
+reason 
+
+learned 
+
+domains-have 
+
+in  which  we  have 
+
+that  we  independently 
+
+to  think  can  be  formalized. 
+
+to  discipline  our  minds  or  our  bodies 
+
+The  same  issue  comes  up  again  when  we  turn  to  expert  systems.  I  argue  that 
+see  how  to  formalize, 
+expert  systems  work  in  domains 
+in  which  expert  systems  have  failed  to  be  as  good  as  experts  are 
+while  domains 
+domains  which  we  have  no  independent 
+I 
+would  agree  with  Collins  that  in  most  cases  formalizable  domains  coincide  with 
+domains 
+to 
+tasks.  So,  for  example,  expert  systems  for  loading 
+perform  a  series  of  context-free 
+transport  planes,  analyzing  mass  spectograph  output,  and  configuring  VAXes-all 
+achieved  expertise,  while  expert  systems  based  on 
+regimented 
+heuristic 
+rules  for  medical  diagnoses  and  chess  playing,  have  not,  and  no  one 
+would  know  how  to  begin  to  build  an  expert  driver,  or  even  an  expert  diver.  But  I 
+would  want 
+social  fact  that  we  have 
+it  is  not  just  a  contingent 
+formalized 
+the  first  three  domains,  and  not  the  last  three.  Plane  loading  can  be 
+captured  by  a  combination  of  geometry  and  trial  and  error,  spectography  has  a 
+choice  can  be  carried  out  in  a 
+structure, 
+theoretical 
+tables  and  heuristic  rules  for  how  to  combine 
+context-free  way  by  using  look-up 
+indeed, 
+components 
+replaceable 
+in  a 
+calculating  kind  of  expertise,  and  they  were  behaving  digitally  because  the  domain 
+had  a  digitalizable  structure.  Collins’  taxonomy  of  domains  into  those  that  society 
+has  disciplined  and  those  it  has  not  presupposes  my  taxonomy 
+into  regimentable 
+and  non-regimentable 
+seems  to  me  literally  preposterous. 
+
+having  various  capacities.  Experts 
+they  were  behaving 
+because 
+
+domains.  To  see  the  dependence 
+
+in  a  digitalizable  way,  engaging 
+
+and  computer  component 
+
+going  the  other  way 
+
+to  add  that 
+
+fields  were, 
+
+in  these 
+
+I  think  that  many  of  these  limitations  on  activities  that  can  be  regimented  has  to 
+is  not  important  so 
+it  with  his  idea  of  social  embedding.  He  elaborates  convincingly 
+
+do  with  embodiment.  Collins  seeks  to  show  that  embodiment 
+as  to  replace 
+Wittgenstein’s  point  that  if  lions  could  talk  we  could  not  understand 
+
+them: 
+
+Circus  lions  talking  among  themselves  would,  presumably,  group  what  we 
+call  a  household  chair  along  with  the  other  weapons 
+in  the 
+hands  of  “lion  tamers”,  not  with  object 
+to  do  with  relaxation.  They  would 
+not  distinguish  between  sticks  and  chairs  and  this  is why  their  language  would 
+be  incomprehensible 
+to  us.  But  this  does  not  mean  that  every  entity  that  can 
+recognize  a  chair  has  to  be  able  to  sit  on  one.  That  confuses  the  capabilities 
+in  which  that 
+of  an  individual  with  the  form  of  life  of  the  social  group 
+
+they  encounter 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996) 
+
+171-191 
+
+177 
+
+individual 
+is  embedded.  Entities 
+the  form  of  life  of  those  who  can  sit  down. 
+
+that  can  recognize  chairs  have  only  to  share 
+
+Collins 
+
+calls  “the  facts  of  natural  history”. 
+
+in  the  end  on  having  our  kind  of  bodily  dispositions-what 
+
+!is  right,  but  I  don’t  think  it  matters  whether  our  intelligent  behavior 
+depends  directly  upon  our  having  the  sort  of  bodies  we  have  or  whether  our  form 
+of  life  depends 
+that  we  can 
+Wittgenstein 
+stories  about  chairs  without  being  able  to  sit  on  them,  and,  of  course, 
+understand 
+for  much  of  their 
+being  able  to  sit  in  chairs  is necessary  for  thinkers  but  irrelevant 
+thinking.  The  question  is,  can  we  understand  stories  about  chairs  or  any  everyday 
+objects  or  events  without  sharing  a lot  of  the  characteristics  of  the  embodiment  of 
+our  consocials? 
+I  want  to  argue  that  one  would  need  to  have  experience  with  our 
+kind  of  body  to  make  sense  of  our  kind  of  world.  Collins  denies  this  claim.  He 
+grants  that: 
+
+I  grant  Collins 
+
+The  shape  of  the  bodies  of  the  members  of  a  social  collectivity  and  the 
+situations 
+form  of  life. 
+Collectivities  whose  members  have  different  bodies  and  encounter  different 
+situations  develop  different 
+
+find  themselves  give  rise  to  their 
+
+forms  of  life. 
+
+in  which 
+
+they 
+
+Yet  he  co-ncludes: 
+
+But  given  the  capacity  for  linguistic  socialization,  an  individual  can  come  to 
+share  a  form  of  life  without  having  a  body  or  the  experience  of  physical 
+to  that  form  of  life. 
+situations  which  correspond 
+
+I  contend 
+is  a  necessary  condition 
+human  beings. 
+
+that  Collins  again  has  it  backwards.  Having  the  sort  of  bodies  we  have 
+in  a  society  of  similarly  structured 
+
+for  social  embedding 
+
+through  and  through  by  and  for  beings  embodied 
+
+To  see  this,  we  need  only  notice  what  Collins  grants,  viz.  that  our  form  of  life  is 
+like  us;  people  with 
+organized 
+field; 
+bodies  tha.t have  insides  and  outsides;  that  have  to  balance  in  a  gravitational 
+that  have  to  approach  objects  by 
+that  move  forward  more  easily  than  backwards; 
+traversing 
+the  intervening  space,  overcoming  obstacles  as  they  proceed,  etc.  Our 
+embodied  concerns  so  pervade  our  world  that  we  don’t  even  notice  the  way  our 
+if 
+body  is at  home  in  it. We  would  only  notice  it  by  experiencing  our  disorientation 
+we  were  transported 
+the  helpless  confusion  of  such 
+say  spherical  or  gaseous-bodies, 
+an  alien  creature  brought 
+into  our  world.  One  thing  is  sure,  nothing  could  be 
+more  alien  to  our  life-form  than  a  big,  metal  box  with  no  body,  no  special  way  of 
+moving,  etc.  The  computer  has  no  built-in  preunderstunding 
+of  how  our  world  is 
+in  it.  The  odds  against  its  being  able  to 
+organized  and  so  of  how  to  get  around 
+acquire  all  the  knowledge 
+familiar  and  obvious  to  us 
+because  we  are  it,  are  overwhelming. 
+
+to  an  alien  world  set  up  by  creatures  with  radically  different- 
+
+it  needs  of  the  embodiment 
+
+or  by  observing 
+
+Lenat’s  Cyc  provides  a  perfect  opportunity 
+
+the  shared  world  we 
+take  for  granted,  and  how  the  cards  are  stacked  to  enable  creatures  who 
+form  of  life  to  learn  to  cope  intelligently,  while  making  all 
+
+normally 
+share  our  embodied 
+
+to  notice 
+
+178 
+
+H. L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+collects 
+
+In  order 
+
+in  my  Introduction 
+
+look  hopelessly  stupid.  As  I  noted 
+
+Still  Can’t  Do,  Lenat 
+involved. 
+later)  I  will  start  with  an  excerpt  from  my  Introduction 
+
+to  What 
+other  creatures 
+the 
+Computers 
+for 
+difficulties 
+it 
+McCarthy 
+further.  Lenat  says:  “Take 
+‘Mary  saw  a  dog  in  the 
+the  following  sentence: 
+window.  She  wanted  it’.”  [13,  p.  2001. He  then  asks:  “Does  ‘it’ refer  to  the  dog  or 
+the  window?  What  if  we’d  said  ‘She  smashed 
+it’,  or  ‘She  pressed  her  nose  up 
+against  it’?”  [13,  p.  2001. 
+
+examples  of 
+some  excellent 
+to  answer  Collins  (and  suggest  a  problem 
+
+and  develop 
+
+Note  that  the  last  case-she 
+
+pressed  her  nose  up  against  it-seems 
+
+to  appeal  to 
+our  ability  to  imagine  how  we  would  act  in  the  situation,  rather  than  requiring  us 
+to  consult  facts  about  dogs  and  windows  and  how  a  typical  human  being  would 
+react.  We  draw  on  what  we  are,  not  what  we  know.  We  imagine  getting  around  in 
+the  world,  such  as  getting  closer  to  something  on  the  other  side  of  a  barrier  to  see 
+it  more  clearly.  Merleau-Ponty 
+in  his 
+phenomenological 
+According 
+
+higher  animals  and  human  beings  are  always 
+for 
+trying  to  get  a  maximum  grip  on  their  situation.  Merleau-Ponty’s 
+his  notion  of  maximal  grip  comes  from  perception  and  manipulation.  When  we 
+are  looking  at  something,  we  tend,  without 
+it,  to  find  the  best 
+distance 
+for  taking  in  both  the  thing  as  a  whole  and  its  different  parts.  When 
+grasping  something,  we  tend  to  grab  it  in  such  a  way  as  to  get  the  best  grip  on  it. 
+
+account  of  what  he  calls  maximal  grip. 
+
+describes  this  general,  body-based 
+
+to  Merleau-Ponty, 
+
+thinking  about 
+
+inspiration 
+
+tendency 
+
+in  an  art  gallery, 
+
+is  an  optimum 
+For  each  object,  as  for  each  picture 
+distance  from  which  it  requires 
+to  be  seen,  a  direction  viewed  from  which  it 
+vouchsafes  most  of  itself:  at  a  shorter  or  greater  distance  we  have  merely  a 
+tend  towards 
+perception  blurred 
+the  maximum  of  visibility,  and  seek  a  better  focus  as  with  a  microscope. 
+[14, 
+p.  3021.  . . 
+
+through  excess  or  deficiency.  We  therefore 
+
+there 
+
+My  body  is  geared  into  the  world  when  my  perception  presents  me  with  a 
+spectacle  as  varied  and  as clearly  articulated  as possible,  and  when  my  motor 
+intentions,  as  they  unfold,  receive  the  responses 
+they  expect  from  the  world. 
+[14,  p.  2501 
+
+and 
+
+then 
+
+That 
+
+from 
+
+is  not  meant 
+
+them.  Rather, 
+
+reasoning 
+as it  were,  in  its  procedures, 
+
+to  deny  that  a  robot  could  also  have  a  body  with  certain 
+capacities  for  motion  and  perception  and  that  the  robot  would  have  to  organize  its 
+into  account.  But  it  is 
+knowledge  and  generate 
+its  actions  taking  its  own  structure 
+meant  to  suggest  that  the  robot  would  presumably  do  this  not  by  representing 
+its 
+capacities 
+the  capacities  would  be 
+for  coping  with  things.  This  is not  a  new 
+represented, 
+idea  in  AI,  but  it  seems  to  me  an  important  one  that  needs  to  be  followed  out.  A 
+new  problem  would  then  arise,  however,  when  the  robot  had  to  solve  problems 
+involving  perception  and  action  without  acting,  as  for  instance 
+in  understanding 
+stories.  This  is  when  human  beings  resort 
+robot  run  a  simulation  of  itself?  If  it  could  not  represent 
+inferences 
+make  sense,  working 
+intelligent 
+
+to  imagining  their  actions.  Could  the 
+its  capacities  and  make 
+If  such  ideas 
+step  towards  making  an 
+
+from  them,  could  it  somehow  run  itself  hypothetically? 
+them  out  would  be  an  important 
+
+robot. 
+
+H.L.  Dreyfus 
+
+I  Artificial 
+
+Intelligence  80  (19%)  171-191 
+
+179 
+
+for  commonsense 
+describe  perception, 
+
+Lenat,  unlike  Collins,  does  see  that  the  body  is indispensable 
+
+and 
+
+intends 
+
+in  Cyc-to 
+
+[13,  p.  218  (my  italics)].  But  again  it  seems  to  me  this  whole  approach 
+reason  about  our  bodily  capacities,  we  reason 
+
+intelligence.  He 
+“in  principle 
+the  system  to 
+emotion,  motion,  etc.,  down  to  some  level  of  detail  that  enables 
+to  be  able  to  readopt  simply  about 
+understand  humans  doing  those  things,  and/or 
+is 
+them” 
+misguided.  We  don’t  normally 
+in 
+terms  of  them.  That  is,  when  we  reason  in  a  commonsense  way  we  already  use 
+our  sense  of  our  body  to  guide  our  reasoning. 
+If  this  is so,  the  conclusions  human 
+beings  find  reasonable  will  differ  from  those  of  a  disembodied 
+machine. 
+
+inference-making 
+
+Mark  Jalhnson,  in  his  book,  The  Body  in  the  Mind,  tries  to  work  out  in  detail 
+
+how  reasoning  depends  on  our  sense  of  our  embodiment.  He  writes: 
+
+. the  basis  for  this  connection 
+
+The  epistemic  sense  of  modals,  such  as  must,  may,  and  can,  find  their  home 
+. . .  I  am  claiming 
+in  the  domain  of  reasoning, 
+that. 
+the  mental 
+in 
+terms  of  the  physical, 
+In  particular, 
+we  understand  mental  processes  of  reasoning  as involving  forces  and  barriers 
+analogous 
+
+and  theorizing. 
+is  that  we  understand 
+the  mind  in  terms  of  bodily  experience. 
+
+to  physical  and  social  forces  and  obstacles. 
+
+[ll,  p.  531 
+
+argument, 
+
+To  illustrate 
+in  terms 
+of  which  we  organize  even  our  concepts  Johnson  uses  our  understanding  of  force: 
+
+the  way  the  body  works  in  structuring 
+
+the  basic  metaphors 
+
+We  learn  to  move  our  bodies  and  to  manipulate  objects  such  that  we  are 
+centers  of  force.  Above  all  we  develop  patterns  for  interacting  forcefully  with 
+grab  toys,  raise  the  cup  to  our  lips,  pull  our  bodies 
+our  environment-we 
+that  exert  force  on  us,  and  we  find 
+through  space.  We  encounter  obstacles 
+that  we  can  exert  force  in  going  around,  over,  or  through 
+that 
+resist  us.  Sometimes  we  are  frustrated,  defeated  and  impotent 
+in  our  forceful 
+times  we  are  powerful  and  successful.  . .  .  In  each  of  these 
+action.  Other 
+that 
+motor  activities 
+patterns 
+forceful  action.  These  patterns  are  embodied  and  give  coherent, 
+particular 
+meaningful  structure 
+level.  [ll, 
+to  our  physical  experience  at  a preconceptuul 
+P*  131 
+
+there  are  repeatable 
+
+those  objects 
+
+to  identify 
+
+that  come 
+
+Johnson  concludes: 
+
+is never  merely  a  matter  of  holding  beliefs,  either  consciously 
+Understanding 
+is  one’s  way  of  being 
+or  unconsciously.  More  basically,  one’s  understanding 
+in,  or  having,  a  world.  This  is very  much  a  matter  of  one’s  embodiment, 
+that 
+is,  of  perceptual  mechanisms,  patterns  of  discrimination,  motor  programs, 
+and  various  bodily  skills.  [ll,  p.  1371 
+
+On  this  view  embodiment 
+
+is presupposed 
+
+for  acquiring  the  skills  and  knowledge 
+
+individuals  even  before  we  are  socialized. 
+
+to  social  embedding.  We  move  and  meet 
+
+etc.,  as 
+which  amount 
+embodied 
+Indeed,  each  human  being 
+begins  as  a  cultureless  animal  that  must  acquire  the  culture.  That  is why  the  form 
+of  life,  if  it  is  to  be  acquired,  must  be  structured 
+in  keeping  with  the  individual’s 
+“Intelligence  abides  bodily  in the  world”,  as John  Haugeland  argues 
+embodiment. 
+
+resistance, 
+
+180 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996) 
+
+171-191 
+
+because 
+
+in  his  contribution, 
+the  social  world  is  organized  by  and  for  beings  with 
+our  kind  of  bodies.  That  is  not  to  deny  that,  as  we  grow  up  our  body  becomes  a 
+social  body,  but  the  structure  of  any  social  world  is constrained  by  what  our  body 
+can  learn  and  make  sense  of. 
+
+Collins,  however,  as  we  have  just  noted,  claims  that  social  embedding 
+
+is  more 
+basic  than  individual  embodiment.  He  thinks  this  claim  is  supported  by  Oliver 
+Sacks’  account  of  the  case  of  Madeleine,  who,  Sacks  says,  has  acquired  her 
+understanding  of  our  culture  linguistically-by 
+being  read  to  from  books.  Collins 
+concludes: 
+
+that  if  we  can’t  train  a  computer  without  a  body 
+We  can  say  with  confidence 
+in  the 
+to  act  like  a  socialized  human,  giving  it  the  ability  to  move  around 
+is  not  going  to  solve  the 
+the  same  physical  situations 
+world  encountering 
+problem.  On  the  other  hand,  if we  can  find  out  what  is involved  in  the  sort  of 
+socializing  process  undergone  by  a  Madeleine-let 
+us  call  it  “socialisabili- 
+ty”-we  may  be  able  to  apply  it  to  an  immobile  box. 
+
+If  Merleau-Ponty,  Mark  Johnson  and  I  are  right,  however,  Collins’  understand- 
+
+ing  of  Sacks’  account  must  be  science  fiction.  And,  indeed, 
+if  one  goes  back  to 
+Sacks’  account,  one  sees  that  Madeleine  was  far  from  being  an  immobile  box. 
+that  she  was  blind  and  could  not 
+What  was  special  about  Madeleine  was  merely 
+as  a  child,  but  there  is 
+use  her  hands  to  read  Braille.  True,  she  was  overprotected 
+If  she  crawled,  walked,  balanced, 
+no  hint 
+overcame  obstacles,  had  to  find  the  optimal  distance  for  kicking  and  hearing,  etc. 
+the  body  schemata  which  would  have  allowed  her 
+she  would  have  acquired 
+into  new  domains  the  events  and  cultural 
+imaginatively 
+norms  she  heard  about  from  books.  Collins  misses  these  facts  when  he  says: 
+
+that  she  was  carried  everywhere. 
+
+to  understand  and  project 
+
+Madeleine  has  imagination; 
+she  can  empathize  with  those  who  have  more 
+complete  bodies.  But  under  this  argument  a  body  is  not  so  much  a  physical 
+thing  as a  conceptual  structure.  If  you  can  have  a body  as unlike  the  norm  and 
+as  unable 
+as 
+Madeleine’s,  yet  you  can  still  gain  commonsense  knowledge, 
+like  today’s  computers-fixed 
+given  the  right  programming. 
+
+then  something 
+also  acquire  commonsense 
+
+tools,  chairs,  blind  persons’ 
+
+canes  and  so  forth 
+
+metal  boxes-might 
+
+to  use 
+
+My  point  is  that  Madeleine  has  our  body  structure  and  many  of  our  body-skills. 
+That  is  why  she  can  be  socialized 
+into  a  human  world  set  up  in  terms  of  human 
+bodies.  So  we  should  not  agree  with  Collins’  conclusion: 
+
+In  sum,  the  shape  of  the  bodies  of  the  members  of  a  social  collectivity  and 
+the  situations  in  which  they  find  themselves  give  rise  to  their  form  of  life.  But 
+given  the  capacity  for  linguistic  socialization,  an  individual  can  come  to  share 
+a  form  of  life  without  having  a  body  or  the  experience  of  physical  situations 
+to  that  form  of  life.  . . .  [Hluman  bodies  are  not  necessary 
+which  correspond 
+for  human-like  socialization. 
+
+On 
+
+the  contrary,  what 
+
+little  we  know  about 
+
+the  capacity 
+
+for 
+
+linguistic 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+181 
+
+just 
+
+suggests 
+
+that  we  have 
+
+to  have  a  body  with  a  structure 
+
+but  to  use  this  linguistic  equipment 
+
+socialization 
+like  our 
+consocials  and  skills  for  grasping  and  moving  like  theirs,  if  we  are  to  acquire  their 
+language  #at all.  For,  as Wittgenstein  points  out,  and  Collins  would  surely  agree,  to 
+to  learn  a  fixed  set  of  words  and  grammatical 
+learn  a  1,anguage  is  not 
+constructions, 
+in  ever  new  situations.  As 
+Wittgenstein  argues,  it  is this  ability  to  project  a  language  into  new  situations  that 
+it,  and  as  Johnson  shows,  we  can’t  do  this  projecting 
+shows  we  have  understood 
+without  appeal 
+that  we  sense  directly  because  we  have  to 
+move,  ovsercome  opposing  forces,  get  a  grip  on  things  (and  ourselves),  etc.  So  it 
+learn  a  natural 
+looks 
+to  me  like  Collins  has  things  back 
+language  a  computer  has  to  have  a  body; 
+if  it  is  to  be 
+embedded. 
+
+to  front  again.  To 
+it  must  be  embodied 
+
+to  bodily  analogies 
+
+and 
+
+in  perception 
+
+the  same  sort  of  repairs 
+
+errors  without  even  noticing 
+
+In  an  informal  domain  like  pronunciation 
+
+On  the  importance  of  repairs  for  AI  successes  I  fully  agree  with  Collins.  In 
+in  passing  that  NetTalk 
+
+footnote  45  of  What  Computer  Still  Can’t  Do  I  mention 
+depends  upon  our  making  sense  of  the  rather  garbled  English  it  produces.  This  is 
+not  an  objection.  We  make 
+in 
+it  remains  a  mystery  why  repairs  work 
+communication.  But  on  Collins’  account 
+well  in  some  domains  but  not  in  others.  We  repair  NetTalk,  printed  English,  or 
+our  perceptual 
+the  noise,  but  we  have  to  stop  and 
+reprogram  our  computer  or  ignore  its  result  if  it  makes  an  illegal  move  in  chess  or 
+the 
+gets  the  wrong  answer  in  arithmetic. 
+context  does  a  lot  of  the  work;  as  long  as  the  program  does  roughly  what  it  is 
+to,  we  don’t  notice  the  deviation.  But  in  a  digitalized  domain,  like  chess 
+supposed 
+or  calculation, 
+everyday  context  to  help  us  fill 
+in  the  gaps-so  we  can’t  ignore  even  a  small  error.  For  that  reason  in  digitalized 
+domains  ‘we are  not  given  much  opportunity 
+that  some 
+I  think, 
+domains  can  be  formalized  or  digitalized  and  other  domains  cannot.  Indeed,  some 
+to  do  their  work  while  others  must  remain  context- 
+domains 
+dependent 
+that 
+we  be  able  to  project  our  words  into  new  situations,  using  them  in  new  ways 
+analogou;s  to  the  old  ways,  and  that  our  fellow  language  users  can,  nonetheless, 
+understand  us.  In  such  cases  we  are  not  repairing  mistakes  but  seeing-presumab- 
+ly  on  the  basis  of  our  embodied  and  embedded 
+although 
+
+to  function  at  all.  It  is essential  to  natural  language,  for  example, 
+
+for  repairs. 
+is  that  they  again  reveal 
+
+it  breaks  the  rules,  still  makes  sense. 
+
+What  is  important  about  repairs, 
+
+there  is no  ambiguity  tolerance-no 
+
+,must be  regimented 
+
+what  is being  said, 
+
+intuitions-that 
+
+Collins  makes  a  similar  point,  but  in  a  misleading  way,  when  he  suggests  we 
+
+could  choose 
+
+to  regiment  even  natural 
+
+language. 
+
+[I]n  ,the  case  of  natural  language  interactions  with  computers  we  would  have 
+to  learn  to  make  our  speech  mimeomorphic, 
+and  that  would  mean  restructur- 
+ing  our  lives.  We  are  unwilling 
+to  do  this  kind  of  thing  and  that  means 
+computers  don’t  work  in  the  corresponding 
+
+roles. 
+
+In  another  paper,  Collins  expands  on  this  possibility: 
+
+More  translation  machines  might  mean  more  and  more  routinization  of  the 
+
+182 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+way  we  write  until  our  linguistic  form-of-life  becomes,  as  in  George  Orwell’s 
+1984,  fully  instantiable 
+[3, 
+p.  7291 
+
+action  and  fully  computerizable. 
+
+in  mimeomorphic 
+
+I  contend 
+
+like  turn-taking-we 
+
+syntax  and  semantics+ven 
+
+that  it  is not  up  to  us  whether, 
+
+in  such  a  rigid  way  as  to  render  pragmatics 
+
+like  a  computer.  Another  way  to  put  this  point  is  that  natural 
+
+in  the  case  of  language,  we  choose  to 
+behave 
+languages 
+not  only  have  a  syntax  and  a  semantics  but  also  a  pragmatics.  Even  if  we  could 
+agree  to  regiment,  and  so  render  formalizable, 
+if  we 
+would  still  not  be  able  to 
+could  regiment  parts  of  pragmatics 
+use  language 
+If  it  is 
+formalizable. 
+essential  to  natural  language  that  it  can  be  extended 
+into  ever-new  situations,  as  I 
+take  it  all  parties 
+code  is  not  just  something  we  are  unwilling  to  do,  it  is  something 
+prohibits.  No  one  doubts 
+that  language 
+constructed, 
+making  our  linguistic  behavior  mimeomorphic, 
+situationally 
+there  would  be  no  language,  no  society,  no  world,  and  no  us. 
+
+into  a  context-free 
+the  domain 
+but  once  it  is 
+it  is not  up  to  any  one  of  us,  nor  to  society  as  a  whole,  to  decide,  by 
+
+language  opens  up  into  a formalizable  domain.  If  we  did  this 
+
+to  turn  the  world  that  everyday, 
+
+is  a  social  construction, 
+
+to  this  debate  agree, 
+
+to  turn  our  language 
+
+relevant 
+
+The 
+
+touchstone 
+
+of  Collins’  and  my  disagreements 
+
+is  our  attitudes 
+
+simulated  neural  networks. 
+Impossible”,  Collins  tells  us: 
+
+In  his  article,  “Why  Artificial 
+
+Intelligence 
+
+towards 
+is  not 
+
+The  theory  of  mimeomorphic 
+of  machine  and  another.  Machines  can  only  reproduce 
+actions.  [4] 
+broken  down  into  a  series  of  mimeomorphic 
+
+action  makes  no  distinction  between  one  kind 
+tasks  that  can  be 
+
+But  from  my  point  of  view,  as  Collins  clearly  sees,  this  covers  up  an  essential 
+difference  between  using  computers 
+and 
+using  them  to  model  neural  networks.  On  Collins  view,  any  device  should  be  able 
+to  replace  experts  in  regimented  domains  and  no  device  should  be  able  to  replace 
+domains.  My  view  leads  me  to  make  a  sharp  distinction 
+them  in  non-regimented 
+not  only  between 
+types  of  domains,  but  also  between  what  we  can  expect  of 
+different 
+
+types  of  computers.  Stephen  Palmer,  for  instance,  notes  that: 
+
+symbolic  representations 
+
+to  instantiate 
+
+We  have  never  been  able  to  get  very  good  models  of  human  perception, 
+pattern 
+contextual  effects 
+These  are  exactly  the  domains  where  connectionism 
+
+learning.  We  have  never  been  able  to  get 
+to  arise  naturally  out  of  physical  symbol  system  models. 
+is  strong.  [17,  p.  1621 
+
+recognition, 
+
+or  human 
+
+learn  from  examples  and  respond 
+
+So,  although  we  cannot  expect  physical  symbol  systems  to  exhibit  expertise 
+domains  for  which  we  have  no  theory, 
+networks.  Networks 
+cases  without  needing 
+which  serve  as a theoretical 
+they  work. 
+analyzing  the  patterns 
+networks,  unlike  symbolic  programs, 
+
+in 
+this  limitation  does  not  apply  to  neural 
+in  similar  ways  to  similar 
+to  be  given,  or  needing  to  extract,  any  rules  or  principles 
+representation  of  the  structure  of  the  domain  in  which 
+to  respond 
+to  patterns  without 
+then  one  would  expect  simulated 
+to  be  able  to  learn  to  respond  appropriately 
+
+that  nets  can  learn 
+features, 
+
+into  context-free 
+
+It  we  grant 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996) 
+
+171-191 
+
+183 
+
+that  have  not  been,  and  perhaps  cannot  be,  digitalized. 
+
+in  domains 
+nets  are  succeeding 
+just  what  has  happened.  Thus  it  looks  like  my  two-knowledge-stuffs 
+out  to  be  marking  a  deep  distinction, 
+superficial.. 
+
+In  so  far  as 
+in  some  areas  where  symbolic  AI  has  had  a  hard  time,  this  is 
+view  turns 
+turns  out  to  be 
+
+and  Collins’  taxonomy 
+
+One  las#t query  for  both  Collins  and  Haugeland.  Why  does  intelligence  have  to 
+be  social‘?  If  one  disqualifies 
+the  tasks  animals  perform  as  unintelligent  because 
+animals  dlo not  have  our  sort  of  language  and  institutions,  we  will  need  to  be  told 
+is.  After  all,  Kohler  wrote  a book 
+in  a non-question  begging  way  what  intelligence 
+on  the  intelligence  of  apes,  including  the  example  of  an  ape  figuring  out  how  to 
+move  a  box  and  then  get  on  the  box  and  use  a  stick  to  knock  down  a  banana  that 
+was  out  of  reach.  This  is  clearly  using  flexible  means  to  achieve  a  desired  end. 
+That  is not  enough  to  count  as  intelligence,  however,  since  a  chess  program  using 
+brute  force  can  do  that.  What  is  essential  is  that  apes  learn  from  experience  how 
+to  achieve  their  ends.  That  is,  when  something  works,  they  are  able  to  adapt  it  to 
+If  we  define  intelligent  beings,  then,  as beings,  that  can  learn  from 
+other  contexts. 
+their  ends,  apes  are  surely 
+their  experience 
+intelligent. 
+
+to  find  flexible  means 
+
+to  achieve 
+
+i.e., 
+
+reach 
+
+them.“? 
+
+the  conclusion 
+
+that:  “whatever 
+
+like  say,  investing, 
+
+since  it  is  not  cultural, 
+
+is  ipso  facto  mimeomorphic, 
+
+I  do  not  doubt  that  some  intelligent  behavior, 
+
+‘dogs, performing  seals  (and  babies,  for  that  matter)+ould 
+
+is  inherently 
+cultural,  but  I  do  not  see  why  one  would  hold  that  only  such  institutional  and 
+linguistic  behavior  can  count  as  intelligent  behavior.  Why  should  we  suppose  that 
+animal  behavior,  no  matter  how  seemingly  flexible,  adaptive  and  skilled  it  may 
+appear, 
+that  animals 
+always  respond  rigidly  to  the  same  situation  with  the  same  action?  But  how  else 
+can  be  done  by  neural 
+could  Collins 
+nets-or 
+be  described 
+[3,  p.  7321.  To  me  it 
+in  rules  even  if  we  have  not  actually  so  analyzed 
+skillful  coping. 
+looks 
+Even 
+I  don’t  see 
+why  it  could  not,  at  least  in  principle,  be  successfully  simulated  by  networks 
+regardless  of  whether  such  networks  could  be  socialized. 
+John  Haugeland  has  always  understood  me  better 
+
+like  animals  reveal  a  whole  domain  of  context-sensitive, 
+if  context  sensitive  behavior  cannot  be  simulated  by  GOFAI, 
+
+than  1  understood  myself, 
+and  written  what  I  should  have  written.  He  positions  himself,  as  I  would  position 
+account  of  mind 
+myself,  between 
+such  as  John  McCarthy  and  those, 
+like  Harry  Collins,  who  hold  that  mind  is  a 
+product  of  social  embedding.  He  wants  to  describe  embodied-being-in-the-world, 
+as  I  do.  He  does  not  have  much  to  say  about  the  actual  structure  of  the  body  and 
+the  role  it  plays  in  having  a  world.  He  does,  however,  make  a  strong  argument 
+that,  thanks  to  the  body,  we  are  much  more  richly  coupled  to  the  world  than  the 
+traditional 
+view  allows.  In  fact,  he  argues  that  there  cannot  be 
+intelligence  apart  from  embodied 
+
+living  in  the  world. 
+that, 
+reads  me  so  carefully  and  extends  my  view  so  sympathetically 
+in  the  end,  it  seems  to  me  he  makes  explicit  and  embraces  a  contradiction 
+in  my 
+own  account  I  had  not  noticed  until  now.  He  works  out  my  account  of  being-in- 
+in  a  way  that  makes  embodiment  basic,  then  goes  on  to  make  social 
+the-world 
+
+those  who  seek  an  abstract, 
+
+representational 
+
+representational 
+
+Haugeland 
+
+184 
+
+H. L.  Dreyfus  1  Artijicial  Intelligence  80  (1996)  171-191 
+
+I  generally 
+
+embedding  basic  so  that  I  end  up  sounding  like  Collins.  Haugeland  himself  seems 
+issue  and  I now  realize  that  I  am  too.  I  must  admit 
+of  two  minds  on  this  important 
+that 
+in 
+that  Haugeland 
+emphasizing 
+role  of  the  social,  are  being  good  Heideggerians, 
+but  I  am  also  pulled  toward  Merleau-Ponty,  who  would  claim  that  intelligence 
+arises  from 
+the  way  individual  animals  are  tightly  coupled  with  the  perceptual 
+world. 
+
+agree  with  Heidegger, 
+
+the  fundamental 
+
+and  Collins, 
+
+and 
+
+The  problem 
+
+is  that  which  is  significant 
+
+for  me  is  that  Haugeland  wants  to  link  intelligence  with  the 
+meaningful  and  the  meaningful  with  the  objective  or  normative,  and  that  with  the 
+social.  As  he  puts  it,  “the  meaningful 
+in  terms  of 
+. . .“.  This  could  still 
+something  beyond  itself,  and  subject  to  normative  evaluation 
+be  compatible  with  Merleau-Ponty 
+like  a  gestalt,  and 
+norm  meant  that  a  perceptual  gestalt  demanded  a  certain  sort  of  completion  and 
+resisted  others.  Since  there  is more  to  the  figure  than  is directly  present,  e.g.  what 
+I  take  to  be  a  house  seen  from  the  front  looks  thick  and  looks  like  its  concealing 
+an  inside  and  back,  it  allows  us  to  “deal  reliably  with  more  than  the  present  and 
+the 
+the  manifest”  -Haugeland’s 
+norm  has  to  be  a  social  norm. 
+
+definition  of  intelligence.  But  for  Haugeland 
+
+if meaning  meant  something 
+
+essential 
+
+approach 
+
+community 
+
+intelligence 
+
+to  embodied 
+
+practices”-are 
+
+public  places, 
+
+As  I  read  Haugeland, 
+the  Merleau-Pontian 
+
+the  first  two  thirds  of  his  comments  makes  a  terrific  case 
+for 
+in  general.  Then 
+Haugeland  adds  his  own  convincing  version  of  the  Heideggerian  view  that  social 
+to 
+norms-“equipment, 
+in  the 
+intelligence.  What  I  don’t  agree  with,  and  what  lands  Haugeland 
+human 
+Collins  camp,  is  his  claim  that  human  intelligence  and  meaning  are  the  only  kind 
+there  is,  so  that  part  two  of  his  comments  seems  to 
+of  intelligence  and  meaning 
+take  back  part  one.  This  becomes  clear  when  he  is led  to  the  conclusion 
+that  “In 
+there  is  no  such  thing  as  animal  or 
+my  own  view  (and  I  suspect  also  Dreyfus’), 
+in  my  answer  to 
+divine  intelligence.” 
+Collins  above,  apes  seem  to  show  intelligence,  precisely  by  using  something 
+like 
+equipment, 
+take  back  a  general  theory  of 
+Rather 
+embodied 
+I  would  like  to  build  Part  II  of  Haugeland’s  paper  on  Part 
+I.  That  would  amount  to  building  Heidegger  on  top  of  Merleau-Ponty  by  showing 
+intelligence. 
+how  social 
+Merleau-Ponty 
+
+than  letting  a  social  theory  of  intelligence 
+intelligence, 
+
+and  no  community  practices  need  be  involved. 
+
+intelligence  grows  out  of  and  presupposes 
+
+I  don’t  know  about  God,  but  as  I  argued 
+
+clearly  has  such  a  project 
+
+in  mind  when  he  says: 
+
+non-social 
+
+is  our  general  medium 
+
+for  having  a  world.  Sometimes 
+
+The  body 
+to  the  actions  necessary  for  the  conservation  of  life,  and  according- 
+restricted 
+times,  elaborating  upon 
+ly  it  posits  around  us  a  biological  world;  at  other 
+these  primary  actions  and  moving  from  their  literal  to  a  figurative  meaning, 
+it 
+manifests  through  them  a core  of  new  significance:  this  is true  of  motor  habits 
+such  as  dancing.  Sometimes, 
+the  meaning  aimed  at  cannot  be 
+achieved  by  the  body’s  natural  means;  it  must  then  build  itself  an  instrument, 
+and  it  projects 
+
+itself  a  cultural  world.  [14,  p.  1461 
+
+thereby  around 
+
+finally, 
+
+it  is 
+
+T.D.  Koschmann’s 
+
+remarks  are  based  not  only  on  What  Computers  Still  Can’t 
+
+H.L.  Dreyfus 
+
+I  ArtiJcial  Intelligence  80  (19%)  171-191 
+
+185 
+
+to  my  brother’s  and  my  account  of  expertise 
+
+Do;  he  seems  to  have  read  all  my  books  with  sympathy  and  understanding, 
+and 
+gives  a  succinct  summary  and  critique  of  my  views.  His  comments  are  primarily 
+in  Mind  over  Machine.  We 
+directed 
+from  a 
+are  not,  as  he  realizes,  repeating 
+the  current  view  that  experts  “reason” 
+solving 
+large  data  base  by  “working  with  patterns”  or  that  “expert  problem 
+that  experts  don’t 
+consists  of  reasoning  by  analogy”. 
+normally 
+is  not 
+aware  of  using  inference 
+rules,  and  the  rules  he  gives  knowledge  engineers  don’t 
+is  not  aware  of  using  cases  either. 
+work  to  reproduce  his  expertise.  The  expert 
+Indeed,  knowing  which  cases  are  relevant  presupposes  his  expertise.  One  can 
+claim  that  the  relevant  cases  are  identified  by  certain  context-free 
+features,  but 
+the  problem 
+is,  which  ones?  The  expert  is not  aware  of  any  features,  and  no  more 
+able  to  suggest  reliable  features 
+
+solve  problems  and  do  not  normally 
+
+reason  at  all.  The  expert 
+
+It  is  precisely  our  point 
+
+than  reliable  rules. 
+
+Because 
+
+and  adopted 
+
+our  fanciful  account  of  expertise 
+
+it  was  confused  with  the  case-based  approach, 
+
+in  the  second  edition  of 
+in  terms  of  tens  of 
+our  book  we  retracted 
+the  model  of  a  simulated  neural 
+thousands’  of  stored  holograms, 
+to  make  more  and  more  refined  pattern 
+network  being  trained  by  experience 
+discriminations.  But  with  this  model 
+in  mind  it  is  hard  to  make  sense  of  what 
+Koschmann’s  holistic,  non-analytical  problem  solving  would  be.  If  one  is mapping 
+input  vecltors  to  output  vectors 
+is  no 
+problem.  This  is  not  to  deny  that  problem  solving  is  precisely  what  beginners  do 
+and  also  what  experts  do  when  faced  with  novel  and  complicated 
+situations.  We 
+expertise  over  such 
+do,  however, 
+problem 
+that  it  is  better  not  to  have  a 
+problem 
+
+as  Koschmann 
+solving.  We  feel  justified 
+than  to  solve  one. 
+
+sees,  “privilege” 
+in  assuming 
+
+is  no  problem  solving  because 
+
+intuitive 
+
+there 
+
+there 
+
+is  defending, 
+
+internal  representations 
+
+is  public  and  informal. 
+
+is irrelevant 
+is  important 
+
+the  point  when  he  continues, 
+
+Koschmann  has  a  valid  point,  however,  when  he  rejects 
+
+it  allows  us  to  see  the  world  in  new  and  different  ways”.  Unfortunately, 
+
+the  strong  view  that 
+to  expert  performance”.  He  correctly  points  out  that 
+to  instruction  at  all  levels,  if  for  no  other  reason, 
+
+“representation 
+“representation 
+because 
+he  confuses 
+representation-defining 
+knowledge”.  Linguistic  representation 
+mann 
+formal, 
+the  sort  of  formal  representations 
+sharpening  expertise.  Linguistic  representations 
+all  of  which  are  public, 
+communi’cation, 
+edge.  Still,  whatever  sharing  of  information, 
+etc.  one  can  gain  by  putting  intuitive  know-how  into  such  representational 
+purchased 
+collaborative 
+Discussion 
+experts 
+
+“Traditional  AI  was  all  about 
+schemes  for  mechanically  storing,  retrieving,  and  applying 
+in  natural  language,  which  is  what  Kosch- 
+It  should  not  be  confused  with  the 
+that 
+used  in  AI  are  never  useful  for  acquiring  or 
+in  the  form  of  books,  films,  etc., 
+for 
+of  cultural  knowl- 
+justification  and  public  accountability 
+
+classroom  makes  good  sense  for  dealing  with  problematic  situations. 
+intuitions  by  enabling 
+language)  does  sharpen 
+
+at  the  expense  of  expertise.  Nonetheless,  Koschmann’s 
+
+education  and  the  sharing  and  preservation 
+
+used  in  GOFAI.  We  stick  to  our  argument 
+
+to  see  things  from  different  perspectives. 
+
+(of  course  in  a  natural 
+
+form  is 
+idea  of  a 
+
+representations, 
+
+are  essential 
+
+however, 
+
+informal 
+
+It  is  hard  to  reply  to  the  Strom  and  Darden  contribution 
+
+since  its  statement  of 
+
+186 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+to  a  different 
+my  views  are  so  far  afield  that  I  have  the  feeling  it  is  responding 
+research  program  has  been  advanced 
+book.  But  then,  its  claim  that  the  GOFAI 
+search  is  equally  off  the  wall.  Is  the  paper,  perhaps,  written  by  a 
+by  brute-force 
+that  reveals  its  limitations  by  its  lack  of  a  sense  of 
+sophisticated  GOFAI  program 
+into  a  dialogue  with 
+relevance  and  of  context  sensitivity? 
+Strom  and  Darden 
+that  a 
+computer  can,  after  all,  pass  the  Turing  test,  but  I  have  to  take  that  risk,  so  here 
+refer  to  my  interlocutor 
+goes.  I  will,  out  of  caution, 
+
+that  I  have  been  duped  into  admitting 
+
+I  fear  that  in  entering 
+
+I  may  discover 
+
+as  SD. 
+
+In  the  next  few  pages  I  will  take  up  the  following  questions:  Why  favoring 
+holograms  and  simulated  networks  does  not  constitute  a  research  program?  What 
+the  GOFAI  program  was  trying  to  do?  And  whether,  as  SD  claims,  “Symbolic  AI 
+[has  succeeded] 
+
+in  areas  where  Dreyfus  predicted 
+
+failure”? 
+
+to  invoking  neural  networks, 
+
+argument,  we  were  endorsing 
+
+What  could  have  been  an  interesting  discussion  about  whether  I  have  a  research 
+program  never  gets  off  the  ground.  First,  because  SD  seems  to  think  that  when,  in 
+to  holograms 
+the  first  edition  of  Mind  over  Machine,  my  brother  and  I  resorted 
+to 
+answer  the  what-else-could-it-be 
+that  far-out  view 
+as  plausible.  Second,  even  if  SD  had  read  the  second  edition  and  noted  that  we 
+had  switched 
+that 
+research  program  would  have  quickly  been  dispelled  by  the  end  of  the  new 
+to  What  Computers  Still  Can’t  Do.  A  human  reader  would  have  seen  as 
+Preface 
+too  will  fail 
+to  this  claim  the  fact  that  there  I  argue  that  neural  networks 
+relevant 
+to  solve  the  commonsense  knowledge  problem.  One  could  then  infer  that  I  did 
+In  fact,  I  don’t  think  of 
+not  put  my  bets  on  the  neural  network  research  program. 
+the 
+myself  as  having  a  research  program 
+job 
+have  always  done, 
+philosophers 
+looking 
+critically  at  various  sorts  of  knowledge  claims. 
+
+at  all  but 
+seeking  conceptual 
+
+rather  of  doing 
+and 
+clarification 
+
+the  idea  that  we  were  backing 
+
+Since  SD  and  I  at  least  agree  that  “Research  programmes  are  identified  by  a 
+It’s 
+‘Hard  core’  of  centrally  important  hypotheses”,  we  should  look  for  GOFAI’s. 
+not  hard 
+to  find.  The  basic  claim  of  Symbolic  AI,  as  defined  by  Newell  and 
+Simon’s  paper  on  physical  symbol  systems,  was  that  human  beings  and  heuristical- 
+level  of  description,  were  operating  on 
+ly  programmed 
+in  brains  or  digital 
+the  same  principles-principles 
+to  cognitive 
+computers-and 
+in  question 
+psychology.  Thus  Newell  and  Simon  assumed 
+included  ways  of  avoiding  massive  brute-force 
+search  since  this  is  not  available  to 
+human  beings.  They  say: 
+
+that  could  be  implemented 
+
+in  AI  was  a  contribution 
+
+therefore  work 
+
+the  principles 
+
+at  a  suitable 
+
+computers, 
+
+that 
+
+that 
+
+The  potential 
+for  the  exponential  explosion  of  the  search  tree  that  is  present 
+in  every  scheme  for  generating  problem  solutions  warns  us  against  depending 
+on  the  brute  force  of  computers--even 
+a  compensation 
+The 
+exponential 
+
+is  to  avert 
+then, 
+explosion  of  search.  [15,  p.  571 
+
+for  the  ignorance  and  unselectivity  of  their  generators. 
+
+the  biggest  and  fastest  computers-as 
+
+. .  . 
+threat  of  the 
+
+task  of  intelligence, 
+
+the  ever-present 
+
+There 
+behave 
+
+is,  of  course,  a  branch  of  AI  that  would  be  happy 
+
+to  make  machines 
+in  any  way  at  all,  but  that  cannot  be  the  research  program 
+
+intelligently 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+187 
+
+researchers 
+
+are  engaged 
+
+GOFAI 
+it  would  cast  no  light  on  human 
+in  since 
+intelligence.  SD  seems  to  agree  with  Newell,  Simon  and  me  on  this  point.  Indeed, 
+in  saying 
+potential 
+psychology  and  philosophy  of  mind”,  SD  seems  to  explicitly  endorse 
+oriented 
+
+it  offers  a 
+in  fields  such  as  cognitive 
+the  human- 
+
+that  “when  an  AI  program  performs 
+for 
+
+research  goal  as  essential  to  AI. 
+
+as  it  is  intended, 
+
+confirmation. 
+
+. . especially 
+
+theoretical 
+
+relevance 
+
+If  psychological 
+
+is  the  goal,  then  GOFAI  work  in  checkers  and  chess 
+must  seek  heuristics  to  prune  the  search  tree  so  that  the  program  does  not  have  to 
+through  millions  of  moves.  This  should  be  obvious  but  just  to  nail  down 
+search 
+the  point  I’ll  quote  again  from  the  Simon  interview  I  already  cited: 
+
+[Interviewer:]  Now,  one  could  imagine  a  machine 
+that  wins  every  game  of 
+chess  by  pure  brute  force.  But  we  know  that  human  beings  don’t  think  that 
+way. 
+[Simon]:  So  that  machine  would  not  pass  the  Turing  Test,  because 
+it  would 
+not  fit  the  behavioral  evidence,  which  shows  that  no  human  being  looks  at 
+more  than  a hundred  branches  of  the  tree  before  making  a  move.  If  we  want 
+to  have  a  theory  of  human  chess  playing,  we  would  need  a  machine  that  also 
+matches 
+[Interviewer:] 
+Intelligence? 
+[Simon]:  It  would  be  Artificial  Intelligence,  but  not  cognitive  science.  Take 
+the  best  chess  programs-Deep 
+. . It  does  not  tell 
+Thought, 
+thinks,  or  very  little.  [19,  p.  2431 
+anything  about  how  a  chess  grandmaster 
+
+force  would  not  be  Artificial 
+
+So  the  program  with  brute 
+
+that  piece  of  evidence. 
+
+for  example. 
+
+Since  for  SD,  as  for  Simon,  the  kind  of  AI  in  question  is the  kind  that  can  make  a 
+to  cognitive  science,  it  is  hard  to  understand  how  SD  can  reach  the 
+contribution 
+conclusion 
+for  the  traditional  AI 
+that  “Deep  Thought 
+programme  of  heuristic  search”. 
+
+is  clearly  a  vindication 
+
+Since  the  distinction  between  GOFAI  as  a  contribution 
+
+to  cognitive  psychology 
+and  AI  as  any  sort  of  technique  using  symbolic  representations  was  obvious  from 
+the  start,  I  never  predicted 
+failure  for  brute-force  calculation,  but  only  for  chess 
+programs  based  on  heuristics  supposedly  used  by  chess  masters  to  cut  down  the 
+to  a  few  hundred  moves.  I  was  all  for  trying  brute-force  but  I  was  not 
+search 
+ready 
+In  the  second  edition  of  What 
+to  take  a  stand  on  what  it  could  achieve. 
+Computers  Can’t  Do,  I  pointed  out  that  chess  was  a  micro-world  and  added  that 
+“while 
+chess 
+program 
+that  human  beings 
+(p.  29).  I  have  not  changed  my  mind 
+play  chess  quite  differently 
+on  this  nor  is  there  any  reason  to.  Obviously, 
+I  would  never  say,  as  SD  reads  me 
+that  what  I  called  zeroing-in  was  “necessary 
+as  saying  (without  page  references), 
+for  expert  performance”, 
+I  did 
+say  in  What  Computers  Can’t  Do,  and  I  still  hold,  that: 
+
+in  principle  possible,  there  is a  great  deal  of  evidence 
+from  computers” 
+
+nor  that  brute-force  counting  out  was  “hopeless”. 
+
+character  makes  a  world  champion 
+
+the  game’s  circumscribed 
+
+With  present  programs  what  is  really  at  stake  is  how  far  computers. 
+make  up  by  sheer  brute 
+
+the  use  of  long-range 
+
+force 
+
+for 
+
+strategy, 
+
+. . can 
+the 
+
+188 
+
+H.L.  Dreyfus  1  Artijkial  Intelligence  80  (1996)  171-191 
+
+recognition  of  similarity 
+crucial  aspects  characteristics  of  advanced  human  play.  (p.  32) 
+
+to  other  preanalyzed  games,  and  the  zeroing 
+
+in  on 
+
+I  glossed  this  in  What  Computers  Still Can’t  Do  by  saying  that  “good  chess  players 
+don’t  seem  to  figure  out  from  scratch  what  to  do  each  time  they  make  a  move”. 
+But  I  never  would  have  thought  that  a reader  could  be  so  insensitive  to  context  as 
+to  retort,  “However,  Deep  Thought 
+is  at  least  a  ‘good  player’,  yet  it  essentially 
+does  figure  out  from  scratch  what  to  do  each  time”. 
+
+Of  all  the  responses 
+
+the  one  I  most  appreciate 
+
+the  response  by  John  McCarthy. 
+
+is  the  one  with  which  I  most 
+I  appreciate  his 
+level  because  he  has  kept  his  cool  and  stayed  a  friendly 
+I 
+
+Intellectually, 
+
+all  these  years  in  spite  of  my  often  abrasive  remarks. 
+
+is,  of  course, 
+
+disagree.  That 
+comments  on  a  personal 
+opponent 
+admire  McCarthy’s 
+
+respect  for  philosophy  and  philosophical  argument. 
+
+to  be  posed  whether  everyday 
+
+Obviously,  McCarthy  and  I  come  from 
+
+two  totally  different  paradigms.  His 
+research  program  of  “formalizing  human  reasoning”  assumes  that  intelligence 
+is 
+based  on  making  inferences  and  asks  how  to  make  the  right  ones.  I  think  the 
+intelligent  behavior 
+preliminary  question  needs 
+involves  reasoning  at  all.  As  I  have  been  arguing  in  this  response,  we  seem  to  use 
+the  know-how 
+that  comes  with  having  a  body  without  inferring  from  facts  about 
+the  body,  and  we  seem  to  avoid  the  problem  of  selecting  relevant  data  to  reason 
+that  on  this  point 
+to  whole  situations.  I  agree  with  McCarthy 
+from  by  responding 
+the 
+neither  of  us  can  give  an  argument 
+other.  So  we  each  do  what  we  can.  He  works  on  solving  the  problems 
+to 
+his  view;  I  try  to  bring  up  problems 
+that  such  a  view  will  have  to  face  further 
+down  the  line. 
+
+that  should  convince 
+
+for  our  intuitions 
+
+internal 
+
+inputs.  The  question  of  ambiguity  tolerance 
+
+But  there  is an  asymmetry.  McCarthy  reads  my  papers  and  I  regret  that,  due  to 
+my  lack  of  expertise 
+in  logic,  I  have  not  read  his  technical  papers  on  circumscrip- 
+tion.  This  is especially  troubling  to  McCarthy  since,  as  he  says,  this  work  is meant 
+in  part  to  answer  my  early  claim  that  human  beings  exhibit  ambiguity 
+tolerance 
+which  he  translates  as  the  ability  to  reason  from  a  commonsense  knowledge  data 
+base  even  when  there  are  inconsistencies 
+in  it.  But  what  I  had  in  mind  in  speaking 
+tolerance  was  the  way  the  context  enables  one  to  repair  incomplete 
+of  ambiguity 
+or  contradictory 
+for  me  is not  how  to 
+reason  when  there  are  exceptions  but  how  the  context  allows  us  to  ignore  most 
+exceptions  altogether.  More  generally,  my  problem 
+is how  to  store  commonsense 
+knowledge  so  as to  be  able  to  retrieve 
+the  relevant  information,  not  how  to  reason 
+from  the  facts  once  millions  of  facts  are  collected  and  organized  and  the  relevant 
+facts  already  retrieved.  For  this  reason  I  do  not  feel  that  McCarthy  has  solved  the 
+I  appreciate  his  having  turned  my  rather 
+problem 
+general  remarks 
+that  could  then  be  solved. 
+I  presume 
+
+that  the  way  to  solve  the 
+two  kinds  of 
+relevance  problem 
+relevance  axioms:  specific  and  general.  The  idea  behind  specific  relevance  axioms 
+is that  different  sections  of  the  knowledge  base  “can  be  ranked  according  to  their 
+if  the 
+relevance 
+
+to  the  problem  solving  task  at  hand”  [l,  p.  151. So,  for  example, 
+
+to  pose,  although 
+into  a  clear  problem 
+
+that  McCarthy  would  agree  with  Lenat 
+
+axioms.  Lenat  proposes 
+
+is  to  use  relevance 
+
+I  meant 
+
+H. L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+189 
+
+in  chip  design,  the  program  will  be  guided 
+task  given  to  Cyc  is to  solve  a  problem 
+information  by  an  axiom  to  the  effect  that  the  computer 
+in  its  search  for  relevant 
+the  botany  section 
+than  the  botany  section 
+(although 
+section 
+is  more  relevant 
+cannot  be  ruled  out  completely, 
+for  it  might  be  the  source  of  a  useful  analogy  or 
+two)  [l,  p.  151.  But  as  my  old  example  of  goldenrod  on  the  race  track  being 
+relevant 
+to  a  jockey  with  hay-fever  suggests,  what  is  relevant  can,  indeed,  come 
+from  a  completely  unrelated  domain  such  as  botany. 
+
+For  this  sort  of  problem  Lenat  proposes  general  relevance  axioms.  These  are 
+to  consider  only  events  that 
+formalizations  of  such  statements  as  “It  is  necessary 
+are  temporally  close  to  the  time  of  the  event  or  proposition  at  issue”  [9,  p.  71. 
+This  would  bring  in  the  goldenrod  all  right,  but  of  course 
+it  would  bring  in  an 
+the  race  track,  so  the  relevance 
+indefinitely 
+large  number  of  other  facts  about 
+this  axiom, 
+problem  would  not  be  solved.  Moreover, 
+. . [then  after]  a 
+Guha  and  Levy  say  “it 
+considerable 
+[9,  p.  71.  But 
+promises  and  all  sorts  of  health  problems, 
+to  take  just  two  examples,  have  exactly 
+the  form  that  what  is  relevant  can  be  far  in  the  future,  and  all  sorts  of  historical 
+and  psychological 
+to  my  present  can  be  found  in  my  more  or  less 
+distant  past. 
+
+period  of  time  . . . suddenly  manifests 
+
+that  an  event  occurs  and. 
+
+in  explaining  and  defending 
+
+facts  relevant 
+
+its  effects” 
+
+is  rare 
+
+relevant 
+
+suggests 
+
+information 
+
+information. 
+
+in  logic”.  I  think  there 
+
+looking  for  information 
+
+and  then  using  it  to  determine 
+
+it  suggested  to  Merleau-Ponty-that 
+
+itself  depends  on  what  we  count  as  the  relevant 
+
+that  people  cannot  proceed  by  first  determining 
+
+Nonetheless,  McCarthy  envisages  “a  system  [that]  would  . . . represent  what  it 
+knew  about  the  world  in  general,  about  the  particular  situation  and  about  its  goals 
+by  sentences 
+is  a  general  reason  such  a  project  will  not 
+succeed.  As  the  relevance  axioms  suggest,  what  counts  as relevant  depends  on  the 
+current  context.  But,  as I  argued  in  my  comments  on  Koschmann,  how  we  classify 
+the  current  context 
+the 
+This  circularity 
+in  that  context  nor  by  first 
+context  and  then 
+It 
+finding  the  relevant 
+both  rationalism,  with  its 
+suggests  to  me-as 
+to 
+inferences 
+that  perhaps  some  neural 
+stored  cases,  are  bound 
+is  more 
+network 
+promising.  Jeffrey  Elman’s  paper,  “Finding  Structure 
+in  Time”  [7,  pp.  179-2121, 
+gives  a  first  clue  as  to  how  the  behavior  of  a  neural  net  could  become  sensitive  to 
+relevant  context  without  developing  a  symbolic  model  of  what  in  the  context 
+is 
+relevant.  1Such results  are  surely  one  reason  why  many  young  AI  researchers  are 
+working  on  simulated  networks  and  fewer  are  going  into  GOFAI,  or  at  least, 
+logic 
+fewer  are  going  in  with  the  sort  of  long  range  vision  of  fully  intelligent 
+machines  which  McCarthy  so  stalwartly  defends.  There  are  plenty  of  problems 
+with  neural  networks, 
+the  problem  of 
+relevance 
+
+from  stored  data,  and  empiricism,  with  its  claims  that  we  associate 
+
+for  common  sense  knowledge  he  can  still  turn  things  around. 
+
+sort  of  association  with  no  inferences 
+
+and  no  stored  cases 
+
+to  fail.  It  further 
+
+so  if  McCarthy 
+
+the  context. 
+
+can  solve 
+
+however, 
+
+suggests 
+
+But  I  think  McCarthy  would  agree  with  me  that  the  relevance  problem 
+
+is  too 
+hard  for  now.  He  would  like  me  to  give  him  a  simpler  one.  I  will  try.  In  my 
+to  Collins  I  explain  why  I  think  an  experience  of  the  body  is  essential 
+response 
+this  poses  a  serious  problem  for  the  logicist 
+even  to  reasoning  and  why,  if  true, 
+
+190 
+
+H.L.  Dreyfus 
+
+I  Artificial  Intelligence  80  (1996)  171-191 
+
+the  body  and 
+
+to  AI.  It  is  not  “empathy” 
+
+in  a  world,  dealing  with  obstacles, 
+
+concerning 
+systems?  Of  course,  one  could  write  out  all  the  information 
+
+approach 
+that  is  important  but  the  experience  of 
+moving  about 
+to  Lenat’s 
+etc.  To  return 
+example  of  Mary  and  the  dog  in  the  window,  the  problem 
+is  not  just  getting  the 
+right  antecedent 
+for  the  pronoun  naming  the  object  of  Mary’s  desire,  but  getting 
+the  right  antecedent 
+for  what  she  presses  her  nose  against.  How  does  one  spell 
+out  propositionally 
+and 
+our  know-how 
+perceptual 
+about 
+paths,  obstacles,  distance  required 
+for  a  maximal  perceptual  grip,  etc.,  for  this 
+them,  but  that  we  all  agree  would  be 
+single  case,  and  draw  inferences 
+from 
+cheating.  But  no  one,  as  far  as  I  know,  has  a  clue  as  to  how  to  store  and  access 
+the  facts  about  the  body  that  would  be  needed 
+in 
+to  think  this  problem  can  be  solved.  We  certainly 
+general.  There 
+is  no  reason 
+in  the  situation  and  see 
+don’t  solve  it.  To  avoid  it,  we  imagine  moving  around 
+what  we  would  press  our  nose  against.  McCarthy,  however, 
+thinks  the  problem  of 
+finding  the  antecedents 
+in  Lenat’s  example  is “within  the  capacity  of  some  current 
+parsers”, 
+so  I  would  be  happy  to  submit  this  example  as  the  next  thing  a  logic 
+to  try  to  read  anything 
+should 
+approach 
+McCarthy  and  his  followers  write  on  the  subject. 
+
+try  to  deal  with.  I  sincerely  promise 
+
+to  reason  about  such  situations 
+
+its  motor 
+
+I  remain 
+
+Meanwhile, 
+
+skeptical  about  both  GOFAI 
+
+and  neural  networks. 
+I expect  that  there  will someday  be  androids  like  Data  in  Star  Trek:  The 
+Although 
+that  “reaching 
+New  Generation, 
+range  of  solution.  Very 
+human  level  AI  is not  a problem 
+likely,  fundamental 
+scientific  discoveries  are  still  to  come.”  We  only  differ  in  that 
+I  doubt  that  the  activity  of  these  future  androids’  “positronic  brains”  will  be  based 
+on  the  research  of  any  of  the  current  contenders 
+
+I  agree  with  McCarthy’s  cautious  assessment 
+
+that  is within  engineering 
+
+in  the  AI  race. 
+
+References 
+
+(11 P.  Blair,  R.V.  Guha  and  W.  Pratt,  Microtheories:  an  ontological  engineer’s  guide,  MCC  Technical 
+
+Report  No.  CYC-050-92  (1992). 
+
+[2]  H.M.  Collins,  Artificial  Experts  (MIT  Press,  Cambridge,  MA,  1981). 
+[3]  H.M.  Collins,  Hubert  L.  Dreyfus,  forms  of  life,  and  a simple  test  for  machine  intelligence,  Social 
+
+Stud.  Sci.  22  (1992). 
+
+[4]  H.M.  Collins,  Will  machines  ever  think?,  New  Scientist  1826 (June  20,  1992). 
+[5]  D.C.  Dennett,  In  defense  of  AI,  in:  P. Baumgartner  and  S.  Payr,  eds.,  Speaking  Mind:  Interviews 
+with  Twenty  Eminent  Cognitive  Scientists  (Princeton  University  Press,  Princeton,  NJ,  1995). 
+[6]  H.L.  Dreyfus  and  S.E.  Dreyfus,  Mind  over  Machine  (Free  Press,  New  York,  1988)  Chapter  1. 
+[7]  J.L.  Elman,  Finding  structure 
+[8]  R.V.  Guha  and  D.B.  Lenat,  Enabling  agents  to  work  together,  Comm.  ACM  37  (7)  (1994). 
+[9]  R.V.  Guha  and  A.Y.  Levy,  A  relevance  based  meta  level,  MCC  Technical  Report  No.  CYC-040- 
+
+in  time,  Cognitive  Sci.  14 (2)  (1990). 
+
+90  (1990). 
+
+[lo]  M.  Heidegger,  Science  and  reflection,  in:  The  Question  Concerning  Technology  and  Other  Essays 
+
+(Harper  &  Row,  New  York,  1977). 
+
+[ll]  M.  Johnson,  The  Body  in  the  Mind:  The  Bodily  Basis  of  Meaning, 
+
+Imagination,  and  Reason 
+
+(University  of  Chicago  Press,  Chicago,  IL,  1987). 
+
+[12]  D.  Lenat  and  R.V.  Guha,  Building  Large  Knowledge-Based  Systems  (Addison-Wesley,  Reading, 
+
+MA,  1990)  357. 
+
+H.L.  Dreyfus 
+
+!  Artificial 
+
+Intelligence  80  (1996)  171-191 
+
+191 
+
+[13]  D.B.  Lenat  and  E.A.  Feigenbaum,  On  the  thresholds  of  knowledge,  Artif. 
+
+Intell.  47  (1991) 
+
+18.5-250. 
+
+[14]  M.  Merleau-Ponty,  Phenomenology 
+
+of  Perception 
+
+(translator  C.  Smith)  (Routledge  &  Kegan 
+
+Paul,  1962). 
+
+[15]  A.  Newell  and  H.A.  Simon,  Computer  science  as  empirical  inquiry:  symbols  and  search,  in:  J. 
+
+Haugel,and,  ed.,  Mind  Design  (MIT  Press,  Cambridge,  MA,  1988). 
+
+[16]  A.  Newell,  The  serial 
+
+imperative, 
+
+in:  P.  Baumgartner 
+
+Interviews  with  Twenty  Eminent  Cognitive  Scientists 
+1995). 
+
+and  S.  Payr,  eds.,  Speaking  Mind: 
+(Princeton  University  Press,  Princeton,  NJ, 
+
+[17]  S.E.  Palmer,  Gestalt  psychology  redux,  in:  P.  Baumgartner  and  S.  Payr,  eds.,  Speaking  Mind: 
+(Princeton  University  Press,  Princeton,  NJ, 
+
+Interviews  with  Twenty  Eminent  Cognitive  Scientists 
+1995). 
+
+[18]  M.  Polanyi,  Personal  Knowledge 
+[19]  H.A.  Simon,  Technology 
+
+is  not  the  problem, 
+
+(Routledge  &  Kegan  Paul,  1962). 
+
+Interviews  with  Twenty  Eminent  Cognitive  Scientists 
+
+in:  P.  Baumgartner  and  S.  Payr,  eds.,  Speaking 
+(Princeton  University  Press,  Prince- 
+
+Mind: 
+ton,  NJ,  1995). 
+
+[20]  P.  Smolensky,  On  the  proper 
+[21]  L.  Witt,genstein,  Philosophical 
+
+treatment  of  connectionism,  Behav.  Brain  Sci.  11  (1988)  l-74. 
+(Basil  Blackwell,  Oxford,  1953). 
+Investigations 
+
+

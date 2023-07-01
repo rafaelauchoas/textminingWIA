@@ -1,0 +1,2093 @@
+Artiﬁcial Intelligence 171 (2007) 675–700
+
+www.elsevier.com/locate/artint
+
+On principle-based evaluation of extension-based
+argumentation semantics ✩
+
+Pietro Baroni, Massimiliano Giacomin ∗
+
+Dipartimento di Elettronica per l’Automazione, Università di Brescia, Via Branze 38, I-25123 Brescia, Italy
+
+Received 13 November 2006; received in revised form 3 April 2007; accepted 16 April 2007
+
+Available online 29 April 2007
+
+Abstract
+
+The increasing variety of semantics proposed in the context of Dung’s theory of argumentation makes more and more inadequate
+the example-based approach commonly adopted for evaluating and comparing different semantics. To ﬁll this gap, this paper
+provides two main contributions. First, a set of general criteria for semantics evaluation is introduced by proposing a formal
+counterpart to several intuitive notions related to the concepts of maximality, defense, directionality, and skepticism. Then, the
+proposed criteria are applied in a systematic way to a representative set of argumentation semantics available in the literature,
+namely grounded, complete, preferred, stable, semi-stable, ideal, prudent, and CF2 semantics.
+© 2007 Elsevier B.V. All rights reserved.
+
+Keywords: Argumentation frameworks; Argumentation semantics; Skepticism
+
+1. Introduction
+
+Interest and vitality of AI-related research in argumentation theory are witnessed, among other factors, by the
+increasingly rich variety of argumentation semantics being proposed in the literature. Though most of them share
+the inﬂuential theory of Dung [14] as a common reference framework, comparing and assessing semantics proposals
+appears far from being a straightforward task. In fact, various kinds of motivations have been used to support the intro-
+duction of new semantics with respect to “classical” proposals such as stable [23], grounded [19], complete [14] and
+preferred [14] semantics. These motivations range from the desire to formalize some high-level intuition, not captured
+by other proposals, to the need to achieve the “correct” treatment of a particular example (or family of examples), re-
+garded as particularly signiﬁcant. For instance, CF2 semantics [2,6] has originally been conceived to deal with some
+problematic behaviors of preferred semantics when dealing with odd-length cycles. Semi-stable semantics [9] aims
+at avoiding the problem of non-existence of extensions affecting stable semantics in some cases, while preserving its
+behavior when stable extensions exist as well as the related property of minimizing undecided arguments. Prudent
+
+✩ This article is a substantial extension of the conference paper [P. Baroni, M. Giacomin, Evaluation and comparison criteria for extension-based
+argumentation semantics, in: P.E. Dunne, T. Bench-Capon (Eds.), Proceedings of the 1st International Conference on Computational Models of
+Arguments (COMMA 2006), IOS Press, Liverpool, UK, 2006, pp. 157–168].
+* Corresponding author.
+
+E-mail addresses: baroni@ing.unibs.it (P. Baroni), giacomin@ing.unibs.it (M. Giacomin).
+
+0004-3702/$ – see front matter © 2007 Elsevier B.V. All rights reserved.
+doi:10.1016/j.artint.2007.04.004
+
+676
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+semantics [12,13] emphasizes the role of indirect attacks, which are not allowed within its extensions, while ideal
+semantics [15] provides a unique-status approach which is as computationally efﬁcient as grounded semantics while
+being less skeptical.
+
+Clearly, these kinds of heterogeneous intuitions hardly lend themselves to systematic comparisons. As a further dif-
+ﬁculty, general comparison and evaluation criteria are actually lacking, since the problem of identifying and formally
+characterizing such criteria seems to have received relatively limited attention in the literature. Given this situation, it
+is not surprising that comparisons are quite often carried out using speciﬁc problematic examples, often ingeniously
+devised so as to bring to light patently different behaviors exhibited by the semantics under discussion. A sample
+collection of this kind of “benchmark problems” can be found for instance in [25]. While carefully selected examples
+can surely provide useful insights for the analysis of alternative semantics proposals, example-based comparisons
+suffer from several signiﬁcant drawbacks. First of all, they are affected by the inherent limitation of relying more on
+intuition than on formally stated principles. In fact, even in relatively simple examples there may not be a general
+agreement on the “desired” outcome, due to different underlying intuitions (see for instance [16]). For this reason, it
+has been observed that using intuition about speciﬁc examples to derive general considerations may be inappropriate
+and “it is better to use intuitions not as critical tests but as generators for further investigation” [20]. The signiﬁ-
+cance of benchmark problems as testbeds for evaluation and guidelines for semantics design is also put in question by
+Vreeswijk’s interpolation theorem [25], which proves that “for any compatible collection of instantiated benchmark
+problems there exists an abstract argumentation system that complies with every instantiated benchmark problem”.
+This suggests that “the enterprise of solving more and more of these problems does not necessarily bring us to the
+ultimate non-monotonic logic” [25] (see also [8, Chapter 2] for a discussion of this point). It has also to be remarked
+that some examples, explicitly conceived for one-to-one comparison of speciﬁc semantics, may turn out to be less
+signiﬁcant when evaluating a large range of proposals. Moreover, these examples typically are aimed at evidencing
+(and possibly overemphasizing) differences, while a balanced evaluation should also take into account similarities and
+common features. Emphasis on disagreement gives rise, as a side-effect, to the quest for the “right” semantics, which,
+in our opinion, is a misleading objective. In fact, different application domains may well require different styles of
+reasoning, reﬂected by different semantics ﬂavors. Characterizing the reasoning requirements of different domains
+(still a largely open research problem) can only be based on general criteria rather than on speciﬁc cases.
+
+In this paper we investigate the deﬁnition of some general criteria for evaluating extension-based argumentation
+semantics in the framework of Dung’s theory. The introduced criteria are then applied to several literature proposals,
+thus providing a principle-based systematic assessment of state-of-the-art approaches in argumentation semantics.
+
+The paper is organized as follows. After recalling the necessary background concepts in Section 2, we deﬁne and
+discuss general criteria for evaluating sets of extensions in Section 3 and comparison criteria based on the notion
+of skepticism in Section 4. The deﬁnitions of grounded, complete, preferred, stable, semi-stable, ideal, prudent, and
+CF2 semantics are reviewed in Section 5: the introduced criteria are then applied to the above mentioned semantics in
+Section 6. Finally, a discussion of the relationships with related works and some conclusions are provided in Section 7.
+
+2. Basic concepts
+
+2.1. Abstract argumentation frameworks
+
+Our work adopts as a reference Dung’s theory of abstract argumentation frameworks.
+
+Deﬁnition 1. An argumentation framework is a pair AF = (cid:3)A, →(cid:5), where A is a set and →⊆ (A × A) is a binary
+relation on A, called attack relation.
+
+We assume that A represents the set of arguments produced by a reasoner at a given instant of time, therefore in
+the following we will assume that A is ﬁnite, independently of the fact that the underlying mechanism of argument
+generation admits the existence of inﬁnite sets of arguments. The treatment of argumentation frameworks where A is
+inﬁnite, including the special case of ﬁnitary argumentation frameworks [14] where the number of attackers of each
+argument is ﬁnite, is left for future work.
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+677
+
+An argumentation framework AF = (cid:3)A, →(cid:5) can be represented as a directed graph, called the defeat graph, where
+nodes are the arguments and edges correspond to the elements of the attack relation. The nodes that attack a given
+argument α are called defeaters (or parents) of α and form a set which is denoted as parAF(α).
+
+Deﬁnition 2. Given an argumentation framework AF = (cid:3)A, →(cid:5) and an argument α ∈ A, parAF(α) (cid:2) {β ∈ A | β → α}.
+If parAF(α) = ∅, then α is called an initial argument. The set of initial arguments of AF is denoted as IN(AF).
+
+Since we will frequently consider properties of sets of arguments, it is useful to deﬁne suitable notations for them.
+
+Deﬁnition 3. Given an argumentation framework AF = (cid:3)A, →(cid:5), an argument α ∈ A and two (not necessarily disjoint)
+sets S, P ⊆ A, we deﬁne:
+
+S → α ≡ ∃β ∈ S: β → α
+α → S ≡ ∃β ∈ S: α → β
+S → P ≡ ∃α ∈ S, β ∈ P : α → β
+outparAF(S) = {α ∈ A | α /∈ S ∧ α → S}
+outchildAF(S) = {α ∈ A | α /∈ S ∧ S → α}
+
+We also deﬁne the restriction of an argumentation framework to a subset S of its arguments.
+
+Deﬁnition 4. Let AF = (cid:3)A, →(cid:5) be an argumentation framework. The restriction of AF to S ⊆ A is the argumentation
+framework AF↓S = (cid:3)S, → ∩(S × S)(cid:5).
+
+2.2. Extension-based argumentation semantics
+
+Given an argumentation framework encoding the conﬂicts among a set of arguments, a fundamental problem
+consists in determining the conﬂict outcome, namely which arguments can be considered justiﬁed. An argumentation
+semantics can be conceived, in broad terms, as a formal way to answer this question. In argumentation literature, two
+main styles of semantics deﬁnition can be identiﬁed: extension-based and labeling-based.
+
+An extension-based argumentation semantics is deﬁned by specifying the criteria for deriving, for a generic ar-
+gumentation framework, a set of extensions, where each extension represents a set of arguments considered to be
+acceptable together. Given a generic argumentation semantics S, the set of extensions prescribed by S for a given
+argumentation framework AF is denoted as ES (AF). If a semantics S prescribes ES (AF) to be a singleton for any
+argumentation framework AF, S is said to belong to the unique-status approach, otherwise to the multiple-status
+approach [22].
+
+A labeling-based argumentation semantics relies on a predeﬁned set of labels and is deﬁned by specifying the
+criteria for assigning them to the arguments of a generic argumentation framework. Depending on the criteria, one
+or (typically) more possible labellings are obtained. Most argumentation semantics proposed in the literature are
+extension-based (e.g. grounded, complete, stable, preferred, semi-stable, ideal, prudent, and CF2 semantics) while
+examples of labeling-based proposals are represented by robust semantics [17] and by argumentation stages [24]. It
+has also to be remarked that in some cases a labeling deﬁnition has an equivalent counterpart in terms of extensions
+(see for instance [10]). For these reasons, we focus on extension-based semantics and leave the consideration of
+labeling-based approaches for future work.
+
+The extensions prescribed by a semantics are the basis for deriving the justiﬁcation state of each argument. Though
+a more articulated treatment is possible [5], in this paper we consider a basic classiﬁcation encompassing just two
+possible states for an argument, namely justiﬁed or not justiﬁed. Two alternative types of justiﬁcation, namely skeptical
+and credulous can be considered.
+
+Deﬁnition 5. Given an argumentation framework AF = (cid:3)A, →(cid:5) and a semantics S, an argument α is skeptically
+justiﬁed iff ∀E ∈ ES (AF) α ∈ E, and is credulously justiﬁed iff ∃E ∈ ES (AF): α ∈ E.
+
+678
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+A relevant question concerns the existence of extensions. While the deﬁnition of most semantics ensures that there
+is at least one extension for any argumentation framework, it is well known that this is not always the case. In particular,
+there are defeat graphs including odd-length cycles where stable semantics fails to provide any extension. To settle
+this difﬁculty once and for all, we take as a standpoint that argumentation frameworks for which no extension exists
+are simply outside the applicability domain of the considered semantics and therefore they neither play any role in
+the properties of the semantics nor can the semantics be used in any way to assess the justiﬁcation of their arguments.
+Formally, for a generic semantics S let DS be the set of argumentation frameworks where S admits at least one
+extension, namely DS = {AF: ES (AF) (cid:15)= ∅}: in the following, whenever we will refer to the properties of a semantics
+S for an argumentation framework AF we will implicitly assume that AF ∈ DS if not differently speciﬁed. Note that
+the case of non-existence of extensions, namely ES (AF) = ∅, is signiﬁcantly different from the case ES (AF) = {∅},
+where the semantics prescribes exactly one (actually empty) extension. Note in particular that, in the latter case,
+AF ∈ DS .
+
+Let us now introduce two fundamental principles underlying the deﬁnition of extension-based semantics in Dung’s
+
+framework, namely the language independence principle and the conﬂict free principle.
+
+The language independence principle intuitively consists in the fact that the extensions prescribed by a semantics
+only depend on the relations of attack between arguments considered as abstract entities, namely on the topology
+of the corresponding defeat graph, while extensions are totally independent of any property of arguments at the
+underlying level of the language where their internal structure and features can be explicitly represented. Formally,
+this principle corresponds to the fact that argumentation frameworks which are isomorphic have the “same” (modulo
+the isomorphism) extensions, as stated by the following deﬁnitions.
+
+Deﬁnition 6. Two argumentation frameworks AF1 = (cid:3)A1, →1(cid:5) and AF2 = (cid:3)A2, →2(cid:5) are isomorphic if and only if
+there is a bijective mapping m : A1 → A2, such that (α, β) ∈ →1 if and only if (m(α), m(β)) ∈ →2. This is denoted
+as AF1
+
+◦=m AF2.
+
+Deﬁnition 7. A semantics S satisﬁes the language independence principle if and only if ∀ AF1 = (cid:3)A1, →1(cid:5), ∀ AF2 =
+(cid:3)A2, →2(cid:5): AF1
+
+◦=m AF2, ES (AF2) = {M(E) | E ∈ ES (AF1)}, where M(E) = {β ∈ A2 | ∃α ∈ E, β = m(α)}.
+
+All semantics deﬁned at the abstract level of Dung’s framework, and in particular all semantics we will deal with
+
+in this paper, adhere to the language independence principle.
+
+The conﬂict free principle, denoted as CF , intuitively relies on the idea that, since an extension is a set of arguments
+which are “acceptable together”, no conﬂicting arguments can be included in the same extension. The CF principle
+has a straightforward formal counterpart.
+
+Deﬁnition 8. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set S ⊆ A is conﬂict-free, denoted as cf (S), iff
+(cid:2)α, β ∈ S such that α → β. A semantics S satisﬁes the CF principle if and only if ∀ AF, ∀E ∈ ES (AF) E is conﬂict-
+free.
+
+As to our knowledge, all extension-based argumentation semantics proposed in the literature1 adhere to the CF
+principle, which in the following will be given for granted. Therefore, where no further speciﬁcations are given, by a
+set of extensions of an argumentation framework AF = (cid:3)A, →(cid:5) we will mean a set of conﬂict-free subsets of A.
+
+3. Extension evaluation criteria
+
+By an extension evaluation criterion we mean a property of a set of extensions on its own, not involving a compar-
+ison with other sets of extensions. We discuss evaluation criteria related to three different aspects: the maximality of
+extensions, the notion of defense, and the topology of the defeat graph.
+
+1 Note, however, that the deﬁnition of the CF principle as given in this paper is not directly applicable to literature approaches featuring a richer
+structure of argumentation frameworks and lying therefore outside the strict context of Dung’s theory (e.g. preference-based [1] or value-based [7]
+argumentation frameworks).
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+679
+
+3.1. The I-maximality criterion
+
+Given that an extension can be intuitively conceived as a set of arguments that can be accepted together according
+to some semantics-speciﬁc requirements, one may consider as an additional constraint that no extension can be a
+proper subset of another one. This has a straightforward formal counterpart.
+
+Deﬁnition 9. A set of extensions E is I-maximal iff ∀E1, E2 ∈ E, if E1 ⊆ E2 then E1 = E2. A semantics S satisﬁes
+the I-maximality criterion if and only if ∀ AF ES (AF) is I-maximal.
+
+Note that I-maximality is a property of the set of extensions E per se and does not imply that maximality is
+prescribed by the semantics-speciﬁc deﬁnition of what an extension is. For instance any unique-status semantics nec-
+essarily satisﬁes I-maximality according to Deﬁnition 9, independently of the fact that the unique extension prescribed
+by the semantics is a maximal set in any sense. I-maximality is an important criterion in relation to the notion of skep-
+tical justiﬁcation: given two extensions E1 and E2 belonging to a set of extensions E, if E1 (cid:3) E2 then any argument
+α ∈ E2 \ E1 cannot be skeptically justiﬁed according to Deﬁnition 5. As a limit case, if the empty set is included in
+the set of extensions then any argument cannot be skeptically justiﬁed, independently of other extensions. To avoid
+this kind of undesired effect, I-maximality is a crucial criterion and is in fact enforced by most semantics, as it will be
+discussed in Section 6. On the other hand, when the set of extensions is not meant to be used for evaluating skeptical
+justiﬁcation, I-maximality is not fundamental any more.
+
+3.2. Defense related criteria
+
+As the arguments belonging to an extension can be regarded as “surviving the conﬂict together”, the notion of
+defense against attacks coming from other arguments has always played an important role in argumentation semantics.
+Formally, this has a counterpart in the requirement of admissibility, which lies at the heart of all semantics discussed
+in [14] and is based on the well-known notions of acceptable argument and admissible set.
+
+Deﬁnition 10. Given an argumentation framework AF = (cid:3)A, →(cid:5), an argument α ∈ A is acceptable with respect to a
+set E ⊆ A if and only if ∀β ∈ A: β → α, E → β.
+
+Deﬁnition 11. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set E ⊆ A is admissible if and only if
+E is conﬂict-free and ∀β ∈ A: β → E, E → β. The set made up of all the admissible sets of AF will be denoted
+as AS(AF).
+
+Deﬁnition 12. A semantics S satisﬁes the admissibility criterion if ∀ AF ∈ DS , ∀E ∈ ES (AF) E ∈ AS(AF), namely:
+
+α ∈ E ⇒ ∀β ∈ parAF(α) E → β
+
+(1)
+
+Condition (1) includes the case where α defends itself against (some of) its defeaters. We suggest that a stronger
+notion of defense may also be considered where a node α can not defend itself nor can be involved in its own defense.
+To this purpose we introduce the notion of strongly defended argument.
+
+Deﬁnition 13. Given an argumentation framework AF = (cid:3)A, →(cid:5), α ∈ A and S ⊆ A, we say that α is strongly de-
+fended by S (denoted as sd(α, S)) iff ∀β ∈ parAF(α) ∃γ ∈ S \ {α}: γ → β and sd(γ , S \ {α}).
+
+In words, α is strongly defended by S if S includes a defeater γ (cid:15)= α for any defeater β of α; in turn, γ has to
+be strongly defended by S \ α, namely γ needs neither α nor itself to be defended against its defeaters in AF. The
+recursion is well founded since, at any step, a set of strictly lesser cardinality is considered. In particular, in case
+sd(α, S) the base of this recursive deﬁnition is provided by initial nodes, which are strongly defended by any set since
+they have no defeaters. The notion of strong defense is the basis for the deﬁnition of the strong admissibility criterion.
+
+Deﬁnition 14. A semantics S satisﬁes the strong admissibility criterion if ∀ AF ∈ DS , ∀E ∈ ES (AF) it holds that:
+
+α ∈ E ⇒ sd(α, E)
+
+(2)
+
+680
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+The property of reinstatement corresponds to the converse of the implication (1) prescribed by the admissibility
+criterion. Intuitively, an argument α is reinstated if its defeaters are in turn defeated and, as a consequence, one
+may assume that they should have no effect on the justiﬁcation state of α. Under this assumption, if an extension E
+reinstates α then α should belong to E. Formally, this leads to the following reinstatement criterion.
+
+Deﬁnition 15. A semantics S satisﬁes the reinstatement criterion if ∀ AF ∈ DS , ∀E ∈ ES (AF) it holds that:
+
+(cid:2)
+
+∀β ∈ parAF(α) E → β
+
+(cid:3)
+
+⇒ α ∈ E
+
+(3)
+
+Considering the strong notion of defense we obtain a weak (since it is implied by condition (3)) reinstatement
+
+criterion.
+
+Deﬁnition 16. A semantics S satisﬁes the weak reinstatement criterion if ∀ AF ∈ DS , ∀E ∈ ES (AF) it holds that:
+
+sd(α, E) ⇒ α ∈ E
+
+(4)
+
+Another observation concerns the fact that condition (3) prescribes that an argument α defended by an extension
+should be included in the extension, without specifying that α should not give rise to conﬂicts within the extension.
+To explicitly take into account this aspect, the following CF -reinstatement criterion can be given.
+
+Deﬁnition 17. A semantics S satisﬁes the CF -reinstatement criterion if ∀ AF ∈ DS , ∀E ∈ ES (AF) it holds that:
+
+(cid:2)(cid:2)
+
+∀β ∈ parAF(α) E → β
+
+∧ cf
+
+(cid:3)
+
+(cid:2)
+E ∪ {α}
+
+(cid:3)(cid:3)
+
+⇒ α ∈ E
+
+(5)
+
+3.3. The directionality criterion
+
+The notion of directionality in argumentation semantics has ﬁrst been considered in [6], where a general scheme
+relating the topology of the defeat graph with the deﬁnition of extensions has been introduced. At an intuitive level,
+the idea is quite simple: the justiﬁcation state of an argument α should be affected only by the justiﬁcation state of
+the defeaters of α (which in turn are affected by their defeaters and so on), while the arguments which only receive
+an attack from α (and in turn those which are attacked by them and so on) should not have any effect on the state
+of α. We provide here an extended notion of directionality with respect to [6] by considering a set of arguments not
+receiving attacks from outside.
+
+Deﬁnition 18. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set U ⊆ A is unattacked if and only if (cid:2)α ∈
+(A \ U ): α → U . The set of unattacked sets of AF is denoted as US(AF).
+
+The directionality criterion can then be deﬁned by requiring an unattacked set to be unaffected by the remaining
+
+parts of the argumentation framework as far as extensions are concerned.
+
+Deﬁnition 19. A semantics S satisﬁes the directionality criterion if and only if ∀ AF = (cid:3)A, →(cid:5), ∀U ∈ US(AF),
+AE S (AF, U ) = ES (AF↓U ), where AE S (AF, U ) (cid:2) {(E ∩ U ) | E ∈ ES (AF)} ⊆ 2U .
+
+In words, the intersection of any extension prescribed by S for AF with an unattacked set U is equal to one of the
+
+extensions prescribed by S for the restriction of AF to U , and vice versa.
+
+While the deﬁnition of directionality given here refers to a single argumentation framework, it can be easily refor-
+mulated as a criterion concerning distinct argumentation frameworks which are equal as far as their restriction to an
+unattacked set is concerned.
+
+Proposition 20. A semantics S satisﬁes the directionality criterion if and only if ∀ AF1 = (cid:3)A1, →1(cid:5), ∀ AF2 =
+(cid:3)A2, →2(cid:5) such that ∃U ∈ (US(AF1) ∩ US(AF2)): AF1↓U = AF2↓U it holds that
+
+AE S (AF1, U ) = AE S (AF2, U )
+
+(6)
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+681
+
+Proof. Deﬁnition 19 directly implies condition (6) since AE S (AF1, U ) = ES (AF1↓U ) = ES (AF2↓U ) =
+AE S (AF2, U ). On the other hand, considering any argumentation framework AF and U ∈ US(AF) we can apply
+condition (6) with AF1 = AF and AF2 = AF↓U , obtaining AE S (AF, U ) = AE S (AF↓U , U ) = ES (AF↓U ), since for
+any AF = (cid:3)A, →(cid:5) AE S (AF, A) = ES (AF). (cid:2)
+
+4. Skepticism related criteria
+
+The notion of skepticism has often been used in informal or semi-formal ways to discuss semantics behavior, e.g.
+by observing that a semantics is “more skeptical” than another one. Intuitively, a semantics is more skeptical than
+another if it makes less committed choices about the justiﬁcation state of the arguments. Roughly, the most skeptical
+conceivable semantics does not make any commitment on any argument, leaving all of them undecided, while a
+semantics is not skeptical at all if it takes a deﬁnite position about every argument in any argumentation framework.
+
+While the issue of skepticism has been considered so far in the literature mostly in the case of comparison between
+speciﬁc proposals, we are interested here in a more general analysis. We consider, as a ﬁrst step, a generic relation of
+skepticism (cid:19)E between sets of extensions: given two sets of extensions E1, E2 of an argumentation framework AF,
+E1 (cid:19)E E2 will simply denote that E1 is at least as skeptical as E2 in some sense. In the context of semantics evaluation,
+a skepticism relation (cid:19)E can be used to compare the sets of extensions prescribed by a particular semantics on dif-
+ferent but related argumentation frameworks. To this purpose, one ﬁrst needs to deﬁne a skepticism relation between
+argumentation frameworks based on the same set of arguments: given two argumentation frameworks AF1 = (cid:3)A, →1(cid:5)
+and AF2 = (cid:3)A, →2(cid:5), AF1 (cid:19)A AF2 denotes that AF1 (actually its attack relation) is inherently less committed (to be
+precise, not more committed) than AF2. Then, one may reasonably require that any semantics reﬂects in its extensions
+the skepticism relations between argumentation frameworks. Requirements of this kind will be called adequacy cri-
+teria. On the other hand, a skepticism relation between sets of extensions might also be used to compare the behavior
+of different semantics when applied to the same argumentation framework. Comparison between semantics according
+to this kind of relations is not considered in this paper and is left for future work.
+
+It is worth noting that the skepticism relations introduced above are not necessarily total orders, since in general
+there can be two sets of extensions (or two argumentation frameworks) which are not comparable. Having introduced
+skepticism relations at an abstract level, let us examine in the following subsections how they can be concretely
+deﬁned.
+
+4.1. Skepticism relations between sets of extensions
+
+Let us start by noting that deﬁning a relation of skepticism between two extensions is intuitively straightforward:
+an extension E1 is more skeptical than another extension E2 if and only if E1 ⊆ E2. In fact, a more skeptical attitude
+corresponds to a smaller set of arguments surviving the conﬂict. This is actually the relation that can be applied to
+compare the behavior of two distinct unique-status semantics, as it is done for ideal and grounded semantics in [15].
+Directly extending the above intuition to the comparison of sets of extensions leads to deﬁne the following elementary
+skepticism relation (cid:19)E
+∩ .
+
+Deﬁnition 21. Given two sets of extensions E1 and E2 of an argumentation framework AF, E1 (cid:19)E
+
+∩ E2 iff
+
+(cid:4)
+
+(cid:4)
+
+E1 ⊆
+
+E2
+
+(7)
+
+E1∈E1
+
+E2∈E2
+
+In words, condition (7) corresponds to the fact that arguments skeptically justiﬁed according to E1 are also skepti-
+cally justiﬁed according to E2, which appears to be an essential requirement and provides an intuitive bound for any
+relation of skepticism.
+
+Relation (cid:19)E
+
+∩ is based on considerations referring only to skeptically justiﬁed arguments. Finer (and actually
+stronger) skepticism relations can be deﬁned by considering relationships of pairwise inclusion between extensions.
+As a starting point, we recall that to compare a single extension E1 with a set of extensions E2, the relation ∀E2 ∈ E2
+E1 ⊆ E2 has often been used in the literature (for instance to verify that the unique extension prescribed by grounded
+semantics is more skeptical than the set of extensions prescribed by preferred semantics). A direct generalization to
+
+682
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+the comparison of two sets of extensions is represented by the following weak skepticism relation (cid:19)E
+by the authors in [5].
+
+W , ﬁrst introduced
+
+Deﬁnition 22. Given two sets of extensions E1 and E2 of an argumentation framework AF, E1 (cid:19)E
+W
+
+E2 iff
+
+∀E2 ∈ E2 ∃E1 ∈ E1: E1 ⊆ E2
+
+(8)
+
+Relation (cid:19)E
+
+W is unidirectional, since it only constrains the extensions of E2, while E1 may contain additional
+extensions unrelated to those of E2. One may then consider also a more symmetric (and stronger) relationship (cid:19)E
+S ,
+where it is also required that any extension of E1 is included in an extension of E2.
+
+Deﬁnition 23. Given two sets of extensions E1 and E2 of an argumentation framework AF, E1 (cid:19)E
+S
+the following condition holds:
+
+E2 iff E1 (cid:19)E
+W
+
+E2 and
+
+∀E1 ∈ E1 ∃E2 ∈ E2: E1 ⊆ E2
+
+(9)
+
+Having introduced three alternative skepticism relations between sets of extensions, let us now analyze some of
+their properties. First, it is immediate to see that the three relations are in strict order of implication. Given two sets of
+extensions E1 and E2 of an argumentation framework AF, it holds that:
+
+E1 (cid:19)E
+S
+
+E2 ⇒ E1 (cid:19)E
+W
+
+E2 ⇒ E1 (cid:19)E
+
+∩ E2
+
+(10)
+
+Then, it can be easily seen (proof is omitted,2 see [5] for a related result) that the relations give rise to a preorder.
+
+Proposition 24. Relations (cid:19)E
+
+∩ , (cid:19)E
+
+W and (cid:19)E
+
+S are preorders, i.e. they are reﬂexive and transitive.
+
+A simple example reveals that (cid:19)E
+
+S is not antisymmetric. In fact, let us consider three extensions E1, E2 and E3
+E1,
+such that E1 (cid:3) E2 (cid:3) E3, and let E1 be {E1, E2, E3}, E2 be {E1, E3}. It can be seen that E1 (cid:19)E
+S
+however E1 (cid:15)= E2. Since (cid:19)E
+S entails the other relations, none of them is antisymmetric and therefore none of the three
+relations is a partial order. It is immediate to show (proof is omitted) that if the additional constraint of I-maximality
+is introduced, then (cid:19)E
+∩ is
+anyway not).
+
+S ) turns out to be a partial order (while it is easy to see that (cid:19)E
+
+W (and as a consequence (cid:19)E
+
+E2 and E2 (cid:19)E
+S
+
+Proposition 25. Given two I-maximal sets of extensions E1 and E2, if E1 (cid:19)E
+W
+
+E2 and E2 (cid:19)E
+W
+
+E1 then E1 = E2.
+
+4.2. A skepticism relation between argumentation frameworks
+
+While we are not aware of any deﬁnition of a general skepticism relation for argumentation frameworks in the
+literature, some more speciﬁc but related notions have been introduced by the authors in [3] and by Modgil in [18].
+The skepticism relation (cid:19)A we propose for argumentation frameworks provides a generalization of these notions,
+while relying on the same common intuition concerning the relationship between a mutual and a unidirectional attack
+involving two arguments α and β.
+
+To illustrate the intuition discussed in [3], let us consider a very simple argumentation framework including just
+two arguments α and β, where α attacks β but not vice versa. This is a situation where the state assignment of
+any argumentation semantics corresponds to the maximum level of commitment: it is universally accepted that α
+should be justiﬁed and β rejected. Now if we consider a modiﬁed argumentation framework where an attack from
+β to α has been added, we obtain a situation where, clearly, a lesser level of commitment is appropriate: given
+the mutual attack between the two arguments, neither of them can be assigned a deﬁnitely committed state and we
+are left in a more undecided, i.e. more skeptical, situation in absence of any reason for preferring either of them.
+Extending this reasoning, consider a couple of arguments α and β in a generic argumentation framework AF(cid:20) such
+that α → β while β (cid:15)→ α. Consider now an argumentation framework AF obtained from AF(cid:20) by simply adding an
+
+2 To keep the size of the paper within reasonable limits, several proofs are omitted. They can be found in [4].
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+683
+
+attack relation from β to α while leaving all the rest unchanged. It seems reasonable to state that AF corresponds to a
+more undecided situation with respect to AF(cid:20). In fact, converting a unidirectional attack into a mutual attack can only
+make the justiﬁcation states of the involved nodes less committed (of course, they can remain the same if they are
+strictly determined by other arguments, independently of the attack relations between α and β). In turn, having α or
+β in a less committed state may only give rise to other less committed states in the nodes they attack: intuitively, the
+more undecided is the state of an attacker, the more undecided should be the state of the attacked node, and, in turn,
+of the nodes attacked by the latter and so on. This reasoning will be generalized here by considering any number of
+“transformations” of unidirectional attacks into mutual ones.
+
+Dealing with the case of hierarchical argumentation frameworks but relying on the same intuition, Modgil has
+independently introduced in [18] the notion of partial resolution of an argumentation framework AF, which, roughly
+speaking, is an argumentation framework AF(cid:20) where some mutual attacks of AF are converted into unidirectional
+ones. AF(cid:20) is a (complete) resolution of AF if all mutual attacks of AF are converted. Also in [18] the underlying idea
+is that the presence of mutual attacks corresponds to a more undecided situation.
+
+Given these bases, we are now ready to deﬁne a skepticism relation (cid:19)A between argumentation frameworks based
+on the same set of arguments, which requires a preliminary notation concerning the set of conﬂicting pairs of argu-
+ments in an argumentation framework.
+
+Deﬁnition 26. Given an argumentation framework AF = (cid:3)A, →(cid:5), CON F(AF) (cid:2) {(α, β) ∈ A × A | α → β ∨ β → α}.
+
+Deﬁnition 27. Given two argumentation frameworks AF1 = (cid:3)A, →1(cid:5) and AF2 = (cid:3)A, →2(cid:5), AF1 (cid:19)A AF2 if and only
+if CON F(AF1) = CON F(AF2) and →2 ⊆ →1.
+
+It is easy to see that the above deﬁnition covers all cases where some (possibly none) mutual attacks of AF1
+correspond to unidirectional attacks in AF2, while unidirectional attacks of AF1 are the same in AF2 (using the
+terminology of [18], AF2 is a partial resolution of AF1).
+
+It is immediate to see that (cid:19)A is a partial order, as it consists of an equality and a set inclusion relation. Comparable
+argumentation frameworks feature the same set of arguments and the same set of conﬂicting pairs of arguments, and
+can not include opposite unidirectional attacks between the same pair of arguments. It is also worth noting that within
+the set of argumentation frameworks comparable with a given AF there are, in general, several maximal elements with
+respect to (cid:19)A, namely all argumentation frameworks where no mutual attack is present (corresponding to the notion
+of resolution in [18]). In the following we will denote as RES(AF) the set of argumentation frameworks comparable
+with AF and maximal with respect to (cid:19)A.
+
+4.3. Skepticism adequacy
+
+Given an argumentation framework which is more skeptical than another one, it is reasonable to require that,
+when applying the same semantics to both, the skepticism relation between them is preserved between their sets of
+extensions. This kind of criterion, called skepticism adequacy, has ﬁrst been proposed in [3] and is formulated here in
+a generalized version.
+
+Deﬁnition 28. Given a skepticism relation (cid:19)E between sets of extensions, a semantics S is (cid:19)E-skepticism-adequate,
+denoted as SA(cid:19)E (S), if and only if for any pair of argumentation frameworks AF, AF(cid:20) such that AF (cid:19)A AF(cid:20) the
+following condition holds ES (AF) (cid:19)E ES (AF(cid:20)).
+
+According to the deﬁnitions provided in Section 4.1 we have three skepticism adequacy properties, related by the
+
+same order of implication as in (10):
+
+SA(cid:19)E
+
+S
+
+(S) ⇒ SA(cid:19)E
+
+W
+
+(S) ⇒ SA(cid:19)E
+
+∩
+
+(S)
+
+(11)
+
+It is easy to see that Deﬁnition 28 is equivalent to the one given in [3] where the modiﬁcation of just one attack
+
+relation is considered, provided that, as in our case, skepticism relations are transitive.
+
+684
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Proposition 29. Given a transitive skepticism relation (cid:19)E between sets of extensions and a semantics S, SA(cid:19)E (S) if
+and only if for any argumentation framework AF = (cid:3)A, →(cid:5), for any α, β ∈ A: α (cid:15)= β ∧ α → β,
+
+ES (AF
+
+(cid:2)(α,β)) (cid:19)E ES (AF)
+
+where AF(cid:2)(α,β) = (cid:3)A, → ∪{(β, α)}(cid:5).
+
+(12)
+
+Proof. Clearly (cid:19)E-skepticism adequacy implies (12) as a special case. On the other hand, for any pair of argumenta-
+tion frameworks AF, AF(cid:20) such that AF (cid:19)A AF(cid:20), it is clearly possible to construct at least one sequence AF1, . . . , AFn
+(cid:2)(αi ,βi ). Then if (12)
+such that AF1 = AF, AFn = AF(cid:20), and for i = 1, . . . , n − 1, ∃αi, βi ∈ A such that AFi = AFi+1
+holds, we have ES (AF) = ES (AF1) (cid:19)E · · · (cid:19)E ES (AFn) = ES (AF(cid:20)), and, by transitivity, ES (AF) (cid:19)E ES (AF(cid:20)). (cid:2)
+
+4.4. Resolution adequacy
+
+In the context of hierarchical argumentation frameworks, the following requirement for an argumentation semantics
+
+S is proposed in [18] for any argumentation framework AF = (cid:3)A, →(cid:5) and for any argument α ∈ A:
+
+α ∈
+
+E ⇔ ∀ AF
+
+(cid:20) ∈ RES(AF) α ∈
+
+(cid:4)
+
+(cid:4)
+
+E∈ES (AF)
+
+E
+
+E∈ES (AF(cid:20))
+
+(13)
+
+It can be seen that the ⇒-part of (13) is a special case of the skepticism adequacy criterion of Deﬁnition 28, where,
+∩ is
+
+among the argumentation frameworks AF(cid:20) such that AF (cid:19)A AF(cid:20), only the maximal ones are considered and (cid:19)E
+selected as the skepticism relation (cid:19)E between sets of extensions.
+
+On the other hand, the ⇐-part of (13) represents an original criterion, relying on the intuition that if an argument
+is skeptically justiﬁed in all possible resolutions of an argumentation framework AF then it should be skeptically
+justiﬁed in AF too. We refer to this criterion as resolution adequacy and provide now a generalization of its original
+formulation, in order to make it parametric with respect to skepticism relations between sets of extensions. In fact,
+ES (AF(cid:20)), it can be seen that the ⇐-part of (13) is equivalent to UR(AF, S) (cid:19)E
+letting UR(AF, S) =
+∩
+ES (AF). Generalizing this condition leads to a parametric formulation of the resolution adequacy criterion.
+
+AF(cid:20)∈RES(AF)
+
+(cid:5)
+
+Deﬁnition 30. Given a skepticism relation (cid:19)E between sets of extensions, a semantics S is (cid:19)E-resolution adequate,
+denoted RA(cid:19)E (S), if and only if for any argumentation framework AF it holds that UR(AF, S) (cid:19)E ES (AF).
+
+According to the deﬁnitions in Section 4.1, we have three resolution adequacy properties, related by the usual order
+
+of implication:
+
+RA(cid:19)E
+
+S
+
+(S) ⇒ RA(cid:19)E
+
+W
+
+(S) ⇒ RA(cid:19)E
+
+∩
+
+(S)
+
+5. A review of extension-based argumentation semantics
+
+(14)
+
+To make the paper self-contained, in this section we review the deﬁnition of several argumentation semantics which
+
+will be evaluated against the criteria deﬁned in previous sections.
+
+5.1. Traditional semantics
+
+Stable semantics, one of the earliest multiple-status approaches and still largely adopted in several application
+domains, relies on the idea that an extension should not only be internally consistent but also able to reject the
+arguments that are outside the extension. This reasoning leads to the notion of stable extension [14,23].
+
+Deﬁnition 31. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set E ⊆ A is a stable extension of AF if and only
+if E is conﬂict-free and ∀α ∈ A: α /∈ E, E → α.
+
+Stable semantics will be denoted as ST , and, accordingly, the set of all the stable extensions of AF will be denoted
+
+as EST (AF).
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+685
+
+Fig. 1. A three-length cycle.
+
+Stable semantics suffers from a signiﬁcant limitation since there are argumentation frameworks, like the one shown
+in Fig. 1, where no extension complying with Deﬁnition 31 exists. No other semantics considered in this paper is
+affected by this problem except the prudent version of stable semantics.
+
+The requirement that an extension should attack all other external arguments can be relaxed by imposing that an
+extension is simply able to defend itself from external attacks. This is at the basis of the notions of acceptable argument
+and admissible set [14], already recalled in Section 3.2. The set of the arguments acceptable with respect to a set E is
+traditionally denoted using the characteristic function FAF(E).
+
+Deﬁnition 32. Given an argumentation framework AF = (cid:3)A, →(cid:5), the function FAF : 2A → 2A which, given a set
+E ⊆ A, returns the set of the acceptable arguments with respect to E, is called the characteristic function of AF.
+
+Building on these concepts, the notion of complete extension can be introduced, which plays a key role in Dung’s
+
+theory, since all semantics encompassed by his framework select their extensions among the complete ones.
+
+Deﬁnition 33. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set E ⊆ A is a complete extension if and only if E
+is admissible and every argument of A which is acceptable with respect to E belongs to E, i.e. E ∈ AS(AF) ∧ ∀α ∈
+FAF(E) α ∈ E.
+
+The notion of complete extension does not entail the property of I-maximality. In fact, Deﬁnition 33 only establishes
+that nodes already defended by an extension E are included in E, but does not impose that nodes (or sets of nodes)
+that defend themselves are added to the extension. Probably for this reason, the notion of complete extension is not
+associated to a notion of complete semantics in [14], but rather represents an intermediate step towards the deﬁnition
+of grounded and preferred semantics. However, the term complete semantics has subsequently gained acceptance in
+the literature (see for instance [9,18]) and will be used in the present analysis to refer to the properties of the set of
+complete extensions. Complete semantics will be denoted as CO.
+
+The well-known grounded semantics, denoted as GR, belongs to the unique-status approach and its unique exten-
+
+sion, denoted as GE(AF), can be deﬁned as the least ﬁxed point of the characteristic function.
+
+Deﬁnition 34. Given an argumentation framework AF = (cid:3)A, →(cid:5), the grounded extension of AF, denoted as GE(AF),
+is the least (with respect to set inclusion) ﬁxed point of FAF.
+
+Preferred semantics, denoted as PR, is obtained by simply requiring the property of maximality along with ad-
+
+missibility.
+
+Deﬁnition 35. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set E ⊆ A is a preferred extension of AF if and
+only if it is a maximal (with respect to set inclusion) admissible set, i.e. a maximal element of AS(AF).
+
+5.2. SCC-recursiveness and CF2 semantics
+
+In [6] a general schema for argumentation semantics, called SCC-recursiveness, has been introduced. SCC-
+recursiveness is a property of the extensions which relies on the graph theoretical notion of strongly connected
+components (SCCs).
+
+686
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Deﬁnition 36. Given an argumentation framework AF = (cid:3)A, →(cid:5), the binary relation of path-equivalence between
+nodes, denoted as PEAF ⊆ (A × A), is deﬁned as follows:
+
+• ∀α ∈ A, (α, α) ∈ PEAF;
+• given two distinct nodes α, β ∈ A, (α, β) ∈ PEAF if and only if there is a (directed) path from α to β and a
+
+(directed) path from β to α.
+
+The strongly connected components of AF are the equivalence classes of nodes under the relation of path-equivalence.
+The set of the SCCs of AF is denoted as SCCSAF.
+
+A particular case is represented by the empty argumentation framework: when AF = (cid:3)∅, ∅(cid:5) we assume
+
+SCCSAF = {∅}.
+
+We extend to SCCs the notion of parents, namely the set of the other SCCs that attack a SCC S, which is denoted
+
+as sccparAF(S), and we introduce the deﬁnition of proper ancestors, denoted as sccancAF(S).
+
+Deﬁnition 37. Given an argumentation framework AF = (cid:3)A, →(cid:5) and a SCC S ∈ SCCSAF, we deﬁne sccparAF(S) =
+{P ∈ SCCSAF | P (cid:15)= S and P → S} and sccancAF(S) = sccparAF(S) ∪ (
+P ∈sccparAF(S) sccancAF(P )). A SCC S such
+that sccparAF(S) = ∅ is called initial.
+
+(cid:5)
+
+It is well-known that the graph obtained by considering SCCs as single nodes is acyclic. In other words, SCCs
+can be partially ordered according to the relation of attack and initial SCCs are those which are not preceded by any
+other one in this partial order. Of course, in any argumentation framework there is at least one initial SCC. This fact
+lies at the heart of the deﬁnition of SCC-recursiveness, which is based on the intuition that extensions can be built
+incrementally starting from initial SCCs and following the above mentioned partial order. In other words, the choices
+concerning extension construction carried out in an initial SCC do not depend on those concerning the other ones,
+while they directly affect the choices about the subsequent SCCs and so on. While the basic underlying intuition
+is rather simple, the formalization of SCC-recursiveness is admittedly rather complex and involves some additional
+notions. To keep the size of the paper within reasonable limits, we can only quickly recall the relevant deﬁnitions here,
+while referring the reader to [6] for more details and examples.
+
+First of all, the choices (represented in the following deﬁnition by the set E) within the proper ancestor SCCs
+
+determine a partition of the nodes of a generic SCC S into three subsets.
+
+Deﬁnition 38. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set E ⊆ A and a strongly connected component
+S ∈ SCCSAF, we deﬁne:
+
+• DAF(S, E) = {α ∈ S | (E ∩ outparAF(S)) → α};
+• PAF(S, E) = {α ∈ S | (E ∩ outparAF(S)) (cid:15)→ α ∧ ∃β ∈ (outparAF(S) ∩ parAF(α)): E (cid:15)→ β};
+• UAF(S, E) = S \ (DAF(S, E) ∪ PAF(S, E)) = {α ∈ S | (E ∩ outparAF(S)) (cid:15)→ α ∧ ∀β ∈ (outparAF(S) ∩
+
+parAF(α)) E → β}.
+
+Regarding E as a part of an extension which is being constructed, the idea is that arguments in DAF(S, E), being
+attacked by nodes in E, cannot be chosen in the construction of the extension E (i.e. do not belong to E ∩ S). Selection
+of arguments to be included in E is therefore restricted to (S \DAF(S, E)) = (UAF(S, E)∪PAF(S, E)), which, for ease
+of notation, will be denoted in the following as UPAF(S, E). Then, inspired by the reinstatement principle, we require
+the selection of nodes within a SCC S to be carried out on the restricted argumentation framework AF↓UPAF(S,E)
+without taking into account the attacks coming from DAF(S, E). Combining these ideas and skipping some details
+not strictly necessary in the context of the present paper, we can ﬁnally recall the deﬁnition of SCC-recursiveness.
+
+Deﬁnition 39. A given argumentation semantics S is SCC-recursive if and only if for any argumentation framework
+AF = (cid:3)A, →(cid:5) ES (AF) = GF(AF, A), where for any AF = (cid:3)A, →(cid:5) and for any set C ⊆ A, the function GF(AF,
+C) ⊆ 2A is deﬁned as follows: for any E ⊆ A, E ∈ GF(AF, C) if and only if
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+687
+
+• in case | SCCSAF | = 1, E ∈ BF S (AF, C),
+• otherwise, ∀S ∈ SCCSAF (E ∩ S) ∈ GF(AF↓UPAF(S,E), UAF(S, E) ∩ C),
+
+where BF S (AF, C) is a function, called base function, that, given an argumentation framework AF = (cid:3)A, →(cid:5) such
+that | SCCSAF | = 1 and a set C ⊆ A, gives a subset of 2A.
+
+All SCC-recursive semantics “share” this general scheme and only differ by the speciﬁc base function adopted.
+It has been shown in [6] that all semantics encompassed by Dung’s framework are SCC-recursive and the relevant
+base functions have been identiﬁed. Moreover, deﬁning and experimenting new SCC-recursive semantics is quite easy
+since it simply amounts to deﬁning a base function operating on single-SCC argumentation frameworks. As shown in
+[6], the base function has only to respect two very simple conditions in order to ensure that the resulting extensions
+satisfy the requirements of being conﬂict-free and of being a superset of the grounded extension.
+
+Four original SCC-recursive semantics have been deﬁned in [6]. In particular, the SCC-recursive semantics called
+CF2 [2,6] can be regarded as the most promising, since it has been shown to provide an interesting behavior in several
+critical examples. Its deﬁnition relies on a very simple base function: BF CF2(AF, C) = MCF AF, where MCF AF
+denotes the set made up of all the maximal conﬂict-free sets of AF (note that the parameter C plays no role at all in
+this case). We recall here an important result to be used in the following.
+
+Lemma 40. (See Lemma 2 of [3].) For any argumentation framework AF = (cid:3)A, →(cid:5) ECF2(AF) ⊆ MCF AF.
+
+In words, for a generic argumentation framework AF any extension prescribed by CF2 semantics is a maximal
+
+conﬂict-free set of AF (but not vice versa).
+
+5.3. Semi-stable semantics
+
+Semi-stable semantics [9], denoted in the following as SST , aims at guaranteeing the existence of extensions in any
+case (differently from stable semantics) while coinciding with stable semantics (differently from preferred semantics)
+when stable extensions exist. The deﬁnition of extensions satisfying these desiderata is ingeniously simple.
+
+Deﬁnition 41. Given an argumentation framework AF = (cid:3)A, →(cid:5) a set E ⊆ A is a semi-stable extension if and only if
+E is a complete extension such that E ∪ outchildAF(E) is maximal with respect to set inclusion.
+
+5.4. Ideal semantics
+
+Ideal semantics [15] provides an alternative unique-status approach which is less skeptical than grounded seman-
+tics, i.e. for any argumentation framework the (unique) ideal extension is a (sometimes strict) superset of the grounded
+extension. Also in this case the deﬁnition is quite simple.
+
+Deﬁnition 42. Given an argumentation framework AF = (cid:3)A, →(cid:5) a set E ⊆ A is ideal if and only if E is admissible
+and ∀P ∈ EPR(AF) E ⊆ P . The ideal extension is the maximal (with respect to set inclusion) ideal set.
+
+We will use the symbol ID to refer to the ideal semantics, and the ideal extension of an argumentation framework
+
+AF will be denoted as ID(AF).
+
+5.5. Prudent semantics
+
+Prudent semantics [12,13] emphasizes the role of indirect attacks.
+
+Deﬁnition 43. Given an argumentation framework AF = (cid:3)A, →(cid:5), an argument α indirectly attacks another argument
+β, denoted as α (cid:5)→ β, if there is an odd-length path from α to β in the defeat graph corresponding to AF. A set S is
+without indirect conﬂicts, denoted as icf (S), if and only if (cid:2)α, β ∈ S: α (cid:5)→ β.
+
+688
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Forbidding indirect attacks leads to the deﬁnition of p(rudent)-admissible sets.
+
+Deﬁnition 44. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set of arguments S ⊆ A is p(rudent)-admissible if
+and only if ∀α ∈ S α is acceptable with respect to S and icf (S).
+
+On this basis, the prudent version of several traditional notions of extensions (and of the relevant semantics) has
+
+been deﬁned.
+
+Deﬁnition 45. Given an argumentation framework AF = (cid:3)A, →(cid:5), a set of arguments S ⊆ A is:
+
+• a preferred p-extension if and only if S is a maximal (with respect to set inclusion) p-admissible set;
+• a stable p-extension if and only if icf (S) and ∀α ∈ (A \ S) S → α;
+• a complete p-extension if and only if S is p-admissible and there is no argument α /∈ S such that α is acceptable
+
+with respect to S and icf (S ∪ {α}).
+
+As to the prudent version of grounded semantics, ﬁrst the notion of p(rudent)-characteristic function is needed.
+
+Deﬁnition 46. Given an argumentation framework AF = (cid:3)A, →(cid:5), Fp
+AF, is deﬁned as follows: given a set S ⊆ A, Fp
+
+AF : 2A → 2A, called p-characteristic function of
+AF(S) = {α ∈ A | α is acceptable with respect to S and icf (S ∪ {α})}.
+
+In general Fp
+AF(∅), i ∈ N, is monotonic, where Fp,1
+Fp,i
+lowing deﬁnition is given in [12].
+
+AF is not monotonic with respect to set inclusion, one can rely however on the fact that the sequence
+(S)), i > 1. Accordingly, the fol-
+
+AF(S), and Fp,i
+
+AF(S) = Fp
+
+AF (S) = Fp
+
+AF(Fp,i−1
+
+AF
+
+Deﬁnition 47. Given an argumentation framework AF = (cid:3)A, →(cid:5), let j be the lowest integer such that the sequence
+AF(∅) is stationary for i (cid:3) j . Then Fp,j
+Fp,i
+
+AF (∅) is the grounded p-extension of AF, denoted as GPE(AF).
+
+The prudent versions of grounded, complete, preferred and stable semantics will be denoted as GRP, COP, PRP
+
+and ST P, respectively.
+
+6. Evaluating semantics
+
+In this section we discuss the application of the evaluation criteria presented in Section 3 and of the adequacy
+criteria introduced in Sections 4.3 and 4.4 to the semantics reviewed in Section 5. A synthetic view of the results is
+given in Table 1 (for criteria deﬁned in Section 3) and Table 2 (for adequacy criteria).
+
+6.1. I-maximality
+
+As mentioned in Section 3.1, the I-maximality criterion is necessarily satisﬁed by any unique-status semantics,
+therefore in particular by grounded, ideal and grounded prudent semantics. The deﬁnition of preferred and preferred
+
+Table 1
+Satisfaction of non-skepticism-related criteria by argumentation semantics
+
+I-maximality (Def. 9)
+Admissibility (Def. 12)
+Strong adm. (Def. 14)
+Reinstatement (Def. 15)
+Weak reinst. (Def. 16)
+CF-reinst. (Def. 17)
+Directionality (Def. 19)
+
+GR
+
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+
+CO
+
+No
+Yes
+No
+Yes
+Yes
+Yes
+Yes
+
+ST
+
+Yes
+Yes
+No
+Yes
+Yes
+Yes
+No
+
+PR
+
+CF2
+
+SST
+
+Yes
+Yes
+No
+Yes
+Yes
+Yes
+Yes
+
+Yes
+No
+No
+No
+Yes
+Yes
+Yes
+
+Yes
+Yes
+No
+Yes
+Yes
+Yes
+No
+
+ID
+
+Yes
+Yes
+No
+Yes
+Yes
+Yes
+Yes
+
+GRP
+
+COP
+
+ST P
+
+PRP
+
+Yes
+Yes
+Yes
+No
+No
+No
+Yes
+
+No
+Yes
+No
+No
+No
+No
+No
+
+Yes
+Yes
+No
+Yes
+Yes
+Yes
+No
+
+Yes
+Yes
+No
+No
+No
+No
+No
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+689
+
+Table 2
+Satisfaction of adequacy criteria by argumentation semantics
+
+(cid:19)E
+
+(cid:19)E
+
+(cid:19)E
+
+(cid:19)E
+
+(cid:19)E
+
+∩ -sk. ad. (Defs. 21&28)
+W -sk. ad. (Defs. 22&28)
+S -sk. ad. (Defs. 23&28)
+∩ -res. ad. (Defs. 21&30)
+W -res. ad. (Defs. 22&30)
+S -res. ad. (Defs. 23&30)
+
+(cid:19)E
+
+GR
+
+Yes
+
+Yes
+
+Yes
+
+No
+
+No
+
+No
+
+CO
+
+Yes
+
+Yes
+
+No
+
+No
+
+No
+
+No
+
+ST
+
+Yes
+
+Yes
+
+No
+
+Yes
+
+Yes
+
+Yes
+
+PR
+
+No
+
+No
+
+No
+
+Yes
+
+Yes
+
+Yes
+
+CF2
+
+Yes
+
+Yes
+
+No
+
+No
+
+No
+
+No
+
+SST
+
+ID
+
+GRP
+
+COP
+
+ST P
+
+PRP
+
+No
+
+No
+
+No
+
+Yes
+
+Yes
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+Yes
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+Yes
+
+Yes
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+No
+
+prudent extensions explicitly requires maximality of sets, which obviously entails I-maximality. This extends to semi-
+stable semantics too, as it is proved in [9] that every semi-stable extension is also a preferred extension. Any stable (or
+stable prudent) extension E attacks any argument α /∈ E, therefore any strict superset of E is not conﬂict-free, again
+entailing I-maximality. As to CF2 semantics, Lemma 40 directly implies I-maximality. Finally, as already mentioned
+in Section 5.1, it is easy to see that the set of complete (and analogously complete prudent) extensions does not satisfy
+I-maximality in general.
+
+6.2. Admissibility and reinstatement
+
+Any complete extension satisﬁes, by Deﬁnition 33, the properties of admissibility (1) and reinstatement (3) (which
+in turn entails weak (4) and CF (5) reinstatement). As a consequence, any semantics whose extensions are complete
+extensions (grounded, preferred, stable, semi-stable, stable prudent) satisﬁes these properties as well.
+
+The ideal extension satisﬁes admissibility directly by Deﬁnition 42. We prove now that it satisﬁes reinstatement
+
+(and therefore also its weaker versions).
+
+Proposition 48. For any argumentation framework AF = (cid:3)A, →(cid:5), for any argument α such that ∀β ∈ parAF(α)
+ID(AF) → β, it holds that α ∈ ID(AF).
+
+Proof. Suppose by contradiction that ∃α /∈ ID(AF) such that ∀β ∈ parAF(α), ID(AF) → β. Note that since ID(AF) is
+admissible and attacks all the defeaters of α by Dung’s fundamental lemma [14] it must be the case that ID(AF) ∪ {α}
+is admissible. Then the absurd hypothesis may only hold if α is not included in the intersection of the preferred exten-
+sions of AF, namely ∃E ∈ EPR(AF): α /∈ E. However, ∀E ∈ EPR(AF) E ∪ {α} is admissible by Dung’s fundamental
+lemma, since E is admissible and ID(AF) ⊆ E, thus ∀β ∈ parAF(α) E → β. This contradicts the fact that E, being a
+preferred extension, is a maximal admissible set. (cid:2)
+
+While the semantics examined so far satisfy admissibility and all forms of reinstatement at the same time, this is
+not the case for the remaining semantics. Let us consider admissibility ﬁrst. Preferred prudent and complete prudent
+semantics satisfy admissibility (which is implied by p-admissibility) by Deﬁnition 45. The grounded prudent seman-
+tics satisﬁes it too, since it also satisﬁes strong admissibility, as it will be seen later. On the other hand, CF2 semantics
+does not satisfy admissibility, as it can be seen by considering the argumentation framework shown in Fig. 1, which
+consists of a single strongly connected component. Then ECF2(AF) = BF CF2(AF, A) = MCF AF = {{α}, {β}, {γ }}:
+clearly, none of these extensions is an admissible set.
+
+Turning to reinstatement, a single example, taken from [13], rules it out (even in weaker forms) for the prudent
+
+versions of complete, grounded and preferred semantics. Considering Fig. 2, we have that:
+
+• {α, (cid:6)} is a preferred p-extension as it is maximal p-admissible (δ cannot be included as it indirectly conﬂicts with
+
+α);
+
+• {α, (cid:6)} is also a complete p-extension for the same reason;
+• {δ, (cid:6)} is the grounded p-extension, in fact Fp
+
+added as it indirectly conﬂicts with δ.
+
+AF(∅) = {δ, (cid:6)} = Fp,i
+
+AF(∅) for any i since, in particular, α cannot be
+
+690
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Fig. 2. Direct and indirect attacks.
+
+Then it is evident that an initial argument (in this case δ) is not included in a preferred (and complete) prudent
+extension: this is incompatible with any form of reinstatement. The grounded prudent extension necessarily includes
+the initial nodes, but in this example it excludes the argument α which is strongly defended by the extension itself and
+is not in (direct) conﬂict with it. Therefore also in this case no form of reinstatement is satisﬁed.
+
+Turning to CF2 semantics, the already mentioned example of Fig. 1 also shows that reinstatement is violated.
+Considering for instance the extension {α} we have that all the defeaters of γ (actually β) are attacked by the exten-
+sion, however γ does not belong to the extension. On the other hand, CF2 semantics satisﬁes both weaker forms of
+reinstatement. As to CF -reinstatement, by Lemma 40 it is easy to see that CF2 semantics satisﬁes condition (5) since
+any extension satisﬁes the stronger condition cf (E ∪ {α}) ⇒ α ∈ E. As to weak reinstatement, it is known [6] that
+∀E ∈ ECF2(AF) GE(AF) ⊆ E: then (4) follows from Proposition 50(b).
+
+To conclude this section, let us turn to strong admissibility, i.e. condition (2). It is easy to see that this condition
+
+holds for grounded semantics.
+
+Proposition 49. Given an argumentation framework AF = (cid:3)A, →(cid:5), ∀α ∈ GE(AF) sd(α, GE(AF)).
+
+(cid:5)
+
+AF (∅)). We prove the claim by induction on the sets Fi
+
+AF(∅) =
+Proof. It is known [14] that, for any ﬁnite AF, GE(AF) =
+FAF(Fi−1
+AF(∅) =
+FAF(∅) (actually, the initial arguments of the defeat graph) is strongly defended by any set, thus in particu-
+AF (∅)) (and therefore ∀α ∈
+lar by F1
+Fi−1
+AF (∅) sd(α, GE(AF))). Then ∀β ∈ (Fi
+AF (∅), and since ∀α ∈
+AF (∅)) then sd(β, Fi−1
+AF (∅) sd(α, Fi−1
+Fi−1
+
+AF(∅) = FAF(∅) and Fi
+i(cid:3)1 Fi
+AF(S). First, any argument α belonging to F1
+
+AF(∅) and GE(AF). Now, assume inductively that ∀α ∈ Fi−1
+
+AF (∅)) β is acceptable with respect to Fi−1
+
+AF (∅)) holds, entailing sd(β, Fi
+
+AF(∅)) and sd(β, GE(AF)). (cid:2)
+
+AF (∅) sd(α, Fi−1
+
+AF(∅), where F1
+
+AF(∅) \ Fi−1
+
+It is also interesting to note that this notion, in combination with the dual property of weak reinstatement (4) can
+be used for a defense-based characterization of the grounded semantics, which, as to our knowledge, has not been
+previously provided in the literature. First, Proposition 50 shows that, for a given semantics S, satisfying condition
+(4) is equivalent to the property of agreement with grounded semantics, i.e. for any argumentation framework AF and
+∀E ∈ ES (AF) GE(AF) ⊆ E.
+
+Proposition 50. Given an argumentation framework AF = (cid:3)A, →(cid:5) and a set E ⊆ A, E satisﬁes condition (4) if and
+only if GE(AF) ⊆ E.
+
+Proof. (a) (4) ⇒ GE(AF) ⊆ E.
+
+(cid:5)
+
+AF(∅) \ Fi−1
+
+i(cid:3)1 Fi
+
+AF(∅), and ∀i, ∀β ∈ (Fi
+
+AF (∅)). First, any argument α ∈ F1
+
+By the proof of Proposition 49, we have that GE(AF) =
+
+AF (∅))
+AF(∅) is initial, thus it is strongly defended by any set and necessarily
+AF (∅))
+
+sd(β, Fi−1
+belongs to E according to condition (4). Now, assume inductively that Fi−1
+sd(β, Fi−1
+
+AF(∅) \ Fi−1
+AF (∅) ⊆ E, we have that sd(β, E), which by (4) implies β ∈ E. Then the conclusion follows.
+
+AF (∅)) and Fi−1
+(b) GE(AF) ⊆ E ⇒ (4).
+We prove that assuming ∃α /∈ GE(AF): sd(α, E) yields a contradiction, which entails the desired conclusion since
+GE(AF) ⊆ E. By assumption, ∀β ∈ parAF(α), ∃γ ∈ E \ {α}: γ → β ∧ sd(γ , E \ {α}). Since GE(AF) is a complete
+extension, it must be the case that one of such γ exists with γ /∈ GE(AF), otherwise α ∈ GE(AF). Thus, in particular
+∃γ /∈ GE(AF): sd(γ , E \ {α}), where GE(AF) ⊆ (E \ {α}). Now, iterating the same kind of reasoning on γ we are led
+to consider an argument γ (cid:20) ∈ E \ {α, γ }: sd(γ (cid:20), E \ {α, γ }) ∧ γ (cid:20) /∈ GE(AF). This in turn leads to consider an argument
+γ (cid:20)(cid:20) ∈ E \ {α, γ , γ (cid:20)}: sd(γ (cid:20)(cid:20), E \ {α, γ , γ (cid:20)}) ∧ γ (cid:20)(cid:20) /∈ GE(AF), and so on. In summary we are led to consider an inﬁnite
+sequence of distinct arguments within E, which is impossible due to the ﬁniteness of A. (cid:2)
+
+AF (∅) ⊆ E. Since ∀β ∈ (Fi
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+691
+
+Fig. 3. A case where ID(AF) (cid:4) GE(AF).
+
+On the other hand, condition (2) implies that an extension E is included in the grounded extension.
+
+Proposition 51. Given an argumentation framework AF = (cid:3)A, →(cid:5) and a set E ⊆ A, if E satisﬁes condition (2) then
+E ⊆ GE(AF).
+
+Proof. We prove that assuming ∃α /∈ GE(AF): sd(α, E) yields a contradiction, which by condition (2) entails the
+conclusion E ⊆ GE(AF). Note ﬁrst that, by assumption, ∃β ∈ A: β → α, since initial nodes belong to GE(AF).
+Then, according to (2), for any such β there must be an argument γ ∈ E \ {α}: γ → β ∧ sd(γ , E \ {α}). As in the
+proof of Proposition 50(b), it must be the case that for at least one of these γ , γ /∈ GE(AF), and we are led to consider
+an inﬁnite sequence of distinct arguments within E, which is impossible. (cid:2)
+
+Propositions above show that the conjunction of weak reinstatement and strong admissibility provides a charac-
+terization of grounded semantics. In particular, any semantics whose extensions are not included in the grounded
+extension can not satisfy strong admissibility. For instance, considering the simple example of mutual attack (often
+called Nixon diamond) corresponding to the argumentation framework AF = (cid:3){α, β}, {(α, β), (β, α)}(cid:5), any multiple-
+status semantics S such that ES (AF) ⊇ {{α}, {β}} violates condition (2). This immediately rules out complete, stable,
+preferred, CF2, semi-stable, complete prudent, stable prudent and preferred prudent semantics. Also ideal seman-
+tics does not satisfy (2) since there are cases where GE(AF) (cid:3) ID(AF). For instance, in the example of Fig. 3
+EPR(AF) = {{α, δ}, {β, δ}}, then ID(AF) = {δ} which is admissible and included in both preferred extensions. How-
+ever, GE(AF) = ∅.
+
+Finally, it can be shown (proof is omitted) that the grounded prudent extension GPE(AF) satisﬁes strong admissi-
+
+bility.
+
+Proposition 52. Given an argumentation framework AF = (cid:3)A, →(cid:5), ∀α ∈ GPE(AF) sd(α, GPE(AF)).
+
+6.3. Directionality
+
+To begin our analysis, we prove that the directionality criterion is satisﬁed by all SCC-recursive semantics such
+that for any argumentation framework the existence of extensions is guaranteed. This covers the cases of grounded,
+complete, and preferred semantics, whose SCC-recursiveness has been proved in [6], and of CF2 semantics, which,
+as recalled in Section 5.2, is directly deﬁned in SCC-recursive terms. Two preliminary lemmata, whose easy proof is
+omitted, are required.
+
+Lemma 53. Given an argumentation framework AF = (cid:3)A, →(cid:5) and a set U ∈ US(AF), ∀S ∈ SCCSAF: (S ∩ U ) (cid:15)= ∅,
+S ⊆ U . Then ∃Q ⊆ SCCSAF: U =
+
+(cid:5)
+
+S∈Q S.
+
+Lemma 54. Given an argumentation framework AF = (cid:3)A, →(cid:5), ∀U ∈ US(AF) ∀S ∈ SCCSAF, S ⊆ U ⇒
+(cid:5)
+(
+
+S(cid:20)∈sccancAF(S) S(cid:20)) ⊆ U .
+
+Proposition 55. Any SCC-recursive semantics S such that ∀ AF = (cid:3)A, →(cid:5) ∀C ⊆ A BFS (AF, C) (cid:15)= ∅, satisﬁes the
+directionality criterion.
+
+692
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Fig. 4. Stable semantics does not satisfy directionality.
+
+Proof. By Deﬁnition 39 it holds that for any argumentation framework AF = (cid:3)A, →(cid:5):
+
+(cid:6)
+
+ES (AF) =
+
+E ⊆ A: ∀S ∈ SCCSAF(E ∩ S) ∈ GF
+
+(cid:2)
+AF↓U PAF(S,E), UAF(S, E)
+
+(cid:3)(cid:7)
+
+(15)
+
+Considering a generic unattacked set U ∈ US(AF), from Lemma 53 we know that ∃Q ⊆ SCCSAF: U =
+
+S∈Q S
+and from Lemma 54 that ∀S ∈ Q sccancAF(S) ⊆ Q. It follows that SCCSAF↓U
+= Q. Then ES (AF↓U ) = {E ⊆
+U : ∀S ∈ Q (E ∩ S) ∈ GF((AF↓U )↓UPAF↓
+U (S,E),
+UAF↓U (S, E))}. Now, since ∀S ∈ Q sccancAF(S) ⊆ Q, it is easy to see that ∀E ⊆ U , ∀S ∈ Q, the following equalities
+hold since the restriction to U does not introduce any difference with respect to the whole AF as far as the relevant
+sets are concerned: UPAF↓U (S, E) = UPAF(S, E) and UAF↓U (S, E) = UAF(S, E). Then
+
+U (S,E), UAF↓U (S, E))} = {E ⊆ U : ∀S ∈ Q (E ∩ S) ∈ GF(AF↓UPAF↓
+
+(cid:5)
+
+ES (AF↓U ) =
+
+(cid:6)
+E ⊆ U : ∀S ∈ Q (E ∩ S) ∈ GF
+
+(cid:2)
+AF ↓U PAF(S,E), UAF(S, E)
+
+(cid:3)(cid:7)
+
+(16)
+
+According to Deﬁnition 19, we have now to show that AE S (AF, U ) = ES (AF↓U ), where AE S (AF, U ) = {E ∩
+U : E ∈ ES (AF)}. If E ∈ ES (AF) then from (15) and taking into account that ∀S ∈ Q UPAF(S, E) and UAF(S, E) only
+depend on E ∩U rather than E, it is easy to derive that ∀S ∈ Q ((E ∩U )∩S) ∈ GF(AF↓UPAF(S,E∩U ), UAF(S, E ∩U )),
+which, using (16), yields (E ∩ U ) ∈ ES (AF↓U ). On the other hand, if E(cid:20) ∈ ES (AF↓U ) then by (16) it satisﬁes
+condition (15) as far as any strongly connected component S ∈ Q is concerned. Then we have to show that ∃E∗
+such that (E∗ ∩ U ) = E(cid:20) with E∗ satisfying the deﬁnition of SCC-recursiveness also for any S(cid:20) ∈ (SCCSAF \Q). But
+since ∀ AF = (cid:3)A, →(cid:5) ∀C ⊆ A, BF S (AF, C) is deﬁned, it is clearly possible to construct such a set E∗ (in general,
+more than one exist) by applying Deﬁnition 39 to the strongly connected components not included in Q following the
+(partial) order induced among them by the attack relation (note that by Lemma 54 no strongly connected component
+in (SCCSAF \Q) can precede any strongly connected component in Q in this order). (cid:2)
+
+Stable semantics, while being SCC-recursive [6], does not satisfy the hypothesis of Proposition 55. In fact, it does
+not satisfy the directionality criterion as it can be seen considering Fig. 4, where EST (AF) = {{β}} and therefore
+AE ST (AF, {α, β}) = {{β}}, while EST (AF↓{α,β}) = {{α}, {β}}. Since in this example both semi-stable and stable
+prudent semantics behave as stable semantics, neither of them satisﬁes directionality.
+
+Recalling the argumentation framework of Fig. 2 and the fact that {α, (cid:6)} is both a preferred p- and complete p-
+extension where the initial argument δ is not included, we immediately see that directionality is satisﬁed neither by
+preferred prudent nor by complete prudent semantics. As to grounded prudent semantics, it is easy to see that it
+satisﬁes directionality as, according to Deﬁnition 47, the grounded p-extension can be conceived as the result of a
+constructive process starting from initial arguments, where inclusion of an argument only depends on its ancestors.
+
+Finally, Proposition 58, which requires two preliminary lemmata whose proof is omitted, shows that the ideal
+
+semantics satisﬁes the directionality criterion.
+
+Lemma 56. Given an argumentation framework AF = (cid:3)A, →(cid:5), ∀U ∈ US(AF) it holds that
+
+• for any E ⊆ A such that E ∈ AS(AF), E ∩ U ∈ AS(AF↓U );
+• for any E ⊆ U such that E ∈ AS(AF↓U ), E ∈ AS(AF).
+
+Lemma 57. Given an argumentation framework AF = (cid:3)A, →(cid:5), ID(AF) =
+
+(cid:5)
+
+E∈AS(AF): ∀P ∈EPR(AF)E⊆P E.
+
+Proposition 58. Ideal semantics satisﬁes the directionality criterion.
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+693
+
+Proof. We have to prove that for any argumentation framework AF and for any U ∈ US(AF), ID(AF) ∩ U =
+ID(AF↓U ). On the basis of Lemma 57, we have to show that
+
+(cid:8)
+
+(cid:8)
+
+(cid:9)
+
+(cid:9)
+
+which is equivalent to
+
+(cid:10)
+
+E
+
+∩ U =
+
+(cid:9)
+
+(cid:10)
+
+E ∩ U
+
+=
+
+(cid:9)
+
+E
+
+E
+
+E∈AS(AF): ∀P ∈EPR(AF) E⊆P
+
+E∈AS(AF↓U ): ∀P ∈EPR(AF↓U ) E⊆P
+
+E∈AS(AF): ∀P ∈EPR(AF) E⊆P
+
+E∈AS(AF↓U ): ∀P ∈EPR(AF↓U ) E⊆P
+
+First, let us show that the set on the left-hand side of the last equality is a subset of the set on the right-hand side.
+By Lemma 56, if E ∈ AS(AF) then (E ∩ U ) ∈ AS(AF↓U ). Moreover, ∀P ∈ EPR(AF) (E ∩ U ) ⊆ (P ∩ U ). Since
+preferred semantics satisﬁes directionality we have that {P ∩ U | P ∈ EPR(AF)} = EPR(AF↓U ), from which it
+follows that ∀P ∈ EPR(AF↓U ) (E ∩ U ) ⊆ P . To see that, vice versa, the set on the right-hand side of the equality
+is a subset of the set on the left-hand side, recall that by Lemma 56 if E ∈ AS(AF↓U ) then E is also admissible in
+AF. Exploiting again the directionality of preferred semantics it is ﬁnally easy to see that ∀P ∈ EPR(AF↓U ) E ⊆ P
+implies also that ∀P ∈ EPR(AF) E ⊆ P . (cid:2)
+
+6.4. Skepticism adequacy
+
+In Section 4.3 three skepticism adequacy properties, ordered by implication, have been deﬁned. First let us show
+that grounded semantics satisﬁes all of them (note that we refer to the equivalent condition stated in Proposition 29,
+as we will do also in some of the following proofs).
+
+Lemma 59. Let us consider an argumentation framework AF = (cid:3)A, →(cid:5) with two arguments α, β ∈ A such that α →
+β. For any two sets of arguments A∗ and A such that A∗ ⊆ A and A is admissible in AF, FAF(cid:2)(α,β)(A∗) ⊆ FAF(A).
+Proof. Considering a generic γ ∈ FAF(cid:2)(α,β)(A∗), we have to prove that γ ∈ FAF(A), i.e. that γ is acceptable with
+respect to A in AF. To this purpose, let us consider a generic argument δ ∈ parAF(γ ), and let us prove that A → δ in
+AF. By deﬁnition of AF(cid:2)(α,β), it is easy to see that δ ∈ parAF(cid:2)(α,β)(γ ), and since γ ∈ FAF(cid:2)(α,β)(A∗) it must be the
+case that A∗ → δ holds in AF(cid:2)(α,β). Since A∗ ⊆ A, A → δ in AF(cid:2)(α,β), i.e. ∃(cid:6) ∈ A: (cid:6) → δ in AF(cid:2)(α,β). Now, we
+have two cases to consider. If it is not the case that β = (cid:6) and α = δ then, by deﬁnition of AF(cid:2)(α,β), (cid:6) → δ also in AF
+and the claim is proved. Otherwise, β = (cid:6) and α = δ, then, by the hypothesis that α → β in AF it follows that δ → A
+in AF, which, by admissibility of A, entails that, also in this case, A → δ in AF. (cid:2)
+
+Proposition 60. Given an argumentation framework AF = (cid:3)A, →(cid:5) and two arguments α, β ∈ A such that α → β, we
+have that GE(AF(cid:2)(α,β)) ⊆ GE(AF).
+
+AF(cid:2)(α,β)(∅) ⊆
+Proof. Taking into account the deﬁnition of grounded extension, it is sufﬁcient to prove that ∀i (cid:3) 1 Fi
+AF(∅). This can be easily proved by induction on i, taking into account Lemma 59 and the fact that ∀i (cid:3) 1 Fi
+AF(∅) is
+Fi
+admissible [14]. In particular, in the basis case Lemma 59 can be applied with A∗ = A = ∅ to prove that FAF(cid:2)(α,β)(∅) ⊆
+FAF(∅), while in the induction step it can be applied with A∗ = Fi
+AF(∅), where A∗ ⊆ A is
+inductively assumed, to prove that Fi+1
+
+AF(cid:2)(α,β) (∅) and A = Fi
+
+AF(cid:2)(α,β) (∅) ⊆ Fi+1
+
+AF (∅). (cid:2)
+
+Since grounded semantics belongs to the unique-status approach, it is immediate to see that the result of Propo-
+sition 60 entails the satisfaction of all skepticism adequacy properties including its strongest form, based on (cid:19)E
+S .
+On the other hand, it is easy to see that (cid:19)E
+S -skepticism adequacy is in contrast with the behavior of most se-
+mantics in the simple case of mutually attacking arguments. In fact, letting AF1 = (cid:3){α, β}, {(α, β)}(cid:5) and AF2 =
+(cid:2)(α,β) = (cid:3){α, β}, {(α, β), (β, α)}(cid:5), any multiple-status semantics S such that (as usual) ES (AF1) = {{α}} and
+AF1
+ES (AF2) ⊇ {{α}, {β}} does not satisfy (cid:19)E
+S -skepticism adequacy. This rules out all the remaining semantics except
+ideal and grounded prudent semantics, which however will be shown to fail to satisfy any form of skepticism ade-
+quacy.
+
+694
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Fig. 5. Several semantics are not skepticism adequate.
+
+(cid:19)E
+
+W -skepticism adequacy (along with the implied weaker form (cid:19)E
+
+∩ ) turns out to be a more reasonable requirement,
+which we now show to be satisﬁed by complete, stable and CF2 semantics. Proposition 61 provides the result for
+complete semantics.
+
+Proposition 61. Given two argumentation frameworks AF1 = (cid:3)A, →1(cid:5) and AF2 = (cid:3)A, →2(cid:5) such that AF1 (cid:19)A AF2,
+ECO(AF1) (cid:19)E
+W
+
+ECO(AF2).
+
+Proof. We have to show that ∀E2 ∈ ECO(AF2) ∃E1 ∈ ECO(AF1): E1 ⊆ E2. The conclusion easily follows from
+the fact that, as well known, for any AF GE(AF) ∈ ECO(AF) and ∀E ∈ ECO(AF) GE(AF) ⊆ E. Moreover, from
+Proposition 60, we have that GE(AF1) ⊆ GE(AF2). Then ∀E2 ∈ ECO(AF2) ∃E1 = GE(AF1) ∈ ECO(AF1): E1 ⊆
+GE(AF2) ⊆ E2. (cid:2)
+
+Turning to stable semantics, it is easy to see that it satisﬁes (cid:19)E
+
+W -skepticism adequacy in all cases where stable
+extensions exist for both the argumentation frameworks considered in the comparison (otherwise, one (or both) of the
+terms of comparison is undeﬁned and nothing can be said).
+
+Proposition 62. Given two argumentation frameworks AF1 = (cid:3)A, →1(cid:5) ∈ DST and AF2 = (cid:3)A, →2(cid:5) ∈ DST such that
+AF1 (cid:19)A AF2, EST (AF1) (cid:19)E
+W
+
+EST (AF2).
+
+Proof. We have to show that ∀E2 ∈ EST (AF2) ∃E1 ∈ EST (AF1): E1 ⊆ E2. It is easy to prove in particular that
+∀E2 ∈ EST (AF2) E2 ∈ EST (AF1). In fact, since CON F(AF1) = CON F (AF2) if E2 is conﬂict-free in AF2 it is also
+so in AF1. Moreover, since →2 ⊆ →1, given that ∀α ∈ (A \ E2) E2 →2 α, then ∀α ∈ (A \ E2) E2 →1 α. Therefore
+E2 is a stable extension of AF1. (cid:2)
+
+Finally, also CF2 semantics satisﬁes (cid:19)E
+
+W -skepticism adequacy. This follows from the (actually stronger) result in
+
+Proposition 63, proved in [3].
+
+Proposition 63. Given an argumentation framework AF = (cid:3)A, →(cid:5) and two arguments α, β ∈ A such that α (cid:15)= β ∧
+α → β, ECF2(AF) ⊆ ECF2(AF(cid:2)(α,β)).
+
+The remaining semantics fail to satisfy (cid:19)E
+
+∩ -skepticism adequacy and therefore skepticism adequacy in any form.
+Consider ﬁrst the example in Fig. 5. It can be seen that ES (AF1) = {∅} for preferred, ideal, semi-stable and preferred
+prudent semantics. However, for the same semantics it holds that ES (AF2) = {(cid:6)}. Also stable prudent semantics fails
+to satisfy (cid:19)E
+∩ -skepticism adequacy, as shown by the example in Fig. 6. In fact AF1 admits exactly one stable prudent
+extension, namely {α, δ}, while AF2 admits as unique stable prudent extension the set {α, γ }. As to grounded prudent
+semantics, consider Fig. 7. It is easy to see that GPE(AF1) = {α, γ } (in particular ζ cannot be included as it indirectly
+(cid:2)(α,β), we have GPE(AF2) = {γ , ζ }. As for complete
+conﬂicts with α). On the other hand, considering AF2 = AF1
+prudent semantics, consider Fig. 8: it turns out that ECOP (AF1) = {{α, γ2}, {γ2, γ5}}, while ECOP (AF2) = {{α}}.
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+695
+
+Fig. 6. Stable prudent semantics is not skepticism adequate.
+
+Fig. 7. Grounded prudent semantics is not skepticism adequate.
+
+Fig. 8. Complete prudent semantics is not skepticism adequate.
+
+6.5. Resolution adequacy
+
+The criterion of resolution adequacy is satisﬁed in all forms by preferred3 and stable semantics. The proof con-
+
+cerning preferred semantics requires a preliminary lemma.
+
+Lemma 64. (See Lemma 1 of [18].) Given an argumentation framework AF = (cid:3)A, →(cid:5) and a set E ⊆ A, E ∈ AS(AF)
+if and only if ∃ AF(cid:20) ∈ RES(AF): E ∈ AS(AF(cid:20)).
+
+Proposition 65. For any argumentation framework AF = (cid:3)A, →(cid:5), UR(AF, PR) (cid:19)E
+S
+
+EPR(AF).
+
+Proof. We have to prove the conditions: (i) ∀E2 ∈ EPR(AF) ∃E1 ∈ UR(AF, PR): E1 ⊆ E2; (ii) ∀E1 ∈
+UR(AF, PR) ∃E2 ∈ EPR(AF): E1 ⊆ E2.
+
+From Lemma 64 it follows in particular that for any maximal admissible set E2 (actually, a preferred extension) of
+AF, there is AF(cid:20) ∈ RES(AF) such that E2 is admissible in AF(cid:20). Then E2 is maximal admissible in AF(cid:20) (since there
+cannot be an admissible set of AF(cid:20) which is not an admissible set of AF), and therefore E2 ∈ UR(AF, PR). Thus,
+∀E2 ∈ EPR(AF) E2 ∈ UR(AF, PR), which proves condition (i). On the other hand, since any E1 ∈ UR(AF, PR)
+
+3 Some results related to resolution adequacy of grounded, complete, and preferred semantics are provided in [18] and are generalized here.
+
+696
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Fig. 9. Semi-stable semantics is not (cid:19)E
+
+S -resolution adequate.
+
+is a (maximal) admissible set in an AF(cid:20) ∈ RES(AF) we know from Lemma 64 that E1 is admissible in AF and is
+therefore included in one of the maximal admissible sets of AF, which is exactly the desired condition (ii). (cid:2)
+
+A similar result holds for stable extensions, provided that their existence in AF and in all elements of RES(AF) is
+
+assumed.
+
+Proposition 66. For any argumentation framework AF = (cid:3)A, →(cid:5), such that AF ∈ DST and ∀ AF(cid:20) ∈ RES(AF) AF(cid:20) ∈
+DST , UR(AF, ST ) (cid:19)E
+S
+
+EST (AF).
+
+Proof. We actually prove the stronger result UR(AF, ST ) = EST (AF). UR(AF, ST ) ⊆ EST (AF) follows from the
+fact that any stable extension of any AF(cid:20) ∈ RES(AF) is also a stable extension of AF (see the proof of Proposition 62).
+On the other hand, given S ∈ EST (AF), we have to show that there is at least an AF(cid:20) ∈ RES(AF) such that S ∈
+EST (AF(cid:20)). If no element of S is involved in a mutual attack, it is easy to see that ∀ AF(cid:20) ∈ RES(AF) S ∈ EST (AF(cid:20)).
+Otherwise, such an AF(cid:20) is obtained from AF by suppressing, for any mutual attack involving an argument α ∈ S, the
+edge incoming into α (clearly there are no mutual attacks within S as it is conﬂict-free). (cid:2)
+
+Semantics which are partially inspired by the notion of stable extension, namely semi-stable and stable prudent
+semantics, are unable to satisfy (cid:19)E
+S -resolution adequacy while complying with its weaker forms. As to negative
+results, Fig. 9 shows that (cid:19)E
+S -resolution adequacy does not hold for semi-stable semantics. In fact, E1 = {α} is the
+only semi-stable extension of AF1 ∈ RES(AF) but there is no E2 among the semi-stable extensions of AF such that
+E1 ⊆ E2, since the only semi-stable extension of AF is {β, δ}. As to stable prudent semantics, we can refer back to
+Fig. 6. In fact, E1 = {α, δ} is a stable prudent extension of AF1 ∈ RES(AF2) but there is no E2 among the stable
+prudent extensions of AF2 such that E1 ⊆ E2 (since the only stable prudent extension of AF2 is {α, γ }).
+
+The following proposition shows that semi-stable semantics satisﬁes (cid:19)E
+
+W -resolution adequacy.
+
+Proposition 67. For any argumentation framework AF = (cid:3)A, →(cid:5), UR(AF, SST ) (cid:19)E
+W
+
+ESST (AF).
+
+Proof. We have to prove that ∀E2 ∈ ESST (AF) ∃E1 ∈ UR(AF, SST ): E1 ⊆ E2. It is known that any semi-stable
+extension of any AF is also a preferred extension of AF [9]. Then, given a semi-stable extension E2 ∈ ESST (AF), it
+can be derived from the proof of Lemma 64 given in [18] that ∃ AF(cid:20) ∈ RES(AF) such that E2 is a preferred extension
+of AF(cid:20) and outchildAF(E2) = outchildAF(cid:20)(E2). Suppose by contradiction that E2 is not also a semi-stable extension
+of AF(cid:20), then there is a maximal admissible set S in AF(cid:20) such that (S ∪ outchildAF(cid:20)(S)) (cid:4) (E2 ∪ outchildAF(cid:20)(E2)).
+Recall that outchildAF(cid:20)(S) ⊆ outchildAF(S), and that S is admissible also in AF. Then there is a maximal admissi-
+ble set S∗ ∈ AF such that S∗ ⊇ S and therefore outchildAF(S∗) ⊇ outchildAF(S) ⊇ outchildAF(cid:20)(S). But then (S∗ ∪
+outchildAF(S∗)) ⊇ (S ∪ outchildAF(S)) ⊇ (S ∪ outchildAF(cid:20)(S)) (cid:4) (E2 ∪ outchildAF(cid:20)(E2)) = (E2 ∪ outchildAF(E2)),
+thus (S∗ ∪ outchildAF(S∗)) (cid:4) (E2 ∪ outchildAF(E2)) which contradicts the fact that E2 is a semi-stable extension of
+AF. (cid:2)
+
+Finally, also stable prudent semantics satisﬁes (cid:19)E
+
+W -resolution adequacy (proof is omitted).
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+697
+
+Proposition 68. For any argumentation framework AF = (cid:3)A, →(cid:5), such that AF ∈ DST P and ∀ AF(cid:20) ∈ RES(AF)
+AF(cid:20) ∈ DST P , UR(AF, ST P) (cid:19)E
+W
+
+EST P (AF).
+
+Turning to grounded prudent semantics, the example of Fig. 10 shows that it does not satisfy (cid:19)E
+
+equacy (and therefore neither its stronger form (cid:19)E
+{β}, and GPE(AF2) = {α}, from which it is easy to see that (cid:19)E
+hand grounded prudent semantics satisﬁes the weakest form of resolution adequacy (proof is omitted).
+
+W -resolution ad-
+S ). In fact, RES(AF) = {AF1, AF2}, GPE(AF) = ∅, GPE(AF1) =
+W -resolution adequacy is not satisﬁed. On the other
+
+Fig. 10. Several semantics are not resolution adequate.
+
+Fig. 11. CF2 semantics is not resolution adequate.
+
+698
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+Fig. 12. Preferred prudent and complete prudent semantics are not resolution adequate.
+
+Proposition 69. For any argumentation framework AF = (cid:3)A, →(cid:5), (
+
+(cid:11)
+
+AF(cid:20)∈RES(AF) GPE(AF(cid:20))) ⊆ GPE(AF).
+
+The remaining semantics fail to satisfy resolution adequacy in any form. To see this for grounded, ideal
+and complete semantics consider again Fig. 10. First, it is easy to see that UR(AF, GR) = UR(AF, ID) =
+UR(AF, CO) = {{α, δ}, {β, δ}}. Then, note that EGR(AF) = EID(AF) = {GE(AF)} = {ID(AF)} = {∅} while
+ECO(AF) = {∅, {α, δ}, {β, δ}}. As a consequence, for any S ∈ {GR, ID, CO} it holds that UR(AF, S) (cid:5)E
+∩ ES (AF),
+E2∈ES (AF) E2. Therefore UR(AF, S) (cid:5)E ES (AF) for any skepticism relation
+since
+(cid:19)E.
+
+E1∈UR(AF,S) E1 = {δ} (cid:6) ∅ =
+
+(cid:11)
+
+(cid:11)
+
+As for CF2 semantics, consider Fig. 11 where RES(AF) = {AF1, AF2}. First, it is easy to see that {α, β3, β5, γ } ∈
+E∈ECF2(AF) E. Then it can be noted that ECF2(AF1) = {α, β2, β4, β6, δ}, while
+
+ECF2(AF) therefore, in particular, δ /∈
+
+(cid:11)
+
+(cid:6)
+{β1, β3, β5, δ}, {β1, β4, δ}, {α, β2, β4, β6, δ}, {α, β2, β5, δ}, {α, β3, β6, δ}
+
+(cid:7)
+
+Thus δ ∈
+
+E∈UR(AF,CF2) E and as a consequence UR(AF, CF2) (cid:5)E
+
+∩ ECF2(AF).
+
+Finally, the example of Fig. 12 rules out preferred prudent and complete prudent semantics. In fact the sets of
+preferred prudent and complete prudent extensions of AF include {α, γ } and {δ}. Given RES(AF) = {AF1, AF2}, we
+note that there is a unique preferred prudent (and complete prudent) extension of AF1, namely {α, δ}, and a unique
+preferred prudent (and complete prudent) extension of AF2, namely {α, γ }. Then the intersection of the extensions of
+the argumentation frameworks in RES(AF), namely {α}, is not included in the intersection of the extensions of AF,
+which is the empty set.
+
+ECF2(AF2) =
+
+(cid:11)
+
+7. Discussion and conclusions
+
+We have provided several general criteria for principle-based evaluation of extension-based argumentation seman-
+tics and applied them to a signiﬁcant range of both “traditional” and more recent approaches. As to our knowledge,
+in the literature there are no other examples of such a systematic and extensive assessment of existing semantics pro-
+posals. In fact, example-based and/or pairwise comparisons are most commonly found, as discussed in Section 1. It
+has to be remarked, however, that the issue of formulating general principles for argumentation semantics is receiving
+an increasing attention in very recent years. Caminada and Amgoud [11] have discussed the issue of deﬁning general
+rationality postulates for argumentation. In particular, the postulates of closeness under strict rules and consistency of
+extensions have been introduced, showing that there are argumentation systems where they are violated. Since these
+postulates are deﬁned at the level of the language where arguments are explicitly constructed while our analysis lies
+at a more abstract level, this kind of work, while sharing the same spirit, represents a complementary and possibly
+synergic research line with respect to ours.
+
+At a more speciﬁc level, relationships with some of the criteria we have introduced can be found in the literature.
+Defense related properties, namely admissibility and reinstatement, have often been used to compare argumentation
+semantics, at least at an informal level. We have provided a systematic formal characterization of these notions,
+including stronger and weaker versions, which, as to our knowledge, have not been considered before in the literature.
+In a similar line, Caminada has recently tackled the issue of providing postulates for the notion of reinstatement in
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+699
+
+the context of labellings of argumentation frameworks [10]. It turns out that the basic postulates on labeling provide
+an equivalent characterization of complete extensions, while adding other minimality/maximality requirements one
+may obtain a characterization of other Dung’s semantics. While in the present paper we are dealing with extension-
+based rather than labeling-based argumentation semantics, extending the deﬁnition of the criteria we propose to the
+case of labeling-based semantics represents an interesting issue for future work. As to the directionality property, the
+related criterion of relevance has been proposed in [9] when discussing the differences between stable and semi-stable
+semantics. Given an argumentation framework AF = (cid:3)A, →(cid:5) an argument α is relevant with respect to β if and only
+if there is an undirected path from α to β in AF. Actually relevance is an equivalence relation, whose classes coincide
+with the partition of the (undirected) defeat graph into its connected components. A semantics satisﬁes the relevance
+criterion if the state of an argument is not affected by the presence of irrelevant arguments. Relevance can be regarded
+as a weaker form of the directionality criterion where only the existence but not the direction of attack relations is taken
+into account. As to adequacy criteria, starting from an analysis of hierarchical argumentation frameworks Modgil [18]
+has proposed, as already mentioned in Section 4.4, a general requirement for argumentation semantics, based on the
+notion of resolution of an argumentation framework and expressed as an if-and-only-if condition. We have shown that
+one of the directions of the condition is a special case of the criterion of skepticism adequacy, previously proposed
+in [3] and extended here, while we have generalized the other direction of the condition introducing the criterion of
+resolution adequacy.
+
+From the application of evaluation criteria it has emerged that, with different degrees, every literature semantics
+violates some of the proposed criteria. Not all these violations are undesirable by themselves. For instance, some of
+them may be ascribed to the fact that some criteria are not strictly required (as in the case of I-maximality) or are too
+demanding (as in the case of strong admissibility). Other violations derive from deliberate design choices in order to
+achieve some desired behavior: this is the case, for instance, of CF2 semantics where admissibility and reinstatement
+are given up to achieve a “symmetric” treatment of odd- and even-length cycles. Grounded semantics is the closest
+to the goal of satisfying all the criteria, as it only violates the criterion of resolution adequacy in its various forms.
+At a general level, the situation sketched above stresses the problem of identifying which criteria are more suitable
+for different application domains and/or reasoning styles. A recent example of this kind of investigation is provided
+by the analysis carried out in [21] where it is suggested that in certain contexts epistemic reasoning is skeptical while
+practical reasoning is credulous. At a more technical level, one may raise the question whether the proposed criteria
+are incompatible altogether. Answering this question will be the subject of future work.
+
+Acknowledgements
+
+We are indebted to the anonymous referees and to the editors of this special issue for their helpful comments and
+
+suggestions.
+
+References
+
+[1] L. Amgoud, C. Cayrol, A reasoning model based on the production of acceptable arguments, Annals of Mathematics and Artiﬁcial Intelli-
+
+gence 34 (1–3) (2002) 197–215.
+
+[2] P. Baroni, M. Giacomin, Solving semantic problems with odd-length cycles in argumentation, in: Proceedings of the 7th European Conference
+on Symbolic and Quantitative Approaches to Reasoning with Uncertainty (ECSQARU 2003), in: Lecture Notes Artif. Intell., vol. 2711,
+Springer-Verlag, Aalborg, Denmark, 2003, pp. 440–451.
+
+[3] P. Baroni, M. Giacomin, Evaluating argumentation semantics with respect to skepticism adequacy, in: Proceedings of the 8th European
+Conference on Symbolic and Quantitative Approaches to Reasoning with Uncertainty (ECSQARU 2005), Barcelona, 2005, pp. 329–340.
+[4] P. Baroni, M. Giacomin, On principle-based evaluation, comparison, and design of extension-based argumentation semantics, Technical report,
+
+University of Brescia, Italy, 2007.
+
+[5] P. Baroni, M. Giacomin, G. Guida, Towards a formalization of skepticism in extension-based argumentation semantics, in: Proceedings of the
+
+4th Workshop on Computational Models of Natural Argument (CMNA 2004), Valencia, Spain, 2004, pp. 47–52.
+
+[6] P. Baroni, M. Giacomin, G. Guida, SCC-recursiveness: a general schema for argumentation semantics, Artiﬁcial Intelligence 168 (1–2) (2005)
+
+165–210.
+
+[7] T.J.M. Bench-Capon, Persuasion in practical argument using value-based argumentation frameworks, Journal of Logic and Computation 13 (3)
+
+(2003) 429–448.
+
+[8] M. Caminada, For the sake of the argument; explorations into argument-based reasoning, PhD thesis, Vrije Universiteit, Amsterdam, 2004.
+[9] M. Caminada, Semi-stable semantics, in: P.E. Dunne, T. Bench-Capon (Eds.), Proceedings of the 1st International Conference on Computa-
+
+tional Models of Arguments (COMMA 2006), IOS Press, Liverpool, UK, 2006, pp. 121–130.
+
+700
+
+P. Baroni, M. Giacomin / Artiﬁcial Intelligence 171 (2007) 675–700
+
+[10] M. Caminada, On the issue of reinstatement in argumentation, in: Proceedings of the 10th European Conference on Logics in Artiﬁcial
+
+Intelligence (JELIA 06), Springer, Liverpool, UK, 2006, pp. 111–123.
+
+[11] M. Caminada, L. Amgoud, An axiomatic account of formal argumentation, in: Proceedings of the Twentieth National Conference on Artiﬁcial
+
+Intelligence (AAAI-05), American Association for Artiﬁcial Intelligence, AAAI Press, Menlo Park, CA, 2005, pp. 608–613.
+
+[12] S. Coste-Marquis, C. Devred, P. Marquis, Prudent semantics for argumentation frameworks, in: Proceedings of the 17th IEEE International
+
+Conference on Tools with Artiﬁcial Intelligence (ICTAI 2005), IEEE Computer Society, Hong Kong, China, 2005, pp. 568–572.
+
+[13] S. Coste-Marquis, C. Devred, P. Marquis, Sémantiques prudentes pour les systèmes d’argumentation, in: Proceedings of the 15th Congress
+
+AFRIF-AFIA Reconnaissance des Formes et Intelligence Artiﬁcielle (RFIA 2006), Tours, F, 2006.
+
+[14] P.M. Dung, On the acceptability of arguments and its fundamental role in nonmonotonic reasoning, logic programming, and n-person games,
+
+Artiﬁcial Intelligence 77 (2) (1995) 321–357.
+
+[15] P.M. Dung, P. Mancarella, F. Toni, A dialectic procedure for sceptical, assumption-based argumentation, in: P.E. Dunne, T. Bench-Capon
+(Eds.), Proceedings of the 1st International Conference on Computational Models of Arguments (COMMA 2006), IOS Press, Liverpool, UK,
+2006, pp. 145–156.
+
+[16] J.F. Horty, Skepticism and ﬂoating conclusions, Artiﬁcial Intelligence 135 (1–2) (2002) 55–72.
+[17] H. Jakobovits, D. Vermeir, Robust semantics for argumentation frameworks, Journal of Logic and Computation 9 (2) (1999) 215–261.
+[18] S. Modgil, Hierarchical argumentation, in: Proceedings of the 10th European Conference on Logics in Artiﬁcial Intelligence (JELIA 06),
+
+Springer, Liverpool, UK, 2006, pp. 319–332.
+
+[19] J.L. Pollock, How to reason defeasibly, Artiﬁcial Intelligence 57 (1) (1992) 1–42.
+[20] H. Prakken, Intuitions and the modelling of defeasible reasoning: some case studies, in: Proceedings of the 9th International Workshop on
+
+Non-Monotonic Reasoning (NMR 2002), Toulouse, France, 2002, pp. 91–102.
+
+[21] H. Prakken, Combining sceptical epistemic reasoning with credulous practical reasoning, in: P.E. Dunne, T. Bench-Capon (Eds.), Proceedings
+of the 1st International Conference on Computational Models of Arguments (COMMA 2006), IOS Press, Liverpool, UK, 2006, pp. 311–322.
+[22] H. Prakken, G.A.W. Vreeswijk, Logics for defeasible argumentation, in: D.M. Gabbay, F. Guenthner (Eds.), Handbook of Philosophical Logic,
+
+second ed., Kluwer Academic Publishers, Dordrecht, 2001.
+
+[23] R. Reiter, A logic for default reasoning, Artiﬁcial Intelligence 13 (1–2) (1980) 81–132.
+[24] B. Verheij, Two approaches to dialectical argumentation: admissible sets and argumentation stages, in: Proceedings of the Eighth Dutch
+
+Conference on Artiﬁcial Intelligence (NAIC’96), Utrecht, NL, 1996, pp. 357–368.
+
+[25] G.A.W. Vreeswijk, Interpolation of benchmark problems in defeasible reasoning, in: Proceedings of the 2nd World Conference on the Funda-
+
+mentals of Artiﬁcial Intelligence (WOCFAI 95), Paris, France, pp. 453–468.
+
+

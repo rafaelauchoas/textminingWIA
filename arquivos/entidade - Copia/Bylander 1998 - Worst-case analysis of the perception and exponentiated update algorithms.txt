@@ -1,0 +1,2561 @@
+Artificial  Intelligence  106  (1998)  335-352 
+
+Artificial 
+Intelligence 
+
+Worst-case  analysis  of the  Perceptron  and 
+Exponentiated  Update  algorithms  * 
+
+Tom  Bylander 
+Division  of Computer  Science,  The  University  of Texas  at  San  Antonio,  San  Antonio,  TX  78249,  USA 
+
+Received  6  April  1998;  received  in  revised  form  21  September  1998 
+
+Abstract 
+
+The  absolute  loss  is the  absolute  difference  between  the  desired  and  predicted  outcome.  This  paper 
+demonstrates  worst-case  upper  bounds  on  the  absolute  loss  for  the  Perceptron 
+learning  algorithm  and 
+the  Exponentiated  Update  learning  algorithm,  which  is  related  to  the  Weighted  Majority  algorithm. 
+the  behavior  of  the  algorithms  over  any  sequence  of  trials,  where  each  trial 
+The  bounds  characterize 
+is  an  acceptable 
+consists  of  an  example  and  a  desired  outcome 
+loss  of  the 
+outcome).  The  worst-case  absolute 
+best  linear  function  in  a comparison  class,  plus  a constant  dependent  on  the  initial  weight  vector,  plus 
+a  per-trial  loss.  The  per-trial 
+is  allowed  a  tolerance 
+from  the  desired  outcome.  For  concept 
+the  worst-case  bounds  lead  to  mistake  bounds  that 
+are  comparable 
+
+to  past  results.  0  1998  Elsevier  Science  B.V.  All  rights  reserved. 
+
+interval  (any  value  in  the  interval 
+
+is  bounded  by:  the  absolute 
+
+if  the  learning  algorithm 
+
+loss  of  both  algorithms 
+
+loss  can  be  eliminated 
+
+learning, 
+
+Keywords:  Learning  algorithms;  Absolute 
+
+loss  bounds;  Mistake  bounds;  Randomized  classification 
+
+algorithms 
+
+1.  Introduction 
+
+Linear  and  linear 
+
+learning.  Although 
+achieve  good  empirical 
+networks. 
+
+For  concept 
+
+learning 
+
+threshold 
+linear 
+
+functions  are  an  important  class  of  functions 
+
+for  machine 
+they  often 
+results,  e.g.,  [ 12,261,  and  they  are  standard  components  of  neural 
+
+in  what  they  can  represent, 
+
+are  limited 
+
+functions 
+
+mistake  bounds  are  known 
+
+in  which  some  linear 
+for  the  Perceptron 
+
+threshold 
+algorithm 
+
+is  a  perfect  classifier, 
+function 
+[22,25],  and  the  Winnow  and 
+
+* This  paper  is  a  revised  and  extended  version  of  Bylander 
+’ Email:  bylander@cs.utsa.edu. 
+
+[7]. 
+
+0004-3702/98/Z%  -  see  front  matter  0  1998  Elsevier  Science  B.V.  All  rights  reserved. 
+PII:  SOOO4-3702(98)00098-S 
+
+336 
+
+T  Bylander  /Art@&1  Zntelligence  106  (1998)  335-352 
+
+[l&19,21].  There  are  also  results  for  these  algorithms 
+Weighted  Majority  algorithms 
+various  types  of  noise  [3-6,10,20].  However,  these  previous  results  do  not  characterize 
+behavior  of  these  algorithms  over  any  sequence  of  examples. 
+
+for 
+the 
+
+(related  to  Weighted  Majority),  where  the  absolute 
+
+This  paper  shows  that  minimizing 
+
+the  absolute 
+
+for  learning 
+
+linear  threshold 
+
+two  algorithms 
+Exponentiated  Update  algorithm 
+is  the  sum  of  the  absolute  differences  between 
+worst-case  absolute 
+of  the  best  linear  function 
+weight  vector,  plus  a  per-trial 
+algorithm 
+additional 
+
+loss  of  both  algorithms 
+
+in  a  comparison 
+
+loss.  The  per-trial 
+
+functions: 
+
+loss  characterizes 
+
+the  online  behavior  of 
+the  Perceptron  algorithm  and  the 
+loss 
+the  desired  and  predicted  outcomes.  The 
+loss 
+class,  plus  a  constant  dependent  on  the  initial 
+if  the  learning 
+In  this  latter  case,  the  total 
+
+is  bounded  by  the  sum  of:  the  absolute 
+
+loss  can  be  eliminated 
+
+is  allowed  a  tolerance 
+loss  is  bounded  by  a constant  over  a  sequence  of  any  length. 
+
+from  the  desired  outcome. 
+
+The  results  of  this  paper  hold  for  any  sequence  of  examples  and  make  no  assumptions 
+there  is  no  direct  relationship  between 
+
+loss  and  the  number  of  classification  mistakes  because  a  single  misclassification 
+
+about  the  distribution  of  examples.  Unfortunately, 
+absolute 
+could  correspond 
+bounds  can  be  derived  in  the  linearly  separable  case. 
+
+to  a  small  or  a  large  absolute 
+
+loss.  Nevertheless, 
+
+interesting  mistake 
+
+loss, 
+
+though 
+
+A  few  previous 
+
+results  are  also  based  on  the  absolute 
+
+for  specialized 
+cases.  Duda  and  Hart  [ 1 l]  derive  the  Perceptron  update  rule  from  the  Perceptron  criterion 
+algorithm  with 
+function,  which  is  a  specialization 
+of  the  absolute 
+of  examples 
+learning 
+a  decreasing 
+[ 161.  A  version  of 
+converges 
+to  a  linear 
+the  Weighted  Majority  algorithm 
+to  the  best 
+input 
+to  Theorems  2  and  3 
+[8]  independently 
+of  this  paper;  he  also  shows  how  to  modify 
+the  absolute 
+
+series)  on  a  stationary  distribution 
+the  minimum 
+
+proved  results  similar 
+the  algorithms 
+
+rate  (harmonic 
+function  with 
+
+for  any  loss  function  between 
+
+(WMC)  has  an  absolute 
+
+loss  and  the  square  loss. 
+
+loss.  The  Perceptron 
+
+[21].  Cesa-Bianchi 
+
+loss  comparable 
+
+absolute 
+
+loss 
+
+[9,17].  The  performance 
+
+follows  a  pattern  similar 
+
+The  analysis 
+square  algorithms 
+hypothesis 
+the  online  algorithm’s  current  hypothesis 
+the  algorithm’s 
+analysis. 
+
+in  some  comparison 
+
+loss  minus 
+
+to  worst-case 
+
+of  an  algorithm 
+
+analyses  of  online 
+is  compared 
+
+class.  The  bounds  are  based  on  how  the  distance 
+to  the  target  hypothesis  changes 
+is  chosen 
+
+in  proportion 
+to  facilitate 
+
+target’s  loss.  The  distance  measure 
+
+linear 
+least- 
+to  the  best 
+from 
+to 
+the 
+
+The  desired  outcome 
+
+for  an  example 
+can  be  implemented  with  a  positive/negative 
+
+is  allowed 
+
+learning 
+for  positive/negative 
+examples.  In  this  case,  the  absolute  loss  bounds  lead  to  mistake  bounds  for  these  algorithms 
+that  are  similar 
+randomized  versions  of  the  algorithms. 
+
+literature.  Also,  expected  mistake  bounds  are  obtained 
+
+to  previous 
+
+outcome 
+
+to  be  any  real  interval.  Thus,  concept 
+
+for 
+
+2.  Preliminaries 
+
+A  trial  is  an  ordered  pair  (x,  I),  consisting  of  a  real  vector  x  E IV  (an  example)  and 
+I  (an  outcome).  A  prediction  F  on  an  example  x  is  made  using  a  weight 
+
+a  real  interval 
+
+7:  Bylander 
+
+/Art$cial 
+
+Intelligence 
+
+106  (1998)  335-352 
+
+331 
+
+vector  w  E IR” by  computing 
+a  weight  vector  w  on  a trial  (x,  I)  is  determined  by: 
+
+the  dot  product  7  =  w  x  =  EYE,  w;xi.  The  absolute 
+
+loss  of 
+
+Abs-Loss(w, 
+
+(x,  I))  = 
+
+.? e 
+
+y/n  - 
+0 
+
+I 
+
+?‘-  Yhi 
+
+if?< 
+I, 
+if7-E  I, 
+I, 
+ify> 
+
+where  ylo =  inf,,,  y  and  yhi =  supYe  y.  That  is,  it is  desired  for  the  prediction 
+the  outcome 
+of  a  weight  vector  or  algorithm 
+argument). 
+
+to  be  within 
+loss 
+(first  argument)  on  a  trial  or  sequence  of  trials  (second 
+
+is  also  used  to  denote  the  absolute 
+
+interval.  The  Abs-Loss(., 
+
+.)  notation 
+
+For  an  online  algorithm  A,  a  comparison  weight  vector  u,  and  a  trial  sequence  S,  all  of 
+
+the  bounds  are  of  the  form 
+
+Abs-Loss(A,  S)  <  Abs-Loss(u,  S)  +  <, 
+
+where  {  is  an  expression  based  on  characteristics  of  the  algorithm  A  and  the  trial  sequence 
+S.  Before  each  trial  S,,  the  algorithm  hypothesizes 
+a  weight  vector  wt.  The  bounds  are 
+based  on  demonstrating, 
+
+for  each  trial  S,,  that 
+
+Abs-Loss(wt,  S,)  -  Abs-Loss(u,  S,)  <  5‘r, 
+
+and  summing  up  the  additional 
+obviously  ct  =  0  can  be  chosen.  The  other  cases  are  covered  by  the  following 
+
+loss  c1  over  all  the  trials.  When  Abs-Loss(w,, 
+
+Lemma  1.  When y=  w  . x  <  I  for  a  given  rrial  St  =  (x,  I),  then: 
+
+Abs-Loss(w,  S,)  -  Abs-Loss(u,  S,)  <  u  x  -  y’=  u  .x  -  w  x. 
+
+When~=w.~>IforagiventrialS~=(x,I),then: 
+
+Abs-Loss(w,  S,)  -  Abs-Loss(u,  St)  6  7  -  u  .x  =  w  .x  -  u  .x. 
+
+Proof.  Let  y10 =  infyt-,  y.  When 
+y10 -  7  is  w’s  absolute 
+and  that  ylu  -  u  x  is  less  than  u’s  absolute 
+0 
+inequality 
+
+is  similar. 
+
+loss  and  that  ylo  -  u  x  is  u’s  absolute 
+
+j;  <  I,  the  first  inequality 
+
+follows 
+
+from  the  fact  that 
+loss  when  u  s x  <  ylo, 
+loss,  otherwise.  The  proof  for  the  second 
+
+3.  Absolute  loss  bounds 
+
+Worst-case 
+
+absolute 
+
+loss  bounds  are  derived 
+
+for  the  Perceptron 
+
+and  Exponentiated 
+
+Update  algorithms, 
+
+followed  by  a discussion. 
+
+3. I.  Bounds  for  Perceptron 
+
+The  Perceptron  algorithm 
+
+weight  vector  s  (typically, 
+rule  is  applied 
+vector  w  is  incremented 
+of  any  outcome 
+
+if  the  prediction 
+
+the  zero  vector  0),  and  a  learning 
+
+is  given  in  Fig.  1. The  Perceptron  algorithm 
+
+inputs  an  initial 
+rate  17. The  Perceptron  update 
+i.e.,  the  current  weight 
+(decremented)  by  qx  if  the  prediction  y  is  too  low  (high).  The  use 
+
+j;  is  outside  the  outcome 
+
+interval, 
+
+interval  generalizes 
+
+the  standard  Perceptron  algorithm. 
+
+S,)  =  0, 
+
+lemma. 
+
+(1) 
+
+(2) 
+
+338 
+
+7: Bylander / Art@icial  Intelligence 106 (1998) 335-352 
+
+Algorithm  Perceptron(  s, q) 
+
+Parameters: 
+
+s:  the  start  vector,  with  s  E IRn . 
+q: the  learning 
+rate,  with  q  >  0. 
+
+Initialization: 
+
+Before  the  first  trial,  set  w 1 to  s . 
+
+Prediction: 
+
+Upon  receiving 
+give  the  prediction 
+
+the  tth  example  xt , 
+j$  =  wt  . xr 
+
+Update: 
+
+Upon  receiving 
+the  tth  outcome 
+update  the  weight  vector  using: 
+
+interval  Zr, 
+
+ifyr  <  It, 
+ifFt  E It, 
+ifFf  >  It. 
+
+Fig.  I. Perceptron  algorithm 
+
+The  behavior  of  the  Perceptron  algorithm 
+
+is  bounded  by  the  following 
+
+theorem,  where 
+
+11x 11 =  ,/m 
+
+denotes  the  Euclidean  norm  of  a  vector  x 
+
+Theorem  2.  Let  S  be  a  sequence  of  1  trials.  Let  XP  3  maxr  llxt  (I, the  maximum  vector 
+length.  Then  for  any  comparison  vector  u,  where  llu 11 <  UP, 
+
+Abs-Loss(Perceptron(0, 
+
+q),  S)  <  Abs-Loss(u,  S)  +  G  +  2. 
+
+u,2  171X,2 
+
+Choosing  v  =  UP/(X,&) 
+
+leads  to: 
+
+Abs-Loss(Perceptron(0, 
+
+q),  S)  <  Abs-Loss(u,  S)  +  lJ,X,&. 
+
+Proof.  Let  d(u,  w)  =  llu  -  w)12 =  ~~=I  (ui  -  wi)2.  Consider 
+the  tth  trial  S,  =  (xI,  It). 
+Let  yf  =  wy  . xt.  If  Tt  E  It,  then  wt+l  =  wt,  and  d(u,  wt)  -  d(u,  w,+l)  =  0.  If  yr  <  It, 
+then  wt+l  =  wt  +  qxr,  and  it  follows  that: 
+
+d(u,  Wt) -d(u,  W~+I) = k(ui - Wt,ij2 - k(ui - Wr+l,i12 
+
+i=l 
+
+i=l 
+
+=k 
+
+(Ui  -  W,,ij2  -  C(ui 
+i=l 
+
+i=l 
+
+* 
+
+-  Wt.i 
+
+-  Vt,i12 
+
+=  2r/(u  . Xr  -  Wt . Xl)  -  q211x,112 
+
+3  2y(u 
+
+. xy  -  Wf . Xt)  -  $x,2. 
+
+From  Lemma  1 and  the  fact  that  llxt  )I <  Xp,  it  follows  that: 
+
+T  Bylander  /Art+cial  Intelligence  106  (1998)  335-352 
+
+339 
+
+Abs-Loss(Perceptron(wt, 
+
+q),  St)  -  Abs-Loss(u,  S,) 
+
+<u,x 
+\ 
+
+_-w 
+
+f 
+
+t’ 
+
+x  <ww--d(uA+l) 
+
+t\ 
+
+27l 
+
+I  rg 
+2 
+
+. 
+
+Similarly, 
+
+if  yt  >  It,  it  follows  that: 
+
+Abs-Loss(Perceptron(wt, 
+
+;rl), St)  -  Abs-Loss(u,  S,) 
+
+<  d(u,  wt) 
+\ 
+
+-  d(u, 
+
+l&+1> 
+
+I  & 
+
+2rl 
+
+2 
+
+. 
+
+By  summing  over  all  1 trials: 
+
+Abs-Loss(Perceptron(0, 
+
+q),  S)  -  Abs-Loss(u,  S) 
+
+=c Abs-Loss(Perceptron(mr, 
+
+t=1 
+
+;rl), St)  -  Abs-Loss(u,  S,) 
+
+d(u,  0)  -  d(u,  w+1> 
+
+= 
+
+211 
+
+W,2 
+
++ 
+
+2 
+
+<  d(u,O) 
+,~+~<c62+!%, 
+2rl 
+
+$X,2 
+2 
+
+2V 
+
+2 
+
+which  proves  the  first  inequality  of  the  theorem.  The  second  inequality 
+ately  from  the  choice  of  v. 
+
+II 
+
+follows 
+
+immedi- 
+
+3.2.  Boundsfor  Exponentiated  Update 
+
+learning 
+
+is  given  in  Fig.  2.  The  EU  algorithm 
+
+The  EU  (Exponentiated  Update)  algorithm 
+
+inputs 
+a  start  vector  s,  a  positive 
+rate  q,  and  a  positive  number  U,.  Every  weight  vector 
+consists  of  positive  weights  that  sum  to  U,.  Normally,  each  weight  in  the  start  weight  vector 
+is  set  to  U,/n.  For  each  trial,  if  the  prediction  T  is  outside  the  outcome 
+then  each 
+(divided)  by  eqxi  if  the  prediction  7 
+weight  Zui in  the  current  weight  vector  w  is  multiplied 
+so  that  they  sum  to  U,. 
+is  too  low  (high).  The  updated  weights  are  normalized 
+the  Weighted  Majority  algorithm 
+
+The  EU  algorithm  can  be  used  to  implement 
+
+[21]. 
+that  all  xt,i  E  [0,  l]  and  that  /I  is  the  Weighted  Majority’s  update  parameter, 
+intervals  of  [0,  l/2)  of 
+the  EU 
+decisions  as  the  Weighted  Majority  algorithm. 
+
+q  =  In  l/p,  and  U,  =  1,  and  use  outcome 
+
+respectively.  With  these  parameters, 
+
+the  same  classification 
+
+l]  for  negative  and  positive  examples, 
+
+interval, 
+
+. . , l/n), 
+
+Assuming 
+set  s  =  (l/n,. 
+(l/2, 
+algorithm  makes 
+The  only  difference 
+
+is  that  the  weights  are  normalized 
+
+to  sum  to  U,. 
+
+The  EU  algorithm 
+using 
+
+is  instantiated 
+U,  =  1 and  real  value  outcomes 
+
+is  also  closely  related  to  the  generalized  EG  algorithm 
+the  absolute 
+
+[17].  If  EG 
+the  EU  algorithm  with 
+
+then  one  obtains 
+
+loss  function, 
+
+(instead  of  real  interval  outcomes).  * 
+
+* Kivinen  and  Warmuth  [ 171 analyze 
+
+the  generalized  EC  algorithm  using  the  square  loss  function 
+
+340 
+
+T. B~ylander /Artificial 
+
+Intelligence  106 (1998)  335-352 
+
+Algorithm  EU(s,q,U,) 
+
+Parameters: 
+
+S: the  start  vector,  with  Cy=t  s;  =  U,  and  each  si  >  0. 
+II: the  learning 
+U,:  the  sum  of  the  weights  for  each  weight  vector,  with  U,  >  0. 
+
+rate,  with  n  >  0. 
+
+Initialization: 
+
+Before  the  first  trial,  set  each  w 1 ,i  to  .si. 
+
+Prediction: 
+
+Upon  receiving 
+give  the  prediction  yr  =  wI  . xt  . 
+
+the  tth  example  xt, 
+
+Update: 
+
+Upon  receiving 
+the  tth  outcome 
+update  the  weight  vector  using: 
+
+interval 
+
+It, 
+
+Wt+l,i 
+
+= 
+
+( 
+
+Wt,i 
+
+ifYt  E It, 
+
+I UEwt,ie-‘7-Tt,i 
+
+-y=‘=,  wt,ie-?‘x,,i 
+
+if% 
+
+’  1,. 
+
+Fig.  2.  Exponentiated  Update  algorithm 
+
+This  paper’s  analysis  borrows 
+
+[17]: 
+of  the  weights  so  they  always  sum  to  U,,  and  the  relative  entropy  distance 
+
+two  ideas  from  the  analysis  of  the  EG  algorithm 
+
+normalization 
+function.  The  behavior  of  the  EU  algorithm 
+
+is  bounded  by  the  following 
+
+theorem. 
+
+. .  , l&/n)  be  the  start  vector: 
+Theorem  3.  Let  S  be  a  sequence  of  1 trials.  Let  s  =  (&In, 
+Let  X,  >  maxt,i  Ixt,i 1, the  maximum  magnitude  of  any  value  in  an  example.  Then  for  any 
+comparison  vector  II,  where  cy=,  ui  =  U,  and  where  each  ui  3  0: 
+
+Abs-Loss(EU(s, 
+
+n,  U,),  S)  <  Abs-Loss(u,  S)  +  ~ 
+
+U,  Inn 
+
+II 
+
+V&X,2 
+
++2. 
+
+Choosing  q  =  2/2inn/(XE&) 
+
+leads  to: 
+
+Abs-Loss(EU(s, 
+
+r], U,),  S)  6  Abs-Loss(u,  S)  +  U,X,2/211nn. 
+
+Proof.  Let  S,  1, s,  XE, and  U,  be  defined  as  in  the  theorem.  Let 
+
+d(u,  W)  =  eui 
+
+ln(ui/wi), 
+
+i=l 
+
+where  0 In0  =  0 by  definition. 
+then  d(u,  w)  >  0.  Note  that: 
+
+If  the  sum  of  u’s  weights  is  equal  to the  sum  of  w’s  weights, 
+
+d(u,s)=~uiln~=~uiln~-~uiln~~U~lnn. 
+
+i=l 
+
+E 
+
+i=l 
+
+i=l 
+
+I 
+
+i?  B~ylunder  /Arti&ial 
+
+Intelligence 
+
+106  (1998)  335-352 
+
+341 
+
+Consider 
+d(u.  w,)  -  d(u,  wt+l)  =  0.  If  $  <  It,  then 
+
+the  tth  trial  St  =  (xt,  I,).  Then  Ft  =  wt  .x  t.  Now  if$  E It,  then  wr+l  =  wt,  and 
+
+and  it  follows  that: 
+
+d(Z4, Wt)  -  d(u,  Wt+l)  =  2  Z4.i In  $ 
+
+-  2  Ui In  2 
+
+i=l 
+
+=k 
+
+ui 
+
+i=l 
+
+=k 
+
+ui 
+
+i=l 
+
+i=l 
+
+lnw+l., 
+
+-~UilIlW~,i 
+
+i=l 
+
+lne’7X’., 
+
+_  k  ui 
+
+In  2  “f3T.i 
+
+i=l 
+
+j=l 
+
+In  Appendix  A  it  is  shown  that: 
+
+,,k 
+
+“$o*” 
+
+G  VW;.  xt 
+
+I  v*:. 
+
+i=l 
+
+t 
+
+E 
+
+This  implies  that: 
+
+d(u,  WI  -  d(u,  wt+1> 3  vu  ‘Xt  -  rlwt  ‘Xt  -  --j--’ 
+
+V2u,X,2 
+
+Using  Lemma 
+
+I,  it  follows  that: 
+
+Abs-Loss(EU(wt, 
+
+q,  U,),  St)  -  Abs-Loss(u,  S,) 
+
+<u 
+1 
+
+x  _w 
+t 
+. 
+
+t’ 
+
+t\ 
+
+x  <  d(KWt)--d(u,wt+l) 
+
+v 
+
+d&X,2 
+
++2 
+
+Similarly, 
+
+if  j;t  >  It,  it  follows  that: 
+
+Abs-Loss(EU(wt. 
+
+q,  U,).  S,)  -  Abs-Loss(u,  St) 
+
+<  d(u,  WI)  -  d(u,  wt+1)  +  d&g 
+\ 
+2 
+
+II 
+
+. 
+
+By  summing  over  all  1 trials: 
+
+342 
+
+T. Bvlander  /Artificial 
+
+Intelligence  106  (1998)  335-352 
+
+Abs-Loss(EU(s, 
+
+n,  U,),  S)  -  Abs-Loss(u,  S) 
+
+=  CAbs-Loss(EU(wr, 
+
+I], U,),  St)  -  Abs-Loss(u,  S,) 
+
+?=I 
+
+1 
+
+< c( d(u, Wt) -  d(u, &+I) 
+
+f=I 
+
+11 
+
++- 
+
+V&X,2 
+2 
+) 
+
+d(u,  s)  -  d(u,  w+1) 
+
++ 
+
+rlwd,2 
+
+= 
+
+17 
+
+2 
+
+6  d(u,s) 
+
+I  rlf-JE$ 
+
+rl 
+
+<  &Inn 
+\ 
+
+v 
+
+2 
+
+,  eJEx; 
+I 
+
+2 
+
+’ 
+
+which  proves  the  first  inequality  of  the  theorem.  The  second 
+ately  from  the  choice  of  7.  q 
+
+inequality 
+
+follows 
+
+immedi- 
+
+3.3.  Discussion 
+
+Theorems  2  and  3 provide  similar  results.  They  both  have  the  form: 
+
+Abs-Loss(A,  S)  <  Abs-Loss(u,  S)  +  O(1), 
+
+where  1, the  length  of  the  trial  sequence, 
+If  1 is  known  in  advance, 
+
+then  a good  choice  for  the  learning 
+
+rate  q  leads  to: 
+
+is  allowed  to  vary,  and  other  parameters  are  fixed. 
+
+Abs-Loss(A,  S)  <  Abs-Loss(u,  S)  +  O(d). 
+
+lengths 
+
+the  length  of  the 
+that  approach 
+
+there  can  be  a  small  absolute 
+
+Because 
+sequence,  all  the  bounds  depend  on  1. It  is  not  hard  to  generate  trial  sequences 
+these  bounds. 
+The  bound 
+
+loss  for  each  trial  no  matter 
+
+for  the  Perceptron 
+(two-norms) 
+
+algorithm  depends  on  Up  and  X,,  which  bound 
+the 
+respective 
+of  the  best  weight  vector  and  the  example  vectors.  The 
+bound  for  the  EU  algorithm  depends  on  U,,  the  one-norm  of the  best  weight  vector  (the  sum 
+of  the  weights);  X,,  the  infinity-norm 
+of  the  example  vectors  (the  maximum  magnitude 
+to  the  square  loss  case  [9, 
+of  any  value  in  any  example);  and  a  Inn 
+171 and  previous  mistake  bound  analyses 
+the 
+should  outperform 
+Perceptron  algorithm  when  the  best  comparison  weight  vector  has  many  small  weights  and 
+the  example  vectors  have  few  small  values. 
+
+term.  Thus,  similar 
+[ 191, the  EU  algorithm 
+
+appears 
+
+The  bound 
+
+for 
+
+the  EU  algorithm 
+
+vector  must  be  nonnegative 
+the  comparison 
+
+comparison 
+transformation 
+the  upper  bound  on  the  sum  of  the  weight’s  absolute  values 
+of  each  example  x  is  doubled  by  appending 
+transformation 
+
+the  weights  of  the 
+and  must 
+a  simple 
+class  to  include  negative  weights  with  U,  as 
+the  length 
+to  the  example.  This 
+the  values  of  --x 
+the  number  of  weights,  which  would  change  the  inn  term  to  In 2n. 
+
+because 
+to  UE.  However, 
+
+[ 171. Specifically, 
+
+can  expand 
+
+restrictive 
+
+doubles 
+
+sum 
+
+I:  Bylander 
+
+/ArtQicial 
+
+Intelligence 
+
+106  (1998)  335-352 
+
+343 
+
+4.  Mistake  bounds 
+
+To  analyze  concept  learning,  consider 
+
+trial  sequences 
+
+that  consist  of classi$cation 
+
+trials, 
+
+in  which  the  outcome  for  each  trial  is  either  a  positive  or  negative 
+from  the  absolute 
+version  of  an  online  algorithm 
+A  classification  algorithm  classifies  an  example  as  positive 
+if  T=  0.  That  is,  an  outcome 
+
+label.  The  classification 
+loss  version. 
+if  y  >  0,  and  negative 
+if 
+interval  of  (0,  co)  is  used 
+interval  of  (-co,  0)  is  used  for  negative  examples. 
+
+is  distinguished 
+
+F  <  0,  making  no  classification 
+for  positive  examples,  and  an  outcome 
+is  performed 
+No  updating 
+classification 
+threshold 
+apply  to  any  outcome 
+
+is  convenient 
+
+if  the  example 
+
+is  classified  correctly.  The  choice  of  0  for  a 
+for  the  analysis;  note  that  because  Theorems  2  and  3 
+
+intervals,  any  classification 
+
+threshold  could  be  used. 
+
+trials  to  absolute 
+
+loss  algorithm  uses  the  outcome 
+interval 
+
+To  relate  the  0- 1 loss  on  classification 
+are  useful.  An  absolute 
+intervals 
+positive  examples  and  the  outcome 
+loss  algorithm  performs  updating 
+loss  of  the  absolute 
+of  the  classification 
+the  classification 
+subsequence  of  a trial  sequence  omits  zero  or  more  trials,  but  does  not  change  the  ordering 
+of  the  remaining 
+
+loss,  slightly  different  outcome 
+[l,  co)  for 
+interval 
+-11  for  negative  examples.  An  absolute 
+if  y  is  not  in  the  correct  interval.  As  a result,  the  absolute 
+loss  algorithm  on  a  given  trial  is  greater  than  or  equal  to  the  O-l  loss 
+algorithm  using  the  same  weight  vector  (the  O-l  loss  for  a  trial  is  1 if 
+a 
+
+is  incorrect,  and  0  if  correct).  For  the  following  observation, 
+
+algorithm 
+
+trials. 
+
+(--cc, 
+
+Observation  4.  Let  S  be  a classihcation 
+trial  sequence.  If a classification  algorithm  makes 
+m  mistakes  on  S,  then  there  is  a  subsequence  of  S  of  length  m,  where  the  corresponding 
+absolute 
+if  there  is  no 
+subsequence  of  S  of  length  m,  where  the  absolute  loss  algorithm  has  an  absolute  loss  of  m 
+or  more,  then  the  classification  algorithm  must  make  fewer 
+
+loss  of  at  least  m.  Equivalently, 
+
+loss  algorithm  has  an  absolute 
+
+than  m  mistakes  on  S. 
+
+Based  on  this  observation,  mistake  bounds 
+
+derived.  The  notation  Abs-Loss(., 
+algorithm,  and  0- 1 -Loss(., 
+
+.)  is  used  for  the  absolute 
+.)  for  the  0- 1 loss  of  the  classification 
+
+loss  of  the  absolute 
+algorithm. 
+
+for  the  Perceptron  and  EU  algorithms  are 
+loss 
+
+Theorem  5.  Let  S  be  a  sequence  of  1 classification 
+trials.  Let  XP  >  maxt  ]]xt ]I. Suppose 
+there  exists  a  vector  u  with  IIu 11 6  UP and  Abs-Loss(u,  S)  =  0.  Let  S’  be  any  subsequence 
+of  S  of  length  m.  Then  m  >  UP2Xz implies 
+
+Abs-Loss(Perceptron(0, 
+
+l/X;), 
+
+S’)  <  m. 
+
+which  implies 
+
+0-1-Loss(Perceptron(0, 
+
+l/X,‘),  S)  cm. 
+
+Proof.  Using  Theorem  2,  Abs-Loss(u,  S)  =  0,  n  =  l/X;, 
+
+and  m  >  U,‘X,“: 
+
+Abs-Loss(Perceptron(0, 
+
+n),  S’)  <  Abs-Loss(u,  S’)  +  F  +  2 
+
+u! 
+
+rlmX,2 
+
+<  4% 
+\- 
+2 
+
++T<g+T=rn. 
+
+344 
+
+I:  Bylander 
+
+/Artificial 
+
+Intellipwe 
+
+106  (1998)  335-352 
+
+Because 
+subsequence 
+Observation  4  implies  0-1-Loss(Perceptron(0, 
+
+every 
+
+of 
+
+q),  S)  <  m.  q 
+
+length  m  has  an  absolute 
+
+loss 
+
+less 
+
+than  m, 
+
+then 
+
+Actually, 
+
+the  value  of  the  learning 
+
+rate  does  not  affect  the  mistake  bound  when  the  start 
+It  only  affects  the  relative 
+vector  is  the  zero  vector  and  0  is  the  classification 
+length  of  the  current  weight  vector.  This  is  because  the  weight  vector  is  the  learning 
+rate  q 
+times  the  sum  of  a  subset  of  example  vectors.  q  is  always  positive,  so  it  cannot  affect  the 
+sign  of  the  dot  product. 
+
+threshold. 
+
+to  a “separation”  of  1 from  the  0  classification 
+
+threshold. 
+
+The  mistake  bound  corresponds 
+
+to  previous  mistake  bounds 
+
+there  exists  a  vector  u  with 
+
+example,  suppose 
+means  that  the  outcome  of  each  positive  or  negative  example 
+respectively.  This  corresponds 
+Now  if  u  is  transformed 
+
+in  the  literature.  For 
+llull  =  U,  and  Abs-Loss(u,  S)  =  0.  This 
+is  at  least  1 or  at  most  -  1, 
+
+example  x  is  also  a  unit  vector,  i.e.,  Xp  =  1, then  the  mistake  bound 
+is  identical 
+
+to  the  bound  of  Minsky  and  Papert  [22].  ’ 
+
+into  a  unit  vector,  the  separation  becomes  6  =  l/  U,.  If  each 
+is  U,’  =  1/J2,  which 
+
+Now  consider 
+
+the  EU  algorithm. 
+
+Theorem  6.  Let  S  be  a  sequence  of  1  classi$cation 
+Suppose 
+Abs-Loss(u,  S)  =  0.  Let  s  =  (&In, 
+m.  Then  m  >  2Uk?X,2 Inn  implies 
+
+trials.  Let  X,  3  maxt,i  IXt,iI. 
+there  exists  a  vector  u  with  nonnegative  weights  such  that  cy=,  ui  =  U,  and 
+.  , i&/n).  Let  S’  be  any  subsequence  of  S  of  length 
+
+Abs-Loss(EU(s, 
+
+l/(&Xi)), 
+
+S’)  cm. 
+
+which  implies 
+
+0-1-Loss(EU(s, 
+
+l/(U$Xz)), 
+
+S)  cm. 
+
+Proof.  Using  Theorem  3,  Abs-Loss(u,  S)  =  0,  q= 
+
+l/(U,Xz), 
+
+and  m  >  2lJ,2X,2 Inn: 
+
+Abs-Loss(EU(s, 
+
+q,  U,),  S’)  <  Abs-Loss@,  S’)  +  - 
+
+&Inn 
+
+am&X, 
+
+n 
+
++2 
+
+<  U2X21nn  +  m  cm. 
+‘E 
+
+E 
+
+2 
+
+Because 
+Observation  4  implies  0-1-Loss(EU(s, 
+
+subsequence 
+
+every 
+
+of 
+
+q,  U,),  S)  -C m.  q 
+
+length  m  has  an  absolute 
+
+loss 
+
+less 
+
+than  m, 
+
+then 
+
+While  the  learning 
+
+rate  is  important 
+
+tion  by  U,  is  unnecessary.  The  normalization 
+relative  sizes. 
+
+for  the  EU  classification 
+
+the  normaliza- 
+algorithm, 
+affects  the  sum  of  the  weights,  but  not  their 
+
+This  mistake  bound  corresponds 
+
+and  the  Balanced  algorithm 
+
+to  mistake  bounds  for  the  Weighted  Majority  algorithm 
+the  equivalence  of  the 
+
+[191. 4  Demonstrating 
+
+in  Littlestone 
+
+’  Block  [2],  Novikoff 
+
+[23],  and  Papert  [24]  are  generally  credited  with  providing 
+
+the  first  proofs  of  this  mistake 
+
+bound. 
+
+4 In  Littlestone 
+
+[ 191, the  Weighted  Majority  algorithm 
+
+is  also  analyzed  as  a  general 
+
+linear  threshold 
+
+learning 
+
+algorithm 
+
+in  addition 
+
+to  an  analysis  as  a  “master”  algorithm  as  in  Littlestone  and  Warmuth  [21]. 
+
+7: Bylander/Artijiciul 
+
+Intelligence  106 (1998)  335-352 
+
+345 
+
+is  somewhat 
+
+tedious  because  of  superficial  differences 
+
+the  algorithms. 
+bounds 
+However,  a  big-oh  equivalence 
+analysis,  X,  =  1  and 
+comparison  vectors  have  a separation  of  6 with  weights  that  sum  to  1. To get  a separation  of 
+the  bounds  of  this 
+1, the  sum  of  the  weights  needs  to  be  iYE =  1 /S.  Under  these  conditions, 
+paper  are  2l&?Xz  Inn  =  2 In n/6*.  The  O(ln  n/s*)  mistake  bound  agrees  with  Littlestone. 
+
+is  easily  shown. 
+
+In  Littlestone’s 
+
+among 
+
+Mistake  bounds  can  also  be  derived  for  when  the  best  comparison  vector  also  makes 
+trial,  it  can 
+loss  of  up  to 
+theorem  for  the  EU 
+
+mistakes.  Note  that  if  a  comparison  vector  makes  a  mistake  on  a  classification 
+deviate  from  the  threshold  by  as  much  as  U,X,,  which  implies  an  absolute 
+U,X,  +  1 for  the  absolute 
+algorithm. 
+
+loss  algorithm.  This  leads  to  the  following 
+
+Theorem  7.  Let  S  he  a  sequence  of  1  classification 
+trials.  Let  X,  3  max,,i  lxy.; I. 
+there  exists  a  vector  u  with  nonnegative  weights  such  that  cy=,  ut  =  UE and 
+Suppose 
+0-1-Loss(u,  S)  =  k.  Suppose  also  that  Abs-Loss(u,  S,)  =  0 for  all  trials  other  than  the  k 
+. . . , i&/n).  Let  S’  be  any  subsequence  qf S  of  length  m.  Let  n  be 
+mistakes.  Lets  =  (i&/n, 
+any  learning  rate  such  that  n  -C 2/(&X:). 
+
+Then 
+
+m> 
+
+(L&X,  +  1)k  +  y 
+
+1 _  V&x; 
+
+2 
+
+implies  Abs-Loss(EU(s, 
+
+q.  UE), S’)  <  m,  which  implies  0-1-Loss(EU(s. 
+
+7,  U,).  S)  -C m. 
+
+Proof. 
+k  mistakes, 
+corresponding 
+
+If  0-1-Loss(u,  S)  =  k  and  Abs-Loss(u.  S,)  =  0  for  all 
+then  Abs-Loss(u,  S)  <  (L&X,  +  1)k  because 
+
+each  mistake 
+
+trials  other 
+
+than 
+the 
+can  have  a 
+
+absolute 
+
+loss  of  up  to  r/,X,  +  1. To  use  Theorem  3,  we  want  to  obtain: 
+
+Abs-Loss(EU(s, 
+
+n,  U,),  S’)  <  Abs-Los+, 
+
+S’)  +  ~ 
+
+UE Inn 
+
+I7mGXZ 
+
+r7  +2 
+
+<  (cr,X,  +  1)k  + 
+
+C&Inn 
+p+p 
+rl 
+
+rlmGX,2 
+2 
+
+The  last  expression 
+
+is  less  than  m  when  17 <  2/(&X,2) 
+
+and 
+
+m> 
+
+(L/,:X,  +  1)k  +  y 
+
+dJk.$ 
+
+l-7 
+
+. 
+
+Because 
+Observation  4  implies  0-1-Loss(EU(s  1 q, U,).  S)  -C m.  q 
+
+length  m  has  an  absolute 
+
+subsequence 
+
+every 
+
+of 
+
+loss 
+
+less 
+
+than  m, 
+
+then 
+
+One  special  case  of  interest 
+
+is  when  U,  =  1  and  X,  =  1.  This  corresponds 
+
+to  using 
+[ 19,211.  That  is,  the  inputs  to  the  EU  algorithm  are 
+the  EU  algorithm  as  a master  algorithm 
+produced  by  the  outputs  of  other  learning  algorithms,  which  in  turn  are  being  trained  on  the 
+same  sequence  of  observations.  Suppose  one  of  EU’s  inputs  is  produced  by  an  algorithm 
+that  makes  k  or  fewer  mistakes 
+and  1  for  encoding  negative  and  positive 
+respectively).  Then,  the  mistake  bound  2.67k  +  2.67  Inn  can  be  obtained  when 
+predictions, 
+
+(using 
+
+-1 
+
+346 
+
+7: Bylunder  /Artijicial 
+
+Intelligence  106  (1998)  335-352 
+
+r] =  0.5.  This  is  close  to  the  Weighted  Majority  mistake  bound  of  2.64k  +  2.64  Inn  using 
+j3 =  e-l 
+
+[21].  5 
+
+5.  Toleranced  absolute 
+
+loss 
+
+The  above  analysis 
+
+leads  to  a per-trial 
+
+the  goal  is  come  within  a  tolerance 
+
+in  which 
+directly  hitting 
+is  nonnegative, 
+ismodifiedtoZ’=Zftwherey’~Z’ifandonlyify-t~y’~y++forsomey~Z. 
+The  absolute 
+
+the  interval 
+indicates 
+
+that  every  outcome 
+
+itself.  The  notation  Abs-Loss(.,  S,  t),  where  the  tolerance 
+
+t  of  each  outcome 
+
+loss  for  both  algorithms,  so  consider  an  extension 
+than 
+r 
+interval  Z of  each  trial  in  the  trial  sequence  S 
+
+interval 
+
+rather 
+
+in  accordance  with  the  modified  outcome 
+
+loss  is  calculated 
+For  the  Perceptron  and  EU  algorithms, 
+loss  of  qX,2/2  and  7$7,X,2/2,  respectively. 
+the  per-trial 
+the  worst-case, 
+3 can  be  generalized 
+
+loss  can  be  eliminated, 
+
+to  obtain  the  following 
+
+leads  to  an  additional  per-trial 
+the  above  analysis 
+If  t  is  equal  to  these  values,  then  it turns  out  that 
+in 
+independent  of  the  length  of  the  sequence.  The  proofs  for  Theorems  2  and 
+
+leaving  a constant  additional 
+
+loss  over  the  sequence 
+
+theorems: 
+
+intervals. 
+
+Theorem  8.  Let  S be  a  sequence  of  1 trials  and  t  be  a  positive  real  number:  Let  XP  3 
+maxt  llxt  11 and  r] =  2r/X,2.  Then for  any  comparison  vector  u,  where  [lull <  UP 
+
+Abs-Loss(Perceptron(0, 
+
+Proof.  Let 
+
+II),  S,  5)  <  Abs-Loss(u,  S)  +  3 
+
+lJ2X2 
+
+4t 
+
+. 
+
+d(u,  w)  =  11~ -  wl12 =  e(ui 
+
+-  ~i)~. 
+
+i=l 
+
+Consider 
+
+the  tth  trial  S,  =  (Xr,  It).  Let  y[  =  wt  . xt.  If  $  E  Zr f  5,  then  wr+l  =  wt,  and 
+
+d(u,  wt>  -  d(u,  W+I)  =  0. 
+
+If  j$  <  Zt f  x,  then  wt+l  =  wr  +  qxt.  In  the  proof  of  Theorem  2,  it  was  shown  that 
+
+d(u,  wt)  -  d(u,  wt+l)  3  2q(u.  xt  -  wy  Xt)  -  q2X;. 
+
+From  Lemma  1 and  the  fact  that  llxr II 6  Xp,  it  follows  that: 
+
+Abs-Loss(Perceptron(wt, 
+
+r),  St,  r)  -  Abs-Loss(u,  S,) 
+
+=  Abs-Loss(Perceptron(wt, 
+
+q),  St)  -  T -  Abs-Loss(u,  S,) 
+
+<u.xt-wt.xt-t< 
+
+d(u,  wt)  -  d(u,  wt+l) 
+
+2 
+
+++ 
+
+2rl 
+
+Similarly, 
+
+if  yt  >  It  f  5,  it  follows  that: 
+
+5 One  can  obtain  an  analogue  of  Theorem  7  for  the  Perceptron 
+which  is  much  worse  than  O(k  +  Inn). 
+
+algorithm  case  are  O(kfi), 
+
+algorithm,  but  the  bounds 
+
+for  the  master 
+
+Z  Bylander 
+
+/Artificial 
+
+Intelligence 
+
+106  (1998)  335-352 
+
+341 
+
+Abs-Loss(Perceptron(w,, 
+
+n),  St,  r)  -  Abs-Loss(u,  S,) 
+
+<  d(W  W)  -d(u, 
+\ 
+
+27 
+
+r&+1) 
+
+I  llx,2 
+
+~. 
+
+2 
+
+By  letting 
+
+t  =  r7X,2/2 and  summing  over  all  1 trials: 
+
+Abs-Loss(Perceptron(0, 
+
+n),  S,  r)  -  Abs-Loss(u,  S) 
+
+=  CAbs-Loss(Perceptron(ruf, 
+
+q),  S,,  r)  -  Abs-Loss(u,  S,) 
+
+f=l 
+
+which  proves  the  inequality  of  the  theorem.  q 
+
+real  number  Let  s  = 
+. . . , &In)  be  the  start  vector:  Let  X,  >  maxt,i  Ixt,i 1 and  q =  2t/(UEX,2).  Then  for 
+
+Theorem  9.  Let  S  be  a  sequence  of  1  trials  and  t  be  a  positive 
+(&In, 
+any  comparison  vector  U, where  Cy=,  ai  =  U,  and  where  each  ai  >  0: 
+
+Abs-Loss(EU(s, 
+
+n,  U,),  S,  r)  <  Abs-Loss(u,  S)  +  E  E 
+2r 
+
+U2X2  Inn 
+
+. 
+
+Proof.  Let  S,  1, s,  XE, and  U,  be  defined  as  in  the  theorem.  Let 
+
+d(u,  W)  =  kui 
+
+ln(ui/wi), 
+
+i=l 
+
+where  0 In0  =  0 by  definition. 
+then  d (u,  W) >  0.  Recall  from  the  proof  of  Theorem  3 that 
+
+If the  sum  of  u’s  weights  is  equal  to  the  sum  of  w’s  weights, 
+
+d(u,  s)  <  U, Inn. 
+
+Considerthe 
+and  d(u,  wt)  -  d(u,  wt+l)  =  0.  If  yr A  <  Zt f  r,  then: 
+
+tthtrial  St  =  (xt,  It).  ThenF;  =  Wr ‘xt.  Now  ifyt  E It  ft, 
+
+then  rut+1  =  Wt, 
+
+UE Wt  iPr.i 
+
+Wt+‘,i 
+
+= 
+
+-& 
+
+;t,jecB.i 
+
+In  the  proof  for  Theorem  3,  it  is  shown  that: 
+
+d(u,  wt)  -  d(u,  Wt+l)  3  VU .xt  -  qtu,  ‘xt  -  p. 
+
+Q2LI,XZ 
+2 
+
+Using  Lemma  1, it  follows  that: 
+
+Abs-Loss(EU(x,, 
+
+q,  U,),  St,  t)  -  Abs-Loss(u,  St) 
+
+=  Abs-Loss(EU(xt, 
+
+r/, U’),  St)  -  r  -  Abs-Loss(u,  St) 
+
+<u.xt-wt.xt-t< 
+
+d(u> wt)  -  d(u, wt+i)  +“‘/‘XZ-T. 
+
+rl 
+
+2 
+
+348 
+
+7: Bylunder 
+
+/Artificial 
+
+Intellipm 
+
+106  (I  998)  335-352 
+
+Similarly, 
+
+if  yt  >  It  f  r,  it  follows  that 
+
+Abs-Loss(EU(wr 
+
+, rj, U,),  S,, T)  -  Abs-Loss(u,  S,) 
+
+<  d(u,  wt)  -  d(u,  w+1) 
+\ 
+
+rl 
+
+WEXE2 
+
++2-*. 
+
+By  letting 
+
+t  =  q&X,2/2  and  summing  over  all  1 trials: 
+
+Abs-Loss(EU(s, 
+
+q,  U,),  S,  t)  -  Abs-Loss(u,  S) 
+
+=  CAbs-Loss(EU(w,, 
+
+I], U,),  S,,  t)  -  Abs-Loss(u,  S,) 
+
+1=1 
+
+which  proves  the  inequality  of  the  theorem.  q 
+
+absolute 
+
+For  both  algorithms, 
+absolute 
+
+the  toleranced 
+the 
+loss  of  the  best  comparison  vector  by  a  constant  over  the  whole 
+(nontoleranced) 
+is.  If  the  best  comparison  vector  has  a  zero 
+sequence,  no  matter  how  long  the  sequence 
+loss  is  bounded  by  a  constant  over  the  whole 
+absolute 
+sequence.  These  results  strongly  support  the  claim  that  the  Perceptron  and  EU  algorithms 
+are  online  algorithms 
+
+loss,  then  the  toleranced  absolute 
+
+loss  of  each  algorithm 
+
+for  minimizing 
+
+absolute 
+
+exceeds 
+
+loss. 
+
+6.  Randomized 
+
+classification  algorithms 
+
+classi$cation 
+
+To  apply  Theorems  8  and  9,  again  consider  concept 
+
+sequences.  ’  A  randomized 
+algorithm 
+is  defined  as  follows.  The  prediction  7  is  converted 
+predicting  positive  if  7  >  l/2,  and  negative 
+positive  with  probability  F+ 
+for  randomizing 
+is  fixed  before  the  randomized  prediction. 
+
+trial 
+trial  sequence 
+prediction  by 
+then  predict 
+if  a  6  -  l/2.  If  -  l/2  <  y  <  l/2, 
+l/2,  otherwise  predict  negative.  It  is  assumed  that  the  method 
+intervals,  e.g.,  the  outcome 
+
+for  a  classification 
+into  a  classification 
+
+is  independent  of  the  outcome 
+
+learning  and  classification 
+
+this  prediction 
+
+Under  randomized  prediction, 
+
+[l,  00)  and  (--co, 
+
+vals  by  using 
+spectively, 
+the  toleranced  absolute 
+(-m, 
+-l/2 
+Note 
+whether  the  classification  prediction 
+
+that  when 
+
+-l/2]. 
+
+just  as  was  done  above.  However,  a  tolerance  of  t  =  l/2 
+
+loss  is  determined  based  on  outcome 
+
+classification 
+-11 
+
+outcomes  are  converted 
+for  positive  and  negative  classification 
+
+to  outcome 
+
+inter- 
+trials,  re- 
+is  added  so  that 
+intervals  of  [l/2,  co)  and 
+regardless  of 
+
+is  performed 
+
+<  F  <  l/2,  updating 
+
+is  correct  or  not. 
+
+The  idea  of  a randomized  algorithm 
+
+is  borrowed  from  [2 11, which  analyzes  a randomized 
+
+version  of  the  Weighted  Majority  algorithm.  This  paper’s  randomization 
+there  are  ranges  of  7,  where  positive  and  negative  predictions  are  deterministic. 
+
+differs 
+
+in  that 
+
+’  Refer  to  Section  4  for  the  definition  of  classification 
+
+trial  sequence 
+
+T  Bylander  /Art$cinl 
+
+Intelligence  106  (1998)  335-352 
+
+349 
+
+Note  that  the  toleranced  absolute 
+
+loss  of  the  randomized 
+
+classification 
+
+algorithm  on  a 
+
+to  the  F  prediction) 
+
+trial  (referring 
+prediction 
+
+classification 
+classification 
+for  correct  classification  predictions  and  at least  1 for  incorrect  predictions. 
+toleranced  absolute 
+supports  the  following  observation. 
+
+loss  is  0 
+In  all  cases,  the 
+loss  is  greater  than  or  equal  to  the  expected  value  of  the  0- 1 loss.  This 
+
+is  equal  to  the  probability  of  an  incorrect 
+the  toleranced  absolute 
+
+if  -  l/2  <  7  <  l/2.  Otherwise, 
+
+Observation  10.  Let  S  be  a  classification 
+trial  sequence.  Then,  the  toleranced  absolute 
+loss  of  a  randomized  classification  algorithm  on  S  is greater  than  or  equal  to  the  expected 
+value  of  the  algorithm’s  0- 1 loss  on  S. 
+
+The  notation  Abs-Loss(., 
+
+randomized  classification 
+
+.,  l/2) 
+
+is  used 
+algorithm,  and  0- 1 -Loss(.  , . . l/2) 
+
+the 
+
+for 
+
+toleranced 
+
+absolute 
+for  its  0- 1 loss. 
+
+loss  of  the 
+
+Theorem  11.  Let  S  be  a  sequence  of  1 classification 
+there  exists  a  vector  u  with  (Iu II <  UP and  Abs-Loss(u,  S)  =  0.  Then 
+
+trials.  Let  Xr  3  maxt  IJXt I]. Suppose 
+
+Abs-Loss(Perceptron(0, 
+
+&), 
+
+S,  i)  <  T, 
+
+which  implies 
+
+E[0-I-Loss(Perceptron(0. 
+
+$), 
+
+S,  k)] 
+
+6  q. 
+
+Proof.  Using  Theorem  8,  Abs-Loss(u,  S)  =  0,  r  =  1 /X,‘,  and  r  =  l/2: 
+
+Abs-Loss(Perceptron(0, 
+
+n),  S,  r)  <  Abs-Loss(u,  S)  +  p 
+
+U2X2 
+
+4r 
+
+=  p. 
+
+U2X2 
+2 
+
+Observation  10 implies  E[O-l-Loss(Perceptron(0, 
+
+n),  S.  r)]  <  U,2X,2/2. 
+
+q 
+
+Theorem  12.  Let  S  be  a sequence  of  1 classijkation 
+trials.  Let  X,  3  maxt,i  Ixt,i I. Suppose 
+there  exists  a vector  u  of  nonnegative  weights  with  c:=,  ui  <  Ue and  Abs-Loss(u,  S)  =  0. 
+Lets  =  (L&/n,  . . . , L&/n).  Then 
+
+Abs-Loss(EU(s. 
+
+-&), 
+
+S,  i)  <  lJ:Xilnn, 
+
+which  implies 
+
+F[O-1-Loss(EU(s, 
+
+&), 
+
+S,  JJ]  <  @X,2lnn. 
+
+Proof.  Using  Theorem  9,  Abs-Loss(u,  S)  =  0,  n  =  l/(U,Xz), 
+
+and  r  =  l/2: 
+
+Abs-Loss(EU(s, 
+
+n),  S,  r)  <  Abs-Loss(u,  S)  + 
+
+U,’ X,2 In n 
+2r 
+
+=  U2X?  Inn 
+EE. 
+
+’ 
+
+Observation  10 implies  E[O-1-Loss(EU(s, 
+
+q),  S,  t)]  6  U~X~lnn. 
+
+q 
+
+350 
+
+?:  Bylander 
+
+/Artijicial 
+
+Intelligence 
+
+106  (1998)  335-352 
+
+For  both  randomized 
+
+algorithms, 
+
+the  worst-case  bounds  on  the  expected  0- 1 loss  is  half 
+
+of  the  worst-case  mistake  bounds  of  the  deterministic 
+can  improve 
+the  worse-case  bounds  by  a  factor  of  2  because  a  value  of  7  close  to  0  has  a 
+0- 1 loss  of  1 in  the  deterministic  worst  case,  while  the  expected  0- 1 loss  is  close  to  l/2  for 
+the  randomized 
+
+algorithms.  Roughly,  randomization 
+
+algorithms. 
+
+7.  Conclusion 
+
+This  paper  has  presented 
+
+that  shows  that  they  are  online  algorithms 
+
+algorithms 
+a sequence  of  trials  (examples).  Specifically, 
+loss  of  the  online  algorithms 
+is  comparable 
+comparison  vectors. 
+
+an  analysis  of  the  Perceptron 
+
+for  minimizing 
+
+and  Exponentiated  Update 
+loss  over 
+this  paper  shows  that  the  worst-case  absolute 
+to  the  optimal  weight  vector  from  a  class  of 
+
+the  absolute 
+
+The  analysis 
+
+is  fully  general.  No  assumptions 
+
+or  the 
+probability  distribution  of  the  trials  are  made.  The  Perceptron  analysis  only  refers  to  the 
+maximum  vector  length  of  a  example  and  the  maximum  vector  length  of  a  comparison 
+vector.  The  Exponentiated  Update  analysis  only  refers  to  the  maximum  magnitude  of  a 
+value  in  an  example  and  the  sum  of  weights  of  a comparison  vector. 
+
+the  linear  separability 
+
+about 
+
+trial  sequence 
+
+When  a  classification 
+
+loss  bounds  are  closely 
+
+this  paper  has  also  shown 
+for  both 
+that  the  absolute 
+is  needed 
+deterministic 
+to  study  the  classification  behavior  of  these  algorithms  when  the  target  comparison  vector 
+is  allowed  to  drift,  for  both  the  linearly  separable  and  nonseparable 
+
+to  the  known  mistake  bounds 
+research 
+
+and  randomized  versions  of  these  algorithms.  Additional 
+
+is  linearly 
+related 
+
+separable, 
+
+case.  7 
+
+Based  on  minimizing 
+
+absolute 
+
+loss,  it  is  possible 
+
+to  derive  a  backpropagation 
+
+algorithm 
+suitable 
+
+for  multiple 
+
+layers  of  linear  threshold  units.  It  would  be  interesting 
+
+initial  conditions  and  parameters 
+
+that  lead  to  good  performance. 
+
+learning 
+to  determine 
+
+Acknowledgements 
+
+Thanks  to  Manfred  Warmuth  and  anonymous 
+
+reviewers  for  comments  on  this  paper.  This 
+is  based  in  part  upon  work  supported  by  the  Texas  Advanced  Research  Program 
+
+material 
+under  Grant  No.  1997-010115-225. 
+
+Appendix  A.  Inequality 
+
+for  exponentiated  update 
+
+A  more  general  version  of  Lemma  A. 1 is  shown  in  Hoeffding 
+
+[ 15, p.  221. It  is  presented 
+
+here  for  completeness. 
+
+Lemma  A.l.  Let  w  E 8%” consist  of  nonnegative  weights  with  cy=,  wi  =  U,.  Let  x  E IP 
+such  that  X,  3  maXi  [xi 1. Let  q  be  any  real  number:  Then  the following 
+
+inequality  holds: 
+
+ln 2 
+
+“ii”” 
+
+~ 
+
+“;’ 
+
+x 
+
+I  V*z, 
+
+i=l 
+
+E 
+
+‘5 
+
+’  See  [ 1,13,14]  for  some  interesting 
+
+research  along  these  lines 
+
+I:  Bylander  /Artificial  Intelligence  106  (1998)  335-352 
+
+351 
+
+Proof.  Define  f  as 
+
+f(s,w.X)=lnfyg. 
+
+i=l 
+
+E 
+
+Now  differentiate 
+
+f  twice  with  respect  to  4. 
+
+When  17 =  0,  f  (r], w,x)  =  0  and  af/aq = w . XI&. With  regard  to  the  second  partial 
+derivative, 
+
+the  following  bound  holds  for  the  second  partial  derivative: 
+
+Hence,  by  Taylor’s  theorem: 
+
+which  is  the  inequality  of  the  lemma.  q 
+
+References 
+
+[l]  P. Auer,  M.  Warmuth,  Tracking 
+the  best  disjunction,  Machine  Learning, 
+[2]  H.D.  Block,  The  Perceptron:  a  model  for  brain  functioning,  Reviews  of  Modem  Physics  34  (1)  (1962)  123- 
+
+to  appear. 
+
+135. 
+
+[3]  A.  Blum,  A.  Frieze,  R.  Kannan,  S. Vempala,  A polynomial-time 
+
+algorithm 
+
+for  learning  noisy  linear  threshold 
+
+functions, 
+
+in:  Proceedings  37th  IEEE  Annual  Symposium  on  Foundations  of  Computer  Science,  1996. 
+
+[4]  T. Bylander,  Learning 
+
+linear-threshold 
+
+functions 
+
+in  the  presence  of  classification  noise,  in:  Proceedings  7th 
+
+Annual  ACM  Conference  on  Computational  Learning  Theory,  1994,  pp.  340-347. 
+
+[5]  T.  Bylander,  Leaming 
+
+linear 
+
+threshold  approximations 
+
+using  Perceptrons,  Neural  Computation 
+
+7  (1995) 
+
+370-379. 
+
+[6]  T.  Bylander,  Learning  probabilistically 
+
+linear  threshold 
+Conference  on  Computational  Learning  Theory,  1997,  pp.  485490. 
+
+consistent 
+
+functions, 
+
+in:  Proceedings 
+
+10th  Annual 
+
+[7]  T.  Bylander,  Worst-case 
+
+absolute 
+Providence,  RI,  1997,  pp.  485490. 
+
+loss  bounds 
+
+for  linear 
+
+learning  algorithms, 
+
+in:  Proceedings  AAAI-97, 
+
+[S]  N.  Cesa-Bianchi,  Analysis  of  two  gradient-based 
+
+algorithms 
+
+for  on-line  regression, 
+
+in:  Proceedings 
+
+10th 
+
+Annual  Conference  on  Computational  Learning  Theory,  1997,  pp.  163-170. 
+
+[9]  N.  Cesa-Bianchi,  PM.  Long,  M.K.  Warmuth,  Worst-case  quadratic 
+rule,  IEEE  Trans.  Neural  Networks  7  (1996)  604-619. 
+
+Widrow-Hoff 
+
+loss  bounds  for  a  generalization 
+
+of  the 
+
+[IO]  E.  Cohen,  Learning  noisy  Perceptrons 
+
+by  a  Perceptron 
+
+in  polynomial 
+
+time,  in:  Proceedings 
+
+38th  IEEE 
+
+Annual  Symposium  on  Foundations  of  Computer  Science,  1997. 
+
+(111  R.O.  Duda,  P.E.  Hart,  Pattern  Classification 
+[ 121  S.I.  Gallant,  Perceptron-based 
+[ 131  M.  Herbster,  M.  Warmuth,  Tracking 
+[14]  M.  Herbster,  M.  Warmuth,  Tracking 
+
+and  Scene  Analysis,  Wiley,  New  York,  1973. 
+
+learning  algorithms, 
+
+IEEE  Trans.  Neural  Networks  1 (1990)  179-191. 
+
+the  best  expert,  Machine  Learning, 
+
+to  appear. 
+
+the  best  regressor, 
+
+in:  Proceedings 
+
+1 lth  Annual  Conference 
+
+on 
+
+Computational  Learning  Theory,  1998. 
+
+1151 W.  Hoeffding,  Probability 
+
+inequalities 
+
+for  sums  of  bounded  variables,  J.  Amer.  Statist.  Assoc.  58  (1963) 
+
+13-30. 
+
+[16]  R.L.  Kashyap,  Algorithms 
+
+for  pattern  classification, 
+
+in:  J.M.  Mendel,  K.S.  Fu  (Eds.),  Adaptive,  Learning 
+
+and  Pattern  Recognition  Systems:  Theory  and  Applications,  Academic  Press,  New  York,  1970,  pp.  8 l-l  13. 
+
+352 
+
+L  BJ&v&~ 
+
+/Artificial 
+
+Intellipm 
+
+106  (1998)  335-352 
+
+[ 171 J.  Kivinen,  M.K.  Warmuth,  Exponentiated  gradient  versus  gradient  descent  for  linear  predictors, 
+
+Information 
+
+and  Computation 
+
+132  (1997)  I-63. 
+
+irrelevant  attributes  abound:  a  new  linear-threshold 
+
+algorithm, 
+
+[IS]  N.  Littlestone,  Learning  quickly  when 
+Machine  Learning  2  (1988)  285-3  18. 
+and 
+
+[19]  N.  Littlestone,  Mistake  bounds 
+
+logarithmic 
+
+linear-threshold 
+
+learning 
+
+algorithms. 
+
+Ph.D.  Thesis, 
+
+University  of  California,  Santa  Cruz,  CA.  1989. 
+
+[20]  N.  Littlestone,  Redundant  noisy  attributes,  attribute  errors,  and  linear-threshold 
+
+learning  using  Winnow, 
+
+in: 
+
+Proceedings  4th  Annual  Workshop  on  Computational  Learning  Theory,  1991,  pp.  1477156. 
+
+[21]  N.  Littlestone,  M.K.  Warmuth,  The  weighted  majority  algorithm. 
+
+Information  and  Computation 
+
+108  (1994) 
+
+212-261. 
+
+[22]  M.L.  Minsky,  S.A.  Papert,  Perceptrons,  MIT  Press,  Cambridge,  MA,  1969. 
+[23]  A.B.J.  Novikoff,  On  convergence  proofs  for  Perceptrons, 
+Theory  of  the  Automata,  Vol.  XII,  1962,  pp.  615-622. 
+
+in:  Proceedings  Symposium  on  the  Mathematical 
+
+[24]  S.  Papert,  Some  mathematical  models  of  learning, 
+
+in:  Proceedings  4th  London  Symposium  on  Information 
+
+Theory,  196 1. 
+
+[25]  F. Rosenblatt,  Principles  of  Neurodynamics, 
+[26]  J.  Shavlik,  R.J.  Mooney,  G.  Towell,  Symbolic  and  neural  learning  programs:  an  experimental 
+
+Spartan  Books,  New  York,  1962. 
+
+comparison, 
+
+Machine  Learning  6  (1991)  I1 l-143. 
+
+
