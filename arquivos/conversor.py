@@ -29,7 +29,10 @@ for file in fileNames:
     fake_file_handle = io.StringIO()
     converter = TextConverter(resource_manager, fake_file_handle, laparams=LAParams())
     page_interpreter = PDFPageInterpreter(resource_manager, converter)
-    name = file.split(".pdf")
+    # name = file.split(".pdf")
+    tmp = file.split(".pdf")
+    name = tmp[0].split("-")
+    print(name[1].strip())
     print(file)
 
     with open('./pdf/' + file, 'rb') as fh:
@@ -45,21 +48,24 @@ for file in fileNames:
     converter.close()
     fake_file_handle.close()
 
-    f = open('./texto/' + name[0] + '.txt', 'w', encoding="utf-8")
-    e = open('./entidade/' + name[0] + '.txt', 'w', encoding="utf-8")
+    #corrigindo identificação errada de unicode do pdfminer
+    textF = text.replace('ﬁ', 'fi').replace ('ﬂ', 'fl').replace ('ﬀ', 'ff').replace ('ﬃ', 'ffi').replace ('ﬄ', 'ffl').replace ('ﬅ', 'ft')    
+
+    f = open('./texto/' + tmp[0] + '.txt', 'w', encoding="utf-8")
+    e = open('./entidade/' + name[1].strip() + '.txt', 'w', encoding="utf-8")
     # e = codecs.open('./entidade/' + name[0] + '.txt', "w", "utf-8")
 
     #pegar informações importantes
-    e.write(text)
+    e.write(textF.replace(' \n', ' ').replace('\n', '').replace('\r', '').replace('  ', ' '))
 
     #limpeza do texto
-    text2 = re.sub(r'[^\w\s]', '', text)
+    text2 = re.sub(r'[^\w\s]', '', textF)
     filtered_sentence = remove_stopwords(text2.lower())
     conj = word_tokenize(filtered_sentence) 
 
     for word in conj:
         f.write(WNL.lemmatize(word))
-        f.write(' ')
+        f.write('')
 
     e.close()
     f.close()

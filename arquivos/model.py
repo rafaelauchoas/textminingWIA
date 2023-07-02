@@ -1,20 +1,18 @@
-import bibtexparser
-import bibtexparser.middlewares as m
+import spacy
+from spacy.matcher import PhraseMatcher
 
-layers = [
-    m.SeparateCoAuthors(True), # Co-authors should be separated as list of strings
-]
+text = """I like tomtom and I cannot lie. In computer science, artificial intelligence (AI), sometimes called machine intelligence, is intelligence demonstrated by machines, unlike the natural intelligence displayed by humans and animals.  Leading AI textbooks define the field as the study of "intelligent agents": any device that perceives its  environment and takes actions that maximize its chance of successfully achieving its goals.[1] Colloquially,  the term "artificial intelligence" is often used to describe machines (or computers) that mimic "cognitive"  functions that humans associate with the human mind, such as "learning" and "problem solving".[2] """
 
-with open("bibtex/sciencedirect.bib", encoding='utf-8') as bibtex_file:
-    tmp = bibtex_file.read()
-    library = bibtexparser.parse_string(tmp, append_middleware=layers)
+nlp = spacy.load("en_core_web_sm")
 
-print(len(library.entries))
+phrase_matcher = PhraseMatcher(nlp.vocab)
+phrases = ['omtom and I cannot', 'science, artificial intelligence (AI), sometimes called machine']
+patterns = [nlp(text) for text in phrases]
+phrase_matcher.add('AI', None, *patterns)
 
-# for entry in library.entries:
-#     print(entry['journal'])
-#     print(entry['title'])
-#     print(entry['doi'])
-#     print(entry['author'])
-#     print(entry['keywords'])
-#     print(entry['abstract'])
+doc = nlp(text)
+
+for sent in doc.sents:
+    for match_id, start, end in phrase_matcher(nlp(sent.text)):
+        if nlp.vocab.strings[match_id] in ["AI"]:
+            print(sent.text)

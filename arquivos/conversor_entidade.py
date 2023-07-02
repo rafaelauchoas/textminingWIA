@@ -33,9 +33,12 @@ for file in fileNames:
     converter.close()
     fake_file_handle.close()
 
+    #corrigindo identificação errada de unicode do pdfminer
+    tmp = text.replace('ﬁ', 'fi').replace ('ﬂ', 'fl').replace ('ﬀ', 'ff').replace ('ﬃ', 'ffi').replace ('ﬄ', 'ffl').replace ('ﬅ', 'ft')
+    
     e = open('./entidade/' + name[1].strip() + '.txt', 'w', encoding="utf-8")
 
     #pegar informações importantes
-    e.write(text)
+    e.write(tmp.replace(' \n', ' ').replace('\n', '').replace('\r', '').replace('  ', ' '))
 
     e.close()
