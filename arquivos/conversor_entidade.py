@@ -6,6 +6,7 @@ from pdfminer.converter import TextConverter
 from gensim.parsing.preprocessing import remove_stopwords
 from os import listdir
 from os.path import isfile, join
+import json
 import io
 import re
 
@@ -17,7 +18,7 @@ for file in fileNames:
     converter = TextConverter(resource_manager, fake_file_handle, laparams=LAParams())
     page_interpreter = PDFPageInterpreter(resource_manager, converter)
     tmp = file.split(".pdf")
-    name = tmp[0].split("-")
+    name = (tmp[0].replace(':','-')).split("-")
     print(name[1].strip())
 
     with open('./pdf/' + file, 'rb') as fh:
@@ -39,6 +40,7 @@ for file in fileNames:
     e = open('./entidade/' + name[1].strip() + '.txt', 'w', encoding="utf-8")
 
     #pegar informações importantes
+    # json.dump(tmp2, e, ensure_ascii=False)
     e.write(tmp.replace(' \n', ' ').replace('\n', '').replace('\r', '').replace('  ', ' '))
 
     e.close()
